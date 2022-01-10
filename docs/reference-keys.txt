@@ -1,0 +1,17 @@
+fig:nice-fig
+fig:two-figs
+fig:embeded-figs
+tab:nice-tab
+tab:unnamed-chunk-3
+tab:unnamed-chunk-5
+prerequisites
+intro
+figures
+tables
+literature
+methods
+math-example
+applications
+example-1
+example-2
+final-words
