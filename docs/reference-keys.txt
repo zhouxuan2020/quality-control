@@ -6,7 +6,7 @@ tab:unnamed-chunk-5
 tab:unnamed-chunk-6
 general-info
 topic
-server
+frequently-used-commands
 summaries
 good-gwas
 ldsc-sumher
@@ -62,5 +62,3 @@ he-2
 estimation-2
 summary-5
 section
-common-commands
-frequently-used-commands
