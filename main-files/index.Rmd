@@ -21,7 +21,7 @@ We propose a new method to detect the inflation of GWAS test statistics caused b
 
 [insert details about the method here]
 
-## Server
+## Frequently used commands
 
 `ssh -l zhoux login.genome.au.dk`
 
