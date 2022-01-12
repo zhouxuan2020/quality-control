@@ -1,7 +1,7 @@
 
 # control GWAS {#control}
 
-Here we want to do GWASs that will serve as the control group of the good GWASs. Recall for the bad GWASs (section \@ref(bad)), we have a total of 100k individuals, which consist of 93,528 unrelated white British and 6,472 blacks and Asians. We observed inflation of the test statistics. Although unlikely, it is still possible that some of the inflation is due to random errors. To rule out this possibility [to ascertain that the observed inflation is due to population stratification, not random errors], we used the same 93,528 unrelated white British but replaced the 6,472 blacks and Asians with unrelated white British that are not included in the good GWASs.
+Here we perform GWASs that serve as the control group for the good versus bad GWASs comparison. For the bad GWASs (section \@ref(bad)), we have a total of 100k individuals, which consist of 93,528 unrelated white British (from the good GWASs) and 6,472 blacks and Asians. We observed inflation of the test statistics. Although unlikely, it is still possible that some of the inflation is due to random errors. To rule out this possibility [or to ascertain that the observed inflation is due to population stratification not random errors], we used the same 93,528 unrelated white British but replaced the 6,472 blacks and Asians with unrelated white British that were not included in the good GWASs.
 
 ## ID list
 
