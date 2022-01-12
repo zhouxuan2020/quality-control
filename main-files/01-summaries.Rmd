@@ -3,7 +3,7 @@
 
 ## Good GWAS
 
-Code for the good GWAS can be found in section \@ref(good). Basically, we used 100k unrelated white individuals with proper quality-controlled genotype data for the GWASs. We then did inflation tests using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression)
+Code for the good GWAS can be found in section \@ref(good). Basically, we used 100k unrelated white British with quality-controlled genotype data for the GWASs. We tested the GWAS test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression)
 
 ### ldsc & sumher
 
@@ -109,7 +109,7 @@ all %>%
 
 ## Bad GWAS
 
-Code for the bad GWAS can be found in section \@ref(bad). Basically, we used 100k unrelated individuals that consist of 93,528 whites and 6,472 blacks and Asians (i.e., mixed populations). Hence, the GWAS was confounded by population stratification. We conducted GWASs and did inflation tests using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression)
+Code for the bad GWAS can be found in section \@ref(bad). Basically, we used 100k unrelated individuals that consist of 93,528 whites and 6,472 blacks and Asians (i.e., mixed populations). Hence, the GWASs were confounded by population stratification. We performed the confounded GWASs and tested the test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression)
 
 ### ldsc & sumher
 
@@ -216,7 +216,7 @@ all %>%
 
 ## UKBB recommended
 
-Code for this GWAS can be found in section \@ref(ukbb). Basically, we randomly selected 100k white British from a total of 337k individuals that are recommended by the UKBB (i.e., QCed by the UKBB). We conducted GWASs and did inflation tests using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression).
+Code for this GWAS can be found in section \@ref(ukbb). Basically, we randomly selected 100k white British from a total of 337k individuals that are recommended by the UKBB (i.e., QCed by the UKBB). We performed the GWASs and tested the test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression).
 
 ### ldsc & sumher
 
