@@ -68,6 +68,24 @@ for j in {1..22}; do
 sbatch -A snpher ../sh_script/chr$j.sh
 done > ../job-records/qc-control-gwas
 
+file=job-records/qc-control-gwas
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
 # merge files
 rm bfile-control-gwas.list
 for j in {1..22}; do

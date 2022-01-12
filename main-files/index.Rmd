@@ -5,11 +5,11 @@ date: "updated on `r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
-bibliography: [book.bib, packages.bib, paper.bib]
+#bibliography: [book.bib, packages.bib, paper.bib]
 #biblio-style:
-csl: apa.csl
+#csl: apa.csl
 link-citations: yes
-##github-repo: rstudio/bookdown-demo
+github-repo: rstudio/bookdown-demo
 description: " "
 ---
 

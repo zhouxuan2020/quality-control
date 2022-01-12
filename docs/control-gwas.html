@@ -4,19 +4,19 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>6 control GWAS | Quality control</title>
-  <meta name="description" content="6 control GWAS | Quality control" />
+  <title>7 control GWAS | Quality control</title>
+  <meta name="description" content="7 control GWAS | Quality control" />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="6 control GWAS | Quality control" />
+  <meta property="og:title" content="7 control GWAS | Quality control" />
   <meta property="og:type" content="book" />
   
   
   
-  
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="6 control GWAS | Quality control" />
+  <meta name="twitter:title" content="7 control GWAS | Quality control" />
   
   
   
@@ -29,7 +29,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="ukbb.html"/>
+<link rel="prev" href="section.html"/>
 
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -51,6 +51,10 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
@@ -226,10 +230,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.6.2" data-path="ukbb.html"><a href="ukbb.html#summary-5"><i class="fa fa-check"></i><b>5.6.2</b> summary</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="control-gwas.html"><a href="control-gwas.html"><i class="fa fa-check"></i><b>6</b> control GWAS</a>
+<li class="chapter" data-level="6" data-path="section.html"><a href="section.html"><i class="fa fa-check"></i><b>6</b> </a></li>
+<li class="chapter" data-level="7" data-path="control-gwas.html"><a href="control-gwas.html"><i class="fa fa-check"></i><b>7</b> control GWAS</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="control-gwas.html"><a href="control-gwas.html#id-list"><i class="fa fa-check"></i><b>6.1</b> ID list</a></li>
-<li class="chapter" data-level="6.2" data-path="control-gwas.html"><a href="control-gwas.html#qc-of-hp3-snps-1"><i class="fa fa-check"></i><b>6.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="7.1" data-path="control-gwas.html"><a href="control-gwas.html#id-list"><i class="fa fa-check"></i><b>7.1</b> ID list</a></li>
+<li class="chapter" data-level="7.2" data-path="control-gwas.html"><a href="control-gwas.html#qc-of-hp3-snps-1"><i class="fa fa-check"></i><b>7.2</b> QC of hp3 SNPs</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -251,11 +256,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="control-gwas" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> control GWAS</h1>
+<div id="control-gwas" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> control GWAS</h1>
 <p>Here we want to do GWASs that will serve as the control group of the good GWASs. Recall for the bad GWASs (section <a href="bad.html#bad">4</a>), we have a total of 100k individuals, which consist of 93,528 unrelated white British and 6,472 blacks and Asians. We observed inflation of the test statistics. Although unlikely, it is still possible that some of the inflation is due to random errors. To rule out this possibility [to ascertain that the observed inflation is due to population stratification, not random errors], we used the same 93,528 unrelated white British but replaced the 6,472 blacks and Asians with unrelated white British that are not included in the good GWASs.</p>
-<div id="id-list" class="section level2" number="6.1">
-<h2><span class="header-section-number">6.1</span> ID list</h2>
+<div id="id-list" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> ID list</h2>
 <p>We used previously obtained id lists (see section <a href="good.html#goodid">3.1</a> for the good GWAS id list and section <a href="bad.html#badid">4.1</a> for the bad GWAS id list ) to derive the id list for the control GWASs. These are:</p>
 <ul>
 <li><code>overlap-complete-cases.id</code>: N = 147,008. Unrelated white British who have no missing data for all 14 traits and covariates.</li>
@@ -269,76 +274,76 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>randomly select 6,472 from the identified IDs.</li>
 <li>combine <code>white.rand.93528</code> with the randomly selected 6,472 IDs.</li>
 </ol>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="control-gwas.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">100</span>)</span>
-<span id="cb1-2"><a href="control-gwas.html#cb1-2" aria-hidden="true" tabindex="-1"></a>id1<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;unrelated/overlap-complete-cases.id&quot;</span>, <span class="at">header=</span>F)</span>
-<span id="cb1-3"><a href="control-gwas.html#cb1-3" aria-hidden="true" tabindex="-1"></a>id2<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;unrelated/rand.100000&quot;</span>, <span class="at">header=</span>F)</span>
-<span id="cb1-4"><a href="control-gwas.html#cb1-4" aria-hidden="true" tabindex="-1"></a>id3<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;white.rand.93528&quot;</span>, <span class="at">header=</span>F)</span>
-<span id="cb1-5"><a href="control-gwas.html#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="control-gwas.html#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># pool for selection</span></span>
-<span id="cb1-7"><a href="control-gwas.html#cb1-7" aria-hidden="true" tabindex="-1"></a>common<span class="ot">=</span><span class="fu">intersect</span>(id1<span class="sc">$</span>V1, id2<span class="sc">$</span>V1)</span>
-<span id="cb1-8"><a href="control-gwas.html#cb1-8" aria-hidden="true" tabindex="-1"></a>pool<span class="ot">=</span>id1[<span class="sc">!</span>id1<span class="sc">$</span>V1<span class="sc">%in%</span>common,]</span>
-<span id="cb1-9"><a href="control-gwas.html#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="control-gwas.html#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># randomly select 6,472 from the pool</span></span>
-<span id="cb1-11"><a href="control-gwas.html#cb1-11" aria-hidden="true" tabindex="-1"></a>sel<span class="ot">=</span>pool[<span class="fu">sample</span>(<span class="fu">dim</span>(pool)[<span class="dv">1</span>], <span class="dv">6472</span>, <span class="at">replace=</span>F),]</span>
-<span id="cb1-12"><a href="control-gwas.html#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="control-gwas.html#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  combine with &#39;white.rand.93528&#39;</span></span>
-<span id="cb1-14"><a href="control-gwas.html#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(<span class="fu">rbind</span>(sel,id3), <span class="st">&#39;control-gwas.id&#39;</span>, <span class="at">quote=</span>F, <span class="at">row.names=</span>F, <span class="at">col.names=</span>F)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="control-gwas.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">100</span>)</span>
+<span id="cb33-2"><a href="control-gwas.html#cb33-2" aria-hidden="true" tabindex="-1"></a>id1<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;unrelated/overlap-complete-cases.id&quot;</span>, <span class="at">header=</span>F)</span>
+<span id="cb33-3"><a href="control-gwas.html#cb33-3" aria-hidden="true" tabindex="-1"></a>id2<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;unrelated/rand.100000&quot;</span>, <span class="at">header=</span>F)</span>
+<span id="cb33-4"><a href="control-gwas.html#cb33-4" aria-hidden="true" tabindex="-1"></a>id3<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;white.rand.93528&quot;</span>, <span class="at">header=</span>F)</span>
+<span id="cb33-5"><a href="control-gwas.html#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="control-gwas.html#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co"># pool for selection</span></span>
+<span id="cb33-7"><a href="control-gwas.html#cb33-7" aria-hidden="true" tabindex="-1"></a>common<span class="ot">=</span><span class="fu">intersect</span>(id1<span class="sc">$</span>V1, id2<span class="sc">$</span>V1)</span>
+<span id="cb33-8"><a href="control-gwas.html#cb33-8" aria-hidden="true" tabindex="-1"></a>pool<span class="ot">=</span>id1[<span class="sc">!</span>id1<span class="sc">$</span>V1<span class="sc">%in%</span>common,]</span>
+<span id="cb33-9"><a href="control-gwas.html#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="control-gwas.html#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co"># randomly select 6,472 from the pool</span></span>
+<span id="cb33-11"><a href="control-gwas.html#cb33-11" aria-hidden="true" tabindex="-1"></a>sel<span class="ot">=</span>pool[<span class="fu">sample</span>(<span class="fu">dim</span>(pool)[<span class="dv">1</span>], <span class="dv">6472</span>, <span class="at">replace=</span>F),]</span>
+<span id="cb33-12"><a href="control-gwas.html#cb33-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-13"><a href="control-gwas.html#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  combine with &#39;white.rand.93528&#39;</span></span>
+<span id="cb33-14"><a href="control-gwas.html#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(<span class="fu">rbind</span>(sel,id3), <span class="st">&#39;control-gwas.id&#39;</span>, <span class="at">quote=</span>F, <span class="at">row.names=</span>F, <span class="at">col.names=</span>F)</span></code></pre></div>
 </div>
-<div id="qc-of-hp3-snps-1" class="section level2" number="6.2">
-<h2><span class="header-section-number">6.2</span> QC of hp3 SNPs</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="control-gwas.html#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-2"><a href="control-gwas.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># QC SNPs-----------------------------------------------------------------------</span></span>
-<span id="cb2-3"><a href="control-gwas.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># stating number of SNPs= 1,184,423 </span></span>
-<span id="cb2-4"><a href="control-gwas.html#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb2-5"><a href="control-gwas.html#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
-<span id="cb2-6"><a href="control-gwas.html#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
-<span id="cb2-7"><a href="control-gwas.html#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
-<span id="cb2-8"><a href="control-gwas.html#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
-<span id="cb2-9"><a href="control-gwas.html#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
-<span id="cb2-10"><a href="control-gwas.html#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 1:0:0</span></span>
-<span id="cb2-11"><a href="control-gwas.html#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="control-gwas.html#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb2-13"><a href="control-gwas.html#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="st">         --keep ../control-gwas.id </span><span class="dt">\</span></span>
-<span id="cb2-14"><a href="control-gwas.html#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="st">         --extract ../doug/ukbb.ldsc </span><span class="dt">\</span></span>
-<span id="cb2-15"><a href="control-gwas.html#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="st">         --hwe 0.0001 </span><span class="dt">\</span></span>
-<span id="cb2-16"><a href="control-gwas.html#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="st">         --hard-call-threshold .05 </span><span class="dt">\</span></span>
-<span id="cb2-17"><a href="control-gwas.html#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="st">         --mach-r2-filter 0.8 2 </span><span class="dt">\</span></span>
-<span id="cb2-18"><a href="control-gwas.html#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="st">         --make-bed </span><span class="dt">\</span></span>
-<span id="cb2-19"><a href="control-gwas.html#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
-<span id="cb2-20"><a href="control-gwas.html#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/tmp/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb2-21"><a href="control-gwas.html#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3</span></span>
-<span id="cb2-22"><a href="control-gwas.html#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/chr<span class="va">$j</span>.sh</span>
-<span id="cb2-23"><a href="control-gwas.html#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb2-24"><a href="control-gwas.html#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-25"><a href="control-gwas.html#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># submit jobs</span></span>
-<span id="cb2-26"><a href="control-gwas.html#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb2-27"><a href="control-gwas.html#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/chr<span class="va">$j</span>.sh</span>
-<span id="cb2-28"><a href="control-gwas.html#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/qc-control-gwas</span>
-<span id="cb2-29"><a href="control-gwas.html#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-30"><a href="control-gwas.html#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># merge files</span></span>
-<span id="cb2-31"><a href="control-gwas.html#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> bfile-control-gwas.list</span>
-<span id="cb2-32"><a href="control-gwas.html#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb2-33"><a href="control-gwas.html#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span>  <span class="st">&quot;../gen/tmp/bhr</span><span class="va">$j</span><span class="st">&quot;</span> <span class="op">&gt;&gt;</span>bfile-control-gwas.list</span>
-<span id="cb2-34"><a href="control-gwas.html#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb2-35"><a href="control-gwas.html#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-36"><a href="control-gwas.html#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
-<span id="cb2-37"><a href="control-gwas.html#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
-<span id="cb2-38"><a href="control-gwas.html#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
-<span id="cb2-39"><a href="control-gwas.html#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
-<span id="cb2-40"><a href="control-gwas.html#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
-<span id="cb2-41"><a href="control-gwas.html#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 40:0:0</span></span>
-<span id="cb2-42"><a href="control-gwas.html#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --make-bed ../gen/geno-control </span><span class="dt">\</span></span>
-<span id="cb2-43"><a href="control-gwas.html#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="st">          --mbfile ../gen/bfile-control-gwas.list </span><span class="dt">\</span></span>
-<span id="cb2-44"><a href="control-gwas.html#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 3 </span><span class="dt">\</span></span>
-<span id="cb2-45"><a href="control-gwas.html#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="st">          --exclude-dups YES  </span></span>
-<span id="cb2-46"><a href="control-gwas.html#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/mbfile-control.sh</span>
-<span id="cb2-47"><a href="control-gwas.html#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-48"><a href="control-gwas.html#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the script</span></span>
-<span id="cb2-49"><a href="control-gwas.html#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/mbfile-control.sh <span class="op">&gt;</span>../job-records/mbfiles-control-gwas</span>
-<span id="cb2-50"><a href="control-gwas.html#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-51"><a href="control-gwas.html#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co"># MAF &amp; call-rate </span></span>
-<span id="cb2-52"><a href="control-gwas.html#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="op">&lt;</span> geno-control.stats <span class="st">&#39;($5&gt;.01 &amp;&amp; $6&gt;=0.95 &amp;&amp; NR&gt;1){print $1}&#39;</span> <span class="op">&gt;</span> snps-control-gwas.use</span>
-<span id="cb2-53"><a href="control-gwas.html#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="co"># m = 1,103,209 SNPs</span></span></code></pre></div>
+<div id="qc-of-hp3-snps-1" class="section level2" number="7.2">
+<h2><span class="header-section-number">7.2</span> QC of hp3 SNPs</h2>
+<div class="sourceCode" id="cb34"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="control-gwas.html#cb34-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-2"><a href="control-gwas.html#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># QC SNPs-----------------------------------------------------------------------</span></span>
+<span id="cb34-3"><a href="control-gwas.html#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># stating number of SNPs= 1,184,423 </span></span>
+<span id="cb34-4"><a href="control-gwas.html#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb34-5"><a href="control-gwas.html#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb34-6"><a href="control-gwas.html#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb34-7"><a href="control-gwas.html#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb34-8"><a href="control-gwas.html#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb34-9"><a href="control-gwas.html#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb34-10"><a href="control-gwas.html#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 1:0:0</span></span>
+<span id="cb34-11"><a href="control-gwas.html#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-12"><a href="control-gwas.html#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb34-13"><a href="control-gwas.html#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="st">         --keep ../control-gwas.id </span><span class="dt">\</span></span>
+<span id="cb34-14"><a href="control-gwas.html#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="st">         --extract ../doug/ukbb.ldsc </span><span class="dt">\</span></span>
+<span id="cb34-15"><a href="control-gwas.html#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="st">         --hwe 0.0001 </span><span class="dt">\</span></span>
+<span id="cb34-16"><a href="control-gwas.html#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="st">         --hard-call-threshold .05 </span><span class="dt">\</span></span>
+<span id="cb34-17"><a href="control-gwas.html#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="st">         --mach-r2-filter 0.8 2 </span><span class="dt">\</span></span>
+<span id="cb34-18"><a href="control-gwas.html#cb34-18" aria-hidden="true" tabindex="-1"></a><span class="st">         --make-bed </span><span class="dt">\</span></span>
+<span id="cb34-19"><a href="control-gwas.html#cb34-19" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
+<span id="cb34-20"><a href="control-gwas.html#cb34-20" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/tmp/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb34-21"><a href="control-gwas.html#cb34-21" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3</span></span>
+<span id="cb34-22"><a href="control-gwas.html#cb34-22" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/chr<span class="va">$j</span>.sh</span>
+<span id="cb34-23"><a href="control-gwas.html#cb34-23" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb34-24"><a href="control-gwas.html#cb34-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-25"><a href="control-gwas.html#cb34-25" aria-hidden="true" tabindex="-1"></a><span class="co"># submit jobs</span></span>
+<span id="cb34-26"><a href="control-gwas.html#cb34-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb34-27"><a href="control-gwas.html#cb34-27" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/chr<span class="va">$j</span>.sh</span>
+<span id="cb34-28"><a href="control-gwas.html#cb34-28" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/qc-control-gwas</span>
+<span id="cb34-29"><a href="control-gwas.html#cb34-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-30"><a href="control-gwas.html#cb34-30" aria-hidden="true" tabindex="-1"></a><span class="co"># merge files</span></span>
+<span id="cb34-31"><a href="control-gwas.html#cb34-31" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> bfile-control-gwas.list</span>
+<span id="cb34-32"><a href="control-gwas.html#cb34-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb34-33"><a href="control-gwas.html#cb34-33" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span>  <span class="st">&quot;../gen/tmp/bhr</span><span class="va">$j</span><span class="st">&quot;</span> <span class="op">&gt;&gt;</span>bfile-control-gwas.list</span>
+<span id="cb34-34"><a href="control-gwas.html#cb34-34" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb34-35"><a href="control-gwas.html#cb34-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-36"><a href="control-gwas.html#cb34-36" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb34-37"><a href="control-gwas.html#cb34-37" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb34-38"><a href="control-gwas.html#cb34-38" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb34-39"><a href="control-gwas.html#cb34-39" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb34-40"><a href="control-gwas.html#cb34-40" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb34-41"><a href="control-gwas.html#cb34-41" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 40:0:0</span></span>
+<span id="cb34-42"><a href="control-gwas.html#cb34-42" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --make-bed ../gen/geno-control </span><span class="dt">\</span></span>
+<span id="cb34-43"><a href="control-gwas.html#cb34-43" aria-hidden="true" tabindex="-1"></a><span class="st">          --mbfile ../gen/bfile-control-gwas.list </span><span class="dt">\</span></span>
+<span id="cb34-44"><a href="control-gwas.html#cb34-44" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 3 </span><span class="dt">\</span></span>
+<span id="cb34-45"><a href="control-gwas.html#cb34-45" aria-hidden="true" tabindex="-1"></a><span class="st">          --exclude-dups YES  </span></span>
+<span id="cb34-46"><a href="control-gwas.html#cb34-46" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/mbfile-control.sh</span>
+<span id="cb34-47"><a href="control-gwas.html#cb34-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-48"><a href="control-gwas.html#cb34-48" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the script</span></span>
+<span id="cb34-49"><a href="control-gwas.html#cb34-49" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/mbfile-control.sh <span class="op">&gt;</span>../job-records/mbfiles-control-gwas</span>
+<span id="cb34-50"><a href="control-gwas.html#cb34-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-51"><a href="control-gwas.html#cb34-51" aria-hidden="true" tabindex="-1"></a><span class="co"># MAF &amp; call-rate </span></span>
+<span id="cb34-52"><a href="control-gwas.html#cb34-52" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="op">&lt;</span> geno-control.stats <span class="st">&#39;($5&gt;.01 &amp;&amp; $6&gt;=0.95 &amp;&amp; NR&gt;1){print $1}&#39;</span> <span class="op">&gt;</span> snps-control-gwas.use</span>
+<span id="cb34-53"><a href="control-gwas.html#cb34-53" aria-hidden="true" tabindex="-1"></a><span class="co"># m = 1,103,209 SNPs</span></span></code></pre></div>
 
 </div>
 </div>
@@ -347,7 +352,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="ukbb.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="section.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
     </div>
   </div>
@@ -390,7 +395,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["bookdown-demo.pdf", "bookdown-demo.epub"],
+"download": ["main-files.pdf", "main-files.epub"],
 "search": {
 "engine": "fuse",
 "options": null
