@@ -1,0 +1,97 @@
+
+# control GWAS
+
+Here we want to do GWASs that will serve as the control group of the good GWASs. Recall for the bad GWASs (section \@ref(bad)), we have a total of 100k individuals, which consist of 93,528 unrelated white British and 6,472 blacks and Asians. We observed inflation of the test statistics. Although unlikely, it is still possible that some of the inflation is random error. To rule out this possibility [to ascertain that the observed inflation is due to population stratification, not a random error], we used the same 93,528 unrelated white British but replaced the 6,472 blacks and Asians with unrelated white British that are different from the 6,472 white British used for the good GWASs.
+
+## ID list
+
+We used previously obtained id lists (see section \@ref(goodid) for the good GWAS id list and section \@ref(badid) for the bad GWAS id list ) to derive the id list for the control GWASs. These are:
+
+  * `overlap-complete-cases.id`: N = 147,008. Unrelated white British who have no missing data for all 14 traits and covariates.
+  * `rand.100000`: ID list for the good gwas. Randomly selected from `overlap-complete-cases.id`  
+  * `white.rand.93528`: unrelated whites as a part of the bad gwas ID list. Randomly selected from `rand.100000`
+  
+Here are the steps:
+
+1. identify IDs from `overlap-complete-cases.id` not included in `rand.100000`.
+2. randomly select 6,472 from the identified IDs.
+3. combine `white.rand.93528` with the randomly selected 6,472 IDs.  
+
+```{R eval=F}
+
+options(scipen = 100)
+id1=read.table("unrelated/overlap-complete-cases.id", header=F)
+id2=read.table("unrelated/rand.100000", header=F)
+id3=read.table("white.rand.93528", header=F)
+
+# pool for selection
+common=intersect(id1$V1, id2$V1)
+pool=id1[!id1$V1%in%common,]
+
+# randomly select 6,472 from the pool
+sel=pool[sample(dim(pool)[1], 6472, replace=F),]
+
+#  combine with 'white.rand.93528'
+write.table(rbind(sel,id3), 'control-gwas.id', quote=F, row.names=F, col.names=F)
+
+```
+
+## QC of hp3 SNPs
+
+```{bash eval=F}
+
+# QC SNPs-----------------------------------------------------------------------
+# stating number of SNPs= 1,184,423 
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 1:0:0
+
+./plink2 --pfile ../gen/geno_plink/bhr$j \
+         --keep ../control-gwas.id \
+         --extract ../doug/ukbb.ldsc \
+         --hwe 0.0001 \
+         --hard-call-threshold .05 \
+         --mach-r2-filter 0.8 2 \
+         --make-bed \
+         --memory 20000 \
+         --out ../gen/tmp/bhr$j \
+         --threads 3
+"> sh_script/chr$j.sh
+done
+
+# submit jobs
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/chr$j.sh
+done > ../job-records/qc-control-gwas
+
+# merge files
+rm bfile-control-gwas.list
+for j in {1..22}; do
+echo  "../gen/tmp/bhr$j" >>bfile-control-gwas.list
+done
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 40:0:0
+./ldak5.1 --make-bed ../gen/geno-control \
+          --mbfile ../gen/bfile-control-gwas.list \
+          --max-threads 3 \
+          --exclude-dups YES  
+"> sh_script/mbfile-control.sh
+
+# submit the script
+sbatch -A snpher ../sh_script/mbfile-control.sh >../job-records/mbfiles-control-gwas
+
+# MAF & call-rate 
+awk < geno-control.stats '($5>.01 && $6>=0.95 && NR>1){print $1}' > snps-control-gwas.use
+# m = 1,103,209 SNPs
+
+```
+

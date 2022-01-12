@@ -1,7 +1,7 @@
 
 # Bad GWAS {#bad}
 
-## id list
+## ID list {#badid}
 
 ### initial selection
 Randomly select participants with complete data and use the SNP list as for unrelated.

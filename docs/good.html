@@ -23,7 +23,6 @@
 
 
 
-<meta name="date" content="2022-01-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -165,7 +164,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="3" data-path="good.html"><a href="good.html"><i class="fa fa-check"></i><b>3</b> Good GWAS</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="good.html"><a href="good.html#qc-of-hp3-snps"><i class="fa fa-check"></i><b>3.1</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="3.1" data-path="good.html"><a href="good.html#goodid"><i class="fa fa-check"></i><b>3.1</b> QC of hp3 SNPs</a></li>
 <li class="chapter" data-level="3.2" data-path="good.html"><a href="good.html#extract-covariates"><i class="fa fa-check"></i><b>3.2</b> extract covariates</a></li>
 <li class="chapter" data-level="3.3" data-path="good.html"><a href="good.html#gwas"><i class="fa fa-check"></i><b>3.3</b> GWAS</a></li>
 <li class="chapter" data-level="3.4" data-path="good.html"><a href="good.html#ldsc-intercept"><i class="fa fa-check"></i><b>3.4</b> ldsc intercept</a>
@@ -188,11 +187,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="4" data-path="bad.html"><a href="bad.html"><i class="fa fa-check"></i><b>4</b> Bad GWAS</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="bad.html"><a href="bad.html#id-list"><i class="fa fa-check"></i><b>4.1</b> id list</a>
+<li class="chapter" data-level="4.1" data-path="bad.html"><a href="bad.html#badid"><i class="fa fa-check"></i><b>4.1</b> ID list</a>
 <ul>
 <li class="chapter" data-level="4.1.1" data-path="bad.html"><a href="bad.html#initial-selection"><i class="fa fa-check"></i><b>4.1.1</b> initial selection</a></li>
 <li class="chapter" data-level="4.1.2" data-path="bad.html"><a href="bad.html#relatedness-filtering"><i class="fa fa-check"></i><b>4.1.2</b> relatedness filtering</a></li>
-<li class="chapter" data-level="4.1.3" data-path="bad.html"><a href="bad.html#select-participants"><i class="fa fa-check"></i><b>4.1.3</b> select participants</a></li>
+<li class="chapter" data-level="4.1.3" data-path="bad.html"><a href="bad.html#final-list"><i class="fa fa-check"></i><b>4.1.3</b> final list</a></li>
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="bad.html"><a href="bad.html#gwas-1"><i class="fa fa-check"></i><b>4.2</b> GWAS</a></li>
 <li class="chapter" data-level="4.3" data-path="bad.html"><a href="bad.html#ldsc-intercept-1"><i class="fa fa-check"></i><b>4.3</b> ldsc intercept</a>
@@ -216,7 +215,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5" data-path="ukbb.html"><a href="ukbb.html"><i class="fa fa-check"></i><b>5</b> UKBB recommended</a>
 <ul>
 <li class="chapter" data-level="5.1" data-path="ukbb.html"><a href="ukbb.html#total-n-337k"><i class="fa fa-check"></i><b>5.1</b> total N = 337k</a></li>
-<li class="chapter" data-level="5.2" data-path="ukbb.html"><a href="ukbb.html#qc-of-hp3-snps-1"><i class="fa fa-check"></i><b>5.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="5.2" data-path="ukbb.html"><a href="ukbb.html#qc-of-hp3-snps"><i class="fa fa-check"></i><b>5.2</b> QC of hp3 SNPs</a></li>
 <li class="chapter" data-level="5.3" data-path="ukbb.html"><a href="ukbb.html#making-grms-2"><i class="fa fa-check"></i><b>5.3</b> making grms</a></li>
 <li class="chapter" data-level="5.4" data-path="ukbb.html"><a href="ukbb.html#gwas-2"><i class="fa fa-check"></i><b>5.4</b> GWAS</a></li>
 <li class="chapter" data-level="5.5" data-path="ukbb.html"><a href="ukbb.html#ldsc-intercept-2"><i class="fa fa-check"></i><b>5.5</b> ldsc intercept</a>
@@ -232,6 +231,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="section.html"><a href="section.html"><i class="fa fa-check"></i><b>6</b> </a></li>
+<li class="chapter" data-level="7" data-path="control-gwas.html"><a href="control-gwas.html"><i class="fa fa-check"></i><b>7</b> control GWAS</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="control-gwas.html"><a href="control-gwas.html#id-list"><i class="fa fa-check"></i><b>7.1</b> ID list</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -256,7 +259,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">3</span> Good GWAS</h1>
 <p>Here we do good GWASs. We will use 1.2M hapmap3 SNPs.
 But sill need to do some QC to these SNPs.</p>
-<div id="qc-of-hp3-snps" class="section level2" number="3.1">
+<div id="goodid" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> QC of hp3 SNPs</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="good.html#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-2"><a href="good.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># select 100k unrelated individuals with no missing covariates &amp; 14 phenotypes--</span></span>

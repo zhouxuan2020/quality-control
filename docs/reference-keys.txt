@@ -18,7 +18,7 @@ ukbb-recommended
 ldsc-sumher-2
 haseman-elston-regression-2
 good
-qc-of-hp3-snps
+goodid
 extract-covariates
 gwas
 ldsc-intercept
@@ -33,10 +33,10 @@ he
 estimation
 summary-1
 bad
-id-list
+badid
 initial-selection
 relatedness-filtering
-select-participants
+final-list
 gwas-1
 ldsc-intercept-1
 under-gcta-1
@@ -51,7 +51,7 @@ estimation-1
 summary-3
 ukbb
 total-n-337k
-qc-of-hp3-snps-1
+qc-of-hp3-snps
 making-grms-2
 gwas-2
 ldsc-intercept-2
@@ -62,4 +62,6 @@ he-2
 estimation-2
 summary-5
 section
-final-list
+control-gwas
+id-list
+qc-of-hp3-snps-1

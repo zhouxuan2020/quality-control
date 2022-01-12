@@ -4,7 +4,7 @@
 Here we do good GWASs. We will use 1.2M hapmap3 SNPs.
 But sill need to do some QC to these SNPs.
 
-## QC of hp3 SNPs
+## QC of hp3 SNPs {#goodid}
 ```{bash eval=F}
 
 # select 100k unrelated individuals with no missing covariates & 14 phenotypes--
