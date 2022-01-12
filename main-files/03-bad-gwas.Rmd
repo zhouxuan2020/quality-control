@@ -245,7 +245,7 @@ done > ../job-records/relatedness-filtering
 # sum = 6,472
 ```
 
-### select participants
+### final list
 
 To match the good GWAS, we will have N = 100k in total and replace 6,472 whites with Asians and Blacks.
 
