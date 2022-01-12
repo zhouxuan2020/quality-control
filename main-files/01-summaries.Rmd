@@ -319,3 +319,7 @@ all %>%
 
 ```
 
+## Control GWAS
+
+Code for this GWAS can be found in section \@ref(control).
+

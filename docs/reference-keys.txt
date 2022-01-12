@@ -17,6 +17,7 @@ haseman-elston-regression-1
 ukbb-recommended
 ldsc-sumher-2
 haseman-elston-regression-2
+control-gwas
 good
 goodid
 extract-covariates
@@ -52,17 +53,16 @@ summary-3
 ukbb
 total-n-337k
 qc-of-hp3-snps
-making-grms-2
 gwas-2
 ldsc-intercept-2
 under-gcta-2
 under-ldak-thin-2
 summary-4
 he-2
+making-grms-2
 estimation-2
 summary-5
-section
-control-gwas
+control
 id-list
 qc-of-hp3-snps-1
 gwas-3
@@ -70,3 +70,7 @@ ldsc-intercept-3
 under-gcta-3
 under-ldak-thin-3
 summary-6
+he-3
+making-grms-3
+estimation-3
+summary-7
