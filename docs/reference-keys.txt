@@ -65,3 +65,8 @@ section
 control-gwas
 id-list
 qc-of-hp3-snps-1
+gwas-3
+ldsc-intercept-3
+under-gcta-3
+under-ldak-thin-3
+summary-6

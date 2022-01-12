@@ -128,166 +128,6 @@ awk < geno-norm-100k.stats '($5>.01 && $6>=0.95 && NR>1){print $1}' > snps-norm-
  
 ```
 
-## making grms
-
-```{bash eval=F}
-
-# making grm -------------------------------------------------------------------
-
-#:::
-# under gcta
-#:::
-
-# all snps
-echo "#"'!'"/bin/bash
-#SBATCH --partition normal
-#SBATCH --mem 60G
-#SBATCH -c 10
-#SBATCH -t 08:0:0
-#SBATCH --constraint \"s04|s05\"
-
-./ldak5.1 --max-threads 10 \
-          --calc-kins-direct ../kinship/gcta-all-norm \
-          --bfile ../gen/geno-norm-100k \
-          --extract ../gen/snps-norm-100k.use \
-          --power -1 \
-          --ignore-weights YES \
-          --single YES
-" > sh_script/grm-all-snps-norm
-
-sbatch -A snpher ../sh_script/grm-all-snps-norm > ../job-records/grm-all-snps-norm
-
-# grm by snp blocks: right vs. left
-awk '$1<8 {print $2}' geno-norm-100k.bim > left-snps-norm-100k.use 
-awk '$1>=8 {print $2}' geno-norm-100k.bim > right-snps-norm-100k.use
-
-for i in left right; do
-echo "#"'!'"/bin/bash
-#SBATCH --partition normal
-#SBATCH --mem 60G
-#SBATCH -c 10
-#SBATCH -t 20:0:0
-#SBATCH --constraint \"s04|s05\"
-
-./ldak5.1 --max-threads 10 \
-          --calc-kins-direct ../kinship/gcta-$i-norm \
-          --bfile ../gen/geno-norm-100k \
-          --extract ../gen/$i-snps-norm-100k.use \
-          --power -1 \
-          --ignore-weights YES \
-          --single YES
-" > sh_script/grm-gcta-$i-norm
-done
-
-for i in left right; do
-sbatch -A snpher ../sh_script/grm-gcta-$i-norm 
-done > ../job-records/grm-gcta-by-snps-norm 
-
-#:::
-# under ldak-thin
-#:::
-
-#-----------
-# 1. thin snps
-#-----------
-
-for j in {1..22}; do
-echo "#"'!'"/bin/bash
-#SBATCH --partition normal
-#SBATCH --mem 10G
-#SBATCH -c 4
-#SBATCH -t 4:0:0
-#SBATCH --constraint \"s04|s05\"
-./ldak5.1 --max-threads 4 \
-          --window-prune 0.98 \
-          --window-kb 100 \
-          --extract ../gen/snps-norm-100k.use \
-          --bfile ../gen/geno-norm-100k \
-          --thin ../ldak-thin/chr$j-norm \
-          --chr $j
-" > sh_script/ldak-thin$j-norm
-done
-
-# submit script
-for j in {1..22}; do
-sbatch -A snpher ../sh_script/ldak-thin$j-norm
-done > ../job-records/ldak-thin-norm
-
-# check job completion---
-file=job-records/ldak-thin-norm
-jobs=`awk '{print $4}' $file`
-mkdir $file-tmp
-for i in $jobs; do
-jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
-jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
-jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
-jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
-jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
-done
-paste $file-tmp/name.tmp \
-      $file-tmp/state.tmp \
-      $file-tmp/cores.tmp \
-      $file-tmp/time.tmp \
-      $file-tmp/mem.tmp \
-      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
-rm -r $file-tmp
-
-# combine snp list
-cat ldak-thin/chr{1..22}-norm.in > ldak-thin/ldak-thin-norm.in
-
-#----------------------
-# 2. kinship matrix under ldak-thin
-#------------------------
-
-echo "#"'!'"/bin/bash
-#SBATCH --partition normal
-#SBATCH --mem 60G
-#SBATCH -c 10
-#SBATCH -t 08:0:0
-#SBATCH --constraint \"s04|s05\"
-
-./ldak5.1 --max-threads 10 \
-          --calc-kins-direct ../kinship/ldak-thin-all-norm \
-          --bfile ../gen/geno-norm-100k \
-          --extract ../ldak-thin/ldak-thin-norm.in \
-          --power -0.25 \
-          --ignore-weights YES \
-          --single YES
-" > sh_script/ldak-thin-grm-all-snps-norm
-
-sbatch -A snpher ../sh_script/ldak-thin-grm-all-snps-norm > ../job-records/ldak-thin-grm-all-snps-norm
-
-# grm by snp blocks: right vs. left
-
-awk '{split($1, a, /[:]/); if (a[1]<8) print $1}' \
- ldak-thin/ldak-thin-norm.in > gen/left-ldak-thin-norm.snps 
-awk '{split($1, a, /[:]/); if (a[1]>=8) print $1}' \
- ldak-thin/ldak-thin-norm.in > gen/right-ldak-thin-norm.snps 
-
-for i in left right; do
-echo "#"'!'"/bin/bash
-#SBATCH --partition normal
-#SBATCH --mem 60G
-#SBATCH -c 10
-#SBATCH -t 08:0:0
-#SBATCH --constraint \"s04|s05\"
-
-./ldak5.1 --max-threads 10 \
-          --calc-kins-direct ../kinship/ldak-thin-$i-norm \
-          --bfile ../gen/geno-norm-100k \
-          --extract ../gen/$i-ldak-thin-norm.snps \
-          --power -0.25 \
-          --ignore-weights YES \
-          --single YES
-" > sh_script/ldak-thin-grm-$i-norm
-done
-
-for i in left right; do
-sbatch -A snpher ../sh_script/ldak-thin-grm-$i-norm 
-done > ../job-records/grm-ldak-thin-by-snps-norm 
-
-```
-
 ## GWAS
 
 ```{bash eval=F}
@@ -622,6 +462,166 @@ paste sumher-ldak-thin-norm-100k-est sumher-ldak-thin-norm-100k-sd | awk '{print
 
 ## HE
 
+### making grms
+
+```{bash eval=F}
+
+# making grm -------------------------------------------------------------------
+
+#:::
+# under gcta
+#:::
+
+# all snps
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 08:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/gcta-all-norm \
+          --bfile ../gen/geno-norm-100k \
+          --extract ../gen/snps-norm-100k.use \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/grm-all-snps-norm
+
+sbatch -A snpher ../sh_script/grm-all-snps-norm > ../job-records/grm-all-snps-norm
+
+# grm by snp blocks: right vs. left
+awk '$1<8 {print $2}' geno-norm-100k.bim > left-snps-norm-100k.use 
+awk '$1>=8 {print $2}' geno-norm-100k.bim > right-snps-norm-100k.use
+
+for i in left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 20:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/gcta-$i-norm \
+          --bfile ../gen/geno-norm-100k \
+          --extract ../gen/$i-snps-norm-100k.use \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/grm-gcta-$i-norm
+done
+
+for i in left right; do
+sbatch -A snpher ../sh_script/grm-gcta-$i-norm 
+done > ../job-records/grm-gcta-by-snps-norm 
+
+#:::
+# under ldak-thin
+#:::
+
+#-----------
+# 1. thin snps
+#-----------
+
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 4
+#SBATCH -t 4:0:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --max-threads 4 \
+          --window-prune 0.98 \
+          --window-kb 100 \
+          --extract ../gen/snps-norm-100k.use \
+          --bfile ../gen/geno-norm-100k \
+          --thin ../ldak-thin/chr$j-norm \
+          --chr $j
+" > sh_script/ldak-thin$j-norm
+done
+
+# submit script
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/ldak-thin$j-norm
+done > ../job-records/ldak-thin-norm
+
+# check job completion---
+file=job-records/ldak-thin-norm
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# combine snp list
+cat ldak-thin/chr{1..22}-norm.in > ldak-thin/ldak-thin-norm.in
+
+#----------------------
+# 2. kinship matrix under ldak-thin
+#------------------------
+
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 08:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/ldak-thin-all-norm \
+          --bfile ../gen/geno-norm-100k \
+          --extract ../ldak-thin/ldak-thin-norm.in \
+          --power -0.25 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/ldak-thin-grm-all-snps-norm
+
+sbatch -A snpher ../sh_script/ldak-thin-grm-all-snps-norm > ../job-records/ldak-thin-grm-all-snps-norm
+
+# grm by snp blocks: right vs. left
+
+awk '{split($1, a, /[:]/); if (a[1]<8) print $1}' \
+ ldak-thin/ldak-thin-norm.in > gen/left-ldak-thin-norm.snps 
+awk '{split($1, a, /[:]/); if (a[1]>=8) print $1}' \
+ ldak-thin/ldak-thin-norm.in > gen/right-ldak-thin-norm.snps 
+
+for i in left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 08:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/ldak-thin-$i-norm \
+          --bfile ../gen/geno-norm-100k \
+          --extract ../gen/$i-ldak-thin-norm.snps \
+          --power -0.25 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/ldak-thin-grm-$i-norm
+done
+
+for i in left right; do
+sbatch -A snpher ../sh_script/ldak-thin-grm-$i-norm 
+done > ../job-records/grm-ldak-thin-by-snps-norm 
+
+```
+
 ### estimation
 
 NEED To check what covariates to adjust for HE
@@ -878,4 +878,4 @@ write.table(out, paste0("summary/he-ldak-thin-inflation-norm.txt"),
 ```
 
 
-# 
+
