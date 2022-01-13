@@ -434,20 +434,24 @@ done>../job-records/sumher-ldak-thin-control
 
 ```{bash eval=F}
 
+nm=control
+
 # original ldsc
-grep Intercept *ldsc.log | awk '{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}' > ../../summary/ldsc-norm-100k
+cd ldsc/out-control
+grep Intercept *ldsc.log | awk '{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}' > ../../summary/ldsc-$nm
 
 # sumher under gcta
-grep Intercept_Estimate *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-norm-100k-est
-grep Intercept_SD *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-norm-100k-sd
+cd sumher-control
+grep Intercept_Estimate *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-$nm-est
+grep Intercept_SD *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-$nm-sd
 cd ../summary/
-paste sumher-gcta-norm-100k-est sumher-gcta-norm-100k-sd | awk '{print $1, $2, $4}' > sumher-gcta-norm-100k
+paste sumher-gcta-$nm-est sumher-gcta-$nm-sd | awk '{print $1, $2, $4}' > sumher-gcta-$nm
       
 # suhmer under ldak-thin
-grep Intercept_Estimate *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-norm-100k-est
-grep Intercept_SD *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-norm-100k-sd
+grep Intercept_Estimate *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-$nm-est
+grep Intercept_SD *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-$nm-sd
 cd ../summary/
-paste sumher-ldak-thin-norm-100k-est sumher-ldak-thin-norm-100k-sd | awk '{print $1, $2, $4}' > sumher-ldak-thin-norm-100k
+paste sumher-ldak-thin-$nm-est sumher-ldak-thin-$nm-sd | awk '{print $1, $2, $4}' > sumher-ldak-thin-$nm
 
 ```
 
@@ -630,7 +634,7 @@ basic.covariates.use or covariates.use?
 ```{bash eval=F}
 # regress grm on covariates-----------------------------------------------------
 
-for grm in gcta-all-norm gcta-left-norm gcta-right-norm ldak-thin-all-norm ldak-thin-left-norm ldak-thin-right-norm; do  
+for grm in gcta-all-control gcta-left-control gcta-right-control ldak-thin-all-control ldak-thin-left-control ldak-thin-right-control; do  
 echo "#"'!'"/bin/bash
 #SBATCH --constraint \"s04|s05\"
 #SBATCH --partition normal
@@ -645,12 +649,12 @@ echo "#"'!'"/bin/bash
 done
 
 # submit jobs
-for grm in gcta-all-norm gcta-left-norm gcta-right-norm ldak-thin-all-norm ldak-thin-left-norm ldak-thin-right-norm; do
+for grm in gcta-all-control gcta-left-control gcta-right-control ldak-thin-all-control ldak-thin-left-control ldak-thin-right-control; do
 sbatch -A snpher ../sh_script/$grm-adjust.sh
-done > ../job-records/grm-adjust-for-HE
+done > ../job-records/grm-adjust-for-HE-control
 
 # check job completion----------------------------------------------------------
-file=job-records/grm-adjust-for-HE
+file=job-records/grm-adjust-for-HE-control
 jobs=`awk '{print $4}' $file`
 mkdir $file-tmp
 for i in $jobs; do
@@ -669,6 +673,9 @@ paste $file-tmp/name.tmp \
 rm -r $file-tmp
 
 # HE under gcta-----------------------------------------------------------------
+
+mkdir he-control
+dirout=he-control
 for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
 for k in all left right; do
 echo "#"'!'"/bin/bash
@@ -678,26 +685,27 @@ echo "#"'!'"/bin/bash
 #SBATCH -c 1
 #SBATCH -t 00:30:0
 
-./ldak5.1 --he ../he-norm/$i-he-gcta-$k \
+./ldak5.1 --he ../$dirout/$i-he-gcta-$k \
           --pheno ../phen/continuous-traits/$i.raw.pheno \
-          --grm ../kinship/gcta-$k-norm.covar \
+          --grm ../kinship/gcta-$k-control.covar \
           --kinship-details NO \
           --check-root NO \
           --covar ../phen/covariates.use \
           --max-threads 1 \
           --memory-save YES
-"> sh_script/$i-he-gcta-$k-snps-norm.sh
+"> sh_script/$i-he-gcta-$k-snps-control.sh
 done
 done
 
 # submit files------------------------------------------------------------------
 for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
 for k in all left right; do
-sbatch -A snpher ../sh_script/$i-he-gcta-$k-snps-norm.sh
+sbatch -A snpher ../sh_script/$i-he-gcta-$k-snps-control.sh
 done
-done > ../job-records/he-gcta
+done > ../job-records/he-gcta-control
 
 # HE under ldak-thin------------------------------------------------------------
+dirout=he-control
 for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
 for k in all left right; do
 echo "#"'!'"/bin/bash
@@ -707,24 +715,24 @@ echo "#"'!'"/bin/bash
 #SBATCH -c 1
 #SBATCH -t 0:30:0
 
-./ldak5.1 --he ../he-norm/$i-he-ldak-thin-$k \
+./ldak5.1 --he ../$dirout/$i-he-ldak-thin-$k \
           --pheno ../phen/continuous-traits/$i.raw.pheno \
-          --grm ../kinship/ldak-thin-$k-norm.covar \
+          --grm ../kinship/ldak-thin-$k-control.covar \
           --kinship-details NO \
           --check-root NO \
           --covar ../phen/covariates.use \
           --max-threads 1 \
           --memory-save YES
-"> sh_script/$i-he-ldak-thin-$k-norm.sh
+"> sh_script/$i-he-ldak-thin-$k-control.sh
 done
 done
 
 # submit files------------------------------------------------------------------
 for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
 for k in all left right; do
-sbatch -A snpher ../sh_script/$i-he-ldak-thin-$k-norm.sh
+sbatch -A snpher ../sh_script/$i-he-ldak-thin-$k-control.sh
 done
-done > ../job-records/he-ldak-thin
+done > ../job-records/he-ldak-thin-control
 
 ```
 
@@ -736,34 +744,35 @@ done > ../job-records/he-ldak-thin
 # under gcta
 #::::::::::::
 
+nm=control
 # extract h2 estimates ---------------------------------------------------------
 # right
-rm summary/he-gcta-norm.right 
+rm summary/he-gcta-$nm.right 
 for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
-outfile=he-norm/$i-he-gcta-right.he
-awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-norm.right
+outfile=he-$nm/$i-he-gcta-right.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-$nm.right
 done
 
 # left
-rm summary/he-gcta-norm.left
+rm summary/he-gcta-$nm.left
 for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
-outfile=he-norm/$i-he-gcta-left.he
-awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-norm.left
+outfile=he-$nm/$i-he-gcta-left.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-$nm.left
 done
 
 # all
-rm summary/he-gcta-norm.all
+rm summary/he-gcta-$nm.all
 for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
-outfile=he-norm/$i-he-gcta-all.he
-awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-norm.all
+outfile=he-$nm/$i-he-gcta-all.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-$nm.all
 done
 
 # inflation test----------------------------------------------------------------
 R
 
-full=read.table(paste0("summary/he-gcta-norm.all"), header=F)
-left=read.table(paste0("summary/he-gcta-norm.left"), header=F)
-right=read.table(paste0("summary/he-gcta-norm.right"), header=F)
+full=read.table(paste0("summary/he-gcta-control.all"), header=F)
+left=read.table(paste0("summary/he-gcta-control.left"), header=F)
+right=read.table(paste0("summary/he-gcta-control.right"), header=F)
 names(full)=names(left)=names(right)=c("code","h2","se")
 # some analyses did not complete --> match dataframes
 dim(full);dim(left);dim(right)
@@ -800,7 +809,7 @@ for(i in 1:dim(full)[1]){
                     p_inflation=p)
    if(i==1){out=out0}else{out=rbind(out,out0)}
 }
-write.table(out, paste0("summary/he-gcta-inflation-norm.txt"),
+write.table(out, paste0("summary/he-gcta-inflation-control.txt"),
             col.names=T, row.names=F, quote=F)
 
 
@@ -808,34 +817,35 @@ write.table(out, paste0("summary/he-gcta-inflation-norm.txt"),
 # under ldak-thin
 #::::::::::::
 
+nm=control
 # extract h2 estimates ---------------------------------------------------------
 # right
-rm summary/he-ldak-thin-norm.right 
+rm summary/he-ldak-thin-$nm.right 
 for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
-outfile=he-norm/$i-he-ldak-thin-right.he
-awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-norm.right
+outfile=he-$nm/$i-he-ldak-thin-right.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-$nm.right
 done
 
 # left
-rm summary/he-ldak-thin-norm.left
+rm summary/he-ldak-thin-$nm.left
 for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
-outfile=he-norm/$i-he-ldak-thin-left.he
-awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-norm.left
+outfile=he-$nm/$i-he-ldak-thin-left.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-$nm.left
 done
 
 # all
-rm summary/he-ldak-thin-norm.all
+rm summary/he-ldak-thin-$nm.all
 for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
-outfile=he-norm/$i-he-gcta-all.he
-awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-norm.all
+outfile=he-$nm/$i-he-gcta-all.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-$nm.all
 done
 
 # inflation test----------------------------------------------------------------
 R
 
-full=read.table(paste0("summary/he-ldak-thin-norm.all"), header=F)
-left=read.table(paste0("summary/he-ldak-thin-norm.left"), header=F)
-right=read.table(paste0("summary/he-ldak-thin-norm.right"), header=F)
+full=read.table(paste0("summary/he-ldak-thin-control.all"), header=F)
+left=read.table(paste0("summary/he-ldak-thin-control.left"), header=F)
+right=read.table(paste0("summary/he-ldak-thin-control.right"), header=F)
 names(full)=names(left)=names(right)=c("code","h2","se")
 # some analyses did not complete --> match dataframes
 dim(full);dim(left);dim(right)
@@ -872,7 +882,7 @@ for(i in 1:dim(full)[1]){
                     p_inflation=p)
    if(i==1){out=out0}else{out=rbind(out,out0)}
 }
-write.table(out, paste0("summary/he-ldak-thin-inflation-norm.txt"),
+write.table(out, paste0("summary/he-ldak-thin-inflation-control.txt"),
             col.names=T, row.names=F, quote=F)
 
 ```
