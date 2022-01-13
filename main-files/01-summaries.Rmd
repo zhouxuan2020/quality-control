@@ -1,13 +1,15 @@
 
 # Summaries
 
+To compare the proposed method against existing ones, we performed good and bad GWASs for 14 traits using N = 100k. While both sets of GWASs were based on strictly quality-controlled genotype data, bad GWASs used individuals of different ethnicity and hence were confounded by population stratification that are known to cause inflation in test statistics. For the good GWASs, with few exceptions, inflation was not detected by the methods ( Tables \@ref(tab:ldsc-sumher-good) ). In contrast, for bad GWASs significant inflation was evident by all methods ( see Tables \@ref(tab:ldsc-sumher-bad) & \@ref(tab:he-bad) ). The detected inflation for the GWASs is not due to random errors because no inflation was observed for the control GWASs ( see Tables \@ref(tab:ldsc-sumher-control ) & see Tables \@ref(tab:he-control) )
+
 ## Good GWAS
 
 Code for the good GWAS can be found in section \@ref(good). Basically, we used 100k unrelated white British with quality-controlled genotype data for the GWASs. We tested the GWAS test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression)
 
 ### ldsc & sumher
 
-```{r echo=F}
+```{r ldsc-sumher-good,echo=F}
 #:::::
 # organize data
 #:::::
@@ -64,7 +66,7 @@ all %>%
 
 ### Haseman Elston Regression
 
-```{r echo=F}
+```{r he-good, echo=F}
 
 #:::::
 # organize data
@@ -113,7 +115,7 @@ Code for the bad GWAS can be found in section \@ref(bad). Basically, we used 100
 
 ### ldsc & sumher
 
-```{r echo=F}
+```{r ldsc-sumher-bad,echo=F}
 #:::::
 # organize data
 #:::::
@@ -171,7 +173,7 @@ all %>%
 
 ### Haseman Elston Regression
 
-```{r echo=F}
+```{r he-bad, echo=F}
 
 #:::::
 # organize data
@@ -220,7 +222,7 @@ Code for this GWAS can be found in section \@ref(ukbb). Basically, we randomly s
 
 ### ldsc & sumher
 
-```{r echo=F}
+```{r ldsc-sumher-ukbb,echo=F}
 #:::::
 # organize data
 #:::::
@@ -277,7 +279,7 @@ all %>%
 
 ### Haseman Elston Regression
 
-```{r echo=F}
+```{r he-ukbb, echo=F}
 
 #:::::
 # organize data
@@ -326,7 +328,7 @@ Code for this GWAS can be found in section \@ref(control). In short, we performe
 
 ### ldsc & sumher
 
-```{r echo=F}
+```{r ldsc-sumher-control, echo=F}
 #:::::
 # organize data
 #:::::
@@ -383,7 +385,7 @@ all %>%
 
 ### Haseman Elston Regression
 
-```{r echo=F}
+```{r he-control, echo=F}
 
 #:::::
 # organize data

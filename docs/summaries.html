@@ -275,6 +275,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="summaries" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Summaries</h1>
+<p>To compare the proposed method against existing ones, we performed good and bad GWASs for 14 traits using N = 100k. While both sets of GWASs were based on strictly quality-controlled genotype data, bad GWASs used individuals of different ethnicity and hence were confounded by population stratification that are known to cause inflation in test statistics. For the good GWASs, with few exceptions, inflation was not detected by the methods ( Tables <a href="summaries.html#tab:ldsc-sumher-good">2.1</a> ). In contrast, for bad GWASs significant inflation was evident by all methods ( see Tables <a href="summaries.html#tab:ldsc-sumher-bad">2.3</a> &amp; <a href="summaries.html#tab:he-bad">2.4</a> ). The detected inflation for the GWASs is not due to random errors because no inflation was observed for the control GWASs ( see Tables @ref(tab:ldsc-sumher-control ) &amp; see Tables <a href="summaries.html#tab:he-control">2.8</a> )</p>
 <div id="good-gwas" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> Good GWAS</h2>
 <p>Code for the good GWAS can be found in section <a href="good.html#good">3</a>. Basically, we used 100k unrelated white British with quality-controlled genotype data for the GWASs. We tested the GWAS test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression)</p>
@@ -283,7 +284,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div style="border: 0px;overflow-x: scroll; width:100%; border-bottom: 0;">
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:unnamed-chunk-1">Table 2.1: </span>Good GWAS: LDSC regression line intercept estimates (SE) using ldsc and sumher
+<span id="tab:ldsc-sumher-good">Table 2.1: </span>Good GWAS: LDSC regression line intercept estimates (SE) using ldsc and sumher
 </caption>
 <thead>
 <tr>
@@ -803,7 +804,7 @@ snoring
 <div style="border: 0px;overflow-x: scroll; width:100%; border-bottom: 0;">
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:unnamed-chunk-2">Table 2.2: </span>Good GWAS: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models
+<span id="tab:he-good">Table 2.2: </span>Good GWAS: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models
 </caption>
 <thead>
 <tr>
@@ -1592,7 +1593,7 @@ hyper
 <div style="border: 0px;overflow-x: scroll; width:100%; border-bottom: 0;">
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:unnamed-chunk-3">Table 2.3: </span>Bad GWAS: LDSC regression line intercept estimates (SE) using ldsc and sumher
+<span id="tab:ldsc-sumher-bad">Table 2.3: </span>Bad GWAS: LDSC regression line intercept estimates (SE) using ldsc and sumher
 </caption>
 <thead>
 <tr>
@@ -2112,7 +2113,7 @@ snoring
 <div style="border: 0px;overflow-x: scroll; width:100%; border-bottom: 0;">
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:unnamed-chunk-4">Table 2.4: </span>Bad GWAS: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models
+<span id="tab:he-bad">Table 2.4: </span>Bad GWAS: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models
 </caption>
 <thead>
 <tr>
@@ -2901,7 +2902,7 @@ hyper
 <div style="border: 0px;overflow-x: scroll; width:100%; border-bottom: 0;">
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:unnamed-chunk-5">Table 2.5: </span>UKBB recommended: LDSC regression line intercept estimates (SE) using ldsc and sumher
+<span id="tab:ldsc-sumher-ukbb">Table 2.5: </span>UKBB recommended: LDSC regression line intercept estimates (SE) using ldsc and sumher
 </caption>
 <thead>
 <tr>
@@ -3421,7 +3422,7 @@ snoring
 <div style="border: 0px;overflow-x: scroll; width:100%; border-bottom: 0;">
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:unnamed-chunk-6">Table 2.6: </span> UKBB recommended: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models
+<span id="tab:he-ukbb">Table 2.6: </span> UKBB recommended: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models
 </caption>
 <thead>
 <tr>
@@ -4210,7 +4211,7 @@ hyper
 <div style="border: 0px;overflow-x: scroll; width:100%; border-bottom: 0;">
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:unnamed-chunk-7">Table 2.7: </span>Control GWASs: LDSC regression line intercept estimates (SE) using ldsc and sumher
+<span id="tab:ldsc-sumher-control">Table 2.7: </span>Control GWASs: LDSC regression line intercept estimates (SE) using ldsc and sumher
 </caption>
 <thead>
 <tr>
@@ -4730,7 +4731,7 @@ snoring
 <div style="border: 0px;overflow-x: scroll; width:100%; border-bottom: 0;">
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:unnamed-chunk-8">Table 2.8: </span> Control GWASs: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models
+<span id="tab:he-control">Table 2.8: </span> Control GWASs: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models
 </caption>
 <thead>
 <tr>
