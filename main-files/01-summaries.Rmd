@@ -1,7 +1,7 @@
 
 # Summaries
 
-To compare the proposed method against existing ones, we performed good and bad GWASs for 14 traits using N = 100k. While both sets of GWASs were based on quality-controlled genotype data, bad GWASs used individuals of different ethnicity and hence were confounded by population stratification, which is known to cause inflation in test statistics. As expected, for the good GWASs, no inflation was detected by the methods, although with few expectations ( Tables \@ref(tab:ldsc-sumher-good) ). In contrast, for bad GWASs significant inflation was evident based on all methods ( see Tables \@ref(tab:ldsc-sumher-bad) & \@ref(tab:he-bad) ). The detected inflation for the GWASs is not due to random errors because no inflation was observed for the control GWASs ( see Tables \@ref(tab:ldsc-sumher-control) & \@ref(tab:he-control) )
+To compare the proposed method against existing ones, we performed good and bad GWASs for 14 traits using N = 100k. While both sets of GWASs were based on quality-controlled genotype data, bad GWASs used individuals of different ethnicity and hence were confounded by population stratification, which is known to cause inflation in test statistics. As expected, for the good GWASs, no inflation was detected by the methods, though with some exceptions ( Tables \@ref(tab:ldsc-sumher-good) ). In contrast, for the bad GWASs significant inflation was evident based on all methods ( see Tables \@ref(tab:ldsc-sumher-bad) & \@ref(tab:he-bad) ). The detected inflation for the GWASs is not due to random errors because no inflation was observed for the control GWASs ( see Tables \@ref(tab:ldsc-sumher-control) & \@ref(tab:he-control) )
 
 ## Good GWAS
 
