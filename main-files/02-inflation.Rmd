@@ -5,7 +5,9 @@ Here we investigate the inflation in test statistics from the bad GWASs. We want
 
 ## constant inflation?
 
-The inflation in test statistics does not seem to be constant. We plotted the chi-square test statistic from the bad GWASs against those from the good GWASs. If the inflation is constant, we would expect all points deviate from the diagonal line to a similar extent. However, this is not evident ( See Fig \@ref(fig:good-vs-bad) for bmi and neur). Interestingly, instead of being inflated, some test statistics shrinks relative to that in the good GWASs.   
+The inflation in test statistics does not seem to be constant. We plotted the chi-square test statistic from the bad GWASs against those from the good GWASs. If the inflation is constant, we would expect all points deviate from the diagonal line to a similar extent. However, this is not evident ( See Fig \@ref(fig:good-vs-bad) for bmi and neur). Interestingly, instead of being inflated, some test statistics shrinks relative to that in the good GWASs.
+
+Does this mean that the underlying model of ldsc regression is incorrect, which assumes that the inflation is a constant? 
 
 ```{r eval=F, echo=F}
 # gwas test statistics
@@ -57,9 +59,8 @@ dev.off()
 
 ```
 
-```{r good-vs-bad, fig.cap='Test statistics from bad GWASs versus from good GWASs', fig.show='hold', out.width='100%', fig.asp=0.75, fig.align='left', echo=F}
+```{r good-vs-bad, fig.cap='Test statistics of bad and good GWASs', fig.show='hold', out.width='100%', fig.asp=0.75, fig.align='left', echo=F}
 knitr::include_graphics(c("fig-to-insert/bmi-gwas-stat-good-vs-bad.png",
                           "fig-to-insert/neur-gwas-stat-good-vs-bad.png" ))
-
 ```
 
