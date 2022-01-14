@@ -1,0 +1,65 @@
+
+# Good VS Bad GWAS
+
+Here we investigate the inflation in test statistics from the bad GWASs. We want to find out 1) if the inflation is constant; 2) if it can be predicted in some way.  
+
+## constant inflation?
+
+The inflation in test statistics does not seem to be constant. We plotted the chi-square test statistic from the bad GWASs against those from the good GWASs. If the inflation is constant, we would expect all points deviate from the diagonal line to a similar extent. However, this is not evident ( See Fig \@ref(fig:good-vs-bad) for bmi and neur). Interestingly, instead of being inflated, some test statistics shrinks relative to that in the good GWASs.   
+
+```{r eval=F, echo=F}
+# gwas test statistics
+library(vroom)
+
+trait="neur" # bmi
+good=vroom(paste0("unrelated/gwas-good/",trait,"-linear.summaries"), col_names=T)
+bad=vroom(paste0("gwas-mix/",trait,"-linear.summaries"), col_names=T)
+control=vroom(paste0("gwas-control/",trait,"-linear.summaries"), col_names=T)
+# note: stat = chi-square test statistic
+common=intersect(good$Predictor, bad$Predictor)
+common=intersect(common, control$Predictor) # 110,2693 in common
+m1=match(common,good$Predictor)
+m2=match(common,bad$Predictor)
+m3=match(common,control$Predictor)
+all=data.frame(Predictor=common, 
+               good=good$Stat[m1], 
+               bad=bad$Stat[m2], 
+               control=control$Stat[m3], stringsAsFactors = F)
+
+# plots 
+end=round(max(c(all$good, all$bad)),0)+1
+start=round(min(c(all$good, all$bad)),0)
+#good vs. bad
+png(paste0("fig/",trait,"-gwas-stat-good-vs-bad.png"),
+    width =40, height = 20, units = "cm", res=600)
+par(mfrow=c(1,2))
+plot(all$good, all$bad,
+     xlab="good-chisq", ylab="bad-chisq", 
+     xlim=c(start, end), 
+     ylim=c(start, end),
+     main=trait, las=1,
+     cex = 1, pch=21,  bg="darkgray", col="white", lwd=0.5)
+#points(good[fs],bad[fs],cex = 1, pch=21, col="white", bg="orange")
+abline(0, 1, col="darkgray", lwd=1.5, lty=1)
+#abline(h=threshold, col="red", lwd=1.5, lty=3)
+#abline(v=threshold, col="red", lwd=1.5, lty=3)
+
+# good vs. control
+plot(all$good, all$control,
+     xlab="good-chisq", ylab="control-chisq", 
+     xlim=c(start, end), 
+     ylim=c(start, end),
+     main=trait, las=1,
+     cex = 1, pch=21,  bg="darkgray", col="white", lwd=0.5)
+#points(good[fs],bad[fs],cex = 1, pch=21, col="white", bg="orange")
+abline(0, 1, col="darkgray", lwd=1.5, lty=1)
+dev.off()
+
+```
+
+```{r good-vs-bad, fig.cap='Test statistics from bad GWASs versus from good GWASs', fig.show='hold', out.width='100%', fig.asp=0.75, fig.align='left', echo=F}
+knitr::include_graphics(c("fig-to-insert/bmi-gwas-stat-good-vs-bad.png",
+                          "fig-to-insert/neur-gwas-stat-good-vs-bad.png" ))
+
+```
+

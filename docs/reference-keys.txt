@@ -6,6 +6,7 @@ tab:ldsc-sumher-ukbb
 tab:he-ukbb
 tab:ldsc-sumher-control
 tab:he-control
+fig:good-vs-bad
 general-info
 topic
 frequently-used-commands
@@ -22,6 +23,8 @@ haseman-elston-regression-2
 control-gwas
 ldsc-sumher-3
 haseman-elston-regression-3
+good-vs-bad-gwas
+constant-inflation
 good
 goodid
 extract-covariates
