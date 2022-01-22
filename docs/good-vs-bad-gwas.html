@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>3 Good VS Bad GWAS | Quality control</title>
   <meta name="description" content="3 Good VS Bad GWAS | Quality control" />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="3 Good VS Bad GWAS | Quality control" />
   <meta property="og:type" content="book" />
@@ -31,9 +31,8 @@
   
 <link rel="prev" href="summaries.html"/>
 <link rel="next" href="good.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
-<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -41,6 +40,7 @@
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
 
 
 
@@ -215,8 +215,8 @@
 <div id="constant-inflation" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> constant inflation?</h2>
 <p>The inflation in test statistics does not seem to be constant. We plotted the chi-square test statistic from the bad GWASs against those from the good GWASs. If the inflation is constant, we would expect all points deviate from the diagonal line to a similar extent. However, this is not evident ( See Fig <a href="good-vs-bad-gwas.html#fig:good-vs-bad">3.1</a> for bmi and neur). Interestingly, instead of being inflated, some test statistics shrink relative to those in the good GWASs.</p>
-<p>Does this mean that the underlying model of ldsc regression is incorrect, which assumes that the inflation is a constant?</p>
-<div class="figure" style="text-align: left"><span style="display:block;" id="fig:good-vs-bad"></span>
+<p>This observation implies that the constant inflation in GWAS statistics assumed by the underlying model of ldsc regression is incorrect.</p>
+<div class="figure" style="text-align: left"><span id="fig:good-vs-bad"></span>
 <img src="fig-to-insert/bmi-gwas-stat-good-vs-bad.png" alt="Test statistics of bad and good GWASs" width="100%" /><img src="fig-to-insert/neur-gwas-stat-good-vs-bad.png" alt="Test statistics of bad and good GWASs" width="100%" />
 <p class="caption">
 Figure 3.1: Test statistics of bad and good GWASs
@@ -235,6 +235,7 @@ Figure 3.1: Test statistics of bad and good GWASs
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -274,10 +275,6 @@ gitbook.start({
 "text": null
 },
 "download": ["bookdown-demo.pdf", "bookdown-demo.epub"],
-"search": {
-"engine": "fuse",
-"options": null
-},
 "toc": {
 "collapse": "subsection"
 }
