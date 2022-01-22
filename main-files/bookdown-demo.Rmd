@@ -1,0 +1,557 @@
+---
+title: "Quality control"
+author: " "
+date: "updated on `r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+#bibliography: [book.bib, packages.bib, paper.bib]
+#biblio-style:
+#csl: apa.csl
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+description: " "
+---
+
+# General Info
+
+Placeholder
+
+
+## Topic
+## Frequently used commands
+
+<!--chapter:end:index.Rmd-->
+
+
+# Summaries
+
+To compare the proposed method against existing ones, we performed good and bad GWASs for 14 traits using N = 100k. While both sets of GWASs were based on quality-controlled genotype data, bad GWASs used individuals of different ethnicity and hence were confounded by population stratification, which is known to cause inflation in test statistics. As expected, for the good GWASs, no inflation was detected by the methods, though with some exceptions ( Tables \@ref(tab:ldsc-sumher-good) ). In contrast, for the bad GWASs significant inflation was evident based on all methods ( see Tables \@ref(tab:ldsc-sumher-bad) & \@ref(tab:he-bad) ). The detected inflation for the GWASs is not due to random errors because no inflation was observed for the control GWASs ( see Tables \@ref(tab:ldsc-sumher-control) & \@ref(tab:he-control) )
+
+## Good GWAS
+
+Code for the good GWAS can be found in section \@ref(good). Basically, we used 100k unrelated white British with quality-controlled genotype data for the GWASs. We tested the GWAS test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression)
+
+### ldsc & sumher
+
+```{r ldsc-sumher-good,echo=F}
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+ldsc=read.table("ldsc-good", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("sumher-gcta-good", header=F, 
+                       stringsAsFactors = F)
+sumher_ldak=read.table("sumher-ldak-thin-good", header=F,
+                       stringsAsFactors = F)
+
+# get p-values for Wald tests
+# H0: intercept = 1
+alpha=0.05/14 # Bonferroni corrected alpha
+ldsc=data.frame(trait=ldsc$V1, est=ldsc$V2, se=ldsc$V3,
+                wald_p=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_gcta=data.frame(trait=sumher_gcta$V1, est=sumher_gcta$V2, se=sumher_gcta$V3,
+                wald_p=pchisq(((sumher_gcta$V2-1)/sumher_gcta$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_ldak=data.frame(trait=sumher_ldak$V1, est=sumher_ldak$V2, se=sumher_ldak$V3,
+                wald_p=pchisq(((sumher_ldak$V2-1)/sumher_ldak$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+
+# combine results
+m1=match(sumher_gcta$trait,ldsc$trait)
+m2=match(sumher_gcta$trait,sumher_ldak$trait)
+all=cbind(trait=sumher_gcta[,1], ldsc[m1,-1],sumher_gcta[,-1],
+          sumher_ldak[m2,-1])
+
+#:::
+# Print table 
+#:::
+
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,4] = cell_spec(format(all[,4], scientific=T, digits=2), 
+                    color = ifelse(all[,4] <= alpha, "red", "black"))
+all[,7] = cell_spec(format(all[,7], scientific=T, digits=2), 
+                    color = ifelse(all[,7] <= alpha, "red", "black"))
+all[,10] = cell_spec(format(all[,10], scientific=T, digits=2), 
+                    color = ifelse(all[,10] <= alpha, "red", "black"))
+# print
+all %>%
+  kbl(caption = "Good GWAS: LDSC regression line intercept estimates (SE) using ldsc and sumher",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  add_header_above(c(" ", "ldsc" = 3, "sumher-gcta" = 3, "sumher-ldak-thin" = 3)) %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are based on the wald test that compares the ldsc regression line intercept against 1. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+### Haseman Elston Regression
+
+```{r he-good, echo=F}
+
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+he_gcta=read.table("he-gcta-inflation-unrel-gwas.txt", header=T,
+                       stringsAsFactors = F)
+he_ldak=read.table("he-ldak-thin-inflation-unrel-gwas.txt", header=T,
+                       stringsAsFactors = F)
+names(he_gcta)[1]="trait"
+names(he_ldak)[1]="trait"
+
+# combine results
+all=rbind(he_gcta,he_ldak)
+
+#:::
+# Print table 
+#:::
+
+alpha=0.05/14
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,8] = cell_spec(format(all[,8], scientific=T, digits=2), 
+                    color = ifelse(all[,8] <= alpha, "red", "black"))
+
+# print
+all %>%
+  kbl(caption = "Good GWAS: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  pack_rows("under gcta", 1, 14, 
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("under ldak-thin", 15, 28,
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are for testing whether the sum of 'left' and 'right' heritability estimates are greater than the heritability estimate based on the whole genome. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+
+## Bad GWAS
+
+Code for the bad GWAS can be found in section \@ref(bad). Basically, we used 100k unrelated individuals that consist of 93,528 whites and 6,472 blacks and Asians (i.e., mixed populations). Hence, the GWASs were confounded by population stratification. We performed the confounded GWASs and tested the test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression)
+
+### ldsc & sumher
+
+```{r ldsc-sumher-bad,echo=F}
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+ldsc=read.table("ldsc-mix", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("sumher-gcta-mix", header=F, 
+                       stringsAsFactors = F)
+sumher_ldak=read.table("sumher-ldak-thin-mix", header=F,
+                       stringsAsFactors = F)
+
+# get p-values for Wald tests
+# H0: intercept = 1
+alpha=0.05/14 # Bonferroni corrected alpha
+ldsc=data.frame(trait=ldsc$V1, est=ldsc$V2, se=ldsc$V3,
+                wald_p=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_gcta=data.frame(trait=sumher_gcta$V1, est=sumher_gcta$V2, se=sumher_gcta$V3,
+                wald_p=pchisq(((sumher_gcta$V2-1)/sumher_gcta$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_ldak=data.frame(trait=sumher_ldak$V1, est=sumher_ldak$V2, se=sumher_ldak$V3,
+                wald_p=pchisq(((sumher_ldak$V2-1)/sumher_ldak$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+
+# combine results
+m1=match(sumher_gcta$trait,ldsc$trait)
+m2=match(sumher_gcta$trait,sumher_ldak$trait)
+all=cbind(trait=sumher_gcta[,1], ldsc[m1,-1],sumher_gcta[,-1],
+          sumher_ldak[m2,-1])
+row.names(all)=NULL
+
+#:::
+# Print table 
+#:::
+
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,4] = cell_spec(format(all[,4], scientific=T, digits=2), 
+                    color = ifelse(all[,4] <= alpha & !is.na(all[,4]) , "red", "black"))
+all[,7] = cell_spec(format(all[,7], scientific=T, digits=2), 
+                    color = ifelse(all[,7] <= alpha & !is.na(all[,7]), "red", "black"))
+all[,10] = cell_spec(format(all[,10], scientific=T, digits=2), 
+                    color = ifelse(all[,10] <= alpha & !is.na(all[,10]), "red", "black"))
+# print
+all %>%
+  kbl(caption = "Bad GWAS: LDSC regression line intercept estimates (SE) using ldsc and sumher",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  add_header_above(c(" ", "ldsc" = 3, "sumher-gcta" = 3, "sumher-ldak-thin" = 3)) %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are based on the wald test that compares the ldsc regression line intercept against 1. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+### Haseman Elston Regression
+
+```{r he-bad, echo=F}
+
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+he_gcta=read.table("he-gcta-inflation-mix-gwas.txt", header=T,
+                       stringsAsFactors = F)
+he_ldak=read.table("he-ldak-thin-inflation-mix-gwas.txt", header=T,
+                       stringsAsFactors = F)
+names(he_gcta)[1]="trait"
+names(he_ldak)[1]="trait"
+
+# combine results
+all=rbind(he_gcta,he_ldak)
+
+#:::
+# Print table 
+#:::
+
+alpha=0.05/14
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,8] = cell_spec(format(all[,8], scientific=T, digits=2), 
+                    color = ifelse(all[,8] <= alpha, "red", "black"))
+
+# print
+all %>%
+  kbl(caption = "Bad GWAS: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  pack_rows("under gcta", 1, 14, 
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("under ldak-thin", 15, 28,
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are for testing whether the sum of 'left' and 'right' heritability estimates are greater than the heritability estimate based on the whole genome. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+
+## UKBB recommended
+
+Code for this GWAS can be found in section \@ref(ukbb). Basically, we randomly selected 100k white British from a total of 337k individuals that are recommended by the UKBB (i.e., QCed by the UKBB). We performed the GWASs and tested the test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression).
+
+### ldsc & sumher
+
+```{r ldsc-sumher-ukbb,echo=F}
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+ldsc=read.table("ldsc-norm-100k", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("sumher-gcta-norm-100k", header=F, 
+                       stringsAsFactors = F)
+sumher_ldak=read.table("sumher-ldak-thin-norm-100k", header=F,
+                       stringsAsFactors = F)
+
+# get p-values for Wald tests
+# H0: intercept = 1
+alpha=0.05/14 # Bonferroni corrected alpha
+ldsc=data.frame(trait=ldsc$V1, est=ldsc$V2, se=ldsc$V3,
+                wald_p=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_gcta=data.frame(trait=sumher_gcta$V1, est=sumher_gcta$V2, se=sumher_gcta$V3,
+                wald_p=pchisq(((sumher_gcta$V2-1)/sumher_gcta$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_ldak=data.frame(trait=sumher_ldak$V1, est=sumher_ldak$V2, se=sumher_ldak$V3,
+                wald_p=pchisq(((sumher_ldak$V2-1)/sumher_ldak$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+
+# combine results
+m1=match(sumher_gcta$trait,ldsc$trait)
+m2=match(sumher_gcta$trait,sumher_ldak$trait)
+all=cbind(trait=sumher_gcta[,1], ldsc[m1,-1],sumher_gcta[,-1],
+          sumher_ldak[m2,-1])
+
+#:::
+# Print table 
+#:::
+
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,4] = cell_spec(format(all[,4], scientific=T, digits=2), 
+                    color = ifelse(all[,4] <= alpha, "red", "black"))
+all[,7] = cell_spec(format(all[,7], scientific=T, digits=2), 
+                    color = ifelse(all[,7] <= alpha, "red", "black"))
+all[,10] = cell_spec(format(all[,10], scientific=T, digits=2), 
+                    color = ifelse(all[,10] <= alpha, "red", "black"))
+# print
+all %>%
+  kbl(caption = "UKBB recommended: LDSC regression line intercept estimates (SE) using ldsc and sumher",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  add_header_above(c(" ", "ldsc" = 3, "sumher-gcta" = 3, "sumher-ldak-thin" = 3)) %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are based on the wald test that compares the ldsc regression line intercept against 1. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+### Haseman Elston Regression
+
+```{r he-ukbb, echo=F}
+
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+he_gcta=read.table("he-gcta-inflation-norm.txt", header=T,
+                       stringsAsFactors = F)
+he_ldak=read.table("he-ldak-thin-inflation-norm.txt", header=T,
+                       stringsAsFactors = F)
+names(he_gcta)[1]="trait"
+names(he_ldak)[1]="trait"
+
+# combine results
+all=rbind(he_gcta,he_ldak)
+
+#:::
+# Print table 
+#:::
+
+alpha=0.05/14
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,8] = cell_spec(format(all[,8], scientific=T, digits=2), 
+                    color = ifelse(all[,8] <= alpha, "red", "black"))
+
+# print
+all %>%
+  kbl(caption = " UKBB recommended: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  pack_rows("under gcta", 1, 14, 
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("under ldak-thin", 15, 28,
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are for testing whether the sum of 'left' and 'right' heritability estimates are greater than the heritability estimate based on the whole genome. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+## Control GWAS
+
+Code for this GWAS can be found in section \@ref(control). In short, we performed GWASs that serve as the control for the good versus bad GWASs comparison. This to ascertain that the observed inflation of bad GWAS test statistics is due to population stratification not random errors. We used a total of 100k that included 93,528 unrelated white British (also included in the bad and good GWAS) and 6,472 unrelated white British that were neither included in the good GWASs nor bad GWASs.
+
+
+### ldsc & sumher
+
+```{r ldsc-sumher-control, echo=F}
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+ldsc=read.table("ldsc-control", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("sumher-gcta-control", header=F, 
+                       stringsAsFactors = F)
+sumher_ldak=read.table("sumher-ldak-thin-control", header=F,
+                       stringsAsFactors = F)
+
+# get p-values for Wald tests
+# H0: intercept = 1
+alpha=0.05/14 # Bonferroni corrected alpha
+ldsc=data.frame(trait=ldsc$V1, est=ldsc$V2, se=ldsc$V3,
+                wald_p=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_gcta=data.frame(trait=sumher_gcta$V1, est=sumher_gcta$V2, se=sumher_gcta$V3,
+                wald_p=pchisq(((sumher_gcta$V2-1)/sumher_gcta$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_ldak=data.frame(trait=sumher_ldak$V1, est=sumher_ldak$V2, se=sumher_ldak$V3,
+                wald_p=pchisq(((sumher_ldak$V2-1)/sumher_ldak$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+
+# combine results
+m1=match(sumher_gcta$trait,ldsc$trait)
+m2=match(sumher_gcta$trait,sumher_ldak$trait)
+all=cbind(trait=sumher_gcta[,1], ldsc[m1,-1],sumher_gcta[,-1],
+          sumher_ldak[m2,-1])
+
+#:::
+# Print table 
+#:::
+
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,4] = cell_spec(format(all[,4], scientific=T, digits=2), 
+                    color = ifelse(all[,4] <= alpha, "red", "black"))
+all[,7] = cell_spec(format(all[,7], scientific=T, digits=2), 
+                    color = ifelse(all[,7] <= alpha, "red", "black"))
+all[,10] = cell_spec(format(all[,10], scientific=T, digits=2), 
+                    color = ifelse(all[,10] <= alpha, "red", "black"))
+# print
+all %>%
+  kbl(caption = "Control GWASs: LDSC regression line intercept estimates (SE) using ldsc and sumher",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  add_header_above(c(" ", "ldsc" = 3, "sumher-gcta" = 3, "sumher-ldak-thin" = 3)) %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are based on the wald test that compares the ldsc regression line intercept against 1. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+### Haseman Elston Regression
+
+```{r he-control, echo=F}
+
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+he_gcta=read.table("he-gcta-inflation-norm.txt", header=T,
+                       stringsAsFactors = F)
+he_ldak=read.table("he-ldak-thin-inflation-norm.txt", header=T,
+                       stringsAsFactors = F)
+names(he_gcta)[1]="trait"
+names(he_ldak)[1]="trait"
+
+# combine results
+all=rbind(he_gcta,he_ldak)
+
+#:::
+# Print table 
+#:::
+
+alpha=0.05/14
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,8] = cell_spec(format(all[,8], scientific=T, digits=2), 
+                    color = ifelse(all[,8] <= alpha, "red", "black"))
+
+# print
+all %>%
+  kbl(caption = " Control GWASs: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  pack_rows("under gcta", 1, 14, 
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("under ldak-thin", 15, 28,
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are for testing whether the sum of 'left' and 'right' heritability estimates are greater than the heritability estimate based on the whole genome. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+
+
+
+<!--chapter:end:01-summaries.Rmd-->
+
+
+# Good VS Bad GWAS
+
+Placeholder
+
+
+## constant inflation?
+
+<!--chapter:end:02-inflation.Rmd-->
+
+
+# Good GWAS {#good}
+
+Placeholder
+
+
+## QC of hp3 SNPs {#goodid}
+## extract covariates
+## GWAS
+## ldsc intercept
+### under gcta
+### under ldak-thin
+### summary
+## REML
+### making grms
+### fast-reml
+### inflation test
+## HE
+### estimation
+### summary
+
+<!--chapter:end:03.1-good-gwas.Rmd-->
+
+
+# Bad GWAS {#bad}
+
+Placeholder
+
+
+## ID list {#badid}
+### initial selection
+### relatedness filtering
+### final list
+## GWAS
+## ldsc intercept
+### under gcta
+### under ldak-thin
+### summary
+## REML
+### making grms
+### fast-reml
+### inflation test
+## HE
+### estimation 
+### summary
+
+<!--chapter:end:03.2-bad-gwas.Rmd-->
+
+
+# UKBB recommended {#ukbb}
+
+Placeholder
+
+
+## total N = 337k
+## QC of hp3 SNPs
+## GWAS
+## ldsc intercept
+### under gcta
+### under ldak-thin
+### summary
+## HE
+### making grms
+### estimation
+### summary
+
+<!--chapter:end:03.3-ukbb-recommended.Rmd-->
+
+
+# control GWAS {#control}
+
+Placeholder
+
+
+## ID list
+## QC of hp3 SNPs
+## GWAS
+## ldsc intercept
+### under gcta
+### under ldak-thin
+### summary
+## HE
+### making grms
+### estimation
+### summary
+
+<!--chapter:end:03.4-control-gwas.Rmd-->
+
