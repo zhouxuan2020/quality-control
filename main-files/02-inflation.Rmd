@@ -64,3 +64,128 @@ knitr::include_graphics(c("fig-to-insert/bmi-gwas-stat-good-vs-bad.png",
                           "fig-to-insert/neur-gwas-stat-good-vs-bad.png" ))
 ```
 
+
+Here we want to plot chisquare test statistics against LD score for bad, good and control GWASs.
+
+```{bash eval=F}
+# 1. get overlapping SNPs across GWASs
+cp gen/snps-control-gwas.use temp #1,103,182
+awk '(NR==FNR){a[$1];next}($1 in a){print $1}' temp gen/snps-unrel-inds.use > overlap-control-good-bad.snps
+mv overlap-control-good-bad.snps temp
+awk '(NR==FNR){a[$1];next}($1 in a){print $2}' temp doug/ukbb.ldsc > overlap-control-good-bad.snps
+wc -l overlap-control-good-bad.snps # 1,102,693 SNPs in common
+
+# 2. get ld scores for overlapping snps
+dir=ldsc/eur_w_ld_chr
+for chrom in {1..22}; do
+zcat $dir/$chrom.l2.ldscore.gz | awk 'NR>1 {print $2, $6}' > ldscore
+awk '(NR==FNR){a[$1];next}($1 in a){print $0}' overlap-control-good-bad.snps ldscore > temp
+if [ $chrom -eq 1 ]
+then 
+ mv temp overlap-control-good-bad.ldscore
+else
+ cat overlap-control-good-bad.ldscore temp > temp2
+ mv temp2 overlap-control-good-bad.ldscore
+fi
+echo $chrom
+done
+
+# 3. get test statistics of GWASs 
+
+dir1="ldsc/out-control/"
+dir2="ldsc/out-good-gwas/"
+dir3="ldsc/out-mix-pop/"
+
+require("vroom")
+snps=vroom("overlap-control-good-bad.ldscore", col_names=F)
+traits=c("bmi", "neur")
+
+for(i in 1:length(traits)){
+  
+  trait=traits[i]
+  dat1=vroom(paste0(dir1,trait,".sumstats.gz"), col_names=T)
+  dat2=vroom(paste0(dir2,trait,".sumstats.gz"), col_names=T)
+  dat3=vroom(paste0(dir3,trait,".sumstats.gz"), col_names=T)
+  m1=match(snps$X1, dat1$SNP)
+  m2=match(snps$X1, dat2$SNP)
+  m3=match(snps$X1, dat3$SNP)
+  out=data.frame(SNP=snps$X1,
+                 ldscore=snps$X2,
+                  control_chisq=dat1$Z[m1]^2,
+                  good_chisq=dat2$Z[m1]^2,
+                  bad_chisq=dat3$Z[m1]^2, stringsAsFactors = F)
+  out=out[complete.cases(out1),]
+  # bin LD scores according to quantiles
+  cutoff=quantile(out$ldscore, probs = seq(0, 1, 0.05))
+  out$ldsc_bin=cut(out$ldscore, breaks=cutoff, labels=1:(length(cutoff)-1))
+  write.table(out,paste0("summary/",trait,"-gwas-test-stats-compare.txt"), 
+              col.names=T, row.names=F, quote=F)
+}
+
+```
+
+```{r eval=F, echo=F}
+
+require("vroom")
+
+traits=c("bmi", "neur")
+for(i in 1:length(traits)){
+trait=traits[i]
+dat=vroom(paste0("summary/",trait,"-gwas-test-stats-compare.txt"), col_names=T)
+out=data.frame(ave_ldscore=tapply(dat$ldscore,INDEX=dat$ldsc_bin, mean),
+               ave_control_chisq=tapply(dat$control_chisq,INDEX=dat$ldsc_bin, mean),
+               ave_good_chisq=tapply(dat$good_chisq,INDEX=dat$ldsc_bin, mean),
+               ave_bad_chisq=tapply(dat$bad_chisq,INDEX=dat$ldsc_bin, mean))
+
+png(paste0("fig/",trait,"-gwas-stat-by-ldscore.png"),
+    width =20, height = 20, units = "cm", res=600)
+
+end=round(max(c(out[,2], out[,3], out[,4])),0)+1
+start=0
+plot(out$ave_ldscore, out$ave_good_chisq,
+     xlab="ldscore bin", ylab="mean chisquare", 
+     ylim=c(start, end),
+     main=trait, las=1,
+     cex = 1, pch=21,  bg="green", col="white", lwd=0.5)
+points(out$ave_ldscore, out$ave_control_chisq,
+       cex = 1, pch=21, col="white", bg="orange")
+points(out$ave_ldscore, out$ave_bad_chisq,
+       cex = 1, pch=21, col="white", bg="red")
+
+dev.off()
+}
+
+```
+
+```{r eval=F, echo=F}
+
+require("vroom")
+
+traits=c("bmi", "neur")
+
+for(i in 1:length(traits)){
+  
+trait=traits[i]
+dat=vroom(paste0("summary/",trait,"-gwas-test-stats-compare.txt"), col_names=T)
+
+png(paste0("fig/",trait,"-gwas-stat-by-ldscore.png"),
+    width =20, height = 20, units = "cm", res=600)
+
+end=round(max(c(dat$control_chisq, dat$good_chisq, dat$bad_chisq)),0)+1
+start=0
+plot(dat$ldscore, dat$bad_chisq,
+     xlab="ldscore", ylab="chisq", 
+     ylim=c(start, end),
+     main=trait, las=1,
+     cex = 1, pch=21,  bg="red", col="white", lwd=0.5)
+points(dat$ldscore, dat$control_chisq,
+       cex = 1, pch=21, col="white", bg="orange")
+points(dat$ldscore, dat$good_chisq,
+       cex = 1, pch=21, col="green", bg="red")
+
+dev.off()
+}
+
+```
+
+

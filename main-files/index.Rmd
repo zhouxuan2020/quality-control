@@ -27,7 +27,7 @@ We propose a new method to detect the inflation of GWAS test statistics caused b
 
 `sftp zhoux@login.genome.au.dk`
 
-`lcd /Users/xuanzhou/Dropbox/github/quality-control/main-files`
+`lcd /home/zhoux/Dropbox/github/quality-control/main-files`
 
 `cd /home/zhoux/dsmwpred/xuan/quality-control/qc-10oct`
 
