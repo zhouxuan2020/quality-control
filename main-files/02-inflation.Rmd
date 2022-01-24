@@ -5,7 +5,7 @@ Here we investigate the inflation in test statistics from the bad GWASs. We want
 
 ## test statistics ~ LD score
 
-The inflation in GWAS test statistics due to confouding is not always constant, as assumed by LDSC. Below we plotted the chi-square test statistics from the bad (colored in red), good (orange), and control (gray) GWASs as a function of LD score ( Fig \@ref(fig:good-vs-bad-by-ldscorebin) ). The linear model assumed by LDSC is only appropriate for four traits, namely chron, pulse, quals, and snoring. For these traits, LDSC accounts for the inflation due to confouding (i.e., intercept) and the inflation due to polygenity (i.e., slope). However, LDSD is inadequate for other traits, where the inflation is non-linear. More specifically, for these traits, the test statistics for SNPs with a low LD score are much more inflated than would be expected by LDSC. Thus, it seems that ldsc can detect inflation in test statistics due to confouding but cannot be used to correct the inflation for some traits.
+The inflation in GWAS test statistics due to confouding is not always constant, as assumed by LDSC. Below we plotted the chi-square test statistics from the bad (colored in red), good (orange), and control (gray) GWASs as a function of LD score ( Fig \@ref(fig:good-vs-bad-by-ldscorebin) ). The linear model assumed by LDSC is only appropriate for four traits, namely chron, pulse, quals, and snoring. For these traits, LDSC accounts for the inflation due to confouding (i.e., intercept) and the inflation due to polygenity (i.e., slope). However, LDSC is inadequate for other traits, where the inflation is non-linear. More specifically, for these traits, the test statistics for SNPs with a low LD score are much more inflated than would be expected by LDSC. Given that the ldsc regression intercept significantly deviate from one in bad GWASs, it seems that ldsc can detect inflation in test statistics due to confouding but cannot be used to correct the inflation for some traits.
 
 ```{r eval=F, echo=F}
 # gwas test statistics
@@ -192,8 +192,6 @@ dev.off()
 
 ```{r good-vs-bad-by-ldscorebin, fig.cap='Test statistics by LD score for good, bad and control GWASs.', fig.show='hold', out.width='100%', fig.asp=0.75, fig.align='left', echo=F}
 knitr::include_graphics(c("fig-to-insert/gwas-stat-by-ldscbin.png"))
-                        
 ```
-
 
 
