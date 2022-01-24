@@ -5,7 +5,7 @@ Here we investigate the inflation in test statistics from the bad GWASs. We want
 
 ## test statistics ~ LD score
 
-The inflation in GWAS test statistics due to confouding is not always constant, as assumed by LDSC. Below we plotted the chi-square test statistics from the bad (colored in red), good (orange), and control (gray) GWASs as a function of LD score ( Fig \@ref(fig:good-vs-bad-by-ldscorebin) ). The linear model assumed by LDSC is only appropriate for four traits, namely chron, quals, and snoring. For these traits, LDSC accounts for the inflation due to confouding (i.e., intercept) and the inflation due to polygenity (i.e., slope). However, LDSD is inadequate for other traits, where the inflation is non-linear. More specifically, for these traits, test statistics for SNPs with a low LD score are much more inflated than would be expected by LDSC.
+The inflation in GWAS test statistics due to confouding is not always constant, as assumed by LDSC. Below we plotted the chi-square test statistics from the bad (colored in red), good (orange), and control (gray) GWASs as a function of LD score ( Fig \@ref(fig:good-vs-bad-by-ldscorebin) ). The linear model assumed by LDSC is only appropriate for four traits, namely chron, pulse, quals, and snoring. For these traits, LDSC accounts for the inflation due to confouding (i.e., intercept) and the inflation due to polygenity (i.e., slope). However, LDSD is inadequate for other traits, where the inflation is non-linear. More specifically, for these traits, the test statistics for SNPs with a low LD score are much more inflated than would be expected by LDSC.
 
 ```{r eval=F, echo=F}
 # gwas test statistics
