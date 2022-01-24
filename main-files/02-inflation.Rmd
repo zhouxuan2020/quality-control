@@ -5,9 +5,7 @@ Here we investigate the inflation in test statistics from the bad GWASs. We want
 
 ## constant inflation?
 
-The inflation in test statistics does not seem to be constant. We plotted the chi-square test statistic from the bad GWASs against those from the good GWASs. If the inflation is constant, we would expect all points deviate from the diagonal line to a similar extent. However, this is not evident ( See Fig \@ref(fig:good-vs-bad) for bmi and neur). Interestingly, instead of being inflated, some test statistics shrink relative to those in the good GWASs.
-
-This observation implies that the constant inflation in GWAS statistics assumed by the underlying model of ldsc regression is incorrect.
+The inflation in GWAS test statistics are not always constant, as assumed by LDSC. Below We plotted the chi-square test statistics from the bad (colored in red), good (orange), and control (gray) GWASs as a function of LD score ( Fig \@ref(fig:good-vs-bad-by-ldscorebin) ). The linear model assumed by LDSC is only appropriate for five traits, namely chron, quals, snoring and quals. For these traits, LDSC could account for the inflation due to confouding (i.e., intercept) and the inflation due to polygenity (i.e., slope). However, LDSD is not adequate for other traits, where non-linear pattern of test statistics as a function of LD score is observed. More specifically, for these traits, test statistics for SNPs with a low LD score are much more inflated than would be expected by LDSC.
 
 ```{r eval=F, echo=F}
 # gwas test statistics
@@ -59,15 +57,16 @@ dev.off()
 
 ```
 
-```{r good-vs-bad, fig.cap='Test statistics of bad and good GWASs', fig.show='hold', out.width='100%', fig.asp=0.75, fig.align='left', echo=F}
+```{r good-vs-bad, fig.cap='Test statistics of bad and good GWASs', fig.show='hold', out.width='100%', fig.asp=0.75, fig.align='left', echo=F, eval=F}
 knitr::include_graphics(c("fig-to-insert/bmi-gwas-stat-good-vs-bad.png",
                           "fig-to-insert/neur-gwas-stat-good-vs-bad.png" ))
 ```
 
+```{bash eval=F, echo=F}
+#::::
+# organize data
+#::::
 
-Here we want to plot chisquare test statistics against LD score for bad, good and control GWASs.
-
-```{bash eval=F}
 # 1. get overlapping SNPs across GWASs
 cp gen/snps-control-gwas.use temp #1,103,182
 awk '(NR==FNR){a[$1];next}($1 in a){print $1}' temp gen/snps-unrel-inds.use > overlap-control-good-bad.snps
@@ -91,15 +90,16 @@ echo $chrom
 done
 
 # 3. get test statistics of GWASs 
-
 dir1="ldsc/out-control/"
 dir2="ldsc/out-good-gwas/"
 dir3="ldsc/out-mix-pop/"
 
 require("vroom")
 snps=vroom("overlap-control-good-bad.ldscore", col_names=F)
-traits=c("bmi", "neur")
-
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals",
+        "reaction","sbp","snoring","hyper", "quals")
+# c("fcv", "height","imp")
 for(i in 1:length(traits)){
   
   trait=traits[i]
@@ -112,23 +112,29 @@ for(i in 1:length(traits)){
   out=data.frame(SNP=snps$X1,
                  ldscore=snps$X2,
                   control_chisq=dat1$Z[m1]^2,
-                  good_chisq=dat2$Z[m1]^2,
-                  bad_chisq=dat3$Z[m1]^2, stringsAsFactors = F)
-  out=out[complete.cases(out1),]
+                  good_chisq=dat2$Z[m2]^2,
+                  bad_chisq=dat3$Z[m3]^2, stringsAsFactors = F)
+  out=out[complete.cases(out),]
   # bin LD scores according to quantiles
-  cutoff=quantile(out$ldscore, probs = seq(0, 1, 0.05))
+  cutoff=quantile(out$ldscore, probs = seq(0, 1, 0.005))
   out$ldsc_bin=cut(out$ldscore, breaks=cutoff, labels=1:(length(cutoff)-1))
   write.table(out,paste0("summary/",trait,"-gwas-test-stats-compare.txt"), 
               col.names=T, row.names=F, quote=F)
 }
 
-```
-
-```{r eval=F, echo=F}
+#::::
+# plot by ldscore bin
+#::::
 
 require("vroom")
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals",
+        "reaction","sbp","snoring","hyper", "quals")
+# c("fcv", "height","imp")
 
-traits=c("bmi", "neur")
+png(paste0("fig/gwas-stat-by-ldscbin.png"),
+    width =40, height = 30, units = "cm", res=1000)
+par(mfrow=c(3,4))
 for(i in 1:length(traits)){
 trait=traits[i]
 dat=vroom(paste0("summary/",trait,"-gwas-test-stats-compare.txt"), col_names=T)
@@ -137,28 +143,24 @@ out=data.frame(ave_ldscore=tapply(dat$ldscore,INDEX=dat$ldsc_bin, mean),
                ave_good_chisq=tapply(dat$good_chisq,INDEX=dat$ldsc_bin, mean),
                ave_bad_chisq=tapply(dat$bad_chisq,INDEX=dat$ldsc_bin, mean))
 
-png(paste0("fig/",trait,"-gwas-stat-by-ldscore.png"),
-    width =20, height = 20, units = "cm", res=600)
-
 end=round(max(c(out[,2], out[,3], out[,4])),0)+1
 start=0
-plot(out$ave_ldscore, out$ave_good_chisq,
+plot(out$ave_ldscore, out$ave_control_chisq,
      xlab="ldscore bin", ylab="mean chisquare", 
      ylim=c(start, end),
      main=trait, las=1,
-     cex = 1, pch=21,  bg="green", col="white", lwd=0.5)
-points(out$ave_ldscore, out$ave_control_chisq,
-       cex = 1, pch=21, col="white", bg="orange")
+     cex = 1.5, pch=21,  bg="gray", col="white", lwd=0.5)
+points(out$ave_ldscore, out$ave_good_chisq,
+       cex = 1.5, pch=21, col="white", bg="orange")
 points(out$ave_ldscore, out$ave_bad_chisq,
-       cex = 1, pch=21, col="white", bg="red")
+       cex = 1.5, pch=21, col="white", bg="red")
 
-dev.off()
 }
+dev.off()
 
-```
-
-```{r eval=F, echo=F}
-
+#:::
+# plot by raw ldscores
+#:::
 require("vroom")
 
 traits=c("bmi", "neur")
@@ -187,5 +189,11 @@ dev.off()
 }
 
 ```
+
+```{r good-vs-bad-by-ldscorebin, fig.cap='GWAS test statistics by LD score.', fig.show='hold', out.width='100%', fig.asp=0.75, fig.align='left', echo=F}
+knitr::include_graphics(c("fig-to-insert/gwas-stat-by-ldscbin.png"))
+                        
+```
+
 
 

@@ -1,0 +1,5059 @@
+---
+title: "Quality control"
+author: " "
+date: "updated on `r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [book.bib, packages.bib, paper.bib]
+biblio-style:
+csl: apa.csl
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+description: " "
+---
+
+# General Info
+
+## Topic
+
+We propose a new method to detect the inflation of GWAS test statistics caused by population stratification (& relatedness). Here we document all analyses and results.
+
+[insert details about the method here]
+
+## Frequently used commands
+
+`ssh -l zhoux login.genome.au.dk`
+
+`sftp zhoux@login.genome.au.dk`
+
+`lcd /home/zhoux/Dropbox/github/quality-control/main-files`
+
+`cd /home/zhoux/dsmwpred/xuan/quality-control/qc-10oct`
+
+`srun --mem=15g -c 2 -t 5:0:0 --constraint "s04|s05" -A snpher --pty /bin/bash`
+
+
+
+
+<!--chapter:end:index.Rmd-->
+
+
+# Summaries
+
+To compare the proposed method against existing ones, we performed good and bad GWASs for 14 traits using N = 100k. While both sets of GWASs were based on quality-controlled genotype data, bad GWASs used individuals of different ethnicity and hence were confounded by population stratification, which is known to cause inflation in test statistics. As expected, for the good GWASs, no inflation was detected by the methods, though with some exceptions ( Tables \@ref(tab:ldsc-sumher-good) ). In contrast, for the bad GWASs significant inflation was evident based on all methods ( see Tables \@ref(tab:ldsc-sumher-bad) & \@ref(tab:he-bad) ). The detected inflation for the GWASs is not due to random errors because no inflation was observed for the control GWASs ( see Tables \@ref(tab:ldsc-sumher-control) & \@ref(tab:he-control) )
+
+## Good GWAS
+
+Code for the good GWAS can be found in section \@ref(good). Basically, we used 100k unrelated white British with quality-controlled genotype data for the GWASs. We tested the GWAS test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression)
+
+### ldsc & sumher
+
+```{r ldsc-sumher-good,echo=F}
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+ldsc=read.table("ldsc-good", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("sumher-gcta-good", header=F, 
+                       stringsAsFactors = F)
+sumher_ldak=read.table("sumher-ldak-thin-good", header=F,
+                       stringsAsFactors = F)
+
+# get p-values for Wald tests
+# H0: intercept = 1
+alpha=0.05/14 # Bonferroni corrected alpha
+ldsc=data.frame(trait=ldsc$V1, est=ldsc$V2, se=ldsc$V3,
+                wald_p=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_gcta=data.frame(trait=sumher_gcta$V1, est=sumher_gcta$V2, se=sumher_gcta$V3,
+                wald_p=pchisq(((sumher_gcta$V2-1)/sumher_gcta$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_ldak=data.frame(trait=sumher_ldak$V1, est=sumher_ldak$V2, se=sumher_ldak$V3,
+                wald_p=pchisq(((sumher_ldak$V2-1)/sumher_ldak$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+
+# combine results
+m1=match(sumher_gcta$trait,ldsc$trait)
+m2=match(sumher_gcta$trait,sumher_ldak$trait)
+all=cbind(trait=sumher_gcta[,1], ldsc[m1,-1],sumher_gcta[,-1],
+          sumher_ldak[m2,-1])
+
+#:::
+# Print table 
+#:::
+
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,4] = cell_spec(format(all[,4], scientific=T, digits=2), 
+                    color = ifelse(all[,4] <= alpha, "red", "black"))
+all[,7] = cell_spec(format(all[,7], scientific=T, digits=2), 
+                    color = ifelse(all[,7] <= alpha, "red", "black"))
+all[,10] = cell_spec(format(all[,10], scientific=T, digits=2), 
+                    color = ifelse(all[,10] <= alpha, "red", "black"))
+# print
+all %>%
+  kbl(caption = "Good GWAS: LDSC regression line intercept estimates (SE) using ldsc and sumher",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  add_header_above(c(" ", "ldsc" = 3, "sumher-gcta" = 3, "sumher-ldak-thin" = 3)) %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are based on the wald test that compares the ldsc regression line intercept against 1. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+### Haseman Elston Regression
+
+```{r he-good, echo=F}
+
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+he_gcta=read.table("he-gcta-inflation-unrel-gwas.txt", header=T,
+                       stringsAsFactors = F)
+he_ldak=read.table("he-ldak-thin-inflation-unrel-gwas.txt", header=T,
+                       stringsAsFactors = F)
+names(he_gcta)[1]="trait"
+names(he_ldak)[1]="trait"
+
+# combine results
+all=rbind(he_gcta,he_ldak)
+
+#:::
+# Print table 
+#:::
+
+alpha=0.05/14
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,8] = cell_spec(format(all[,8], scientific=T, digits=2), 
+                    color = ifelse(all[,8] <= alpha, "red", "black"))
+
+# print
+all %>%
+  kbl(caption = "Good GWAS: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  pack_rows("under gcta", 1, 14, 
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("under ldak-thin", 15, 28,
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are for testing whether the sum of 'left' and 'right' heritability estimates are greater than the heritability estimate based on the whole genome. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+
+## Bad GWAS
+
+Code for the bad GWAS can be found in section \@ref(bad). Basically, we used 100k unrelated individuals that consist of 93,528 whites and 6,472 blacks and Asians (i.e., mixed populations). Hence, the GWASs were confounded by population stratification. We performed the confounded GWASs and tested the test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression)
+
+### ldsc & sumher
+
+```{r ldsc-sumher-bad,echo=F}
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+ldsc=read.table("ldsc-mix", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("sumher-gcta-mix", header=F, 
+                       stringsAsFactors = F)
+sumher_ldak=read.table("sumher-ldak-thin-mix", header=F,
+                       stringsAsFactors = F)
+
+# get p-values for Wald tests
+# H0: intercept = 1
+alpha=0.05/14 # Bonferroni corrected alpha
+ldsc=data.frame(trait=ldsc$V1, est=ldsc$V2, se=ldsc$V3,
+                wald_p=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_gcta=data.frame(trait=sumher_gcta$V1, est=sumher_gcta$V2, se=sumher_gcta$V3,
+                wald_p=pchisq(((sumher_gcta$V2-1)/sumher_gcta$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_ldak=data.frame(trait=sumher_ldak$V1, est=sumher_ldak$V2, se=sumher_ldak$V3,
+                wald_p=pchisq(((sumher_ldak$V2-1)/sumher_ldak$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+
+# combine results
+m1=match(sumher_gcta$trait,ldsc$trait)
+m2=match(sumher_gcta$trait,sumher_ldak$trait)
+all=cbind(trait=sumher_gcta[,1], ldsc[m1,-1],sumher_gcta[,-1],
+          sumher_ldak[m2,-1])
+row.names(all)=NULL
+
+#:::
+# Print table 
+#:::
+
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,4] = cell_spec(format(all[,4], scientific=T, digits=2), 
+                    color = ifelse(all[,4] <= alpha & !is.na(all[,4]) , "red", "black"))
+all[,7] = cell_spec(format(all[,7], scientific=T, digits=2), 
+                    color = ifelse(all[,7] <= alpha & !is.na(all[,7]), "red", "black"))
+all[,10] = cell_spec(format(all[,10], scientific=T, digits=2), 
+                    color = ifelse(all[,10] <= alpha & !is.na(all[,10]), "red", "black"))
+# print
+all %>%
+  kbl(caption = "Bad GWAS: LDSC regression line intercept estimates (SE) using ldsc and sumher",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  add_header_above(c(" ", "ldsc" = 3, "sumher-gcta" = 3, "sumher-ldak-thin" = 3)) %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are based on the wald test that compares the ldsc regression line intercept against 1. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+### Haseman Elston Regression
+
+```{r he-bad, echo=F}
+
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+he_gcta=read.table("he-gcta-inflation-mix-gwas.txt", header=T,
+                       stringsAsFactors = F)
+he_ldak=read.table("he-ldak-thin-inflation-mix-gwas.txt", header=T,
+                       stringsAsFactors = F)
+names(he_gcta)[1]="trait"
+names(he_ldak)[1]="trait"
+
+# combine results
+all=rbind(he_gcta,he_ldak)
+
+#:::
+# Print table 
+#:::
+
+alpha=0.05/14
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,8] = cell_spec(format(all[,8], scientific=T, digits=2), 
+                    color = ifelse(all[,8] <= alpha, "red", "black"))
+
+# print
+all %>%
+  kbl(caption = "Bad GWAS: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  pack_rows("under gcta", 1, 14, 
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("under ldak-thin", 15, 28,
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are for testing whether the sum of 'left' and 'right' heritability estimates are greater than the heritability estimate based on the whole genome. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+
+## UKBB recommended
+
+Code for this GWAS can be found in section \@ref(ukbb). Basically, we randomly selected 100k white British from a total of 337k individuals that are recommended by the UKBB (i.e., QCed by the UKBB). We performed the GWASs and tested the test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression).
+
+### ldsc & sumher
+
+```{r ldsc-sumher-ukbb,echo=F}
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+ldsc=read.table("ldsc-norm-100k", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("sumher-gcta-norm-100k", header=F, 
+                       stringsAsFactors = F)
+sumher_ldak=read.table("sumher-ldak-thin-norm-100k", header=F,
+                       stringsAsFactors = F)
+
+# get p-values for Wald tests
+# H0: intercept = 1
+alpha=0.05/14 # Bonferroni corrected alpha
+ldsc=data.frame(trait=ldsc$V1, est=ldsc$V2, se=ldsc$V3,
+                wald_p=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_gcta=data.frame(trait=sumher_gcta$V1, est=sumher_gcta$V2, se=sumher_gcta$V3,
+                wald_p=pchisq(((sumher_gcta$V2-1)/sumher_gcta$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_ldak=data.frame(trait=sumher_ldak$V1, est=sumher_ldak$V2, se=sumher_ldak$V3,
+                wald_p=pchisq(((sumher_ldak$V2-1)/sumher_ldak$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+
+# combine results
+m1=match(sumher_gcta$trait,ldsc$trait)
+m2=match(sumher_gcta$trait,sumher_ldak$trait)
+all=cbind(trait=sumher_gcta[,1], ldsc[m1,-1],sumher_gcta[,-1],
+          sumher_ldak[m2,-1])
+
+#:::
+# Print table 
+#:::
+
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,4] = cell_spec(format(all[,4], scientific=T, digits=2), 
+                    color = ifelse(all[,4] <= alpha, "red", "black"))
+all[,7] = cell_spec(format(all[,7], scientific=T, digits=2), 
+                    color = ifelse(all[,7] <= alpha, "red", "black"))
+all[,10] = cell_spec(format(all[,10], scientific=T, digits=2), 
+                    color = ifelse(all[,10] <= alpha, "red", "black"))
+# print
+all %>%
+  kbl(caption = "UKBB recommended: LDSC regression line intercept estimates (SE) using ldsc and sumher",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  add_header_above(c(" ", "ldsc" = 3, "sumher-gcta" = 3, "sumher-ldak-thin" = 3)) %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are based on the wald test that compares the ldsc regression line intercept against 1. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+### Haseman Elston Regression
+
+```{r he-ukbb, echo=F}
+
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+he_gcta=read.table("he-gcta-inflation-norm.txt", header=T,
+                       stringsAsFactors = F)
+he_ldak=read.table("he-ldak-thin-inflation-norm.txt", header=T,
+                       stringsAsFactors = F)
+names(he_gcta)[1]="trait"
+names(he_ldak)[1]="trait"
+
+# combine results
+all=rbind(he_gcta,he_ldak)
+
+#:::
+# Print table 
+#:::
+
+alpha=0.05/14
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,8] = cell_spec(format(all[,8], scientific=T, digits=2), 
+                    color = ifelse(all[,8] <= alpha, "red", "black"))
+
+# print
+all %>%
+  kbl(caption = " UKBB recommended: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  pack_rows("under gcta", 1, 14, 
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("under ldak-thin", 15, 28,
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are for testing whether the sum of 'left' and 'right' heritability estimates are greater than the heritability estimate based on the whole genome. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+## Control GWAS
+
+Code for this GWAS can be found in section \@ref(control). In short, we performed GWASs that serve as the control for the good versus bad GWASs comparison. This to ascertain that the observed inflation of bad GWAS test statistics is due to population stratification not random errors. We used a total of 100k that included 93,528 unrelated white British (also included in the bad and good GWAS) and 6,472 unrelated white British that were neither included in the good GWASs nor bad GWASs.
+
+
+### ldsc & sumher
+
+```{r ldsc-sumher-control, echo=F}
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+ldsc=read.table("ldsc-control", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("sumher-gcta-control", header=F, 
+                       stringsAsFactors = F)
+sumher_ldak=read.table("sumher-ldak-thin-control", header=F,
+                       stringsAsFactors = F)
+
+# get p-values for Wald tests
+# H0: intercept = 1
+alpha=0.05/14 # Bonferroni corrected alpha
+ldsc=data.frame(trait=ldsc$V1, est=ldsc$V2, se=ldsc$V3,
+                wald_p=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_gcta=data.frame(trait=sumher_gcta$V1, est=sumher_gcta$V2, se=sumher_gcta$V3,
+                wald_p=pchisq(((sumher_gcta$V2-1)/sumher_gcta$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+sumher_ldak=data.frame(trait=sumher_ldak$V1, est=sumher_ldak$V2, se=sumher_ldak$V3,
+                wald_p=pchisq(((sumher_ldak$V2-1)/sumher_ldak$V3)^2, df=1, lower.tail=F),
+                stringsAsFactors = F)
+
+# combine results
+m1=match(sumher_gcta$trait,ldsc$trait)
+m2=match(sumher_gcta$trait,sumher_ldak$trait)
+all=cbind(trait=sumher_gcta[,1], ldsc[m1,-1],sumher_gcta[,-1],
+          sumher_ldak[m2,-1])
+
+#:::
+# Print table 
+#:::
+
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,4] = cell_spec(format(all[,4], scientific=T, digits=2), 
+                    color = ifelse(all[,4] <= alpha, "red", "black"))
+all[,7] = cell_spec(format(all[,7], scientific=T, digits=2), 
+                    color = ifelse(all[,7] <= alpha, "red", "black"))
+all[,10] = cell_spec(format(all[,10], scientific=T, digits=2), 
+                    color = ifelse(all[,10] <= alpha, "red", "black"))
+# print
+all %>%
+  kbl(caption = "Control GWASs: LDSC regression line intercept estimates (SE) using ldsc and sumher",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  add_header_above(c(" ", "ldsc" = 3, "sumher-gcta" = 3, "sumher-ldak-thin" = 3)) %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are based on the wald test that compares the ldsc regression line intercept against 1. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+### Haseman Elston Regression
+
+```{r he-control, echo=F}
+
+#:::::
+# organize data
+#:::::
+
+setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
+he_gcta=read.table("he-gcta-inflation-norm.txt", header=T,
+                       stringsAsFactors = F)
+he_ldak=read.table("he-ldak-thin-inflation-norm.txt", header=T,
+                       stringsAsFactors = F)
+names(he_gcta)[1]="trait"
+names(he_ldak)[1]="trait"
+
+# combine results
+all=rbind(he_gcta,he_ldak)
+
+#:::
+# Print table 
+#:::
+
+alpha=0.05/14
+library(kableExtra)
+# highlight p-values <= bonferroni corrected alpha
+all[,8] = cell_spec(format(all[,8], scientific=T, digits=2), 
+                    color = ifelse(all[,8] <= alpha, "red", "black"))
+
+# print
+all %>%
+  kbl(caption = " Control GWASs: Heritability estimates (SE) using Haseman Elston regression under assumed heritability models",
+     full_width=T, escape=F, digits=3, format.args = list(scientific = F)) %>%
+  kable_minimal() %>%
+  pack_rows("under gcta", 1, 14, 
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("under ldak-thin", 15, 28,
+            label_row_css = "background-color: #666; color: #fff;") %>%
+  scroll_box(width = "100%", box_css = "border: 0px;") %>%
+  footnote(general = "p-values are for testing whether the sum of 'left' and 'right' heritability estimates are greater than the heritability estimate based on the whole genome. p-values <= Bonferroni corrected alpha (i.e., 0.05/14) are highlighted",
+           footnote_as_chunk = T, fixed_small_size=T)
+
+```
+
+
+
+
+<!--chapter:end:01-summaries.Rmd-->
+
+
+# Good VS Bad GWAS
+
+Here we investigate the inflation in test statistics from the bad GWASs. We want to find out 1) if the inflation is constant; 2) if it can be predicted in some way.  
+
+## constant inflation?
+
+The inflation in GWAS test statistics are not always constant, as assumed by LDSC. Below We plotted the chi-square test statistics from the bad (colored in red), good (orange), and control (gray) GWASs as a function of LD score ( Fig \@ref(fig:good-vs-bad-by-ldscorebin) ). The linear model assumed by LDSC is only appropriate for five traits, namely chron, quals, snoring and quals. For these traits, LDSC could account for the inflation due to confouding (i.e., intercept) and the inflation due to polygenity (i.e., slope). However, LDSD is not adequate for other traits, where non-linear pattern of test statistics as a function of LD score is observed. More specifically, for these traits, test statistics for SNPs with a low LD score are much more inflated than would be expected by LDSC.
+
+```{r eval=F, echo=F}
+# gwas test statistics
+library(vroom)
+
+trait="neur" # bmi
+good=vroom(paste0("unrelated/gwas-good/",trait,"-linear.summaries"), col_names=T)
+bad=vroom(paste0("gwas-mix/",trait,"-linear.summaries"), col_names=T)
+control=vroom(paste0("gwas-control/",trait,"-linear.summaries"), col_names=T)
+# note: stat = chi-square test statistic
+common=intersect(good$Predictor, bad$Predictor)
+common=intersect(common, control$Predictor) # 110,2693 in common
+m1=match(common,good$Predictor)
+m2=match(common,bad$Predictor)
+m3=match(common,control$Predictor)
+all=data.frame(Predictor=common, 
+               good=good$Stat[m1], 
+               bad=bad$Stat[m2], 
+               control=control$Stat[m3], stringsAsFactors = F)
+
+# plots 
+end=round(max(c(all$good, all$bad)),0)+1
+start=round(min(c(all$good, all$bad)),0)
+#good vs. bad
+png(paste0("fig/",trait,"-gwas-stat-good-vs-bad.png"),
+    width =40, height = 20, units = "cm", res=600)
+par(mfrow=c(1,2))
+plot(all$good, all$bad,
+     xlab="good-chisq", ylab="bad-chisq", 
+     xlim=c(start, end), 
+     ylim=c(start, end),
+     main=trait, las=1,
+     cex = 1, pch=21,  bg="darkgray", col="white", lwd=0.5)
+#points(good[fs],bad[fs],cex = 1, pch=21, col="white", bg="orange")
+abline(0, 1, col="darkgray", lwd=1.5, lty=1)
+#abline(h=threshold, col="red", lwd=1.5, lty=3)
+#abline(v=threshold, col="red", lwd=1.5, lty=3)
+
+# good vs. control
+plot(all$good, all$control,
+     xlab="good-chisq", ylab="control-chisq", 
+     xlim=c(start, end), 
+     ylim=c(start, end),
+     main=trait, las=1,
+     cex = 1, pch=21,  bg="darkgray", col="white", lwd=0.5)
+#points(good[fs],bad[fs],cex = 1, pch=21, col="white", bg="orange")
+abline(0, 1, col="darkgray", lwd=1.5, lty=1)
+dev.off()
+
+```
+
+```{r good-vs-bad, fig.cap='Test statistics of bad and good GWASs', fig.show='hold', out.width='100%', fig.asp=0.75, fig.align='left', echo=F, eval=F}
+knitr::include_graphics(c("fig-to-insert/bmi-gwas-stat-good-vs-bad.png",
+                          "fig-to-insert/neur-gwas-stat-good-vs-bad.png" ))
+```
+
+```{bash eval=F, echo=F}
+#::::
+# organize data
+#::::
+
+# 1. get overlapping SNPs across GWASs
+cp gen/snps-control-gwas.use temp #1,103,182
+awk '(NR==FNR){a[$1];next}($1 in a){print $1}' temp gen/snps-unrel-inds.use > overlap-control-good-bad.snps
+mv overlap-control-good-bad.snps temp
+awk '(NR==FNR){a[$1];next}($1 in a){print $2}' temp doug/ukbb.ldsc > overlap-control-good-bad.snps
+wc -l overlap-control-good-bad.snps # 1,102,693 SNPs in common
+
+# 2. get ld scores for overlapping snps
+dir=ldsc/eur_w_ld_chr
+for chrom in {1..22}; do
+zcat $dir/$chrom.l2.ldscore.gz | awk 'NR>1 {print $2, $6}' > ldscore
+awk '(NR==FNR){a[$1];next}($1 in a){print $0}' overlap-control-good-bad.snps ldscore > temp
+if [ $chrom -eq 1 ]
+then 
+ mv temp overlap-control-good-bad.ldscore
+else
+ cat overlap-control-good-bad.ldscore temp > temp2
+ mv temp2 overlap-control-good-bad.ldscore
+fi
+echo $chrom
+done
+
+# 3. get test statistics of GWASs 
+dir1="ldsc/out-control/"
+dir2="ldsc/out-good-gwas/"
+dir3="ldsc/out-mix-pop/"
+
+require("vroom")
+snps=vroom("overlap-control-good-bad.ldscore", col_names=F)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals",
+        "reaction","sbp","snoring","hyper", "quals")
+# c("fcv", "height","imp")
+for(i in 1:length(traits)){
+  
+  trait=traits[i]
+  dat1=vroom(paste0(dir1,trait,".sumstats.gz"), col_names=T)
+  dat2=vroom(paste0(dir2,trait,".sumstats.gz"), col_names=T)
+  dat3=vroom(paste0(dir3,trait,".sumstats.gz"), col_names=T)
+  m1=match(snps$X1, dat1$SNP)
+  m2=match(snps$X1, dat2$SNP)
+  m3=match(snps$X1, dat3$SNP)
+  out=data.frame(SNP=snps$X1,
+                 ldscore=snps$X2,
+                  control_chisq=dat1$Z[m1]^2,
+                  good_chisq=dat2$Z[m2]^2,
+                  bad_chisq=dat3$Z[m3]^2, stringsAsFactors = F)
+  out=out[complete.cases(out),]
+  # bin LD scores according to quantiles
+  cutoff=quantile(out$ldscore, probs = seq(0, 1, 0.005))
+  out$ldsc_bin=cut(out$ldscore, breaks=cutoff, labels=1:(length(cutoff)-1))
+  write.table(out,paste0("summary/",trait,"-gwas-test-stats-compare.txt"), 
+              col.names=T, row.names=F, quote=F)
+}
+
+#::::
+# plot by ldscore bin
+#::::
+
+require("vroom")
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals",
+        "reaction","sbp","snoring","hyper", "quals")
+# c("fcv", "height","imp")
+
+png(paste0("fig/gwas-stat-by-ldscbin.png"),
+    width =40, height = 30, units = "cm", res=1000)
+par(mfrow=c(3,4))
+for(i in 1:length(traits)){
+trait=traits[i]
+dat=vroom(paste0("summary/",trait,"-gwas-test-stats-compare.txt"), col_names=T)
+out=data.frame(ave_ldscore=tapply(dat$ldscore,INDEX=dat$ldsc_bin, mean),
+               ave_control_chisq=tapply(dat$control_chisq,INDEX=dat$ldsc_bin, mean),
+               ave_good_chisq=tapply(dat$good_chisq,INDEX=dat$ldsc_bin, mean),
+               ave_bad_chisq=tapply(dat$bad_chisq,INDEX=dat$ldsc_bin, mean))
+
+end=round(max(c(out[,2], out[,3], out[,4])),0)+1
+start=0
+plot(out$ave_ldscore, out$ave_control_chisq,
+     xlab="ldscore bin", ylab="mean chisquare", 
+     ylim=c(start, end),
+     main=trait, las=1,
+     cex = 1.5, pch=21,  bg="gray", col="white", lwd=0.5)
+points(out$ave_ldscore, out$ave_good_chisq,
+       cex = 1.5, pch=21, col="white", bg="orange")
+points(out$ave_ldscore, out$ave_bad_chisq,
+       cex = 1.5, pch=21, col="white", bg="red")
+
+}
+dev.off()
+
+#:::
+# plot by raw ldscores
+#:::
+require("vroom")
+
+traits=c("bmi", "neur")
+
+for(i in 1:length(traits)){
+  
+trait=traits[i]
+dat=vroom(paste0("summary/",trait,"-gwas-test-stats-compare.txt"), col_names=T)
+
+png(paste0("fig/",trait,"-gwas-stat-by-ldscore.png"),
+    width =20, height = 20, units = "cm", res=600)
+
+end=round(max(c(dat$control_chisq, dat$good_chisq, dat$bad_chisq)),0)+1
+start=0
+plot(dat$ldscore, dat$bad_chisq,
+     xlab="ldscore", ylab="chisq", 
+     ylim=c(start, end),
+     main=trait, las=1,
+     cex = 1, pch=21,  bg="red", col="white", lwd=0.5)
+points(dat$ldscore, dat$control_chisq,
+       cex = 1, pch=21, col="white", bg="orange")
+points(dat$ldscore, dat$good_chisq,
+       cex = 1, pch=21, col="green", bg="red")
+
+dev.off()
+}
+
+```
+
+```{r good-vs-bad-by-ldscorebin, fig.cap='GWAS test statistics by LD score.', fig.show='hold', out.width='100%', fig.asp=0.75, fig.align='left', echo=F}
+knitr::include_graphics(c("fig-to-insert/gwas-stat-by-ldscbin.png"))
+                        
+```
+
+
+
+
+<!--chapter:end:02-inflation.Rmd-->
+
+
+# Good GWAS {#good}
+
+Here we do good GWASs. We will use 1.2M hapmap3 SNPs.
+But sill need to do some QC to these SNPs.
+
+## QC of hp3 SNPs {#goodid}
+```{bash eval=F}
+
+# select 100k unrelated individuals with no missing covariates & 14 phenotypes--
+
+# individual with complete covariates
+R
+options(scipen = 100)
+library(vroom)
+dat=vroom("phen/covariates.use", col_names=F)
+out=dat[complete.cases(dat),c(1,2)]
+write.table(out,"covariates-complete-cases.id", col.names=F, row.names=F, quote=F)
+
+# overlaping individuals across 14 traits
+cp icd10/unrelated.inds overlap.ind # unrelated white British
+
+dir=phen/continuous-traits/
+for tt in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+mv overlap.ind temp
+awk '(NR==FNR){a[$1];next}($1 in a){print $1, $2}' temp $dir/$tt.raw.pheno > overlap.ind
+wc -l overlap.ind
+echo $tt
+done
+rm temp
+
+# overlapping & complete covariates
+awk 'NR==FNR{a[$1]; next} ($1 in a) {print $1, $1}' overlap.ind covariates-complete-cases.id > overlap-complete-cases.id
+
+#randomly pick 100k of these
+shuf overlap-complete-cases.id | head -n 100000 > rand.100000
+
+# QC SNPs-----------------------------------------------------------------------
+# stating number of SNPs= 1,184,423 
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 1:0:0
+
+./plink2 --pfile ../gen/geno_plink/bhr$j \
+         --keep ../unrelated/rand.100000 \
+         --extract ../doug/ukbb.ldsc \
+         --hwe 0.0001 \
+         --hard-call-threshold .05 \
+         --mach-r2-filter 0.8 2 \
+         --make-bed \
+         --memory 20000 \
+         --out ../gen/tmp/bhr$j-unrel \
+         --threads 3
+"> sh_script/chr$j.sh
+done
+
+# submit jobs
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/chr$j.sh
+done > ../job-records/qc-unrel
+
+# merge files
+rm bfile-unrel.list
+for j in {1..22}; do
+echo  "../gen/tmp/bhr$j-unrel" >>bfile-unrel.list
+done
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 40:0:0
+./ldak5.1 --make-bed ../gen/geno-unrel \
+          --mbfile ../gen/bfile-unrel.list \
+          --max-threads 3 \
+          --exclude-dups YES  
+"> sh_script/mbfile-unrel.sh
+
+# submit the script
+sbatch -A snpher ../sh_script/mbfile-unrel.sh >../job-records/mbfiles-unrel
+
+# MAF & call-rate 
+awk < geno-unrel.stats '($5>.01 && $6>=0.95 && NR>1){print $1}' > snps-unrel-inds.use
+# m = 1,103,209 SNPs
+ 
+```
+
+## extract covariates
+
+```{R eval=F}
+
+head=read.table("phen/ukb45861.header", sep=",", header=F, stringsAsFactors = F)
+# function to get the variables
+get=function(nm){
+  colnum=grep(nm,head,fixed=TRUE)
+  out=data.frame(t(rbind(colnum, head[,colnum])))
+  names(out)=c("column", "field")
+  return (out)
+}
+# get the variables
+out=rbind(get('21022-0'), # age at recruitment: 21022
+          get('54-0'), # assessment centre: 54
+          get('22000-0'), # genotyping batch: 22000
+          get('22001-0'), # genetic sex: 22001
+          get('189-0'), # townsend
+          get('22009-0'), # genotype PC: 22009
+          get('21000-0')) # ethnic background 
+row.names(out)=1:dim(out)[1]
+# remove unwanted
+out=out[-c(95:100),]
+write.table(out,"phen/covariates.colnum", col.names=F, row.names=F, sep="\t", quote=F)
+
+# extract dat from the full data set
+awk -F '","' '(NR==FNR){a[$1];next}{printf "%s\"", $1;for(i in a){printf " \"%s\"", $i};printf "\n"}' phen/covariates.colnum phen/ukb45861.csv > phen/covariates.dat
+
+#--------
+# organize covariates
+#--------
+
+options(scipen = 100)
+# all covariates
+var=read.table("phen/covariates.dat", header=T, stringsAsFactors = F)
+nm=names(var)
+
+# extract covariates
+var1=data.frame(eid=var$eid,
+                age=var[,grep('21022', nm, fixed=T)], # age at recruitment
+                sex_gen=var[,grep('22001', nm, fixed=T)], # genetic sex: 0 =F; 1 = M
+                centre=var[,grep('X54', nm, fixed=T)], # assessment centre
+                geno_batch=var[,grep('22000', nm, fixed=T)], # genotype batch
+                townsend=var[,grep('189', nm, fixed=T)], # townsen
+                var[,grep('22009', nm, fixed=T)], # genotype PC
+                ethnicity=var[,grep('21000', nm, fixed=T)], # self-reported ethnicity
+                stringsAsFactors = F)
+pcnm=strsplit(nm[grep('22009', nm, fixed=T)], "[.]")
+pcnm=paste0("pc",unlist(lapply(pcnm,function(X) X[3])))
+names(var1)[7:46]=pcnm
+
+# file that contains all covariates
+write.table(var1,"phen/covariates.phen", col.names=T, row.names=F, quote=F)
+
+# create a file to use: no col.names & continuous covariates only
+use=var1[,c(1,1:3,6:46)]
+write.table(names(use),"phen/covariates.use-names", 
+            col.names=F, row.names=F, quote=F)
+write.table(use,"phen/covariates.use", col.names=F, row.names=F, quote=F)
+```
+
+
+## GWAS
+
+```{bash eval=F}
+
+# linear regression-------------------------------------------------------------
+mkdir unrelated/gwas-good
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 2
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../unrelated/gwas-good/$i-linear \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-unrel \
+          --keep ../unrelated/rand.100000 \
+          --extract ../gen/snps-unrel-inds.use \
+          --covar ../phen/covariates.use \
+          --max-threads 2 \
+"> sh_script/$i-linear.sh
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear.sh
+done>../job-records/gwas-good
+
+# check job completion----------------------------------------------------------
+file=job-records/gwas-good
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# resubmit failed/incomplete jobs-----------------------------------------------
+
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 2
+#SBATCH -t 5:0:0
+
+./ldak5.1 --linear ../unrelated/gwas-good/$i-linear-chr-$j \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-unrel \
+          --keep ../unrelated/rand.100000 \
+          --extract ../gen/snps-unrel-inds.use \
+          --covar ../phen/covariates.use \
+          --max-threads 2 \
+          --chr $j
+"> sh_script/$i-linear-chr-$j.sh
+done
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/$i-linear-chr-$j.sh
+done
+done>../job-records/gwas-good-resubmission
+
+# check job completion----------------------------------------------------------
+file=job-records/gwas-good-resubmission
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# combine results
+# only need .summaries & .pvalues
+#for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,reaction,sbp,snoring,hyper}; do 
+i=quals 
+for j in {1..22}; do
+if [ $j == 1 ]; then
+  awk '{print $0}' $i-linear-chr-$j.summaries > $i-linear.summaries
+  awk '{print $0}' $i-linear-chr-$j.pvalues > $i-linear.pvalues
+else 
+  awk 'NR>1 {print $0}' $i-linear-chr-$j.summaries >> $i-linear.summaries
+  awk 'NR>1 {print $0}' $i-linear-chr-$j.pvalues >> $i-linear.pvalues
+fi
+done
+#done
+
+```
+
+## ldsc intercept
+
+### under gcta
+
+```{bash eval=F}
+#:::::::::::::
+# using original ldsc
+#:::::::::::::
+
+# format stats for ldsc--------------------------------------------------------- 
+library(vroom)
+options(scipen = 100)
+rs=vroom("doug/ukbb.ldsc", col_names=F)
+phen=c("awake","bmi","chron","ever","fvc",
+       "height","imp","neur","pulse","quals",
+       "reaction","sbp","snoring","hyper", "quals")
+
+for(i in phen){
+  stat=vroom(paste0("unrelated/gwas-good/",i,"-linear.summaries"), col_names=T)
+  p=vroom(paste0("unrelated/gwas-good/",i,"-linear.pvalues"), col_names=T)
+  m1=match(rs$X1, stat$Predictor)
+  m2=match(rs$X1, p$Predictor)
+  out=data.frame(SNP=rs$X2,
+                 N=stat$n[m1],
+                 Z=(sqrt(stat$Stat)*stat$Direction)[m1],
+                 A1=stat$A1[m1],
+                 A2=stat$A2[m1], 
+                 pval=p$P[m2], stringsAsFactors=F)
+  out=out[complete.cases(out),]
+  write.table(out, paste0("unrelated/gwas-good/",i,"-linear-rs.summaries"), 
+  col.names=T, row.names=F, quote=F)
+}
+
+# perform ldsc------------------------------------------------------------------
+mkdir out-good-gwas
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 3
+#SBATCH -t 24:00:0
+
+.././munge_sumstats.py \
+--sumstats ../../unrelated/gwas-good/$i-linear-rs.summaries \
+--out ../out-good-gwas/$i \
+--merge-alleles ../w_hm3.snplist
+
+.././ldsc.py \
+--h2 ../out-good-gwas/$i.sumstats.gz \
+--ref-ld-chr ../eur_w_ld_chr/ \
+--w-ld-chr ../eur_w_ld_chr/ \
+--out ../out-good-gwas/$i-ldsc
+">sh_script/ldsc-$i-good-gwas.sh
+done
+
+# submit jobs-------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,reaction,sbp,snoring,hyper,quals}; do
+sbatch -A snpher ../sh_script/ldsc-$i-good-gwas.sh
+done>../../job-records/ldsc-good-gwas
+
+#:::::::::::::
+# using sumher
+#:::::::::::::
+
+# insert genetic distance into bim file-----------------------------------------
+head geno-unrel.fam > small-unrel
+
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --mem 8G
+#SBATCH -c 1
+#SBATCH -t 3:00:0
+#SBATCH --constraint \"s04|s05\"
+./plink1.9 --bfile ../gen/geno-unrel \
+          --chr $j \
+          --cm-map /home/zhoux/snpher/faststorage/genetic_maps/genetic_map_chr@_combined_b37.txt \
+          --make-bed \
+          --out new$j \
+          --keep ../gen/small-unrel
+" > sh_script/map$j
+done
+
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/map$j
+done > genetic-distance-hapmap3
+
+cd /home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/gen
+cat new{1..22}.bim | awk '{print $2, $3}' > maps-hapmap3.txt
+rm new{1..22}.{bim,bed,fam,log}
+
+awk '(NR==FNR){arr[$1]=$2;next}{print $1, $2, arr[$2], $4, $5, $6}' > geno-unrel.bim2 maps-hapmap3.txt geno-unrel.bim
+mv geno-unrel.bim geno-unrel.bim0
+mv geno-unrel.bim2 geno-unrel.bim
+
+# compute tagging under gcta----------------------------------------------------
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 5:0:0
+
+./ldak5.1 --calc-tagging ../tagging/gcta-hapmap3-chr-$j \
+          --bfile ../gen/geno-unrel \
+          --ignore-weights YES \
+          --power -1 \
+          --window-cm 1 \
+          --chr $j
+"> sh_script/tagging-gcta-hapmap3-chr$j
+done
+
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/tagging-gcta-hapmap3-chr$j 
+done > ../job-records/tagging-gcta-hapmap3
+
+# check job completion----------------------------------------------------------
+file=job-records/tagging-gcta-hapmap3
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# merge tagging files-----------------------------------------------------------
+rm list.txt
+for j in {1..22}; do 
+echo "tagging/gcta-hapmap3-chr-$j.tagging" >> list.txt
+done
+./ldak5.1 --join-tagging tagging/gcta-hapmap3 --taglist list.txt
+
+# ldsc intercept----------------------------------------------------------------
+mkdir sumher-good
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 5:0:0
+
+./ldak5.1 --sum-hers ../sumher-good/$i-sumher-gcta \
+          --tagfile ../tagging/gcta-hapmap3.tagging \
+          --summary ../unrelated/gwas-good/$i-linear.summaries \
+          --check-sums NO \
+          --intercept YES
+"> sh_script/$i-sumher-gcta-unrelated
+done
+
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-sumher-gcta-unrelated
+done>../job-records/sumher-gcta-unrelated
+
+```
+
+### under ldak-thin
+
+```{bash eval=F}
+
+# get weights-------------------------------------------------------------------
+awk < ldak-thin/ldak-thin-hapmap3.in '{print $1, 1}' > ldak-thin/weights.ldak-thin-hapmap3
+
+# calculate tagging under ldak-thin---------------------------------------------
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 40G
+#SBATCH -c 5
+#SBATCH -t 10:0:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --calc-tagging ../tagging/ldak-thin-hapmap3-chr-$j \
+          --bfile ../gen/geno-unrel \
+          --weights ../ldak-thin/weights.ldak-thin-hapmap3 \
+          --power -.25 \
+          --window-cm 1 \
+          --chr $j \
+          --save-matrix YES \
+          --max-threads 5
+" > sh_script/tagging-ldak-thin-hapmap3-chr$j.sh
+done
+
+# submit scripts
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/tagging-ldak-thin-hapmap3-chr$j.sh
+done > ../job-records/tagging-ldak-thin-hapmap3
+
+# check job completion----------------------------------------------------------
+file=job-records/tagging-ldak-thin-hapmap3
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# merge tagging files-----------------------------------------------------------
+rm list.txt
+rm matlist.txt
+for j in {1..22}; do 
+echo "tagging/ldak-thin-hapmap3-chr-$j.tagging" >> list.txt
+echo "tagging/ldak-thin-hapmap3-chr-$j.matrix" >> matlist.txt
+done
+./ldak5.1 --join-tagging tagging/ldak-thin-hapmap3 --taglist list.txt --matlist matlist.txt
+
+# ldsc intercept----------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 00:30:0
+
+./ldak5.1 --sum-hers ../sumher-good/$i-sumher-ldak-thin \
+          --tagfile ../tagging/ldak-thin-hapmap3.tagging \
+          --summary ../unrelated/gwas-good/$i-linear.summaries \
+          --check-sums NO \
+          --intercept YES
+"> sh_script/$i-sumher-ldak-thin-unrelated
+done
+
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-sumher-ldak-thin-unrelated
+done>../job-records/sumher-ldak-thin-unrelated
+
+```
+
+### summary
+
+```{bash eval=F}
+
+# original ldsc
+grep Intercept *ldsc.log | awk '{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}' > ../../summary/ldsc-good
+
+# sumher under gcta
+grep Intercept_Estimate *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-good-est
+grep Intercept_SD *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-good-sd
+cd ../summary/
+paste sumher-gcta-good-est sumher-gcta-good-sd | awk '{print $1, $2, $4}' > sumber-gcta-good
+      
+# submer under ldak-thin
+grep Intercept_Estimate *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-good-est
+grep Intercept_SD *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-good-sd
+cd ../summary/
+paste sumher-ldak-thin-good-est sumher-ldak-thin-good-sd | awk '{print $1, $2, $4}' > sumher-ldak-thin-good
+
+```
+
+## REML
+
+### making grms
+```{bash eval=F}
+
+# making grm -------------------------------------------------------------------
+
+#:::
+# under gcta
+#:::
+
+# all snps
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 20:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/gcta-all-unrel \
+          --bfile ../gen/geno-unrel \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/grm-all-snps-unrel
+
+sbatch -A snpher ../sh_script/grm-all-snps-unrel > ../job-records/grm-all-snps-unrel
+
+# grm by snp blocks: right vs. left
+awk '$1<8 {print $2}' geno-unrel.bim > left-hapmap3.snps 
+awk '$1>=8 {print $2}' geno-unrel.bim > right-hapmap3.snps
+
+for i in left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 20:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/gcta-$i-unrel \
+          --bfile ../gen/geno-unrel \
+          --extract ../gen/$i-hapmap3.snps \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/grm-gcta-$i-unrel
+done
+
+for i in left right; do
+sbatch -A snpher ../sh_script/grm-gcta-$i-unrel 
+done > ../job-records/grm-gcta-by-snps-unrel 
+
+#:::
+# under ldak-thin
+#:::
+
+#-----------
+# 1. thin snps
+#-----------
+
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 4
+#SBATCH -t 4:0:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --max-threads 4 \
+          --window-prune 0.98 \
+          --window-kb 100 \
+          --extract ../gen/snps-unrel-inds.use \
+          --bfile ../gen/geno-unrel \
+          --thin ../ldak-thin/chr$j-hapmap3 \
+          --chr $j
+" > sh_script/ldak-thin$j-hapmap3
+done
+
+# submit script
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/ldak-thin$j-hapmap3
+done > ../job-records/ldak-thin-hapmap3
+
+# check job completion---
+file=job-records/ldak-thin-hapmap3
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# combine snp list
+cat ldak-thin/chr{1..22}-hapmap3.in > ldak-thin/ldak-thin-hapmap3.in
+
+#----------------------
+# 2. kinship matrix under ldak-thin
+#------------------------
+
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 20:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/ldak-thin-all-unrel \
+          --bfile ../gen/geno-unrel \
+          --extract ../ldak-thin/ldak-thin-hapmap3.in \
+          --power -0.25 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/ldak-thin-grm-all-snps-unrel
+
+sbatch -A snpher ../sh_script/ldak-thin-grm-all-snps-unrel > ../job-records/ldak-thin-grm-all-snps-unrel
+
+# grm by snp blocks: right vs. left
+
+awk '{split($1, a, /[:]/); if (a[1]<8) print $1}' \
+ ldak-thin/ldak-thin-hapmap3.in > gen/left-ldak-thin-hapmap3.snps 
+awk '{split($1, a, /[:]/); if (a[1]>=8) print $1}' \
+ ldak-thin/ldak-thin-hapmap3.in > gen/right-ldak-thin-hapmap3.snps 
+
+for i in left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 20:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/ldak-thin-$i-unrel \
+          --bfile ../gen/geno-unrel \
+          --extract ../gen/$i-ldak-thin-hapmap3.snps \
+          --power -0.25 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/ldak-thin-grm-$i-unrel
+done
+
+for i in left right; do
+sbatch -A snpher ../sh_script/ldak-thin-grm-$i-unrel 
+done > ../job-records/grm-ldak-thin-by-snps-unrel 
+
+```
+
+### fast-reml
+```{bash eval=F}
+
+#:::
+# under gcta
+#:::
+
+# make script files-------------------------------------------------------------
+mkdir reml-good
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 100G
+#SBATCH -c 2
+#SBATCH -t 5:0:0
+
+./ldak5.1 --fast-reml ../reml-good/$i-gcta-$k \
+          --repetitions 20 \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --keep ../unrelated/rand.100000 \
+          --covar ../phen/covariates.use \
+          --grm ../kinship/gcta-$k-unrel \
+          --max-threads 2 \
+          --single YES
+"> sh_script/$i-reml-good-gcta-$k-snps
+done
+done
+
+# submit script files-----------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-reml-good-gcta-$k-snps
+done
+done>../job-records/reml-good-gcta
+
+# check job completion----------------------------------------------------------
+file=job-records/reml-good-gcta
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+#:::
+# under ldak-thin
+#:::
+
+# make script files-------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 100G
+#SBATCH -c 2
+#SBATCH -t 5:0:0
+
+./ldak5.1 --fast-reml ../reml-good/$i-ldak-thin-$k \
+          --repetitions 20 \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --keep ../unrelated/rand.100000 \
+          --covar ../phen/covariates.use \
+          --grm ../kinship/ldak-thin-$k-unrel \
+          --max-threads 2 \
+          --single YES
+"> sh_script/$i-reml-good-ldak-thin-$k-snps
+done
+done
+
+# submit script files-----------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-reml-good-ldak-thin-$k-snps
+done
+done >../job-records/reml-good-ldak-thin
+
+# check job completion----------------------------------------------------------
+file=job-records/reml-good-ldak-thin
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+```
+
+### inflation test
+
+```{bash eval=F}
+#::::::::::::
+# under gcta
+#::::::::::::
+
+# extract h2 estimates ---------------------------------------------------------
+# right
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-good/$i-gcta-right.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-gcta-good.right
+rm summary/est.tmp summary/converge.tmp
+
+# left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-good/$i-gcta-left.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-gcta-good.left
+rm summary/est.tmp summary/converge.tmp
+
+# all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-good/$i-gcta-all.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-gcta-good.all
+rm summary/est.tmp summary/converge.tmp
+
+# inflation test----------------------------------------------------------------
+R
+
+full=read.table(paste0("summary/reml-gcta-good.all"), header=T)
+left=read.table(paste0("summary/reml-gcta-good.left"), header=T)
+right=read.table(paste0("summary/reml-gcta-good.right"), header=T)
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+write.table(out, paste0("summary/reml-gcta-inflation-good-gwas.txt"),
+            col.names=T, row.names=F, quote=F)
+
+#::::::::::::
+# under ldak-thin
+#::::::::::::
+
+# extract h2 estimates ---------------------------------------------------------
+# right
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-good/$i-ldak-thin-right.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-ldak-thin-good.right
+rm summary/est.tmp summary/converge.tmp
+
+# left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-good/$i-ldak-thin-left.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-ldak-thin-good.left
+rm summary/est.tmp summary/converge.tmp
+
+# all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-good/$i-ldak-thin-all.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-ldak-thin-good.all
+rm summary/est.tmp summary/converge.tmp
+
+# inflation test----------------------------------------------------------------
+R
+full=read.table(paste0("summary/reml-ldak-thin-good.all"), header=T)
+left=read.table(paste0("summary/reml-ldak-thin-good.left"), header=T)
+right=read.table(paste0("summary/reml-ldak-thin-good.right"), header=T)
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+
+write.table(out, paste0("summary/reml-ldak-thin-inflation.txt"),
+            col.names=T, row.names=F, quote=F)
+
+```
+
+## HE
+
+### estimation
+```{bash eval=F}
+# regress grm on covariates-----------------------------------------------------
+for grm in gcta-all-unrel gcta-left-unrel gcta-right-unrel ldak-thin-all-unrel ldak-thin-left-unrel ldak-thin-right-unrel; do  
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 50G
+#SBATCH -c 5
+#SBATCH -t 10:0:0
+./ldak5.1 --adjust-grm ../kinship/$grm.covar \
+          --grm ../kinship/$grm \
+          --covar ../phen/covariates.use \
+          --max-threads 5
+"> sh_script/$grm-adjust-unrel.sh
+done
+
+# submit jobs
+for grm in gcta-all-unrel gcta-left-unrel gcta-right-unrel ldak-thin-all-unrel ldak-thin-left-unrel ldak-thin-right-unrel; do
+sbatch -A snpher ../sh_script/$grm-adjust-unrel.sh
+done > ../job-records/grm-unrel-adjust-for-HE
+
+# check job completion----------------------------------------------------------
+file=job-records/grm-unrel-adjust-for-HE
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# HE under gcta-----------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 1
+#SBATCH -t 00:30:0
+
+./ldak5.1 --he ../he-good/$i-he-gcta-$k \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --grm ../kinship/gcta-$k-unrel.covar \
+          --kinship-details NO \
+          --check-root NO \
+          --covar ../phen/covariates.use \
+          --max-threads 1 \
+          --memory-save YES
+"> sh_script/$i-he-good-gcta-$k-snps.sh
+done
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-he-good-gcta-$k-snps.sh
+done
+done > ../job-records/he-good-gcta
+
+# HE under ldak-thin------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 1
+#SBATCH -t 0:30:0
+
+./ldak5.1 --he ../he-good/$i-he-ldak-thin-$k \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --grm ../kinship/ldak-thin-$k-unrel.covar \
+          --kinship-details NO \
+          --check-root NO \
+          --covar ../phen/covariates.use \
+          --max-threads 1 \
+          --memory-save YES
+"> sh_script/$i-he-good-ldak-thin-$k-snps.sh
+done
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-he-good-ldak-thin-$k-snps.sh
+done
+done > ../job-records/he-good-ldak-thin
+
+```
+
+### summary
+
+```{bash eval=F}
+
+#::::::::::::
+# under gcta
+#::::::::::::
+
+# extract h2 estimates ---------------------------------------------------------
+# right
+rm summary/he-gcta-unrel.right 
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-good/$i-he-gcta-right.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-unrel.right
+done
+
+# left
+rm summary/he-gcta-unrel.left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-good/$i-he-gcta-left.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-unrel.left
+done
+
+# all
+rm summary/he-gcta-unrel.all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-good/$i-he-gcta-all.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-unrel.all
+done
+
+# inflation test----------------------------------------------------------------
+R
+
+full=read.table(paste0("summary/he-gcta-unrel.all"), header=F)
+left=read.table(paste0("summary/he-gcta-unrel.left"), header=F)
+right=read.table(paste0("summary/he-gcta-unrel.right"), header=F)
+names(full)=names(left)=names(right)=c("code","h2","se")
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+write.table(out, paste0("summary/he-gcta-inflation-unrel-gwas.txt"),
+            col.names=T, row.names=F, quote=F)
+
+#::::::::::::
+# under ldak-thin
+#::::::::::::
+
+# extract h2 estimates ---------------------------------------------------------
+# right
+rm summary/he-ldak-thin-unrel.right 
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-good/$i-he-ldak-thin-right.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-unrel.right
+done
+
+# left
+rm summary/he-ldak-thin-unrel.left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-good/$i-he-ldak-thin-left.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-unrel.left
+done
+
+# all
+rm summary/he-ldak-thin-unrel.all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-good/$i-he-ldak-thin-all.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-unrel.all
+done
+
+# inflation test----------------------------------------------------------------
+R
+
+full=read.table(paste0("summary/he-ldak-thin-unrel.all"), header=F)
+left=read.table(paste0("summary/he-ldak-thin-unrel.left"), header=F)
+right=read.table(paste0("summary/he-ldak-thin-unrel.right"), header=F)
+names(full)=names(left)=names(right)=c("code","h2","se")
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+write.table(out, paste0("summary/he-ldak-thin-inflation-unrel-gwas.txt"),
+            col.names=T, row.names=F, quote=F)
+
+```
+
+
+<!--chapter:end:03.1-good-gwas.Rmd-->
+
+
+# Bad GWAS {#bad}
+
+## ID list {#badid}
+
+### initial selection
+Randomly select participants with complete data and use the SNP list as for unrelated.
+
+```{bash eval=F}
+
+# extract white, asian & black from ukbb----------------------------------------
+R
+dat=read.table("phen/covariates.phen", header=T, stringsAsFactors = F)
+# White: British(1001)  
+# Asian or Asian British: Indian(3001)+Pakistani(3002)+Bangladeshi(3003)+other Asian backgroud(3004)
+# Black: Caribbean(4001)+African(4002)+other Black Background(4003)
+dat=dat[complete.cases(dat),]
+white=1001
+asian=3001:3004
+black=4001:4003
+out1=dat[dat$ethnicity%in%white,]
+out2=dat[dat$ethnicity%in%asian,]
+out3=dat[dat$ethnicity%in%black,]
+write.table(out1[,"eid"], "white-complete-cov.id", col.names=F, row.names=F, quote=F)
+write.table(out2[,"eid"], "asian-complete-cov.id", col.names=F, row.names=F, quote=F)
+write.table(out3[,"eid"], "black-complete-cov.id", col.names=F, row.names=F, quote=F)
+# overlapping UNRELATED WHITE across 14 traits----------------------------------
+# overlapping = no missing data for the 14 traits
+
+cp icd10/unrelated.inds overlap.ind # unrelated white British
+
+dir=phen/continuous-traits/
+for tt in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+mv overlap.ind temp
+awk '(NR==FNR){a[$1];next}($1 in a){print $1, $2}' temp $dir/$tt.raw.pheno > overlap.ind
+wc -l overlap.ind
+echo $tt
+done
+rm temp
+
+# overlapping + complete data for covariates + unrelated
+awk 'NR==FNR{a[$1]; next} ($1 in a) {print $1, $1}' unrelated/overlap.ind white-complete-cov.id > overlap-white-complete-cov.id # N = 147,008
+
+# overlapping UNRELATED ASIAN across 14 traits----------------------------------
+cp asian-complete-cov.id overlap-asian-complete-cov.id
+dir=phen/continuous-traits/
+for tt in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+mv overlap-asian-complete-cov.id temp
+awk '(NR==FNR){a[$1];next}($1 in a){print $1, $2}' temp $dir/$tt.raw.pheno > overlap-asian-complete-cov.id
+wc -l overlap-asian-complete-cov.id # N = 4,052
+echo $tt
+done
+rm temp
+
+# relatedness filtering
+# see below
+
+# overlapping UNRELATED BLACK across 14 traits----------------------------------
+cp black-complete-cov.id overlap-black-complete-cov.id
+dir=phen/continuous-traits/
+for tt in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+mv overlap-black-complete-cov.id temp
+awk '(NR==FNR){a[$1];next}($1 in a){print $1, $2}' temp $dir/$tt.raw.pheno > overlap-black-complete-cov.id
+wc -l overlap-black-complete-cov.id # N = 3,583
+echo $tt
+done
+rm temp
+
+# relatedness filtering
+# see below
+
+```
+
+### relatedness filtering
+
+For black and Asian people only.
+
+```{bash eval=F}
+#-------------
+# 0. make bfiles
+#------------
+
+# id lists
+overlap-white-complete-cov.id # N=147,008
+overlap-black-complete-cov.id # N=3,583
+overlap-asian-complete-cov.id # N=4,052
+awk '{print $0}' overlap-white-complete-cov.id overlap-black-complete-cov.id overlap-asian-complete-cov.id > overlap-mixed-complete-cov.id # 154,643    
+
+# bfiles by chr
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 1:0:0
+
+./plink2 --pfile ../gen/geno_plink/bhr$j \
+         --keep ../overlap-mixed-complete-cov.id \
+         --extract ../gen/snps-unrel-inds.use \
+         --make-bed \
+         --memory 20000 \
+         --out ../gen/tmp/bhr$j-mix \
+         --threads 3 \
+"> sh_script/chr$j-mix.sh
+done
+
+# submit script
+for i in {1..22}; do
+sbatch -A snpher ../sh_script/chr$i-mix.sh
+done>../job-records/mkbfile-mix-pop
+
+# merge bfiles
+rm bfile-mix.list
+for j in {1..22}; do
+echo  "../gen/tmp/bhr$j-mix" >>bfile-mix.list
+done
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+./ldak5.1 --make-bed ../gen/geno-mix \
+          --mbfile ../gen/bfile-mix.list \
+          --max-threads 3 \
+          --exclude-dups YES  
+"> sh_script/merge-mbfiles-mix-pop.sh
+
+# submit the script
+sbatch -A snpher ../sh_script/merge-mbfiles-mix-pop.sh >../job-records/merge-mbfiles-mix
+
+#-------
+# 1. prune SNPs
+#-------
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 4
+#SBATCH -t 5:0:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --max-threads 4 \
+          --window-prune 0.05 \
+          --window-kb 1000 \
+          --bfile ../gen/geno-mix \
+          --chr $j \
+          --thin ../thin/thin-chr$j
+"  > sh_script/thin$j
+done
+
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/thin$j
+done > ../job-records/thin-snps
+
+#-------------
+# 2. kinship matrix under GCTA
+#-------------
+
+for pop in {black,asian}; do
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 1:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 3 \
+          --calc-kins-direct ../kinship/$pop-gcta-thin$j \
+          --bfile ../gen/geno-mix \
+          --keep ../overlap-$pop-complete-cov.id\
+          --extract ../thin/thin-chr$j.in \
+          --chr $j \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/$pop-grm$j
+done
+done
+
+# submit files
+for pop in {black,asian}; do 
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/$pop-grm$j
+done
+done > ../job-records/grm-pops
+
+# merge grms
+for pop in {black,asian}; do
+rm $pop-grm.list
+for j in {1..22} 
+do 
+echo "../kinship/$pop-gcta-thin$j" >> $pop-grm.list
+done
+done
+
+for pop in {black,asian}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 80G
+#SBATCH -c 10
+#SBATCH -t 12:0:0
+./ldak5.1 --add-grm ../kinship/$pop-gcta-thin --mgrm ../$pop-grm.list
+"> sh_script/$pop-grm.sh
+done
+
+for pop in {black,asian}; do
+sbatch -A snpher ../sh_script/$pop-grm.sh 
+done > ../job-records/grm-merge
+
+#can now delete per-chr files
+#rm *gcta-thin{1..22}.*
+
+#-----------------------
+# 3. Relatedness filtering 
+#------------------------
+
+# relatedness filtering
+for pop in {asian,black};do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 2:0:0
+
+./ldak5.1 --filter ../relatedness/$pop-cut.05 \
+          --grm ../kinship/$pop-gcta-thin \
+          --max-rel 0.05 \
+          --max-threads 3
+"> sh_script/$pop-rel-cut.05.sh
+done
+
+# submit script
+for pop in {asian,black};do
+sbatch -A snpher ../sh_script/$pop-rel-cut.05.sh
+done > ../job-records/relatedness-filtering
+
+# remaining individuals
+# asian-cut.05.keep N = 3,448
+# black-cut.05.keep N = 3,024
+# sum = 6,472
+```
+
+### final list
+
+To match the good GWAS, we will have N = 100k in total and replace 6,472 whites with Asians and Blacks.
+
+```{bash eval=F}
+# select  
+shuf rand.100000 | head -n 93528 > white.rand.93528
+cat white.rand.93528 relatedness/asian-cut.05.keep relatedness/black-cut.05.keep > mix-pop-gwas.id 
+
+```
+
+## GWAS
+
+We use basic covariates only: age, sex and townsend
+
+```{bash eval=F}
+# covariates
+awk '{print $1, $2, $3, $4, $5}' covariates.use > basic-covariates.use
+awk 'NR<=5{print $0}' covariates.use-names > basic-covariates.use
+
+# gwas
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 2
+#SBATCH -t 5:0:0
+
+./ldak5.1 --linear ../gwas-mix/$i-linear-chr-$j \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-mix \
+          --covar ../phen/basic-covariates.use \
+          --keep ../mix-pop-gwas.id \
+          --extract ../gen/snps-unrel-inds.use \
+          --max-threads 2 \
+          --chr $j
+"> sh_script/$i-linear-chr-$j.sh
+done
+done
+# --covar ../phen/covariates.use
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/$i-linear-chr-$j.sh
+done
+done>../job-records/gwas-mix-pop
+
+# check job completion----------------------------------------------------------
+file=job-records/gwas-mix-pop
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# combine results
+# only need .summaries & .pvalues
+for i in {awake,bmi,quals,chron,ever,fvc,height,imp,neur,pulse,reaction,sbp,snoring,hyper}; do 
+for j in {1..22}; do
+if [ $j == 1 ]; then
+  awk '{print $0}' $i-linear-chr-$j.summaries > $i-linear.summaries
+  awk '{print $0}' $i-linear-chr-$j.pvalues > $i-linear.pvalues
+else 
+  awk 'NR>1 {print $0}' $i-linear-chr-$j.summaries >> $i-linear.summaries
+  awk 'NR>1 {print $0}' $i-linear-chr-$j.pvalues >> $i-linear.pvalues
+fi
+done
+done
+
+```
+
+## ldsc intercept
+
+### under gcta
+```{bash eval=F}
+#:::::::::::::
+# using original ldsc
+#:::::::::::::
+
+# format stats for ldsc--------------------------------------------------------- 
+library(vroom)
+options(scipen = 100)
+rs=vroom("doug/ukbb.ldsc", col_names=F)
+phen=c("awake","bmi","chron","ever","fvc",
+       "height","imp","neur","pulse","quals",
+       "reaction","sbp","snoring","hyper", "quals")
+
+for(i in phen){
+  stat=vroom(paste0("gwas-mix/",i,"-linear.summaries"), col_names=T)
+  p=vroom(paste0("gwas-mix/",i,"-linear.pvalues"), col_names=T)
+  m1=match(rs$X1, stat$Predictor)
+  m2=match(rs$X1, p$Predictor)
+  out=data.frame(SNP=rs$X2,
+                 N=stat$n[m1],
+                 Z=(sqrt(stat$Stat)*stat$Direction)[m1],
+                 A1=stat$A1[m1],
+                 A2=stat$A2[m1], 
+                 pval=p$P[m2], stringsAsFactors=F)
+  out=out[complete.cases(out),]
+  write.table(out, paste0("gwas-mix/",i,"-linear-rs.summaries"), 
+  col.names=T, row.names=F, quote=F)
+}
+
+# perform ldsc------------------------------------------------------------------
+mkdir out-mix-pop
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 3
+#SBATCH -t 08:00:0
+
+.././munge_sumstats.py \
+--sumstats ../../gwas-mix/$i-linear-rs.summaries \
+--out ../out-mix-pop/$i \
+--merge-alleles ../w_hm3.snplist
+
+.././ldsc.py \
+--h2 ../out-mix-pop/$i.sumstats.gz \
+--ref-ld-chr ../eur_w_ld_chr/ \
+--w-ld-chr ../eur_w_ld_chr/ \
+--out ../out-mix-pop/$i-ldsc
+">sh_script/ldsc-$i-mix-pop.sh
+done
+
+# submit jobs-------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,reaction,sbp,snoring,hyper,quals}; do
+sbatch -A snpher ../sh_script/ldsc-$i-mix-pop.sh
+done>../../job-records/ldsc-mix-pop
+
+# check job completion----------------------------------------------------------
+file=job-records/ldsc-mix-pop
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+#:::::::::::::
+# using sumher
+#:::::::::::::
+
+# insert genetic distance into bim file-----------------------------------------
+# here we want to use the same genetic distance as for unrelated individuals, i.e., good GWAS
+R
+dat=read.table("gen/geno-mix.bim", header=F, stringsAsFactors=F)
+ref=read.table("gen/geno-unrel.bim", header=F, stringsAsFactors=F)
+m=match(dat$V2,ref$V2)
+out=data.frame(dat$V1, dat$V2, ref$V3[m], dat$V4, dat$V5, dat$V6, stringsAsFactors=F)
+write.table(out,"gen/geno-mix.bim2", col.names=F, row.names=F, quote=F)
+
+mv geno-mix.bim geno-mix.bim0
+mv geno-mix.bim2 geno-mix.bim
+
+# compute tagging under gcta----------------------------------------------------
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 5:0:0
+
+./ldak5.1 --calc-tagging ../tagging-mix-pop/gcta-hapmap3-chr-$j \
+          --bfile ../gen/geno-mix \
+          --ignore-weights YES \
+          --power -1 \
+          --window-cm 1 \
+          --chr $j
+"> sh_script/tagging-gcta-hapmap3-chr$j
+done
+
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/tagging-gcta-hapmap3-chr$j 
+done > ../job-records/tagging-gcta-hadmap3-mix-pop
+
+# check job completion----------------------------------------------------------
+file=job-records/tagging-gcta-hadmap3-mix-pop
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# merge tagging files-----------------------------------------------------------
+rm list.txt
+for j in {1..22}; do 
+echo "tagging-mix-pop/gcta-hapmap3-chr-$j.tagging" >> list.txt
+done
+./ldak5.1 --join-tagging tagging-mix-pop/gcta-hapmap3 --taglist list.txt
+
+# ldsc intercept----------------------------------------------------------------
+mkdir sumher-mix
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 5:0:0
+
+./ldak5.1 --sum-hers ../sumher-mix/$i-sumher-gcta \
+          --tagfile ../tagging-mix-pop/gcta-hapmap3.tagging \
+          --summary ../gwas-mix/$i-linear.summaries \
+          --check-sums NO \
+          --intercept YES
+"> sh_script/$i-sumher-gcta-mix-pop
+done
+
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-sumher-gcta-mix-pop
+done>../job-records/sumher-gcta-mix-pop
+
+# check job completion----------------------------------------------------------
+file=job-records/sumher-gcta-mix-pop
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+```
+
+### under ldak-thin
+
+```{bash eval=F}
+# get weights-------------------------------------------------------------------
+awk < ldak-thin/ldak-thin-hapmap3.in '{print $1, 1}' > ldak-thin/weights.ldak-thin-hapmap3
+
+# calculate tagging under ldak-thin---------------------------------------------
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 40G
+#SBATCH -c 5
+#SBATCH -t 10:0:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --calc-tagging ../tagging-mix-pop/ldak-thin-hapmap3-chr-$j \
+          --bfile ../gen/geno-mix \
+          --weights ../ldak-thin/weights.ldak-thin-hapmap3 \
+          --power -.25 \
+          --window-cm 1 \
+          --chr $j \
+          --save-matrix YES \
+          --max-threads 5
+" > sh_script/tagging-ldak-thin-hapmap3-chr$j.sh
+done
+
+# submit scripts
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/tagging-ldak-thin-hapmap3-chr$j.sh
+done > ../job-records/tagging-ldak-thin-hapmap3
+
+# check job completion----------------------------------------------------------
+file=job-records/tagging-ldak-thin-hapmap3
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# merge tagging files-----------------------------------------------------------
+rm list.txt
+rm matlist.txt
+for j in {1..22}; do 
+echo "tagging-mix-pop/ldak-thin-hapmap3-chr-$j.tagging" >> list.txt
+echo "tagging-mix-pop/ldak-thin-hapmap3-chr-$j.matrix" >> matlist.txt
+done
+./ldak5.1 --join-tagging tagging-mix-pop/ldak-thin-hapmap3 --taglist list.txt --matlist matlist.txt
+
+# ldsc intercept----------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 00:30:0
+
+./ldak5.1 --sum-hers ../sumher-mix/$i-sumher-ldak-thin \
+          --tagfile ../tagging-mix-pop/ldak-thin-hapmap3.tagging \
+          --summary ../gwas-mix/$i-linear.summaries \
+          --check-sums NO \
+          --intercept YES
+"> sh_script/$i-sumher-ldak-thin-mix
+done
+
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-sumher-ldak-thin-mix
+done>../job-records/sumher-ldak-thin-mix
+
+# check job-completion
+file=job-records/sumher-ldak-thin-mix
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+```
+
+### summary
+
+```{bash eval=F}
+
+# without 40 PCs----------------------------------------------------------------------
+# original ldsc
+grep Intercept *ldsc.log | awk '{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}' > ../../summary/ldsc-mix
+
+# sumher under gcta
+grep Intercept_Estimate *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-mix-est
+grep Intercept_SD *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-mix-sd
+cd ../summary/
+paste sumher-gcta-mix-est sumher-gcta-mix-sd | awk '{print $1, $2, $4}' > sumher-gcta-mix
+rm sumher-gcta-mix-sd sumher-gcta-mix-est
+      
+# suhmer under ldak-thin
+grep Intercept_Estimate *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-mix-est
+grep Intercept_SD *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-mix-sd
+cd ../summary/
+paste sumher-ldak-thin-mix-est sumher-ldak-thin-mix-sd | awk '{print $1, $2, $4}' > sumher-ldak-thin-mix
+rm sumher-ldak-thin-mix-sd sumher-ldak-thin-mix-est
+
+# with covariates (i.e., including all 40 PCs)-------------------------------------------
+
+# original ldsc
+grep Intercept *ldsc.log | awk '{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}' > ../../summary/ldsc-mix-with-cov
+
+# sumher under gcta
+grep Intercept_Estimate *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-mix-est
+grep Intercept_SD *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-mix-sd
+cd ../summary/
+paste sumher-gcta-mix-est sumher-gcta-mix-sd | awk '{print $1, $2, $4}' > sumher-gcta-mix-with-cov
+rm sumher-gcta-mix-sd sumher-gcta-mix-est
+      
+# suhmer under ldak-thin
+grep Intercept_Estimate *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-mix-est
+grep Intercept_SD *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-mix-sd
+cd ../summary/
+paste sumher-ldak-thin-mix-est sumher-ldak-thin-mix-sd | awk '{print $1, $2, $4}' > sumher-ldak-thin-mix-with-cov
+rm sumher-ldak-thin-mix-sd sumher-ldak-thin-mix-est
+
+```
+
+## REML
+### making grms
+```{bash eval=F}
+# making grm -------------------------------------------------------------------
+
+#:::
+# under gcta
+#:::
+
+# all snps
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 120G
+#SBATCH -c 10
+#SBATCH -t 20:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/gcta-all-mix \
+          --bfile ../gen/geno-mix \
+          --keep ../mix-pop-gwas.id \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/grm-all-snps-mix
+
+sbatch -A snpher ../sh_script/grm-all-snps-mix > ../job-records/grm-all-snps-mix
+
+# grm by snp blocks: right vs. left
+awk '$1<8 {print $2}' geno-mix.bim > left-mix-pop.snps 
+awk '$1>=8 {print $2}' geno-mix.bim > right-mix-pop.snps
+
+for i in left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 100G
+#SBATCH -c 10
+#SBATCH -t 20:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/gcta-$i-mix \
+          --bfile ../gen/geno-mix \
+          --keep ../mix-pop-gwas.id \
+          --extract ../gen/$i-mix-pop.snps \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/grm-gcta-$i-mix
+done
+
+for i in left right; do
+sbatch -A snpher ../sh_script/grm-gcta-$i-mix 
+done > ../job-records/grm-gcta-by-snps-mix
+
+# check job completion----------------------------------------------------------
+file=job-records/grm-gcta-by-snps-mix
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+#:::
+# under ldak-thin
+#:::
+
+#-----------
+# 1. thin snps
+#-----------
+# we omit this step and use ldak-thin/ldak-thin-hapmap3.in, which was created previously
+# using geno-unrel bfiles. See above.
+
+#----------------------
+# 2. kinship matrix under ldak-thin
+#------------------------
+
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 100G
+#SBATCH -c 10
+#SBATCH -t 20:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/ldak-thin-all-mix \
+          --bfile ../gen/geno-mix \
+          --keep ../mix-pop-gwas.id \
+          --extract ../ldak-thin/ldak-thin-hapmap3.in \
+          --power -0.25 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/ldak-thin-grm-all-snps-mix
+
+sbatch -A snpher ../sh_script/ldak-thin-grm-all-snps-mix> ../job-records/ldak-thin-grm-all-snps-mix
+
+# grm by snp blocks: right vs. left
+
+awk '{split($1, a, /[:]/); if (a[1]<8) print $1}' \
+ ldak-thin/ldak-thin-hapmap3.in > gen/left-ldak-thin-hapmap3.snps 
+awk '{split($1, a, /[:]/); if (a[1]>=8) print $1}' \
+ ldak-thin/ldak-thin-hapmap3.in > gen/right-ldak-thin-hapmap3.snps 
+
+for i in left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 100G
+#SBATCH -c 10
+#SBATCH -t 20:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/ldak-thin-$i-mix \
+          --bfile ../gen/geno-mix \
+          --keep ../mix-pop-gwas.id \
+          --extract ../gen/$i-ldak-thin-hapmap3.snps \
+          --power -0.25 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/ldak-thin-grm-$i-mix
+done
+
+for i in left right; do
+sbatch -A snpher ../sh_script/ldak-thin-grm-$i-mix 
+done > ../job-records/grm-ldak-thin-by-snps-mix
+
+# check job completion----------------------------------------------------------
+file=job-records/grm-ldak-thin-by-snps-mix
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+```
+
+### fast-reml
+```{bash eval=F}
+
+#:::
+# under gcta
+#:::
+
+# make script files-------------------------------------------------------------
+mkdir reml-mix
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 100G
+#SBATCH -c 2
+#SBATCH -t 5:0:0
+
+./ldak5.1 --fast-reml ../reml-mix/$i-gcta-$k \
+          --repetitions 20 \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --covar ../phen/basic-covariates.use \
+          --grm ../kinship/gcta-$k-mix \
+          --max-threads 2 \
+          --single YES
+"> sh_script/$i-reml-mix-gcta-$k-snps
+done
+done
+
+# submit script files-----------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-reml-mix-gcta-$k-snps
+done
+done>../job-records/reml-mix-gcta
+
+# check job completion----------------------------------------------------------
+file=job-records/reml-mix-gcta
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# cancel jobs 
+for i in {1..14}; do
+job=`awk -v i=$i 'NR==i{print $0}' kill-jobs`
+scancel $job
+done
+
+#:::
+# under ldak-thin
+#:::
+
+# make script files-------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 100G
+#SBATCH -c 2
+#SBATCH -t 5:0:0
+
+./ldak5.1 --fast-reml ../reml-mix/$i-ldak-thin-$k \
+          --repetitions 20 \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --covar ../phen/basic-covariates.use \
+          --grm ../kinship/ldak-thin-$k-mix \
+          --max-threads 2 \
+          --single YES
+"> sh_script/$i-reml-mix-ldak-thin-$k-snps
+done
+done
+
+# submit script files-----------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-reml-mix-ldak-thin-$k-snps
+done
+done >../job-records/reml-mix-ldak-thin
+
+# check job completion----------------------------------------------------------
+file=job-records/reml-mix-ldak-thin
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+```
+
+### inflation test
+
+```{bash eval=F}
+#::::::::::::
+# under gcta
+#::::::::::::
+
+# extract h2 estimates ---------------------------------------------------------
+# right
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-mix/$i-gcta-right.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-gcta-mix.right
+rm summary/est.tmp summary/converge.tmp
+
+# left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-mix/$i-gcta-left.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-gcta-mix.left
+rm summary/est.tmp summary/converge.tmp
+
+# all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-mix/$i-gcta-all.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-gcta-mix.all
+rm summary/est.tmp summary/converge.tmp
+
+# inflation test----------------------------------------------------------------
+R
+
+full=read.table(paste0("summary/reml-gcta-mix.all"), header=T)
+left=read.table(paste0("summary/reml-gcta-mix.left"), header=T)
+right=read.table(paste0("summary/reml-gcta-mix.right"), header=T)
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+write.table(out, paste0("summary/reml-gcta-inflation-mix-gwas.txt"),
+            col.names=T, row.names=F, quote=F)
+
+#::::::::::::
+# under ldak-thin
+#::::::::::::
+
+# extract h2 estimates ---------------------------------------------------------
+# right
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-mix/$i-ldak-thin-right.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-ldak-thin-mix.right
+rm summary/est.tmp summary/converge.tmp
+
+# left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-mix/$i-ldak-thin-left.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-ldak-thin-mix.left
+rm summary/est.tmp summary/converge.tmp
+
+# all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=reml-mix/$i-ldak-thin-all.reml
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/est.tmp
+awk '$1=="Converged" {print$2}' $outfile >> summary/converge.tmp
+done
+paste  summary/est.tmp \
+       summary/converge.tmp \
+       | awk 'BEGIN{print "code h2 se converge"}{print i, $0}' \
+       > summary/reml-ldak-thin-mix.all
+rm summary/est.tmp summary/converge.tmp
+
+# inflation test----------------------------------------------------------------
+R
+full=read.table(paste0("summary/reml-ldak-thin-mix.all"), header=T)
+left=read.table(paste0("summary/reml-ldak-thin-mix.left"), header=T)
+right=read.table(paste0("summary/reml-ldak-thin-mix.right"), header=T)
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+
+write.table(out, paste0("summary/reml-ldak-thin-inflation-mix-gwas.txt"),
+            col.names=T, row.names=F, quote=F)
+
+```
+
+
+## HE
+
+### estimation 
+
+```{bash eval=F}
+# regress grm on covariates-----------------------------------------------------
+
+for grm in gcta-all-mix gcta-left-mix gcta-right-mix ldak-thin-all-mix ldak-thin-left-mix ldak-thin-right-mix; do  
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 50G
+#SBATCH -c 5
+#SBATCH -t 10:0:0
+./ldak5.1 --adjust-grm ../kinship/$grm.covar \
+          --grm ../kinship/$grm \
+          --covar ../phen/basic-covariates.use \
+          --max-threads 5
+"> sh_script/$grm-adjust.sh
+done
+
+# submit jobs
+for grm in gcta-all-mix gcta-left-mix gcta-right-mix ldak-thin-all-mix ldak-thin-left-mix ldak-thin-right-mix; do
+sbatch -A snpher ../sh_script/$grm-adjust.sh
+done > ../job-records/grm-adjust-for-HE
+
+# check job completion----------------------------------------------------------
+file=job-records/grm-adjust-for-HE
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# HE under gcta-----------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 1
+#SBATCH -t 00:30:0
+
+./ldak5.1 --he ../he-mix/$i-he-gcta-$k \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --grm ../kinship/gcta-$k-mix.covar \
+          --kinship-details NO \
+          --check-root NO \
+          --covar ../phen/basic-covariates.use \
+          --max-threads 1 \
+          --memory-save YES
+"> sh_script/$i-he-gcta-$k-snps.sh
+done
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-he-gcta-$k-snps.sh
+done
+done > ../job-records/he-gcta
+
+# HE under ldak-thin------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 1
+#SBATCH -t 0:30:0
+
+./ldak5.1 --he ../he-mix/$i-he-ldak-thin-$k \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --grm ../kinship/ldak-thin-$k-mix.covar \
+          --kinship-details NO \
+          --check-root NO \
+          --covar ../phen/basic-covariates.use \
+          --max-threads 1 \
+          --memory-save YES
+"> sh_script/$i-he-ldak-thin-$k-snps.sh
+done
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-he-ldak-thin-$k-snps.sh
+done
+done > ../job-records/he-ldak-thin
+
+```
+
+### summary
+
+```{bash eval=F}
+
+#::::::::::::
+# under gcta
+#::::::::::::
+
+# extract h2 estimates ---------------------------------------------------------
+# right
+rm summary/he-gcta-mix.right 
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-mix/$i-he-gcta-right.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-mix.right
+done
+
+# left
+rm summary/he-gcta-mix.left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-mix/$i-he-gcta-left.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-mix.left
+done
+
+# all
+rm summary/he-gcta-mix.all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-mix/$i-he-gcta-all.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-mix.all
+done
+
+# inflation test----------------------------------------------------------------
+R
+
+full=read.table(paste0("summary/he-gcta-mix.all"), header=F)
+left=read.table(paste0("summary/he-gcta-mix.left"), header=F)
+right=read.table(paste0("summary/he-gcta-mix.right"), header=F)
+names(full)=names(left)=names(right)=c("code","h2","se")
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+write.table(out, paste0("summary/he-gcta-inflation-mix-gwas.txt"),
+            col.names=T, row.names=F, quote=F)
+
+
+#::::::::::::
+# under ldak-thin
+#::::::::::::
+
+# extract h2 estimates ---------------------------------------------------------
+# right
+rm summary/he-ldak-thin-mix.right 
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-mix/$i-he-ldak-thin-right.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-mix.right
+done
+
+# left
+rm summary/he-ldak-thin-mix.left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-mix/$i-he-ldak-thin-left.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-mix.left
+done
+
+# all
+rm summary/he-ldak-thin-mix.all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-mix/$i-he-gcta-all.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-mix.all
+done
+
+# inflation test----------------------------------------------------------------
+R
+
+full=read.table(paste0("summary/he-ldak-thin-mix.all"), header=F)
+left=read.table(paste0("summary/he-ldak-thin-mix.left"), header=F)
+right=read.table(paste0("summary/he-ldak-thin-mix.right"), header=F)
+names(full)=names(left)=names(right)=c("code","h2","se")
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+write.table(out, paste0("summary/he-ldak-thin-inflation-mix-gwas.txt"),
+            col.names=T, row.names=F, quote=F)
+
+```
+
+
+
+<!--chapter:end:03.2-bad-gwas.Rmd-->
+
+
+# UKBB recommended {#ukbb}
+
+## total N = 337k
+
+Here we want to identify the unrelated white individuals recommended by the UKBB.
+
+Email from Florian:
+"We restrict individuals to the ones used for computing the principal components (PCs) in the UK Biobank (Field 22020). These individuals are unrelated and have passed some quality control including removing samples with a missing rate on autosomes larger than 0.02, having a mismatch between inferred sex and self-reported sex, and outliers based on heterozygosity (more details can be found in section S3 of Bycroft et al. (2018))."
+And the White British are from this: https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=22006
+
+So required data fields:
+PC: 22020
+White british: 22006  
+
+```{bash eval=F}
+
+options(scipen = 100)
+# extract data
+head=read.table("phen/ukb45861.header", sep=",", header=F, stringsAsFactors = F)
+# function to get the variables
+get=function(nm){
+  colnum=grep(nm,head,fixed=TRUE)
+  out=data.frame(t(rbind(colnum, head[,colnum])))
+  names(out)=c("column", "field")
+  return (out)
+}
+
+# get the variables
+out=rbind(get('22020-0'), # PC
+      get('22006-0')) # white british
+
+write.table(out,"phen/vars.colnum", col.names=F, row.names=F, sep="\t", quote=F)
+
+# extract dat
+awk -F '","' '(NR==FNR){a[$1];next}{printf "%s\"", $1;for(i in a){printf " \"%s\"", $i};printf "\n"}' phen/vars.colnum phen/ukb45861.csv > phen/ukbb-recommended.dat
+
+# get the id list of the intersect of the two data fields
+dat=read.table("phen/ukbb-recommended.dat", header=T, stringsAsFactors=F)
+id1=dat$eid[dat$X22020.0.0==1 & !is.na(dat$X22020.0.0)]
+id2=dat$eid[dat$X22006.0.0==1 & !is.na(dat$X22006.0.0)]
+out=intersect(id1,id2) # N = 337,462
+write.table(out, "ukbb-recommend.id", col.names=F, row.names=F, quote=F)
+
+```
+
+## QC of hp3 SNPs
+
+Here we do QC to 1.2M hapmap3 SNPs for the UKBB recommended individuals.
+
+```{bash eval=F}
+
+# QC SNPs-----------------------------------------------------------------------
+# stating number of SNPs= 1,184,423
+# note: at this stage, we use all UKBB recommended IDs 
+# we will do a random selection of IDs later.
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 1:0:0
+
+./plink2 --pfile ../gen/geno_plink/bhr$j \
+         --keep ../ukbb-recommend.id \
+         --extract ../doug/ukbb.ldsc \
+         --hwe 0.0001 \
+         --hard-call-threshold .05 \
+         --mach-r2-filter 0.8 2 \
+         --make-bed \
+         --memory 20000 \
+         --out ../gen/tmp/bhr$j-norm \
+         --threads 3
+"> sh_script/chr$j.sh
+done
+
+# submit jobs
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/chr$j.sh
+done > ../job-records/qc-norm
+
+# merge files
+rm bfile-norm.list
+for j in {1..22}; do
+echo  "../gen/tmp/bhr$j-norm" >>bfile-norm.list
+done
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 20:0:0
+./ldak5.1 --make-bed ../gen/geno-norm \
+          --mbfile ../gen/bfile-norm.list \
+          --max-threads 3 \
+          --exclude-dups YES  
+"> sh_script/mbfile-norm.sh
+
+# submit the script
+sbatch -A snpher ../sh_script/mbfile-norm.sh >../job-records/mbfiles-norm
+
+# randomly select 100k individuals 
+shuf ukbb-recommend.id | head -n 100000 > ukbb-recommned-rand.100000
+
+# make bfile for these individuals
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 20:0:0
+./ldak5.1 --make-bed ../gen/geno-norm-100k \
+          --bfile ../gen/geno-norm \
+          --keep ../ukbb-recommned-rand.100000 \
+          --max-threads 3 \
+          --exclude-dups YES  
+"> sh_script/mbfile-norm-100k.sh
+
+# submit the script
+sbatch -A snpher ../sh_script/mbfile-norm-100k.sh >../job-records/mbfiles-norm-100k
+
+
+# MAF & call-rate 
+awk < geno-norm-100k.stats '($5>.01 && $6>=0.95 && NR>1){print $1}' > snps-norm-100k.use
+# m = 1,100,799 SNPs
+ 
+```
+
+## GWAS
+
+```{bash eval=F}
+
+# linear regression-------------------------------------------------------------
+mkdir gwas-norm
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 2
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../gwas-norm/$i-linear \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-norm-100k \
+          --keep ../ukbb-recommned-rand.100000 \
+          --extract ../gen/snps-norm-100k.use \
+          --covar ../phen/covariates.use \
+          --max-threads 2 \
+"> sh_script/$i-linear.sh
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear.sh
+done>../job-records/gwas-norm
+
+# check job completion----------------------------------------------------------
+file=job-records/gwas-norm
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+```
+
+## ldsc intercept
+
+### under gcta
+
+```{bash eval=F}
+
+#:::::::::::::
+# using original ldsc
+#:::::::::::::
+
+# format stats for ldsc--------------------------------------------------------- 
+library(vroom)
+options(scipen = 100)
+rs=vroom("doug/ukbb.ldsc", col_names=F)
+phen=c("awake","bmi","chron","ever","fvc",
+       "height","imp","neur","pulse","quals",
+       "reaction","sbp","snoring","hyper", "quals")
+
+for(i in phen){
+  stat=vroom(paste0("gwas-norm/",i,"-linear.summaries"), col_names=T)
+  p=vroom(paste0("gwas-norm/",i,"-linear.pvalues"), col_names=T)
+  m1=match(rs$X1, stat$Predictor)
+  m2=match(rs$X1, p$Predictor)
+  out=data.frame(SNP=rs$X2,
+                 N=stat$n[m1],
+                 Z=(sqrt(stat$Stat)*stat$Direction)[m1],
+                 A1=stat$A1[m1],
+                 A2=stat$A2[m1], 
+                 pval=p$P[m2], stringsAsFactors=F)
+  out=out[complete.cases(out),]
+  write.table(out, paste0("gwas-norm/",i,"-linear-rs.summaries"), 
+  col.names=T, row.names=F, quote=F)
+}
+
+# perform ldsc------------------------------------------------------------------
+mkdir out-norm-100k
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 3
+#SBATCH -t 24:00:0
+
+.././munge_sumstats.py \
+--sumstats ../../gwas-norm/$i-linear-rs.summaries \
+--out ../out-norm-100k/$i \
+--merge-alleles ../w_hm3.snplist
+
+.././ldsc.py \
+--h2 ../out-norm-100k/$i.sumstats.gz \
+--ref-ld-chr ../eur_w_ld_chr/ \
+--w-ld-chr ../eur_w_ld_chr/ \
+--out ../out-norm-100k/$i-ldsc
+">sh_script/ldsc-$i-norm-100k.sh
+done
+
+# submit jobs-------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,reaction,sbp,snoring,hyper,quals}; do
+sbatch -A snpher ../sh_script/ldsc-$i-norm-100k.sh
+done>../../job-records/ldsc-norm-100k
+
+#:::::::::::::
+# using sumher
+#:::::::::::::
+
+# insert genetic distance into bim file-----------------------------------------
+head geno-norm-100k.fam > small-norm
+
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --mem 8G
+#SBATCH -c 1
+#SBATCH -t 3:00:0
+#SBATCH --constraint \"s04|s05\"
+./plink1.9 --bfile ../gen/geno-norm-100k \
+          --chr $j \
+          --cm-map /home/zhoux/snpher/faststorage/genetic_maps/genetic_map_chr@_combined_b37.txt \
+          --make-bed \
+          --out new$j \
+          --keep ../gen/small-norm
+" > sh_script/map$j
+done
+
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/map$j
+done > genetic-distance-hapmap3
+
+cd /home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/gen
+cat new{1..22}.bim | awk '{print $2, $3}' > maps-hapmap3-norm-100k.txt
+rm new{1..22}.{bim,bed,fam,log}
+
+awk '(NR==FNR){arr[$1]=$2;next}{print $1, $2, arr[$2], $4, $5, $6}' > geno-norm-100k.bim2 maps-hapmap3-norm-100k.txt geno-norm-100k.bim
+mv geno-norm-100k.bim geno-norm-100k.bim0
+mv geno-norm-100k.bim2 geno-norm-100k.bim
+
+# compute tagging under gcta----------------------------------------------------
+mkdir tagging-norm-100k
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 5:0:0
+
+./ldak5.1 --calc-tagging ../tagging-norm-100k/gcta-hapmap3-chr-$j \
+          --bfile ../gen/geno-norm-100k \
+          --ignore-weights YES \
+          --power -1 \
+          --window-cm 1 \
+          --chr $j
+"> sh_script/tagging-gcta-hapmap3-chr$j
+done
+
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/tagging-gcta-hapmap3-chr$j 
+done > ../job-records/tagging-gcta-hapmap3-norm-100k
+
+# check job completion----------------------------------------------------------
+file=job-records/tagging-gcta-hapmap3-norm-100k
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# merge tagging files-----------------------------------------------------------
+rm list.txt
+for j in {1..22}; do 
+echo "tagging-norm-100k/gcta-hapmap3-chr-$j.tagging" >> list.txt
+done
+./ldak5.1 --join-tagging tagging-norm-100k/gcta-hapmap3 --taglist list.txt
+
+# ldsc intercept----------------------------------------------------------------
+mkdir sumher-norm-100k
+dirin1=tagging-norm-100k
+dirin2=gwas-norm
+dirout=sumher-norm-100k
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 5:0:0
+
+./ldak5.1 --sum-hers ../$dirout/$i-sumher-gcta \
+          --tagfile ../$dirin1/gcta-hapmap3.tagging \
+          --summary ../$dirin2/$i-linear.summaries \
+          --check-sums NO \
+          --intercept YES
+"> sh_script/$i-sumher-gcta
+done
+
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-sumher-gcta
+done>../job-records/sumher-gcta-norm-100k
+
+```
+
+### under ldak-thin
+
+```{bash eval=F}
+
+# get weights-------------------------------------------------------------------
+awk < ldak-thin/ldak-thin-norm.in '{print $1, 1}' > ldak-thin/weights.ldak-thin-norm
+
+# calculate tagging under ldak-thin---------------------------------------------
+dirout=tagging-norm-100k
+filein1=geno-norm-100k
+filein2=weights.ldak-thin-norm
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 40G
+#SBATCH -c 5
+#SBATCH -t 10:0:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --calc-tagging ../$dirout/ldak-thin-hapmap3-chr-$j \
+          --bfile ../gen/$filein1 \
+          --weights ../ldak-thin/$filein2 \
+          --power -.25 \
+          --window-cm 1 \
+          --chr $j \
+          --save-matrix YES \
+          --max-threads 5
+" > sh_script/tagging-ldak-thin-hapmap3-chr$j.sh
+done
+
+# submit scripts
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/tagging-ldak-thin-hapmap3-chr$j.sh
+done > ../job-records/tagging-ldak-thin-norm-100k
+
+# check job completion----------------------------------------------------------
+file=job-records/tagging-ldak-thin-norm-100k
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# merge tagging files-----------------------------------------------------------
+rm list.txt
+rm matlist.txt
+for j in {1..22}; do
+echo "tagging-norm-100k/ldak-thin-hapmap3-chr-$j.tagging" >> list.txt
+echo "tagging-norm-100k/ldak-thin-hapmap3-chr-$j.matrix" >> matlist.txt
+done
+dirout=tagging-norm-100k
+./ldak5.1 --join-tagging $dirout/ldak-thin-hapmap3 --taglist list.txt --matlist matlist.txt
+
+# ldsc intercept----------------------------------------------------------------
+dirin1=tagging-norm-100k
+dirin2=gwas-norm
+dirout=sumher-norm-100k
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 00:30:0
+
+./ldak5.1 --sum-hers ../$dirout/$i-sumher-ldak-thin \
+          --tagfile ../$dirin1/ldak-thin-hapmap3.tagging \
+          --summary ../$dirin2/$i-linear.summaries \
+          --check-sums NO \
+          --intercept YES
+"> sh_script/$i-sumher-ldak-thin
+done
+
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-sumher-ldak-thin
+done>../job-records/sumher-ldak-thin-norm-100k
+
+```
+
+### summary
+
+```{bash eval=F}
+
+# original ldsc
+grep Intercept *ldsc.log | awk '{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}' > ../../summary/ldsc-norm-100k
+
+# sumher under gcta
+grep Intercept_Estimate *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-norm-100k-est
+grep Intercept_SD *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-norm-100k-sd
+cd ../summary/
+paste sumher-gcta-norm-100k-est sumher-gcta-norm-100k-sd | awk '{print $1, $2, $4}' > sumher-gcta-norm-100k
+      
+# suhmer under ldak-thin
+grep Intercept_Estimate *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-norm-100k-est
+grep Intercept_SD *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-norm-100k-sd
+cd ../summary/
+paste sumher-ldak-thin-norm-100k-est sumher-ldak-thin-norm-100k-sd | awk '{print $1, $2, $4}' > sumher-ldak-thin-norm-100k
+
+```
+
+## HE
+
+### making grms
+
+```{bash eval=F}
+
+# making grm -------------------------------------------------------------------
+
+#:::
+# under gcta
+#:::
+
+# all snps
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 08:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/gcta-all-norm \
+          --bfile ../gen/geno-norm-100k \
+          --extract ../gen/snps-norm-100k.use \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/grm-all-snps-norm
+
+sbatch -A snpher ../sh_script/grm-all-snps-norm > ../job-records/grm-all-snps-norm
+
+# grm by snp blocks: right vs. left
+awk '$1<8 {print $2}' geno-norm-100k.bim > left-snps-norm-100k.use 
+awk '$1>=8 {print $2}' geno-norm-100k.bim > right-snps-norm-100k.use
+
+for i in left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 20:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/gcta-$i-norm \
+          --bfile ../gen/geno-norm-100k \
+          --extract ../gen/$i-snps-norm-100k.use \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/grm-gcta-$i-norm
+done
+
+for i in left right; do
+sbatch -A snpher ../sh_script/grm-gcta-$i-norm 
+done > ../job-records/grm-gcta-by-snps-norm 
+
+#:::
+# under ldak-thin
+#:::
+
+#-----------
+# 1. thin snps
+#-----------
+
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 4
+#SBATCH -t 4:0:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --max-threads 4 \
+          --window-prune 0.98 \
+          --window-kb 100 \
+          --extract ../gen/snps-norm-100k.use \
+          --bfile ../gen/geno-norm-100k \
+          --thin ../ldak-thin/chr$j-norm \
+          --chr $j
+" > sh_script/ldak-thin$j-norm
+done
+
+# submit script
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/ldak-thin$j-norm
+done > ../job-records/ldak-thin-norm
+
+# check job completion---
+file=job-records/ldak-thin-norm
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# combine snp list
+cat ldak-thin/chr{1..22}-norm.in > ldak-thin/ldak-thin-norm.in
+
+#----------------------
+# 2. kinship matrix under ldak-thin
+#------------------------
+
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 08:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/ldak-thin-all-norm \
+          --bfile ../gen/geno-norm-100k \
+          --extract ../ldak-thin/ldak-thin-norm.in \
+          --power -0.25 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/ldak-thin-grm-all-snps-norm
+
+sbatch -A snpher ../sh_script/ldak-thin-grm-all-snps-norm > ../job-records/ldak-thin-grm-all-snps-norm
+
+# grm by snp blocks: right vs. left
+
+awk '{split($1, a, /[:]/); if (a[1]<8) print $1}' \
+ ldak-thin/ldak-thin-norm.in > gen/left-ldak-thin-norm.snps 
+awk '{split($1, a, /[:]/); if (a[1]>=8) print $1}' \
+ ldak-thin/ldak-thin-norm.in > gen/right-ldak-thin-norm.snps 
+
+for i in left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 08:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/ldak-thin-$i-norm \
+          --bfile ../gen/geno-norm-100k \
+          --extract ../gen/$i-ldak-thin-norm.snps \
+          --power -0.25 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/ldak-thin-grm-$i-norm
+done
+
+for i in left right; do
+sbatch -A snpher ../sh_script/ldak-thin-grm-$i-norm 
+done > ../job-records/grm-ldak-thin-by-snps-norm 
+
+```
+
+### estimation
+
+NEED To check what covariates to adjust for HE
+basic.covariates.use or covariates.use?
+
+```{bash eval=F}
+# regress grm on covariates-----------------------------------------------------
+
+for grm in gcta-all-norm gcta-left-norm gcta-right-norm ldak-thin-all-norm ldak-thin-left-norm ldak-thin-right-norm; do  
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 50G
+#SBATCH -c 5
+#SBATCH -t 10:0:0
+./ldak5.1 --adjust-grm ../kinship/$grm.covar \
+          --grm ../kinship/$grm \
+          --covar ../phen/covariates.use \
+          --max-threads 5
+"> sh_script/$grm-adjust.sh
+done
+
+# submit jobs
+for grm in gcta-all-norm gcta-left-norm gcta-right-norm ldak-thin-all-norm ldak-thin-left-norm ldak-thin-right-norm; do
+sbatch -A snpher ../sh_script/$grm-adjust.sh
+done > ../job-records/grm-adjust-for-HE
+
+# check job completion----------------------------------------------------------
+file=job-records/grm-adjust-for-HE
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# HE under gcta-----------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 1
+#SBATCH -t 00:30:0
+
+./ldak5.1 --he ../he-norm/$i-he-gcta-$k \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --grm ../kinship/gcta-$k-norm.covar \
+          --kinship-details NO \
+          --check-root NO \
+          --covar ../phen/covariates.use \
+          --max-threads 1 \
+          --memory-save YES
+"> sh_script/$i-he-gcta-$k-snps-norm.sh
+done
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-he-gcta-$k-snps-norm.sh
+done
+done > ../job-records/he-gcta
+
+# HE under ldak-thin------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 1
+#SBATCH -t 0:30:0
+
+./ldak5.1 --he ../he-norm/$i-he-ldak-thin-$k \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --grm ../kinship/ldak-thin-$k-norm.covar \
+          --kinship-details NO \
+          --check-root NO \
+          --covar ../phen/covariates.use \
+          --max-threads 1 \
+          --memory-save YES
+"> sh_script/$i-he-ldak-thin-$k-norm.sh
+done
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-he-ldak-thin-$k-norm.sh
+done
+done > ../job-records/he-ldak-thin
+
+```
+
+### summary
+
+```{bash eval=F}
+
+#::::::::::::
+# under gcta
+#::::::::::::
+
+# extract h2 estimates ---------------------------------------------------------
+# right
+rm summary/he-gcta-norm.right 
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-norm/$i-he-gcta-right.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-norm.right
+done
+
+# left
+rm summary/he-gcta-norm.left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-norm/$i-he-gcta-left.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-norm.left
+done
+
+# all
+rm summary/he-gcta-norm.all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-norm/$i-he-gcta-all.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-norm.all
+done
+
+# inflation test----------------------------------------------------------------
+R
+
+full=read.table(paste0("summary/he-gcta-norm.all"), header=F)
+left=read.table(paste0("summary/he-gcta-norm.left"), header=F)
+right=read.table(paste0("summary/he-gcta-norm.right"), header=F)
+names(full)=names(left)=names(right)=c("code","h2","se")
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+write.table(out, paste0("summary/he-gcta-inflation-norm.txt"),
+            col.names=T, row.names=F, quote=F)
+
+
+#::::::::::::
+# under ldak-thin
+#::::::::::::
+
+# extract h2 estimates ---------------------------------------------------------
+# right
+rm summary/he-ldak-thin-norm.right 
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-norm/$i-he-ldak-thin-right.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-norm.right
+done
+
+# left
+rm summary/he-ldak-thin-norm.left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-norm/$i-he-ldak-thin-left.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-norm.left
+done
+
+# all
+rm summary/he-ldak-thin-norm.all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-norm/$i-he-gcta-all.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-norm.all
+done
+
+# inflation test----------------------------------------------------------------
+R
+
+full=read.table(paste0("summary/he-ldak-thin-norm.all"), header=F)
+left=read.table(paste0("summary/he-ldak-thin-norm.left"), header=F)
+right=read.table(paste0("summary/he-ldak-thin-norm.right"), header=F)
+names(full)=names(left)=names(right)=c("code","h2","se")
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+write.table(out, paste0("summary/he-ldak-thin-inflation-norm.txt"),
+            col.names=T, row.names=F, quote=F)
+
+```
+
+
+
+
+<!--chapter:end:03.3-ukbb-recommended.Rmd-->
+
+
+# control GWAS {#control}
+
+Here we perform GWASs that serve as the control group for the good versus bad GWASs comparison. For the bad GWASs (section \@ref(bad)), we have a total of 100k individuals, which consist of 93,528 unrelated white British (from the good GWASs) and 6,472 blacks and Asians. We observed inflation of the test statistics. Although unlikely, it is still possible that some of the inflation is due to random errors. To rule out this possibility [or to ascertain that the observed inflation is due to population stratification not random errors], we used the same 93,528 unrelated white British but replaced the 6,472 blacks and Asians with unrelated white British that were not included in the good GWASs.
+
+## ID list
+
+We used previously obtained id lists (see section \@ref(goodid) for the good GWAS id list and section \@ref(badid) for the bad GWAS id list ) to derive the id list for the control GWASs. These are:
+
+  * `overlap-complete-cases.id`: N = 147,008. Unrelated white British who have no missing data for all 14 traits and covariates.
+  * `rand.100000`: ID list for the good gwas. Randomly selected from `overlap-complete-cases.id`  
+  * `white.rand.93528`: unrelated whites as a part of the bad gwas ID list. Randomly selected from `rand.100000`
+  
+Here are the steps:
+
+1. identify IDs from `overlap-complete-cases.id` not included in `rand.100000`.
+2. randomly select 6,472 from the identified IDs.
+3. combine `white.rand.93528` with the randomly selected 6,472 IDs.  
+
+```{R eval=F}
+
+options(scipen = 100)
+id1=read.table("unrelated/overlap-complete-cases.id", header=F)
+id2=read.table("unrelated/rand.100000", header=F)
+id3=read.table("white.rand.93528", header=F)
+
+# pool for selection
+common=intersect(id1$V1, id2$V1)
+pool=id1[!id1$V1%in%common,]
+
+# randomly select 6,472 from the pool
+sel=pool[sample(dim(pool)[1], 6472, replace=F),]
+
+#  combine with 'white.rand.93528'
+write.table(rbind(sel,id3), 'control-gwas.id', quote=F, row.names=F, col.names=F)
+
+```
+
+## QC of hp3 SNPs
+
+```{bash eval=F}
+
+# QC SNPs-----------------------------------------------------------------------
+# stating number of SNPs= 1,184,423 
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 1:0:0
+
+./plink2 --pfile ../gen/geno_plink/bhr$j \
+         --keep ../control-gwas.id \
+         --extract ../doug/ukbb.ldsc \
+         --hwe 0.0001 \
+         --hard-call-threshold .05 \
+         --mach-r2-filter 0.8 2 \
+         --make-bed \
+         --memory 20000 \
+         --out ../gen/tmp/bhr$j \
+         --threads 3
+"> sh_script/chr$j.sh
+done
+
+# submit jobs
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/chr$j.sh
+done > ../job-records/qc-control-gwas
+
+file=job-records/qc-control-gwas
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# merge files
+rm bfile-control-gwas.list
+for j in {1..22}; do
+echo  "../gen/tmp/bhr$j" >>bfile-control-gwas.list
+done
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 40:0:0
+./ldak5.1 --make-bed ../gen/geno-control \
+          --mbfile ../gen/bfile-control-gwas.list \
+          --max-threads 3 \
+          --exclude-dups YES  
+"> sh_script/mbfile-control.sh
+
+# submit the script
+sbatch -A snpher ../sh_script/mbfile-control.sh >../job-records/mbfiles-control-gwas
+
+# MAF & call-rate 
+awk < geno-control.stats '($5>.01 && $6>=0.95 && NR>1){print $1}' > snps-control-gwas.use
+# m = 1,103,182 SNPs
+
+```
+
+## GWAS
+
+```{bash eval=F}
+
+# linear regression-------------------------------------------------------------
+mkdir gwas-control
+
+dirout=gwas-control
+filein=geno-control
+id=control-gwas.id
+snp=snps-control-gwas.use
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 2
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../$dirout/$i-linear \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/$filein \
+          --keep ../$id \
+          --extract ../gen/$snp \
+          --covar ../phen/covariates.use \
+          --max-threads 2 \
+"> sh_script/$i-linear.sh
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear.sh
+done>../job-records/gwas-control
+
+# check job completion----------------------------------------------------------
+file=job-records/gwas-control
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+```
+
+## ldsc intercept
+
+### under gcta
+
+```{bash eval=F}
+# UP TO HERE
+
+#:::::::::::::
+# using original ldsc
+#:::::::::::::
+
+# format stats for ldsc--------------------------------------------------------- 
+library(vroom)
+options(scipen = 100)
+rs=vroom("doug/ukbb.ldsc", col_names=F)
+phen=c("awake","bmi","chron","ever","fvc",
+       "height","imp","neur","pulse","quals",
+       "reaction","sbp","snoring","hyper", "quals")
+
+for(i in phen){
+  stat=vroom(paste0("gwas-control/",i,"-linear.summaries"), col_names=T)
+  p=vroom(paste0("gwas-control/",i,"-linear.pvalues"), col_names=T)
+  m1=match(rs$X1, stat$Predictor)
+  m2=match(rs$X1, p$Predictor)
+  out=data.frame(SNP=rs$X2,
+                 N=stat$n[m1],
+                 Z=(sqrt(stat$Stat)*stat$Direction)[m1],
+                 A1=stat$A1[m1],
+                 A2=stat$A2[m1], 
+                 pval=p$P[m2], stringsAsFactors=F)
+  out=out[complete.cases(out),]
+  write.table(out, paste0("gwas-control/",i,"-linear-rs.summaries"), 
+  col.names=T, row.names=F, quote=F)
+}
+
+# perform ldsc------------------------------------------------------------------
+mkdir out-control
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 3
+#SBATCH -t 24:00:0
+
+.././munge_sumstats.py \
+--sumstats ../../gwas-control/$i-linear-rs.summaries \
+--out ../out-control/$i \
+--merge-alleles ../w_hm3.snplist
+
+.././ldsc.py \
+--h2 ../out-control/$i.sumstats.gz \
+--ref-ld-chr ../eur_w_ld_chr/ \
+--w-ld-chr ../eur_w_ld_chr/ \
+--out ../out-control/$i-ldsc
+">sh_script/ldsc-$i-control.sh
+done
+
+# submit jobs-------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,reaction,sbp,snoring,hyper,quals}; do
+sbatch -A snpher ../sh_script/ldsc-$i-control.sh
+done>../../job-records/ldsc-control
+
+#:::::::::::::
+# using sumher
+#:::::::::::::
+
+# insert genetic distance into bim file-----------------------------------------
+head geno-control.fam > small-control
+
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --mem 8G
+#SBATCH -c 1
+#SBATCH -t 3:00:0
+#SBATCH --constraint \"s04|s05\"
+./plink1.9 --bfile ../gen/geno-control \
+          --chr $j \
+          --cm-map /home/zhoux/snpher/faststorage/genetic_maps/genetic_map_chr@_combined_b37.txt \
+          --make-bed \
+          --out new$j \
+          --keep ../gen/small-control
+" > sh_script/map$j
+done
+
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/map$j
+done > genetic-distance-hapmap3
+
+cd /home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/gen
+cat new{1..22}.bim | awk '{print $2, $3}' > maps-hapmap3-control.txt
+rm new{1..22}.{bim,bed,fam,log}
+
+awk '(NR==FNR){arr[$1]=$2;next}{print $1, $2, arr[$2], $4, $5, $6}' > geno-control.bim2 maps-hapmap3-control.txt geno-control.bim
+mv geno-control.bim geno-control.bim0
+mv geno-control.bim2 geno-control.bim
+
+# compute tagging under gcta----------------------------------------------------
+mkdir tagging-control
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 5:0:0
+
+./ldak5.1 --calc-tagging ../tagging-control/gcta-hapmap3-chr-$j \
+          --bfile ../gen/geno-control \
+          --ignore-weights YES \
+          --power -1 \
+          --window-cm 1 \
+          --chr $j
+"> sh_script/tagging-gcta-hapmap3-chr$j
+done
+
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/tagging-gcta-hapmap3-chr$j 
+done > ../job-records/tagging-gcta-hapmap3-control
+
+# check job completion----------------------------------------------------------
+file=job-records/tagging-gcta-hapmap3-control
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# merge tagging files-----------------------------------------------------------
+rm list.txt
+for j in {1..22}; do 
+echo "tagging-control/gcta-hapmap3-chr-$j.tagging" >> list.txt
+done
+./ldak5.1 --join-tagging tagging-control/gcta-hapmap3 --taglist list.txt
+
+# ldsc intercept----------------------------------------------------------------
+mkdir sumher-control
+dirin1=tagging-control
+dirin2=gwas-control
+dirout=sumher-control
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 5:0:0
+
+./ldak5.1 --sum-hers ../$dirout/$i-sumher-gcta \
+          --tagfile ../$dirin1/gcta-hapmap3.tagging \
+          --summary ../$dirin2/$i-linear.summaries \
+          --check-sums NO \
+          --intercept YES
+"> sh_script/$i-sumher-gcta
+done
+
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-sumher-gcta
+done>../job-records/sumher-gcta-control
+
+```
+
+### under ldak-thin
+
+```{bash eval=F}
+
+# get weights-------------------------------------------------------------------
+awk < ldak-thin/ldak-thin-control.in '{print $1, 1}' > ldak-thin/weights.ldak-thin-control
+
+# calculate tagging under ldak-thin---------------------------------------------
+dirout=tagging-control
+filein1=geno-control
+filein2=weights.ldak-thin-control
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 40G
+#SBATCH -c 5
+#SBATCH -t 10:0:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --calc-tagging ../$dirout/ldak-thin-hapmap3-chr-$j \
+          --bfile ../gen/$filein1 \
+          --weights ../ldak-thin/$filein2 \
+          --power -.25 \
+          --window-cm 1 \
+          --chr $j \
+          --save-matrix YES \
+          --max-threads 5
+" > sh_script/tagging-ldak-thin-hapmap3-chr$j.sh
+done
+
+# submit scripts
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/tagging-ldak-thin-hapmap3-chr$j.sh
+done > ../job-records/tagging-ldak-thin-control
+
+# check job completion----------------------------------------------------------
+file=job-records/tagging-ldak-thin-control
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# merge tagging files-----------------------------------------------------------
+rm list.txt
+rm matlist.txt
+for j in {1..22}; do
+echo "tagging-control/ldak-thin-hapmap3-chr-$j.tagging" >> list.txt
+echo "tagging-control/ldak-thin-hapmap3-chr-$j.matrix" >> matlist.txt
+done
+dirout=tagging-control
+./ldak5.1 --join-tagging $dirout/ldak-thin-hapmap3 --taglist list.txt --matlist matlist.txt
+
+# ldsc intercept----------------------------------------------------------------
+dirin1=tagging-control
+dirin2=gwas-control
+dirout=sumher-control
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 00:30:0
+
+./ldak5.1 --sum-hers ../$dirout/$i-sumher-ldak-thin \
+          --tagfile ../$dirin1/ldak-thin-hapmap3.tagging \
+          --summary ../$dirin2/$i-linear.summaries \
+          --check-sums NO \
+          --intercept YES
+"> sh_script/$i-sumher-ldak-thin
+done
+
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-sumher-ldak-thin
+done>../job-records/sumher-ldak-thin-control
+
+```
+
+### summary
+
+```{bash eval=F}
+
+nm=control
+
+# original ldsc
+cd ldsc/out-control
+grep Intercept *ldsc.log | awk '{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}' > ../../summary/ldsc-$nm
+
+# sumher under gcta
+cd sumher-control
+grep Intercept_Estimate *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-$nm-est
+grep Intercept_SD *gcta.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-gcta-$nm-sd
+cd ../summary/
+paste sumher-gcta-$nm-est sumher-gcta-$nm-sd | awk '{print $1, $2, $4}' > sumher-gcta-$nm
+      
+# suhmer under ldak-thin
+grep Intercept_Estimate *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-$nm-est
+grep Intercept_SD *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-$nm-sd
+cd ../summary/
+paste sumher-ldak-thin-$nm-est sumher-ldak-thin-$nm-sd | awk '{print $1, $2, $4}' > sumher-ldak-thin-$nm
+
+```
+
+## HE
+
+### making grms
+
+```{bash eval=F}
+
+# making grm -------------------------------------------------------------------
+
+#:::
+# under gcta
+#:::
+fileout=gcta-all-control
+filein=geno-control
+snp=snps-control-gwas.use
+
+# all snps
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 08:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/$fileout \
+          --bfile ../gen/$filein \
+          --extract ../gen/$snp \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/grm-all-snps
+
+sbatch -A snpher ../sh_script/grm-all-snps > ../job-records/grm-all-snps-control
+
+# grm by snp blocks: right vs. left
+awk '$1<8 {print $2}' geno-control.bim > left-snps-control.use 
+awk '$1>=8 {print $2}' geno-control.bim > right-snps-control.use
+
+filein=geno-control
+for i in left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 20:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/gcta-$i-control \
+          --bfile ../gen/$filein \
+          --extract ../gen/$i-snps-control.use \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/grm-gcta-$i
+done
+
+for i in left right; do
+sbatch -A snpher ../sh_script/grm-gcta-$i 
+done > ../job-records/grm-gcta-by-snps-control
+
+#:::
+# under ldak-thin
+#:::
+
+#-----------
+# 1. thin snps
+#-----------
+snp=snps-control-gwas.use
+filein=geno-control
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 4
+#SBATCH -t 4:0:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --max-threads 4 \
+          --window-prune 0.98 \
+          --window-kb 100 \
+          --extract ../gen/$snp \
+          --bfile ../gen/$filein \
+          --thin ../ldak-thin/chr$j-control \
+          --chr $j
+" > sh_script/ldak-thin$j
+done
+
+# submit script
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/ldak-thin$j
+done > ../job-records/ldak-thin-control
+
+# check job completion---
+file=job-records/ldak-thin-control
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# combine snp list
+cat ldak-thin/chr{1..22}-control.in > ldak-thin/ldak-thin-control.in
+
+#----------------------
+# 2. kinship matrix under ldak-thin
+#-----------------------
+
+fileout=ldak-thin-all-control
+filein=geno-control
+snp=ldak-thin-control.in
+
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 08:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/$fileout \
+          --bfile ../gen/$filein \
+          --extract ../ldak-thin/$snp \
+          --power -0.25 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/ldak-thin-grm-all-snps
+
+sbatch -A snpher ../sh_script/ldak-thin-grm-all-snps > ../job-records/ldak-thin-grm-all-snps-control
+
+# grm by snp blocks: right vs. left
+
+awk '{split($1, a, /[:]/); if (a[1]<8) print $1}' \
+ ldak-thin/ldak-thin-control.in > gen/left-ldak-thin-control.snps 
+awk '{split($1, a, /[:]/); if (a[1]>=8) print $1}' \
+ ldak-thin/ldak-thin-control.in > gen/right-ldak-thin-control.snps 
+
+for i in left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 10
+#SBATCH -t 08:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 10 \
+          --calc-kins-direct ../kinship/ldak-thin-$i-control \
+          --bfile ../gen/geno-control \
+          --extract ../gen/$i-ldak-thin-control.snps \
+          --power -0.25 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/ldak-thin-grm-$i
+done
+
+for i in left right; do
+sbatch -A snpher ../sh_script/ldak-thin-grm-$i 
+done > ../job-records/grm-ldak-thin-by-snps-control
+
+```
+
+### estimation
+
+NEED To check what covariates to adjust for HE
+basic.covariates.use or covariates.use?
+
+```{bash eval=F}
+# regress grm on covariates-----------------------------------------------------
+
+for grm in gcta-all-control gcta-left-control gcta-right-control ldak-thin-all-control ldak-thin-left-control ldak-thin-right-control; do  
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 50G
+#SBATCH -c 5
+#SBATCH -t 10:0:0
+./ldak5.1 --adjust-grm ../kinship/$grm.covar \
+          --grm ../kinship/$grm \
+          --covar ../phen/covariates.use \
+          --max-threads 5
+"> sh_script/$grm-adjust.sh
+done
+
+# submit jobs
+for grm in gcta-all-control gcta-left-control gcta-right-control ldak-thin-all-control ldak-thin-left-control ldak-thin-right-control; do
+sbatch -A snpher ../sh_script/$grm-adjust.sh
+done > ../job-records/grm-adjust-for-HE-control
+
+# check job completion----------------------------------------------------------
+file=job-records/grm-adjust-for-HE-control
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# HE under gcta-----------------------------------------------------------------
+
+mkdir he-control
+dirout=he-control
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 1
+#SBATCH -t 00:30:0
+
+./ldak5.1 --he ../$dirout/$i-he-gcta-$k \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --grm ../kinship/gcta-$k-control.covar \
+          --kinship-details NO \
+          --check-root NO \
+          --covar ../phen/covariates.use \
+          --max-threads 1 \
+          --memory-save YES
+"> sh_script/$i-he-gcta-$k-snps-control.sh
+done
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-he-gcta-$k-snps-control.sh
+done
+done > ../job-records/he-gcta-control
+
+# HE under ldak-thin------------------------------------------------------------
+dirout=he-control
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 1
+#SBATCH -t 0:30:0
+
+./ldak5.1 --he ../$dirout/$i-he-ldak-thin-$k \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --grm ../kinship/ldak-thin-$k-control.covar \
+          --kinship-details NO \
+          --check-root NO \
+          --covar ../phen/covariates.use \
+          --max-threads 1 \
+          --memory-save YES
+"> sh_script/$i-he-ldak-thin-$k-control.sh
+done
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+for k in all left right; do
+sbatch -A snpher ../sh_script/$i-he-ldak-thin-$k-control.sh
+done
+done > ../job-records/he-ldak-thin-control
+
+```
+
+### summary
+
+```{bash eval=F}
+
+#::::::::::::
+# under gcta
+#::::::::::::
+
+nm=control
+# extract h2 estimates ---------------------------------------------------------
+# right
+rm summary/he-gcta-$nm.right 
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-$nm/$i-he-gcta-right.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-$nm.right
+done
+
+# left
+rm summary/he-gcta-$nm.left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-$nm/$i-he-gcta-left.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-$nm.left
+done
+
+# all
+rm summary/he-gcta-$nm.all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-$nm/$i-he-gcta-all.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-gcta-$nm.all
+done
+
+# inflation test----------------------------------------------------------------
+R
+
+full=read.table(paste0("summary/he-gcta-control.all"), header=F)
+left=read.table(paste0("summary/he-gcta-control.left"), header=F)
+right=read.table(paste0("summary/he-gcta-control.right"), header=F)
+names(full)=names(left)=names(right)=c("code","h2","se")
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+write.table(out, paste0("summary/he-gcta-inflation-control.txt"),
+            col.names=T, row.names=F, quote=F)
+
+
+#::::::::::::
+# under ldak-thin
+#::::::::::::
+
+nm=control
+# extract h2 estimates ---------------------------------------------------------
+# right
+rm summary/he-ldak-thin-$nm.right 
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-$nm/$i-he-ldak-thin-right.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-$nm.right
+done
+
+# left
+rm summary/he-ldak-thin-$nm.left
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-$nm/$i-he-ldak-thin-left.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-$nm.left
+done
+
+# all
+rm summary/he-ldak-thin-$nm.all
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+outfile=he-$nm/$i-he-gcta-all.he
+awk -v i=$i '$1=="Her_All" {print i, $2, $3}' $outfile >> summary/he-ldak-thin-$nm.all
+done
+
+# inflation test----------------------------------------------------------------
+R
+
+full=read.table(paste0("summary/he-ldak-thin-control.all"), header=F)
+left=read.table(paste0("summary/he-ldak-thin-control.left"), header=F)
+right=read.table(paste0("summary/he-ldak-thin-control.right"), header=F)
+names(full)=names(left)=names(right)=c("code","h2","se")
+# some analyses did not complete --> match dataframes
+dim(full);dim(left);dim(right)
+common=intersect(full$code, left$code)
+common=intersect(common, right$code)
+m1=match(common, right$code)
+m2=match(common, full$code)
+m3=match(common, left$code)
+right=right[m1,]
+full=full[m2,]
+left=left[m3,]
+
+for(i in 1:dim(full)[1]){
+    
+    est1=left$h2[i]
+    sd1=left$se[i]
+    est2=right$h2[i]
+    sd2=right$se[i]
+    est=full$h2[i]
+    sd=full$se[i]
+    N=100000
+    d1=rnorm(N,est1,sd1)
+    d2=rnorm(N,est2,sd2)
+    d=rnorm(N,est,sd)
+    p=1-mean(d1+d2-d>=0)
+    
+    out0=data.frame(code=full$code[i],
+                    right_est=est2,
+                    right_sd=sd2,
+                    left_est=est1,
+                    left_sd=sd1,
+                    all_est=est,
+                    all_sd=sd,
+                    p_inflation=p)
+   if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+write.table(out, paste0("summary/he-ldak-thin-inflation-control.txt"),
+            col.names=T, row.names=F, quote=F)
+
+```
+
+
+
+
+
+<!--chapter:end:03.4-control-gwas.Rmd-->
+

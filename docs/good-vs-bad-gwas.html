@@ -214,12 +214,11 @@
 <p>Here we investigate the inflation in test statistics from the bad GWASs. We want to find out 1) if the inflation is constant; 2) if it can be predicted in some way.</p>
 <div id="constant-inflation" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> constant inflation?</h2>
-<p>The inflation in test statistics does not seem to be constant. We plotted the chi-square test statistic from the bad GWASs against those from the good GWASs. If the inflation is constant, we would expect all points deviate from the diagonal line to a similar extent. However, this is not evident ( See Fig <a href="good-vs-bad-gwas.html#fig:good-vs-bad">3.1</a> for bmi and neur). Interestingly, instead of being inflated, some test statistics shrink relative to those in the good GWASs.</p>
-<p>This observation implies that the constant inflation in GWAS statistics assumed by the underlying model of ldsc regression is incorrect.</p>
-<div class="figure" style="text-align: left"><span id="fig:good-vs-bad"></span>
-<img src="fig-to-insert/bmi-gwas-stat-good-vs-bad.png" alt="Test statistics of bad and good GWASs" width="100%" /><img src="fig-to-insert/neur-gwas-stat-good-vs-bad.png" alt="Test statistics of bad and good GWASs" width="100%" />
+<p>The inflation in GWAS test statistics are not always constant, as assumed by LDSC. Below We plotted the chi-square test statistics from the bad (colored in red), good (orange), and control (gray) GWASs as a function of LD score ( Fig <a href="good-vs-bad-gwas.html#fig:good-vs-bad-by-ldscorebin">3.1</a> ). The linear model assumed by LDSC is only appropriate for five traits, namely chron, quals, snoring and quals. For these traits, LDSC could account for the inflation due to confouding (i.e., intercept) and the inflation due to polygenity (i.e., slope). However, LDSD is not adequate for other traits, where non-linear pattern of test statistics as a function of LD score is observed. More specifically, for these traits, test statistics for SNPs with a low LD score are much more inflated than would be expected by LDSC.</p>
+<div class="figure" style="text-align: left"><span id="fig:good-vs-bad-by-ldscorebin"></span>
+<img src="fig-to-insert/gwas-stat-by-ldscbin.png" alt="GWAS test statistics by LD score." width="100%" />
 <p class="caption">
-Figure 3.1: Test statistics of bad and good GWASs
+Figure 3.1: GWAS test statistics by LD score.
 </p>
 </div>
 
