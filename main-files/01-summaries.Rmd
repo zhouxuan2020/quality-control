@@ -14,11 +14,10 @@ Code for the good GWAS can be found in section \@ref(good). Basically, we used 1
 # organize data
 #:::::
 
-setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
-ldsc=read.table("ldsc-good", header=F, stringsAsFactors = F)
-sumher_gcta=read.table("sumher-gcta-good", header=F, 
+ldsc=read.table("summary/ldsc-good", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("summary/sumher-gcta-good", header=F, 
                        stringsAsFactors = F)
-sumher_ldak=read.table("sumher-ldak-thin-good", header=F,
+sumher_ldak=read.table("summary/sumher-ldak-thin-good", header=F,
                        stringsAsFactors = F)
 
 # get p-values for Wald tests
@@ -67,15 +66,13 @@ all %>%
 ### Haseman Elston Regression
 
 ```{r he-good, echo=F}
-
 #:::::
 # organize data
 #:::::
 
-setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
-he_gcta=read.table("he-gcta-inflation-unrel-gwas.txt", header=T,
+he_gcta=read.table("summary/he-gcta-inflation-unrel-gwas.txt", header=T,
                        stringsAsFactors = F)
-he_ldak=read.table("he-ldak-thin-inflation-unrel-gwas.txt", header=T,
+he_ldak=read.table("summary/he-ldak-thin-inflation-unrel-gwas.txt", header=T,
                        stringsAsFactors = F)
 names(he_gcta)[1]="trait"
 names(he_ldak)[1]="trait"
@@ -120,11 +117,10 @@ Code for the bad GWAS can be found in section \@ref(bad). Basically, we used 100
 # organize data
 #:::::
 
-setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
-ldsc=read.table("ldsc-mix", header=F, stringsAsFactors = F)
-sumher_gcta=read.table("sumher-gcta-mix", header=F, 
+ldsc=read.table("summary/ldsc-mix", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("summary/sumher-gcta-mix", header=F, 
                        stringsAsFactors = F)
-sumher_ldak=read.table("sumher-ldak-thin-mix", header=F,
+sumher_ldak=read.table("summary/sumher-ldak-thin-mix", header=F,
                        stringsAsFactors = F)
 
 # get p-values for Wald tests
@@ -179,10 +175,9 @@ all %>%
 # organize data
 #:::::
 
-setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
-he_gcta=read.table("he-gcta-inflation-mix-gwas.txt", header=T,
+he_gcta=read.table("summary/he-gcta-inflation-mix-gwas.txt", header=T,
                        stringsAsFactors = F)
-he_ldak=read.table("he-ldak-thin-inflation-mix-gwas.txt", header=T,
+he_ldak=read.table("summary/he-ldak-thin-inflation-mix-gwas.txt", header=T,
                        stringsAsFactors = F)
 names(he_gcta)[1]="trait"
 names(he_ldak)[1]="trait"
@@ -227,11 +222,10 @@ Code for this GWAS can be found in section \@ref(ukbb). Basically, we randomly s
 # organize data
 #:::::
 
-setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
-ldsc=read.table("ldsc-norm-100k", header=F, stringsAsFactors = F)
-sumher_gcta=read.table("sumher-gcta-norm-100k", header=F, 
+ldsc=read.table("summary/ldsc-norm-100k", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("summary/sumher-gcta-norm-100k", header=F, 
                        stringsAsFactors = F)
-sumher_ldak=read.table("sumher-ldak-thin-norm-100k", header=F,
+sumher_ldak=read.table("summary/sumher-ldak-thin-norm-100k", header=F,
                        stringsAsFactors = F)
 
 # get p-values for Wald tests
@@ -280,15 +274,12 @@ all %>%
 ### Haseman Elston Regression
 
 ```{r he-ukbb, echo=F}
-
 #:::::
 # organize data
 #:::::
-
-setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
-he_gcta=read.table("he-gcta-inflation-norm.txt", header=T,
+he_gcta=read.table("summary/he-gcta-inflation-norm.txt", header=T,
                        stringsAsFactors = F)
-he_ldak=read.table("he-ldak-thin-inflation-norm.txt", header=T,
+he_ldak=read.table("summary/he-ldak-thin-inflation-norm.txt", header=T,
                        stringsAsFactors = F)
 names(he_gcta)[1]="trait"
 names(he_ldak)[1]="trait"
@@ -333,11 +324,10 @@ Code for this GWAS can be found in section \@ref(control). In short, we performe
 # organize data
 #:::::
 
-setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
-ldsc=read.table("ldsc-control", header=F, stringsAsFactors = F)
-sumher_gcta=read.table("sumher-gcta-control", header=F, 
+ldsc=read.table("summary/ldsc-control", header=F, stringsAsFactors = F)
+sumher_gcta=read.table("summary/sumher-gcta-control", header=F, 
                        stringsAsFactors = F)
-sumher_ldak=read.table("sumher-ldak-thin-control", header=F,
+sumher_ldak=read.table("summary/sumher-ldak-thin-control", header=F,
                        stringsAsFactors = F)
 
 # get p-values for Wald tests
@@ -391,10 +381,9 @@ all %>%
 # organize data
 #:::::
 
-setwd('/Users/xuanzhou/Dropbox/github/quality-control/main-files/summary')
-he_gcta=read.table("he-gcta-inflation-norm.txt", header=T,
+he_gcta=read.table("summary/he-gcta-inflation-norm.txt", header=T,
                        stringsAsFactors = F)
-he_ldak=read.table("he-ldak-thin-inflation-norm.txt", header=T,
+he_ldak=read.table("summary/he-ldak-thin-inflation-norm.txt", header=T,
                        stringsAsFactors = F)
 names(he_gcta)[1]="trait"
 names(he_ldak)[1]="trait"
