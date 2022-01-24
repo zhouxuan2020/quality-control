@@ -24,7 +24,7 @@ control-gwas
 ldsc-sumher-3
 haseman-elston-regression-3
 good-vs-bad-gwas
-constant-inflation
+test-statistics-ld-score
 good
 goodid
 extract-covariates
