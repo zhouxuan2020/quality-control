@@ -282,11 +282,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Here we investigate the inflation in test statistics from the bad GWASs. We want to find out 1) if the inflation is constant; 2) if it can be predicted in some way.</p>
 <div id="test-statistics-ld-score" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> test statistics ~ LD score</h2>
-<p>The inflation in GWAS test statistics due to confouding is not always constant, as assumed by LDSC. Below we plotted the chi-square test statistics from the bad (colored in red), good (orange), and control (gray) GWASs as a function of LD score ( Fig <a href="good-vs-bad-gwas.html#fig:good-vs-bad-by-ldscorebin">3.1</a> ). The linear model assumed by LDSC is only appropriate for four traits, namely chron, pulse, quals, and snoring. For these traits, LDSC accounts for the inflation due to confouding (i.e., intercept) and the inflation due to polygenity (i.e., slope). However, LDSD is inadequate for other traits, where the inflation is non-linear. More specifically, for these traits, the test statistics for SNPs with a low LD score are much more inflated than would be expected by LDSC.</p>
+<p>The inflation in GWAS test statistics due to confouding is not always constant, as assumed by LDSC. Below we plotted the chi-square test statistics from the bad (colored in red), good (orange), and control (gray) GWASs as a function of LD score ( Fig <a href="good-vs-bad-gwas.html#fig:good-vs-bad-by-ldscorebin">3.1</a> ). The linear model assumed by LDSC is only appropriate for four traits, namely chron, pulse, quals, and snoring. For these traits, LDSC accounts for the inflation due to confouding (i.e., intercept) and the inflation due to polygenity (i.e., slope). However, LDSD is inadequate for other traits, where the inflation is non-linear. More specifically, for these traits, the test statistics for SNPs with a low LD score are much more inflated than would be expected by LDSC. Thus, it seems that ldsc can detect inflation in test statistics due to confouding but cannot be used to correct the inflation for some traits.</p>
 <div class="figure" style="text-align: left"><span style="display:block;" id="fig:good-vs-bad-by-ldscorebin"></span>
-<img src="fig-to-insert/gwas-stat-by-ldscbin.png" alt="GWAS test statistics by LD score." width="100%" />
+<img src="fig-to-insert/gwas-stat-by-ldscbin.png" alt="Test statistics by LD score for good, bad and control GWASs." width="100%" />
 <p class="caption">
-Figure 3.1: GWAS test statistics by LD score.
+Figure 3.1: Test statistics by LD score for good, bad and control GWASs.
 </p>
 </div>
 
