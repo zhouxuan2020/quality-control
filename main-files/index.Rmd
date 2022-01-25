@@ -19,7 +19,37 @@ description: " "
 
 We propose a new method to detect the inflation of GWAS test statistics caused by population stratification (& relatedness). Here we document all analyses and results.
 
-[insert details about the method here]
+Existing methods: use summary statistics to detect and correct inflation.
+
+  * genomic inflation factor: 
+    * $S_{median}$/$\chi^2 (1)_{median}$ > 1 ? 
+    * does not account for inflation due to polygenicity
+    
+  * LD score regression (LDSC):
+    * $S_{j} = 1 + n_{j}a +  (n_{j}\sum_{i}^{k}r_{ji}^2) (q_{j}/Q) h_{snp} + \epsilon_{j}$
+      * under GCTA: $q_{j}=1, Q=\sum_{j}^{m}q_j=m$ 
+      * under LDAK-thin: $q_{j}=I_{j}[f_{j}(1-f_{j})]^{0.75}$
+    * separates the inflation due to confounding (intercept) and the inflation due to polygenicity (slope)
+    * but the inflation due to confouding may not be constant but SNP specific instead [@holmes]. So summary statistics may not be used to detect the inflation due to confouding after all. 
+
+Proposed Method: use individual level data to detect inflation and maybe extended to summary statistics (?).
+    
+  * $T = (\hat{h}_{right}^2 + \hat{h}_{left}^2) - \hat{h}_{whole}^2 > 0$
+  * $h_{right}, h_{left}, h_{whole}$ are estimated using haseman elston regression
+  * equivalent to testing $tr(K_{left}K_{right}) = 0$ ?
+
+Design:
+
+  * good GWAS: 100k unrelated white British
+  * bad GWAS: 93k unrelated white British + 7k blacks & Asians 
+  * control GWAS: 93k unrelated white British + 7k unrelated white Brish (not included in the good GWAS)
+  
+Results: So far the proposed method does not stand out from existing methods
+
+  * good GWAS: no sig. inflation due to confouding
+  * bad GWAS: sig. inflation due to confouding
+  * control GWAS: no sig. inflation due to confouding
+
 
 ## Frequently used commands
 
