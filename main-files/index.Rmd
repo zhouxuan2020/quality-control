@@ -17,39 +17,47 @@ description: " "
 
 ## Topic
 
-We propose a new method to detect the inflation of GWAS test statistics caused by population stratification (& relatedness). Here we document all analyses and results.
+We propose a new method to detect the inflation of GWAS test statistics caused by population stratification (& cryptic relatedness). Here we document all analyses and results.
 
-Existing methods: use summary statistics to detect and correct inflation.
+**Background**:
 
-  * genomic inflation factor: 
+1. Existing methods: use summary statistics to detect and correct inflation in GWAS test statistics.
+
+  * genomic inflation factor:  
     * $S_{median}$/$\chi^2 (1)_{median}$ > 1 ? 
     * does not account for inflation due to polygenicity
     
-  * LD score regression (LDSC):
+  * LD score regression [@bulik2015ld] (LDSC):
     * $S_{j} = 1 + n_{j}a +  (n_{j}\sum_{i}^{k}r_{ji}^2) (q_{j}/Q) h_{snp} + \epsilon_{j}$
       * under GCTA: $q_{j}=1, Q=\sum_{j}^{m}q_j=m$ 
       * under LDAK-thin: $q_{j}=I_{j}[f_{j}(1-f_{j})]^{0.75}$
-    * separates the inflation due to confounding (intercept) and the inflation due to polygenicity (slope)
-    * but the inflation due to confouding may not be constant but SNP specific instead [@holmes]. So summary statistics may not be used to detect the inflation due to confouding after all. 
+    * It separates the inflation due to confounding (intercept) and the inflation due to polygenicity (slope).
+    * The inflation due to confounding may not be constant but SNP specific instead [@holmes]. Hence, summary statistics may not be good after all to detect the inflation due to confounding. 
 
-Proposed Method: use individual level data to detect inflation and maybe extended to summary statistics (?).
+2. Proposed Method: use individual level data to detect inflation and maybe extended to summary statistics (?).
     
-  * $T = (\hat{h}_{right}^2 + \hat{h}_{left}^2) - \hat{h}_{whole}^2 > 0$
-  * $h_{right}, h_{left}, h_{whole}$ are estimated using haseman elston regression
-  * equivalent to testing $tr(K_{left}K_{right}) = 0$ ?
-
-Design:
-
-  * good GWAS: 100k unrelated white British
-  * bad GWAS: 93k unrelated white British + 7k blacks & Asians 
-  * control GWAS: 93k unrelated white British + 7k unrelated white Brish (not included in the good GWAS)
+  * $T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} > 0$ ?
+  * Confounding causes cross-chromosome correlations, such that each part of the genome tags each other. Hence, for confounded GWASs, $T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} > 0$.
+  * when $h_{right}^2, h_{left}^2, h_{whole}^2$ are estimated using Haseman Elston regression, this test accounts to testing $tr(K_{left}K_{right}) = 0$ or average of SNP correlation^2 = 0.  
   
-Results: So far the proposed method does not stand out from existing methods
 
-  * good GWAS: no sig. inflation due to confouding
-  * bad GWAS: sig. inflation due to confouding
-  * control GWAS: no sig. inflation due to confouding
+**Design**:
 
+  * good GWASs: 100k unrelated white British
+  * bad or confounding GWASs: 93k unrelated white British + 7k blacks & Asians 
+  * control GWASs: 93k unrelated white British + 7k unrelated white British (who are not included in the good GWASs)
+  * We also checked if confouding is evidence for the UKBB recommended white British (a randomly selection of  100k out of 337k), on which most UKBB GWASs are based on. 
+  
+**Results**:
+
+So far the proposed and existing methods perform equally well.
+
+  * good GWAS: no sig. inflation due to confounding
+  * bad GWAS: sig. inflation due to confounding
+  * control GWAS: no sig. inflation due to confounding
+  * UKBB recommended: no evidence of inflation by any of the methods.
+
+The proposed method does not seem to be more advantageous than existing methods. However, this does not mean that the existing methods are without problems. The inflation may not be constant as assumed by existing methods.
 
 ## Frequently used commands
 

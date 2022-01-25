@@ -308,43 +308,52 @@ div.csl-indent {
 <h1><span class="header-section-number">1</span> General Info</h1>
 <div id="topic" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Topic</h2>
-<p>We propose a new method to detect the inflation of GWAS test statistics caused by population stratification (&amp; relatedness). Here we document all analyses and results.</p>
-<p>Existing methods: use summary statistics to detect and correct inflation.</p>
+<p>We propose a new method to detect the inflation of GWAS test statistics caused by population stratification (&amp; cryptic relatedness). Here we document all analyses and results.</p>
+<p><strong>Background</strong>:</p>
+<ol style="list-style-type: decimal">
+<li>Existing methods: use summary statistics to detect and correct inflation in GWAS test statistics.</li>
+</ol>
 <ul>
 <li>genomic inflation factor:
 <ul>
 <li><span class="math inline">\(S_{median}\)</span>/<span class="math inline">\(\chi^2 (1)_{median}\)</span> &gt; 1 ?</li>
 <li>does not account for inflation due to polygenicity</li>
 </ul></li>
-<li>LD score regression (LDSC):
+<li>LD score regression <span class="citation">(<a href="#ref-bulik2015ld" role="doc-biblioref">Bulik-Sullivan et al., 2015</a>)</span> (LDSC):
 <ul>
 <li><span class="math inline">\(S_{j} = 1 + n_{j}a + (n_{j}\sum_{i}^{k}r_{ji}^2) (q_{j}/Q) h_{snp} + \epsilon_{j}\)</span>
 <ul>
 <li>under GCTA: <span class="math inline">\(q_{j}=1, Q=\sum_{j}^{m}q_j=m\)</span></li>
 <li>under LDAK-thin: <span class="math inline">\(q_{j}=I_{j}[f_{j}(1-f_{j})]^{0.75}\)</span></li>
 </ul></li>
-<li>separates the inflation due to confounding (intercept) and the inflation due to polygenicity (slope)</li>
-<li>but the inflation due to confouding may not be constant but SNP specific instead <span class="citation">(<a href="#ref-holmes" role="doc-biblioref">Holmes et al., 2019</a>)</span>. So summary statistics may not be used to detect the inflation due to confouding after all.</li>
+<li>It separates the inflation due to confounding (intercept) and the inflation due to polygenicity (slope).</li>
+<li>The inflation due to confounding may not be constant but SNP specific instead <span class="citation">(<a href="#ref-holmes" role="doc-biblioref">Holmes et al., 2019</a>)</span>. Hence, summary statistics may not be good after all to detect the inflation due to confounding.</li>
 </ul></li>
 </ul>
-<p>Proposed Method: use individual level data to detect inflation and maybe extended to summary statistics (?).</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Proposed Method: use individual level data to detect inflation and maybe extended to summary statistics (?).</li>
+</ol>
 <ul>
-<li><span class="math inline">\(T = (\hat{h}_{right}^2 + \hat{h}_{left}^2) - \hat{h}_{whole}^2 &gt; 0\)</span></li>
-<li><span class="math inline">\(h_{right}, h_{left}, h_{whole}\)</span> are estimated using haseman elston regression</li>
-<li>equivalent to testing <span class="math inline">\(tr(K_{left}K_{right}) = 0\)</span> ?</li>
+<li><span class="math inline">\(T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} &gt; 0\)</span> ?</li>
+<li>Confounding causes cross-chromosome correlations, such that each part of the genome tags each other. Hence, for confounded GWASs, <span class="math inline">\(T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} &gt; 0\)</span>.</li>
+<li>when <span class="math inline">\(h_{right}^2, h_{left}^2, h_{whole}^2\)</span> are estimated using Haseman Elston regression, this test accounts to testing <span class="math inline">\(tr(K_{left}K_{right}) = 0\)</span> or average of SNP correlation^2 = 0.</li>
 </ul>
-<p>Design:</p>
+<p><strong>Design</strong>:</p>
 <ul>
-<li>good GWAS: 100k unrelated white British</li>
-<li>bad GWAS: 93k unrelated white British + 7k blacks &amp; Asians</li>
-<li>control GWAS: 93k unrelated white British + 7k unrelated white Brish (not included in the good GWAS)</li>
+<li>good GWASs: 100k unrelated white British</li>
+<li>bad or confounding GWASs: 93k unrelated white British + 7k blacks &amp; Asians</li>
+<li>control GWASs: 93k unrelated white British + 7k unrelated white British (who are not included in the good GWASs)</li>
+<li>We also checked if confouding is evidence for the UKBB recommended white British (a randomly selection of 100k out of 337k), on which most UKBB GWASs are based on.</li>
 </ul>
-<p>Results: So far the proposed method does not stand out from existing methods</p>
+<p><strong>Results</strong>:</p>
+<p>So far the proposed and existing methods perform equally well.</p>
 <ul>
-<li>good GWAS: no sig. inflation due to confouding</li>
-<li>bad GWAS: sig. inflation due to confouding</li>
-<li>control GWAS: no sig. inflation due to confouding</li>
+<li>good GWAS: no sig. inflation due to confounding</li>
+<li>bad GWAS: sig. inflation due to confounding</li>
+<li>control GWAS: no sig. inflation due to confounding</li>
+<li>UKBB recommended: no evidence of inflation by any of the methods.</li>
 </ul>
+<p>The proposed method does not seem to be more advantageous than existing methods. However, this does not mean that the existing methods are without problems. The inflation may not be constant as assumed by existing methods.</p>
 </div>
 <div id="frequently-used-commands" class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span> Frequently used commands</h2>
@@ -358,6 +367,9 @@ div.csl-indent {
 </div>
 <h3>References</h3>
 <div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="ref-bulik2015ld" class="csl-entry">
+Bulik-Sullivan, B. K., Loh, P.-R., Finucane, H. K., Ripke, S., Yang, J., Patterson, N., Daly, M. J., Price, A. L., &amp; Neale, B. M. (2015). LD score regression distinguishes confounding from polygenicity in genome-wide association studies. <em>Nature Genetics</em>, <em>47</em>(3), 291–295.
+</div>
 <div id="ref-holmes" class="csl-entry">
 Holmes, J. B., Speed, D., &amp; Balding, D. J. (2019). Summary statistic analyses can mistake confounding bias for heritability. <em>Genetic Epidemiology</em>, <em>43</em>(8), 930–940. https://doi.org/<a href="https://doi.org/10.1002/gepi.22259">https://doi.org/10.1002/gepi.22259</a>
 </div>
