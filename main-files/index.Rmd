@@ -34,7 +34,7 @@ We propose a new method to detect the inflation of GWAS test statistics caused b
     * It separates the inflation due to confounding (intercept) and the inflation due to polygenicity (slope).
     * The inflation due to confounding may not be constant but SNP specific instead [@holmes]. Hence, summary statistics may not be good after all to detect the inflation due to confounding. 
 
-2. Proposed Method: use individual level data to detect inflation and maybe extended to summary statistics (?).
+2. Proposed method: use individual level data to detect inflation and maybe extended to summary statistics (?).
     
   * $T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} > 0$ ?
   * Confounding causes cross-chromosome correlations, such that each part of the genome tags each other. Hence, for confounded GWASs, $T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} > 0$.
@@ -46,7 +46,7 @@ We propose a new method to detect the inflation of GWAS test statistics caused b
   * good GWASs: 100k unrelated white British
   * bad or confounding GWASs: 93k unrelated white British + 7k blacks & Asians 
   * control GWASs: 93k unrelated white British + 7k unrelated white British (who are not included in the good GWASs)
-  * We also checked if confouding is evidence for the UKBB recommended white British (a randomly selection of  100k out of 337k), on which most UKBB GWASs are based on. 
+  * We also checked if confouding is evident for the UKBB recommended white British (a randomly selection of  100k out of 337k), on which most UKBB GWASs are based. 
   
 **Results**:
 
