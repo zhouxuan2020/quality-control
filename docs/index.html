@@ -302,7 +302,7 @@ div.csl-indent {
 <div id="header">
 <h1 class="title">Quality control</h1>
 <p class="author"><em></em></p>
-<p class="date"><em>updated on 2022-01-25</em></p>
+<p class="date"><em>updated on 2022-01-26</em></p>
 </div>
 <div id="general-info" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> General Info</h1>
@@ -336,12 +336,13 @@ div.csl-indent {
 <ul>
 <li><span class="math inline">\(T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} &gt; 0\)</span> ?</li>
 <li>Confounding causes cross-chromosome correlations, such that each part of the genome tags each other. Hence, for confounded GWASs, <span class="math inline">\(T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} &gt; 0\)</span>.</li>
-<li>when <span class="math inline">\(h_{right}^2, h_{left}^2, h_{whole}^2\)</span> are estimated using Haseman Elston regression, this test accounts to testing <span class="math inline">\(tr(K_{left}K_{right}) = 0\)</span> or average of SNP correlation^2 = 0.</li>
+<li>when <span class="math inline">\(h_{right}^2, h_{left}^2, h_{whole}^2\)</span> are estimated using Haseman Elston regression, this test accounts to testing <span class="math inline">\(tr(K_{left}K_{right}) = 0\)</span> or average SNP correlation^2 (between left and right) = 0.</li>
+<li>Challenge: We do not know the distribution of <span class="math inline">\(T\)</span> under the null (i.e., no confounding). Consequently, the test is an approximate test. We hope to get an exact test. Also we want to simplify the test.</li>
 </ul>
 <p><strong>Design</strong>:</p>
 <ul>
 <li>good GWASs: 100k unrelated white British</li>
-<li>bad or confounding GWASs: 93k unrelated white British + 7k blacks &amp; Asians</li>
+<li>bad or confounded GWASs: 93k unrelated white British + 7k blacks &amp; Asians</li>
 <li>control GWASs: 93k unrelated white British + 7k unrelated white British (who are not included in the good GWASs)</li>
 <li>We also checked if confouding is evident for the UKBB recommended white British (a randomly selection of 100k out of 337k), on which most UKBB GWASs are based.</li>
 </ul>
