@@ -210,7 +210,6 @@ all %>%
 
 ```
 
-
 ## UKBB recommended
 
 Code for this GWAS can be found in section \@ref(ukbb). Basically, we randomly selected 100k white British from a total of 337k individuals that are recommended by the UKBB (i.e., QCed by the UKBB). We performed the GWASs and tested the test statistics for inflation using ldsc, sumher and the proposed method (based on individual level data using Haseman Elston regression).
@@ -315,7 +314,6 @@ all %>%
 ## Control GWAS
 
 Code for this GWAS can be found in section \@ref(control). In short, we performed GWASs that serve as the control for the good versus bad GWASs comparison. This to ascertain that the observed inflation of bad GWAS test statistics is due to population stratification not random errors. We used a total of 100k that included 93,528 unrelated white British (also included in the bad and good GWAS) and 6,472 unrelated white British that were neither included in the good GWASs nor bad GWASs.
-
 
 ### ldsc & sumher
 

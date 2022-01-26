@@ -1,5 +1,5 @@
 ---
-title: "Quality control"
+title: "GWAS Quality Control"
 author: " "
 date: "updated on `r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -39,7 +39,7 @@ We propose a new method to detect the inflation of GWAS test statistics caused b
   * $T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} > 0$ ?
   * Confounding causes cross-chromosome correlations, such that each part of the genome tags each other. Hence, for confounded GWASs, $T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} > 0$.
   * when $h_{right}^2, h_{left}^2, h_{whole}^2$ are estimated using Haseman Elston regression, this test amounts to testing $tr(K_{left}K_{right}) = 0$ or average SNP correlation^2 (between left and right) = 0.
-  * Challenge: We do not know the distribution of $T$ under the null (i.e., no confounding). Consequently, the test is an approximate test. We hope to get an exact test. Also we want to simplify the test.
+  * Challenge: We do not know the distribution of $T$ under the null (i.e., no confounding). Consequently, the test is an approximate test. We hope to get an exact test. Also we want to simplify the test by directly testing if $tr(K_{left}K_{right}) = 0$ or average SNP correlation^2 (between left and right) = 0. Still we need to work out the distribution of average SNP correlation^2 (between left and right) under the null (i.e., no association). 
 
 **Design**:
 

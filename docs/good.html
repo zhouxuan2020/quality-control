@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>4 Good GWAS | Quality control</title>
-  <meta name="description" content="4 Good GWAS | Quality control" />
+  <title>5 Good GWAS | GWAS Quality Control</title>
+  <meta name="description" content="5 Good GWAS | GWAS Quality Control" />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="4 Good GWAS | Quality control" />
+  <meta property="og:title" content="5 Good GWAS | GWAS Quality Control" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="4 Good GWAS | Quality control" />
+  <meta name="twitter:title" content="5 Good GWAS | GWAS Quality Control" />
   
   
   
@@ -29,7 +29,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="good-vs-bad-gwas.html"/>
+<link rel="prev" href="mathematical-details.html"/>
 <link rel="next" href="bad.html"/>
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -193,90 +193,91 @@ div.csl-indent {
 <ul>
 <li class="chapter" data-level="3.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-statistics-ld-score"><i class="fa fa-check"></i><b>3.1</b> test statistics ~ LD score</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="good.html"><a href="good.html"><i class="fa fa-check"></i><b>4</b> Good GWAS</a>
+<li class="chapter" data-level="4" data-path="mathematical-details.html"><a href="mathematical-details.html"><i class="fa fa-check"></i><b>4</b> Mathematical Details</a></li>
+<li class="chapter" data-level="5" data-path="good.html"><a href="good.html"><i class="fa fa-check"></i><b>5</b> Good GWAS</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="good.html"><a href="good.html#goodid"><i class="fa fa-check"></i><b>4.1</b> QC of hp3 SNPs</a></li>
-<li class="chapter" data-level="4.2" data-path="good.html"><a href="good.html#extract-covariates"><i class="fa fa-check"></i><b>4.2</b> extract covariates</a></li>
-<li class="chapter" data-level="4.3" data-path="good.html"><a href="good.html#gwas"><i class="fa fa-check"></i><b>4.3</b> GWAS</a></li>
-<li class="chapter" data-level="4.4" data-path="good.html"><a href="good.html#ldsc-intercept"><i class="fa fa-check"></i><b>4.4</b> ldsc intercept</a>
+<li class="chapter" data-level="5.1" data-path="good.html"><a href="good.html#goodid"><i class="fa fa-check"></i><b>5.1</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="5.2" data-path="good.html"><a href="good.html#extract-covariates"><i class="fa fa-check"></i><b>5.2</b> extract covariates</a></li>
+<li class="chapter" data-level="5.3" data-path="good.html"><a href="good.html#gwas"><i class="fa fa-check"></i><b>5.3</b> GWAS</a></li>
+<li class="chapter" data-level="5.4" data-path="good.html"><a href="good.html#ldsc-intercept"><i class="fa fa-check"></i><b>5.4</b> ldsc intercept</a>
 <ul>
-<li class="chapter" data-level="4.4.1" data-path="good.html"><a href="good.html#under-gcta"><i class="fa fa-check"></i><b>4.4.1</b> under gcta</a></li>
-<li class="chapter" data-level="4.4.2" data-path="good.html"><a href="good.html#under-ldak-thin"><i class="fa fa-check"></i><b>4.4.2</b> under ldak-thin</a></li>
-<li class="chapter" data-level="4.4.3" data-path="good.html"><a href="good.html#summary"><i class="fa fa-check"></i><b>4.4.3</b> summary</a></li>
+<li class="chapter" data-level="5.4.1" data-path="good.html"><a href="good.html#under-gcta"><i class="fa fa-check"></i><b>5.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="5.4.2" data-path="good.html"><a href="good.html#under-ldak-thin"><i class="fa fa-check"></i><b>5.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="5.4.3" data-path="good.html"><a href="good.html#summary"><i class="fa fa-check"></i><b>5.4.3</b> summary</a></li>
 </ul></li>
-<li class="chapter" data-level="4.5" data-path="good.html"><a href="good.html#reml"><i class="fa fa-check"></i><b>4.5</b> REML</a>
+<li class="chapter" data-level="5.5" data-path="good.html"><a href="good.html#reml"><i class="fa fa-check"></i><b>5.5</b> REML</a>
 <ul>
-<li class="chapter" data-level="4.5.1" data-path="good.html"><a href="good.html#making-grms"><i class="fa fa-check"></i><b>4.5.1</b> making grms</a></li>
-<li class="chapter" data-level="4.5.2" data-path="good.html"><a href="good.html#fast-reml"><i class="fa fa-check"></i><b>4.5.2</b> fast-reml</a></li>
-<li class="chapter" data-level="4.5.3" data-path="good.html"><a href="good.html#inflation-test"><i class="fa fa-check"></i><b>4.5.3</b> inflation test</a></li>
+<li class="chapter" data-level="5.5.1" data-path="good.html"><a href="good.html#making-grms"><i class="fa fa-check"></i><b>5.5.1</b> making grms</a></li>
+<li class="chapter" data-level="5.5.2" data-path="good.html"><a href="good.html#fast-reml"><i class="fa fa-check"></i><b>5.5.2</b> fast-reml</a></li>
+<li class="chapter" data-level="5.5.3" data-path="good.html"><a href="good.html#inflation-test"><i class="fa fa-check"></i><b>5.5.3</b> inflation test</a></li>
 </ul></li>
-<li class="chapter" data-level="4.6" data-path="good.html"><a href="good.html#he"><i class="fa fa-check"></i><b>4.6</b> HE</a>
+<li class="chapter" data-level="5.6" data-path="good.html"><a href="good.html#he"><i class="fa fa-check"></i><b>5.6</b> HE</a>
 <ul>
-<li class="chapter" data-level="4.6.1" data-path="good.html"><a href="good.html#estimation"><i class="fa fa-check"></i><b>4.6.1</b> estimation</a></li>
-<li class="chapter" data-level="4.6.2" data-path="good.html"><a href="good.html#summary-1"><i class="fa fa-check"></i><b>4.6.2</b> summary</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="5" data-path="bad.html"><a href="bad.html"><i class="fa fa-check"></i><b>5</b> Bad GWAS</a>
-<ul>
-<li class="chapter" data-level="5.1" data-path="bad.html"><a href="bad.html#badid"><i class="fa fa-check"></i><b>5.1</b> ID list</a>
-<ul>
-<li class="chapter" data-level="5.1.1" data-path="bad.html"><a href="bad.html#initial-selection"><i class="fa fa-check"></i><b>5.1.1</b> initial selection</a></li>
-<li class="chapter" data-level="5.1.2" data-path="bad.html"><a href="bad.html#relatedness-filtering"><i class="fa fa-check"></i><b>5.1.2</b> relatedness filtering</a></li>
-<li class="chapter" data-level="5.1.3" data-path="bad.html"><a href="bad.html#final-list"><i class="fa fa-check"></i><b>5.1.3</b> final list</a></li>
-</ul></li>
-<li class="chapter" data-level="5.2" data-path="bad.html"><a href="bad.html#gwas-1"><i class="fa fa-check"></i><b>5.2</b> GWAS</a></li>
-<li class="chapter" data-level="5.3" data-path="bad.html"><a href="bad.html#ldsc-intercept-1"><i class="fa fa-check"></i><b>5.3</b> ldsc intercept</a>
-<ul>
-<li class="chapter" data-level="5.3.1" data-path="bad.html"><a href="bad.html#under-gcta-1"><i class="fa fa-check"></i><b>5.3.1</b> under gcta</a></li>
-<li class="chapter" data-level="5.3.2" data-path="bad.html"><a href="bad.html#under-ldak-thin-1"><i class="fa fa-check"></i><b>5.3.2</b> under ldak-thin</a></li>
-<li class="chapter" data-level="5.3.3" data-path="bad.html"><a href="bad.html#summary-2"><i class="fa fa-check"></i><b>5.3.3</b> summary</a></li>
-</ul></li>
-<li class="chapter" data-level="5.4" data-path="bad.html"><a href="bad.html#reml-1"><i class="fa fa-check"></i><b>5.4</b> REML</a>
-<ul>
-<li class="chapter" data-level="5.4.1" data-path="bad.html"><a href="bad.html#making-grms-1"><i class="fa fa-check"></i><b>5.4.1</b> making grms</a></li>
-<li class="chapter" data-level="5.4.2" data-path="bad.html"><a href="bad.html#fast-reml-1"><i class="fa fa-check"></i><b>5.4.2</b> fast-reml</a></li>
-<li class="chapter" data-level="5.4.3" data-path="bad.html"><a href="bad.html#inflation-test-1"><i class="fa fa-check"></i><b>5.4.3</b> inflation test</a></li>
-</ul></li>
-<li class="chapter" data-level="5.5" data-path="bad.html"><a href="bad.html#he-1"><i class="fa fa-check"></i><b>5.5</b> HE</a>
-<ul>
-<li class="chapter" data-level="5.5.1" data-path="bad.html"><a href="bad.html#estimation-1"><i class="fa fa-check"></i><b>5.5.1</b> estimation</a></li>
-<li class="chapter" data-level="5.5.2" data-path="bad.html"><a href="bad.html#summary-3"><i class="fa fa-check"></i><b>5.5.2</b> summary</a></li>
+<li class="chapter" data-level="5.6.1" data-path="good.html"><a href="good.html#estimation"><i class="fa fa-check"></i><b>5.6.1</b> estimation</a></li>
+<li class="chapter" data-level="5.6.2" data-path="good.html"><a href="good.html#summary-1"><i class="fa fa-check"></i><b>5.6.2</b> summary</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="ukbb.html"><a href="ukbb.html"><i class="fa fa-check"></i><b>6</b> UKBB recommended</a>
+<li class="chapter" data-level="6" data-path="bad.html"><a href="bad.html"><i class="fa fa-check"></i><b>6</b> Bad GWAS</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="ukbb.html"><a href="ukbb.html#total-n-337k"><i class="fa fa-check"></i><b>6.1</b> total N = 337k</a></li>
-<li class="chapter" data-level="6.2" data-path="ukbb.html"><a href="ukbb.html#qc-of-hp3-snps"><i class="fa fa-check"></i><b>6.2</b> QC of hp3 SNPs</a></li>
-<li class="chapter" data-level="6.3" data-path="ukbb.html"><a href="ukbb.html#gwas-2"><i class="fa fa-check"></i><b>6.3</b> GWAS</a></li>
-<li class="chapter" data-level="6.4" data-path="ukbb.html"><a href="ukbb.html#ldsc-intercept-2"><i class="fa fa-check"></i><b>6.4</b> ldsc intercept</a>
+<li class="chapter" data-level="6.1" data-path="bad.html"><a href="bad.html#badid"><i class="fa fa-check"></i><b>6.1</b> ID list</a>
 <ul>
-<li class="chapter" data-level="6.4.1" data-path="ukbb.html"><a href="ukbb.html#under-gcta-2"><i class="fa fa-check"></i><b>6.4.1</b> under gcta</a></li>
-<li class="chapter" data-level="6.4.2" data-path="ukbb.html"><a href="ukbb.html#under-ldak-thin-2"><i class="fa fa-check"></i><b>6.4.2</b> under ldak-thin</a></li>
-<li class="chapter" data-level="6.4.3" data-path="ukbb.html"><a href="ukbb.html#summary-4"><i class="fa fa-check"></i><b>6.4.3</b> summary</a></li>
+<li class="chapter" data-level="6.1.1" data-path="bad.html"><a href="bad.html#initial-selection"><i class="fa fa-check"></i><b>6.1.1</b> initial selection</a></li>
+<li class="chapter" data-level="6.1.2" data-path="bad.html"><a href="bad.html#relatedness-filtering"><i class="fa fa-check"></i><b>6.1.2</b> relatedness filtering</a></li>
+<li class="chapter" data-level="6.1.3" data-path="bad.html"><a href="bad.html#final-list"><i class="fa fa-check"></i><b>6.1.3</b> final list</a></li>
 </ul></li>
-<li class="chapter" data-level="6.5" data-path="ukbb.html"><a href="ukbb.html#he-2"><i class="fa fa-check"></i><b>6.5</b> HE</a>
+<li class="chapter" data-level="6.2" data-path="bad.html"><a href="bad.html#gwas-1"><i class="fa fa-check"></i><b>6.2</b> GWAS</a></li>
+<li class="chapter" data-level="6.3" data-path="bad.html"><a href="bad.html#ldsc-intercept-1"><i class="fa fa-check"></i><b>6.3</b> ldsc intercept</a>
 <ul>
-<li class="chapter" data-level="6.5.1" data-path="ukbb.html"><a href="ukbb.html#making-grms-2"><i class="fa fa-check"></i><b>6.5.1</b> making grms</a></li>
-<li class="chapter" data-level="6.5.2" data-path="ukbb.html"><a href="ukbb.html#estimation-2"><i class="fa fa-check"></i><b>6.5.2</b> estimation</a></li>
-<li class="chapter" data-level="6.5.3" data-path="ukbb.html"><a href="ukbb.html#summary-5"><i class="fa fa-check"></i><b>6.5.3</b> summary</a></li>
+<li class="chapter" data-level="6.3.1" data-path="bad.html"><a href="bad.html#under-gcta-1"><i class="fa fa-check"></i><b>6.3.1</b> under gcta</a></li>
+<li class="chapter" data-level="6.3.2" data-path="bad.html"><a href="bad.html#under-ldak-thin-1"><i class="fa fa-check"></i><b>6.3.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="6.3.3" data-path="bad.html"><a href="bad.html#summary-2"><i class="fa fa-check"></i><b>6.3.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="bad.html"><a href="bad.html#reml-1"><i class="fa fa-check"></i><b>6.4</b> REML</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="bad.html"><a href="bad.html#making-grms-1"><i class="fa fa-check"></i><b>6.4.1</b> making grms</a></li>
+<li class="chapter" data-level="6.4.2" data-path="bad.html"><a href="bad.html#fast-reml-1"><i class="fa fa-check"></i><b>6.4.2</b> fast-reml</a></li>
+<li class="chapter" data-level="6.4.3" data-path="bad.html"><a href="bad.html#inflation-test-1"><i class="fa fa-check"></i><b>6.4.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="bad.html"><a href="bad.html#he-1"><i class="fa fa-check"></i><b>6.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="6.5.1" data-path="bad.html"><a href="bad.html#estimation-1"><i class="fa fa-check"></i><b>6.5.1</b> estimation</a></li>
+<li class="chapter" data-level="6.5.2" data-path="bad.html"><a href="bad.html#summary-3"><i class="fa fa-check"></i><b>6.5.2</b> summary</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="control.html"><a href="control.html"><i class="fa fa-check"></i><b>7</b> control GWAS</a>
+<li class="chapter" data-level="7" data-path="ukbb.html"><a href="ukbb.html"><i class="fa fa-check"></i><b>7</b> UKBB recommended</a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="control.html"><a href="control.html#id-list"><i class="fa fa-check"></i><b>7.1</b> ID list</a></li>
-<li class="chapter" data-level="7.2" data-path="control.html"><a href="control.html#qc-of-hp3-snps-1"><i class="fa fa-check"></i><b>7.2</b> QC of hp3 SNPs</a></li>
-<li class="chapter" data-level="7.3" data-path="control.html"><a href="control.html#gwas-3"><i class="fa fa-check"></i><b>7.3</b> GWAS</a></li>
-<li class="chapter" data-level="7.4" data-path="control.html"><a href="control.html#ldsc-intercept-3"><i class="fa fa-check"></i><b>7.4</b> ldsc intercept</a>
+<li class="chapter" data-level="7.1" data-path="ukbb.html"><a href="ukbb.html#total-n-337k"><i class="fa fa-check"></i><b>7.1</b> total N = 337k</a></li>
+<li class="chapter" data-level="7.2" data-path="ukbb.html"><a href="ukbb.html#qc-of-hp3-snps"><i class="fa fa-check"></i><b>7.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="7.3" data-path="ukbb.html"><a href="ukbb.html#gwas-2"><i class="fa fa-check"></i><b>7.3</b> GWAS</a></li>
+<li class="chapter" data-level="7.4" data-path="ukbb.html"><a href="ukbb.html#ldsc-intercept-2"><i class="fa fa-check"></i><b>7.4</b> ldsc intercept</a>
 <ul>
-<li class="chapter" data-level="7.4.1" data-path="control.html"><a href="control.html#under-gcta-3"><i class="fa fa-check"></i><b>7.4.1</b> under gcta</a></li>
-<li class="chapter" data-level="7.4.2" data-path="control.html"><a href="control.html#under-ldak-thin-3"><i class="fa fa-check"></i><b>7.4.2</b> under ldak-thin</a></li>
-<li class="chapter" data-level="7.4.3" data-path="control.html"><a href="control.html#summary-6"><i class="fa fa-check"></i><b>7.4.3</b> summary</a></li>
+<li class="chapter" data-level="7.4.1" data-path="ukbb.html"><a href="ukbb.html#under-gcta-2"><i class="fa fa-check"></i><b>7.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="7.4.2" data-path="ukbb.html"><a href="ukbb.html#under-ldak-thin-2"><i class="fa fa-check"></i><b>7.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="7.4.3" data-path="ukbb.html"><a href="ukbb.html#summary-4"><i class="fa fa-check"></i><b>7.4.3</b> summary</a></li>
 </ul></li>
-<li class="chapter" data-level="7.5" data-path="control.html"><a href="control.html#he-3"><i class="fa fa-check"></i><b>7.5</b> HE</a>
+<li class="chapter" data-level="7.5" data-path="ukbb.html"><a href="ukbb.html#he-2"><i class="fa fa-check"></i><b>7.5</b> HE</a>
 <ul>
-<li class="chapter" data-level="7.5.1" data-path="control.html"><a href="control.html#making-grms-3"><i class="fa fa-check"></i><b>7.5.1</b> making grms</a></li>
-<li class="chapter" data-level="7.5.2" data-path="control.html"><a href="control.html#estimation-3"><i class="fa fa-check"></i><b>7.5.2</b> estimation</a></li>
-<li class="chapter" data-level="7.5.3" data-path="control.html"><a href="control.html#summary-7"><i class="fa fa-check"></i><b>7.5.3</b> summary</a></li>
+<li class="chapter" data-level="7.5.1" data-path="ukbb.html"><a href="ukbb.html#making-grms-2"><i class="fa fa-check"></i><b>7.5.1</b> making grms</a></li>
+<li class="chapter" data-level="7.5.2" data-path="ukbb.html"><a href="ukbb.html#estimation-2"><i class="fa fa-check"></i><b>7.5.2</b> estimation</a></li>
+<li class="chapter" data-level="7.5.3" data-path="ukbb.html"><a href="ukbb.html#summary-5"><i class="fa fa-check"></i><b>7.5.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="control.html"><a href="control.html"><i class="fa fa-check"></i><b>8</b> control GWAS</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="control.html"><a href="control.html#id-list"><i class="fa fa-check"></i><b>8.1</b> ID list</a></li>
+<li class="chapter" data-level="8.2" data-path="control.html"><a href="control.html#qc-of-hp3-snps-1"><i class="fa fa-check"></i><b>8.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="8.3" data-path="control.html"><a href="control.html#gwas-3"><i class="fa fa-check"></i><b>8.3</b> GWAS</a></li>
+<li class="chapter" data-level="8.4" data-path="control.html"><a href="control.html#ldsc-intercept-3"><i class="fa fa-check"></i><b>8.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="control.html"><a href="control.html#under-gcta-3"><i class="fa fa-check"></i><b>8.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="8.4.2" data-path="control.html"><a href="control.html#under-ldak-thin-3"><i class="fa fa-check"></i><b>8.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="8.4.3" data-path="control.html"><a href="control.html#summary-6"><i class="fa fa-check"></i><b>8.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="control.html"><a href="control.html#he-3"><i class="fa fa-check"></i><b>8.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="control.html"><a href="control.html#making-grms-3"><i class="fa fa-check"></i><b>8.5.1</b> making grms</a></li>
+<li class="chapter" data-level="8.5.2" data-path="control.html"><a href="control.html#estimation-3"><i class="fa fa-check"></i><b>8.5.2</b> estimation</a></li>
+<li class="chapter" data-level="8.5.3" data-path="control.html"><a href="control.html#summary-7"><i class="fa fa-check"></i><b>8.5.3</b> summary</a></li>
 </ul></li>
 </ul></li>
 <li class="divider"></li>
@@ -291,7 +292,7 @@ div.csl-indent {
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Quality control</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">GWAS Quality Control</a>
           </h1>
         </div>
 
@@ -299,12 +300,12 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="good" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Good GWAS</h1>
+<div id="good" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Good GWAS</h1>
 <p>Here we do good GWASs. We will use 1.2M hapmap3 SNPs.
 But sill need to do some QC to these SNPs.</p>
-<div id="goodid" class="section level2" number="4.1">
-<h2><span class="header-section-number">4.1</span> QC of hp3 SNPs</h2>
+<div id="goodid" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> QC of hp3 SNPs</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="good.html#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-2"><a href="good.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># select 100k unrelated individuals with no missing covariates &amp; 14 phenotypes--</span></span>
 <span id="cb1-3"><a href="good.html#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -388,8 +389,8 @@ But sill need to do some QC to these SNPs.</p>
 <span id="cb1-81"><a href="good.html#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="co"># m = 1,103,209 SNPs</span></span>
 <span id="cb1-82"><a href="good.html#cb1-82" aria-hidden="true" tabindex="-1"></a> </span></code></pre></div>
 </div>
-<div id="extract-covariates" class="section level2" number="4.2">
-<h2><span class="header-section-number">4.2</span> extract covariates</h2>
+<div id="extract-covariates" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> extract covariates</h2>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="good.html#cb2-1" aria-hidden="true" tabindex="-1"></a>head<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;phen/ukb45861.header&quot;</span>, <span class="at">sep=</span><span class="st">&quot;,&quot;</span>, <span class="at">header=</span>F, <span class="at">stringsAsFactors =</span> F)</span>
 <span id="cb2-2"><a href="good.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># function to get the variables</span></span>
 <span id="cb2-3"><a href="good.html#cb2-3" aria-hidden="true" tabindex="-1"></a>get<span class="ot">=</span><span class="cf">function</span>(nm){</span>
@@ -446,8 +447,8 @@ But sill need to do some QC to these SNPs.</p>
 <span id="cb2-54"><a href="good.html#cb2-54" aria-hidden="true" tabindex="-1"></a>            <span class="at">col.names=</span>F, <span class="at">row.names=</span>F, <span class="at">quote=</span>F)</span>
 <span id="cb2-55"><a href="good.html#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(use,<span class="st">&quot;phen/covariates.use&quot;</span>, <span class="at">col.names=</span>F, <span class="at">row.names=</span>F, <span class="at">quote=</span>F)</span></code></pre></div>
 </div>
-<div id="gwas" class="section level2" number="4.3">
-<h2><span class="header-section-number">4.3</span> GWAS</h2>
+<div id="gwas" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> GWAS</h2>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="good.html#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-2"><a href="good.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># linear regression-------------------------------------------------------------</span></span>
 <span id="cb3-3"><a href="good.html#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> unrelated/gwas-good</span>
@@ -557,10 +558,10 @@ But sill need to do some QC to these SNPs.</p>
 <span id="cb3-107"><a href="good.html#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
 <span id="cb3-108"><a href="good.html#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="co">#done</span></span></code></pre></div>
 </div>
-<div id="ldsc-intercept" class="section level2" number="4.4">
-<h2><span class="header-section-number">4.4</span> ldsc intercept</h2>
-<div id="under-gcta" class="section level3" number="4.4.1">
-<h3><span class="header-section-number">4.4.1</span> under gcta</h3>
+<div id="ldsc-intercept" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> ldsc intercept</h2>
+<div id="under-gcta" class="section level3" number="5.4.1">
+<h3><span class="header-section-number">5.4.1</span> under gcta</h3>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="good.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::</span></span>
 <span id="cb4-2"><a href="good.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># using original ldsc</span></span>
 <span id="cb4-3"><a href="good.html#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::</span></span>
@@ -721,8 +722,8 @@ But sill need to do some QC to these SNPs.</p>
 <span id="cb4-158"><a href="good.html#cb4-158" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/<span class="va">$i</span>-sumher-gcta-unrelated</span>
 <span id="cb4-159"><a href="good.html#cb4-159" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span><span class="op">&gt;</span>../job-records/sumher-gcta-unrelated</span></code></pre></div>
 </div>
-<div id="under-ldak-thin" class="section level3" number="4.4.2">
-<h3><span class="header-section-number">4.4.2</span> under ldak-thin</h3>
+<div id="under-ldak-thin" class="section level3" number="5.4.2">
+<h3><span class="header-section-number">5.4.2</span> under ldak-thin</h3>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="good.html#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-2"><a href="good.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># get weights-------------------------------------------------------------------</span></span>
 <span id="cb5-3"><a href="good.html#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="op">&lt;</span> ldak-thin/ldak-thin-hapmap3.in <span class="st">&#39;{print $1, 1}&#39;</span> <span class="op">&gt;</span> ldak-thin/weights.ldak-thin-hapmap3</span>
@@ -800,8 +801,8 @@ But sill need to do some QC to these SNPs.</p>
 <span id="cb5-75"><a href="good.html#cb5-75" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/<span class="va">$i</span>-sumher-ldak-thin-unrelated</span>
 <span id="cb5-76"><a href="good.html#cb5-76" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span><span class="op">&gt;</span>../job-records/sumher-ldak-thin-unrelated</span></code></pre></div>
 </div>
-<div id="summary" class="section level3" number="4.4.3">
-<h3><span class="header-section-number">4.4.3</span> summary</h3>
+<div id="summary" class="section level3" number="5.4.3">
+<h3><span class="header-section-number">5.4.3</span> summary</h3>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="good.html#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-2"><a href="good.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># original ldsc</span></span>
 <span id="cb6-3"><a href="good.html#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> Intercept <span class="pp">*</span>ldsc.log <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}&#39;</span> <span class="op">&gt;</span> ../../summary/ldsc-good</span>
@@ -819,10 +820,10 @@ But sill need to do some QC to these SNPs.</p>
 <span id="cb6-15"><a href="good.html#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="ex">paste</span> sumher-ldak-thin-good-est sumher-ldak-thin-good-sd <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{print $1, $2, $4}&#39;</span> <span class="op">&gt;</span> sumher-ldak-thin-good</span></code></pre></div>
 </div>
 </div>
-<div id="reml" class="section level2" number="4.5">
-<h2><span class="header-section-number">4.5</span> REML</h2>
-<div id="making-grms" class="section level3" number="4.5.1">
-<h3><span class="header-section-number">4.5.1</span> making grms</h3>
+<div id="reml" class="section level2" number="5.5">
+<h2><span class="header-section-number">5.5</span> REML</h2>
+<div id="making-grms" class="section level3" number="5.5.1">
+<h3><span class="header-section-number">5.5.1</span> making grms</h3>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="good.html#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-2"><a href="good.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># making grm -------------------------------------------------------------------</span></span>
 <span id="cb7-3"><a href="good.html#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -977,8 +978,8 @@ But sill need to do some QC to these SNPs.</p>
 <span id="cb7-152"><a href="good.html#cb7-152" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/ldak-thin-grm-<span class="va">$i</span>-unrel </span>
 <span id="cb7-153"><a href="good.html#cb7-153" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/grm-ldak-thin-by-snps-unrel </span></code></pre></div>
 </div>
-<div id="fast-reml" class="section level3" number="4.5.2">
-<h3><span class="header-section-number">4.5.2</span> fast-reml</h3>
+<div id="fast-reml" class="section level3" number="5.5.2">
+<h3><span class="header-section-number">5.5.2</span> fast-reml</h3>
 <div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="good.html#cb8-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-2"><a href="good.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
 <span id="cb8-3"><a href="good.html#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># under gcta</span></span>
@@ -1085,8 +1086,8 @@ But sill need to do some QC to these SNPs.</p>
 <span id="cb8-104"><a href="good.html#cb8-104" aria-hidden="true" tabindex="-1"></a>      <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;BEGIN{print &quot;ID name state cores time mem&quot;}{print $0}&#39;</span> <span class="op">&gt;</span> <span class="va">$file</span>.out</span>
 <span id="cb8-105"><a href="good.html#cb8-105" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-r</span> <span class="va">$file</span>-tmp</span></code></pre></div>
 </div>
-<div id="inflation-test" class="section level3" number="4.5.3">
-<h3><span class="header-section-number">4.5.3</span> inflation test</h3>
+<div id="inflation-test" class="section level3" number="5.5.3">
+<h3><span class="header-section-number">5.5.3</span> inflation test</h3>
 <div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="good.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::</span></span>
 <span id="cb9-2"><a href="good.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># under gcta</span></span>
 <span id="cb9-3"><a href="good.html#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::</span></span>
@@ -1258,10 +1259,10 @@ But sill need to do some QC to these SNPs.</p>
 <span id="cb9-169"><a href="good.html#cb9-169" aria-hidden="true" tabindex="-1"></a>            <span class="ex">col.names=T,</span> row.names=F, quote=F<span class="kw">)</span></span></code></pre></div>
 </div>
 </div>
-<div id="he" class="section level2" number="4.6">
-<h2><span class="header-section-number">4.6</span> HE</h2>
-<div id="estimation" class="section level3" number="4.6.1">
-<h3><span class="header-section-number">4.6.1</span> estimation</h3>
+<div id="he" class="section level2" number="5.6">
+<h2><span class="header-section-number">5.6</span> HE</h2>
+<div id="estimation" class="section level3" number="5.6.1">
+<h3><span class="header-section-number">5.6.1</span> estimation</h3>
 <div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="good.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># regress grm on covariates-----------------------------------------------------</span></span>
 <span id="cb10-2"><a href="good.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> grm <span class="kw">in</span> gcta-all-unrel gcta-left-unrel gcta-right-unrel ldak-thin-all-unrel ldak-thin-left-unrel ldak-thin-right-unrel<span class="kw">;</span> <span class="cf">do</span>  </span>
 <span id="cb10-3"><a href="good.html#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
@@ -1359,8 +1360,8 @@ But sill need to do some QC to these SNPs.</p>
 <span id="cb10-95"><a href="good.html#cb10-95" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
 <span id="cb10-96"><a href="good.html#cb10-96" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/he-good-ldak-thin</span></code></pre></div>
 </div>
-<div id="summary-1" class="section level3" number="4.6.2">
-<h3><span class="header-section-number">4.6.2</span> summary</h3>
+<div id="summary-1" class="section level3" number="5.6.2">
+<h3><span class="header-section-number">5.6.2</span> summary</h3>
 <div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="good.html#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-2"><a href="good.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::</span></span>
 <span id="cb11-3"><a href="good.html#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># under gcta</span></span>
@@ -1512,7 +1513,7 @@ But sill need to do some QC to these SNPs.</p>
           </div>
         </div>
       </div>
-<a href="good-vs-bad-gwas.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="mathematical-details.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="bad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
@@ -1544,7 +1545,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/03.1-good-gwas.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/04.1-good-gwas.Rmd",
 "text": "Edit"
 },
 "history": {

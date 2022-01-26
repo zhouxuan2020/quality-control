@@ -25,6 +25,7 @@ ldsc-sumher-3
 haseman-elston-regression-3
 good-vs-bad-gwas
 test-statistics-ld-score
+mathematical-details
 good
 goodid
 extract-covariates

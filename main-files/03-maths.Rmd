@@ -1,0 +1,6 @@
+
+# Mathematical Details
+
+Here we detail the mathematics behind the project.
+
+1. **$trK$**
