@@ -28,7 +28,7 @@ We propose a new method to detect the inflation of GWAS test statistics caused b
     * does not account for inflation due to polygenicity
     
   * LD score regression [@bulik2015ld] (LDSC):
-    * $S_{j} = 1 + n_{j}a +  (n_{j}\sum_{i}^{k}r_{ji}^2) (q_{j}/Q) h_{snp} + \epsilon_{j}$
+    * $S_{j} = 1 + n_{j}a +  (n_{j}\sum_{i}^{k}r_{ji}^2) (q_{j}/Q) h^2_{snp} + \epsilon_{j}$
       * under GCTA: $q_{j}=1, Q=\sum_{j}^{m}q_j=m$ 
       * under LDAK-thin: $q_{j}=I_{j}[f_{j}(1-f_{j})]^{0.75}$
     * It separates the inflation due to confounding (intercept) and the inflation due to polygenicity (slope).
@@ -38,7 +38,7 @@ We propose a new method to detect the inflation of GWAS test statistics caused b
     
   * $T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} > 0$ ?
   * Confounding causes cross-chromosome correlations, such that each part of the genome tags each other. Hence, for confounded GWASs, $T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} > 0$.
-  * when $h_{right}^2, h_{left}^2, h_{whole}^2$ are estimated using Haseman Elston regression, this test accounts to testing $tr(K_{left}K_{right}) = 0$ or average SNP correlation^2 (between left and right) = 0.
+  * when $h_{right}^2, h_{left}^2, h_{whole}^2$ are estimated using Haseman Elston regression, this test amounts to testing $tr(K_{left}K_{right}) = 0$ or average SNP correlation^2 (between left and right) = 0.
   * Challenge: We do not know the distribution of $T$ under the null (i.e., no confounding). Consequently, the test is an approximate test. We hope to get an exact test. Also we want to simplify the test.
 
 **Design**:

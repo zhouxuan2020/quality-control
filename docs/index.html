@@ -321,7 +321,7 @@ div.csl-indent {
 </ul></li>
 <li>LD score regression <span class="citation">(<a href="#ref-bulik2015ld" role="doc-biblioref">Bulik-Sullivan et al., 2015</a>)</span> (LDSC):
 <ul>
-<li><span class="math inline">\(S_{j} = 1 + n_{j}a + (n_{j}\sum_{i}^{k}r_{ji}^2) (q_{j}/Q) h_{snp} + \epsilon_{j}\)</span>
+<li><span class="math inline">\(S_{j} = 1 + n_{j}a + (n_{j}\sum_{i}^{k}r_{ji}^2) (q_{j}/Q) h^2_{snp} + \epsilon_{j}\)</span>
 <ul>
 <li>under GCTA: <span class="math inline">\(q_{j}=1, Q=\sum_{j}^{m}q_j=m\)</span></li>
 <li>under LDAK-thin: <span class="math inline">\(q_{j}=I_{j}[f_{j}(1-f_{j})]^{0.75}\)</span></li>
@@ -336,7 +336,7 @@ div.csl-indent {
 <ul>
 <li><span class="math inline">\(T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} &gt; 0\)</span> ?</li>
 <li>Confounding causes cross-chromosome correlations, such that each part of the genome tags each other. Hence, for confounded GWASs, <span class="math inline">\(T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} &gt; 0\)</span>.</li>
-<li>when <span class="math inline">\(h_{right}^2, h_{left}^2, h_{whole}^2\)</span> are estimated using Haseman Elston regression, this test accounts to testing <span class="math inline">\(tr(K_{left}K_{right}) = 0\)</span> or average SNP correlation^2 (between left and right) = 0.</li>
+<li>when <span class="math inline">\(h_{right}^2, h_{left}^2, h_{whole}^2\)</span> are estimated using Haseman Elston regression, this test amounts to testing <span class="math inline">\(tr(K_{left}K_{right}) = 0\)</span> or average SNP correlation^2 (between left and right) = 0.</li>
 <li>Challenge: We do not know the distribution of <span class="math inline">\(T\)</span> under the null (i.e., no confounding). Consequently, the test is an approximate test. We hope to get an exact test. Also we want to simplify the test.</li>
 </ul>
 <p><strong>Design</strong>:</p>
