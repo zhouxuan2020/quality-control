@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 inflation ~ ave \(r^2_j\) | GWAS Quality Control</title>
+  <meta name="description" content="5 inflation ~ ave \(r^2_j\) | GWAS Quality Control" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 inflation ~ ave \(r^2_j\) | GWAS Quality Control" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 inflation ~ ave \(r^2_j\) | GWAS Quality Control" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="mathematical-details.html"/>
+<link rel="next" href="good.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Quality Control Project</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> General Info</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#topic"><i class="fa fa-check"></i><b>1.1</b> Topic</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#frequently-used-commands"><i class="fa fa-check"></i><b>1.2</b> Frequently used commands</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="summaries.html"><a href="summaries.html"><i class="fa fa-check"></i><b>2</b> Summaries</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="summaries.html"><a href="summaries.html#good-gwas"><i class="fa fa-check"></i><b>2.1</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher"><i class="fa fa-check"></i><b>2.1.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.1.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression"><i class="fa fa-check"></i><b>2.1.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="summaries.html"><a href="summaries.html#bad-gwas"><i class="fa fa-check"></i><b>2.2</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-1"><i class="fa fa-check"></i><b>2.2.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.2.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-1"><i class="fa fa-check"></i><b>2.2.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="summaries.html"><a href="summaries.html#ukbb-recommended"><i class="fa fa-check"></i><b>2.3</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-2"><i class="fa fa-check"></i><b>2.3.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.3.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-2"><i class="fa fa-check"></i><b>2.3.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="summaries.html"><a href="summaries.html#control-gwas"><i class="fa fa-check"></i><b>2.4</b> Control GWAS</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-3"><i class="fa fa-check"></i><b>2.4.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.4.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-3"><i class="fa fa-check"></i><b>2.4.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html"><i class="fa fa-check"></i><b>3</b> Good VS Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-statistics-ld-score"><i class="fa fa-check"></i><b>3.1</b> test statistics ~ LD score</a></li>
+<li class="chapter" data-level="3.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#new-models"><i class="fa fa-check"></i><b>3.2</b> New models?</a></li>
+<li class="chapter" data-level="3.3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#ld-scores-based-on-individual-level-data"><i class="fa fa-check"></i><b>3.3</b> LD scores based on individual level data</a></li>
+<li class="chapter" data-level="3.4" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-the-new-model"><i class="fa fa-check"></i><b>3.4</b> Test the new model</a></li>
+<li class="chapter" data-level="3.5" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#predictors-of-inflation"><i class="fa fa-check"></i><b>3.5</b> predictors of inflation?</a></li>
+<li class="chapter" data-level="3.6" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#regress-bad-chisq-mean-r2_j"><i class="fa fa-check"></i><b>3.6</b> regress bad chisq ~ mean r^2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="mathematical-details.html"><a href="mathematical-details.html"><i class="fa fa-check"></i><b>4</b> Mathematical Details</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="mathematical-details.html"><a href="mathematical-details.html#trk_rightk_left"><i class="fa fa-check"></i><b>4.1</b> <span class="math inline">\(tr(K_{right}K_{left})\)</span></a></li>
+<li class="chapter" data-level="4.2" data-path="mathematical-details.html"><a href="mathematical-details.html#verification"><i class="fa fa-check"></i><b>4.2</b> verification</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html"><i class="fa fa-check"></i><b>5</b> inflation ~ ave <span class="math inline">\(r^2_j\)</span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html#m1k-maf0.01"><i class="fa fa-check"></i><b>5.1</b> m=1k &amp; maf=0.01</a></li>
+<li class="chapter" data-level="5.2" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html#m5k-maf0.01"><i class="fa fa-check"></i><b>5.2</b> m=5k &amp; maf=0.01</a></li>
+<li class="chapter" data-level="5.3" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html#m10k-maf0.01"><i class="fa fa-check"></i><b>5.3</b> m=10k &amp; maf=0.01</a></li>
+<li class="chapter" data-level="5.4" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html#m20k-maf0.01"><i class="fa fa-check"></i><b>5.4</b> m=20k &amp; maf=0.01</a></li>
+<li class="chapter" data-level="5.5" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html#summary"><i class="fa fa-check"></i><b>5.5</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="good.html"><a href="good.html"><i class="fa fa-check"></i><b>6</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="good.html"><a href="good.html#goodid"><i class="fa fa-check"></i><b>6.1</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="6.2" data-path="good.html"><a href="good.html#extract-covariates"><i class="fa fa-check"></i><b>6.2</b> extract covariates</a></li>
+<li class="chapter" data-level="6.3" data-path="good.html"><a href="good.html#gwas"><i class="fa fa-check"></i><b>6.3</b> GWAS</a></li>
+<li class="chapter" data-level="6.4" data-path="good.html"><a href="good.html#ldsc-intercept"><i class="fa fa-check"></i><b>6.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="good.html"><a href="good.html#under-gcta"><i class="fa fa-check"></i><b>6.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="6.4.2" data-path="good.html"><a href="good.html#under-ldak-thin"><i class="fa fa-check"></i><b>6.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="6.4.3" data-path="good.html"><a href="good.html#summary-1"><i class="fa fa-check"></i><b>6.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="good.html"><a href="good.html#reml"><i class="fa fa-check"></i><b>6.5</b> REML</a>
+<ul>
+<li class="chapter" data-level="6.5.1" data-path="good.html"><a href="good.html#making-grms"><i class="fa fa-check"></i><b>6.5.1</b> making grms</a></li>
+<li class="chapter" data-level="6.5.2" data-path="good.html"><a href="good.html#fast-reml"><i class="fa fa-check"></i><b>6.5.2</b> fast-reml</a></li>
+<li class="chapter" data-level="6.5.3" data-path="good.html"><a href="good.html#inflation-test"><i class="fa fa-check"></i><b>6.5.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="good.html"><a href="good.html#he"><i class="fa fa-check"></i><b>6.6</b> HE</a>
+<ul>
+<li class="chapter" data-level="6.6.1" data-path="good.html"><a href="good.html#estimation"><i class="fa fa-check"></i><b>6.6.1</b> estimation</a></li>
+<li class="chapter" data-level="6.6.2" data-path="good.html"><a href="good.html#summary-2"><i class="fa fa-check"></i><b>6.6.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="bad.html"><a href="bad.html"><i class="fa fa-check"></i><b>7</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="bad.html"><a href="bad.html#badid"><i class="fa fa-check"></i><b>7.1</b> ID list</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="bad.html"><a href="bad.html#initial-selection"><i class="fa fa-check"></i><b>7.1.1</b> initial selection</a></li>
+<li class="chapter" data-level="7.1.2" data-path="bad.html"><a href="bad.html#relatedness-filtering"><i class="fa fa-check"></i><b>7.1.2</b> relatedness filtering</a></li>
+<li class="chapter" data-level="7.1.3" data-path="bad.html"><a href="bad.html#final-list"><i class="fa fa-check"></i><b>7.1.3</b> final list</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="bad.html"><a href="bad.html#gwas-1"><i class="fa fa-check"></i><b>7.2</b> GWAS</a></li>
+<li class="chapter" data-level="7.3" data-path="bad.html"><a href="bad.html#ldsc-intercept-1"><i class="fa fa-check"></i><b>7.3</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="bad.html"><a href="bad.html#under-gcta-1"><i class="fa fa-check"></i><b>7.3.1</b> under gcta</a></li>
+<li class="chapter" data-level="7.3.2" data-path="bad.html"><a href="bad.html#under-ldak-thin-1"><i class="fa fa-check"></i><b>7.3.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="7.3.3" data-path="bad.html"><a href="bad.html#summary-3"><i class="fa fa-check"></i><b>7.3.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="bad.html"><a href="bad.html#reml-1"><i class="fa fa-check"></i><b>7.4</b> REML</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="bad.html"><a href="bad.html#making-grms-1"><i class="fa fa-check"></i><b>7.4.1</b> making grms</a></li>
+<li class="chapter" data-level="7.4.2" data-path="bad.html"><a href="bad.html#fast-reml-1"><i class="fa fa-check"></i><b>7.4.2</b> fast-reml</a></li>
+<li class="chapter" data-level="7.4.3" data-path="bad.html"><a href="bad.html#inflation-test-1"><i class="fa fa-check"></i><b>7.4.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="bad.html"><a href="bad.html#he-1"><i class="fa fa-check"></i><b>7.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="7.5.1" data-path="bad.html"><a href="bad.html#estimation-1"><i class="fa fa-check"></i><b>7.5.1</b> estimation</a></li>
+<li class="chapter" data-level="7.5.2" data-path="bad.html"><a href="bad.html#summary-4"><i class="fa fa-check"></i><b>7.5.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ukbb.html"><a href="ukbb.html"><i class="fa fa-check"></i><b>8</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ukbb.html"><a href="ukbb.html#total-n-337k"><i class="fa fa-check"></i><b>8.1</b> total N = 337k</a></li>
+<li class="chapter" data-level="8.2" data-path="ukbb.html"><a href="ukbb.html#qc-of-hp3-snps"><i class="fa fa-check"></i><b>8.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="8.3" data-path="ukbb.html"><a href="ukbb.html#gwas-2"><i class="fa fa-check"></i><b>8.3</b> GWAS</a></li>
+<li class="chapter" data-level="8.4" data-path="ukbb.html"><a href="ukbb.html#ldsc-intercept-2"><i class="fa fa-check"></i><b>8.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="ukbb.html"><a href="ukbb.html#under-gcta-2"><i class="fa fa-check"></i><b>8.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="8.4.2" data-path="ukbb.html"><a href="ukbb.html#under-ldak-thin-2"><i class="fa fa-check"></i><b>8.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="8.4.3" data-path="ukbb.html"><a href="ukbb.html#summary-5"><i class="fa fa-check"></i><b>8.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="ukbb.html"><a href="ukbb.html#he-2"><i class="fa fa-check"></i><b>8.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="ukbb.html"><a href="ukbb.html#making-grms-2"><i class="fa fa-check"></i><b>8.5.1</b> making grms</a></li>
+<li class="chapter" data-level="8.5.2" data-path="ukbb.html"><a href="ukbb.html#estimation-2"><i class="fa fa-check"></i><b>8.5.2</b> estimation</a></li>
+<li class="chapter" data-level="8.5.3" data-path="ukbb.html"><a href="ukbb.html#summary-6"><i class="fa fa-check"></i><b>8.5.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="control.html"><a href="control.html"><i class="fa fa-check"></i><b>9</b> control GWAS</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="control.html"><a href="control.html#id-list"><i class="fa fa-check"></i><b>9.1</b> ID list</a></li>
+<li class="chapter" data-level="9.2" data-path="control.html"><a href="control.html#qc-of-hp3-snps-1"><i class="fa fa-check"></i><b>9.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="9.3" data-path="control.html"><a href="control.html#gwas-3"><i class="fa fa-check"></i><b>9.3</b> GWAS</a></li>
+<li class="chapter" data-level="9.4" data-path="control.html"><a href="control.html#ldsc-intercept-3"><i class="fa fa-check"></i><b>9.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="control.html"><a href="control.html#under-gcta-3"><i class="fa fa-check"></i><b>9.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="9.4.2" data-path="control.html"><a href="control.html#under-ldak-thin-3"><i class="fa fa-check"></i><b>9.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="9.4.3" data-path="control.html"><a href="control.html#summary-7"><i class="fa fa-check"></i><b>9.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="control.html"><a href="control.html#he-3"><i class="fa fa-check"></i><b>9.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="9.5.1" data-path="control.html"><a href="control.html#making-grms-3"><i class="fa fa-check"></i><b>9.5.1</b> making grms</a></li>
+<li class="chapter" data-level="9.5.2" data-path="control.html"><a href="control.html#estimation-3"><i class="fa fa-check"></i><b>9.5.2</b> estimation</a></li>
+<li class="chapter" data-level="9.5.3" data-path="control.html"><a href="control.html#summary-8"><i class="fa fa-check"></i><b>9.5.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html"><i class="fa fa-check"></i><b>10</b> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwas-all-qced-snps"><i class="fa fa-check"></i><b>10.1</b> good GWAS-all qced snps</a></li>
+<li class="chapter" data-level="10.2" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwass--ldak-thin-snps"><i class="fa fa-check"></i><b>10.2</b> good GWASs- ldak-thin snps</a></li>
+<li class="chapter" data-level="10.3" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#bad-gwass-all-qced-snps"><i class="fa fa-check"></i><b>10.3</b> bad GWASs-all qced snps</a></li>
+<li class="chapter" data-level="10.4" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#summary-9"><i class="fa fa-check"></i><b>10.4</b> summary</a></li>
+<li class="chapter" data-level="10.5" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#new"><i class="fa fa-check"></i><b>10.5</b> New</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">GWAS Quality Control</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="inflation-ave-r2_j" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> inflation ~ ave <span class="math inline">\(r^2_j\)</span></h1>
+<p>New measure of inflation, <span class="math inline">\(r^2_j\)</span> - average correlation between SNP j and distant SNPs.</p>
+<ol style="list-style-type: decimal">
+<li>Check if the maths in ldak function is correct. Use –make-snps to generate clean data, and check estimates of average r2j are not significant.</li>
+</ol>
+<p>Average squared correlation is 1.000060e-05; chi-squared test statistic 0.126985; p-value 7.215786e-01.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="inflation-ave-r2_j.html#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="inflation-ave-r2_j.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb7-3"><a href="inflation-ave-r2_j.html#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. simulate genotypes</span></span>
+<span id="cb7-4"><a href="inflation-ave-r2_j.html#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb7-5"><a href="inflation-ave-r2_j.html#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="inflation-ave-r2_j.html#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="ex">./ldak5.1</span> <span class="at">--make-snps</span> inflation/random-snps/20k-snps-100k-inds <span class="at">--num-samples</span> 100000 <span class="at">--num-snps</span> 20000</span>
+<span id="cb7-7"><a href="inflation-ave-r2_j.html#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="inflation-ave-r2_j.html#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># create snp lists</span></span>
+<span id="cb7-9"><a href="inflation-ave-r2_j.html#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="va">dir</span><span class="op">=</span>inflation/random-snps</span>
+<span id="cb7-10"><a href="inflation-ave-r2_j.html#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR &lt;= 10000 {print $2}&#39;</span> <span class="va">$dir</span>/20k-snps-100k-inds.bim <span class="op">&gt;</span> <span class="va">$dir</span>/lista</span>
+<span id="cb7-11"><a href="inflation-ave-r2_j.html#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR &gt; 10000 {print $2}&#39;</span> <span class="va">$dir</span>/20k-snps-100k-inds.bim <span class="op">&gt;</span> <span class="va">$dir</span>/listb</span>
+<span id="cb7-12"><a href="inflation-ave-r2_j.html#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="inflation-ave-r2_j.html#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb7-14"><a href="inflation-ave-r2_j.html#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. compute r2_j for each SNP_j</span></span>
+<span id="cb7-15"><a href="inflation-ave-r2_j.html#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb7-16"><a href="inflation-ave-r2_j.html#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="inflation-ave-r2_j.html#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb7-18"><a href="inflation-ave-r2_j.html#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb7-19"><a href="inflation-ave-r2_j.html#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb7-20"><a href="inflation-ave-r2_j.html#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb7-21"><a href="inflation-ave-r2_j.html#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb7-22"><a href="inflation-ave-r2_j.html#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 2:00:0</span></span>
+<span id="cb7-23"><a href="inflation-ave-r2_j.html#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="inflation-ave-r2_j.html#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="st">dir=../inflation/random-snps</span></span>
+<span id="cb7-25"><a href="inflation-ave-r2_j.html#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="inflation-ave-r2_j.html#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb7-27"><a href="inflation-ave-r2_j.html#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="st">          --calc-inflation </span><span class="dt">\$</span><span class="st">dir/out/20k-random-snps-100k-inds </span><span class="dt">\</span></span>
+<span id="cb7-28"><a href="inflation-ave-r2_j.html#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile </span><span class="dt">\$</span><span class="st">dir/20k-snps-100k-inds </span><span class="dt">\</span></span>
+<span id="cb7-29"><a href="inflation-ave-r2_j.html#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="st">          --lista </span><span class="dt">\$</span><span class="st">dir/lista </span><span class="dt">\</span></span>
+<span id="cb7-30"><a href="inflation-ave-r2_j.html#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="st">          --listb </span><span class="dt">\$</span><span class="st">dir/listb </span></span>
+<span id="cb7-31"><a href="inflation-ave-r2_j.html#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="inflation-ave-r2_j.html#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-sum-r2</span>
+<span id="cb7-33"><a href="inflation-ave-r2_j.html#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-34"><a href="inflation-ave-r2_j.html#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb7-35"><a href="inflation-ave-r2_j.html#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-sum-r2 <span class="op">&gt;</span>../job-records/calc-sum-r2-random-snps</span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Ideally, we show r2j is robust - e.g., it is not sensitive to choice of SNPs (e.g., randomly pick 1000, then a different 1000). It is not sensitive to MAF threshold (e.g., if you restrict to MAF&gt;.1, MAF&gt;.01, MAF&gt;.001).</li>
+</ol>
+<ul>
+<li>sensitive to the choice of SNPs? var(r^2_j) for a given j.</li>
+<li>sensitive to the number of SNPs? 1k, 5k, 10k, 20k</li>
+<li>sensitive to MAF threshold? MAF &gt; .1, MAF &gt; 0.01, MAF &gt; 0.001</li>
+</ul>
+<p>Central limit theorem &gt; Normal distribution
+Maybe we could use the mean instead.</p>
+<div id="m1k-maf0.01" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> m=1k &amp; maf=0.01</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="inflation-ave-r2_j.html#cb8-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-2"><a href="inflation-ave-r2_j.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb8-3"><a href="inflation-ave-r2_j.html#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. compute r^2</span></span>
+<span id="cb8-4"><a href="inflation-ave-r2_j.html#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb8-5"><a href="inflation-ave-r2_j.html#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="inflation-ave-r2_j.html#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># lista: 1k from chrom1-7. This is list is fixed for all conditions</span></span>
+<span id="cb8-7"><a href="inflation-ave-r2_j.html#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="va">dir</span><span class="op">=</span>inflation/sensitivity</span>
+<span id="cb8-8"><a href="inflation-ave-r2_j.html#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>.01</span>
+<span id="cb8-9"><a href="inflation-ave-r2_j.html#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{split($1, a, &quot;:&quot;); if (a[1]&lt;8) print $1 }&#39;</span> gen/snps-unrel-inds.use <span class="kw">|</span> <span class="ex">shuf</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> 1000 <span class="op">&gt;</span><span class="va">$dir</span>/lista-maf<span class="va">$maf</span></span>
+<span id="cb8-10"><a href="inflation-ave-r2_j.html#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="inflation-ave-r2_j.html#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::</span></span>
+<span id="cb8-12"><a href="inflation-ave-r2_j.html#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># m=1k &amp; maf = .01</span></span>
+<span id="cb8-13"><a href="inflation-ave-r2_j.html#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::</span></span>
+<span id="cb8-14"><a href="inflation-ave-r2_j.html#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="inflation-ave-r2_j.html#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># to change</span></span>
+<span id="cb8-16"><a href="inflation-ave-r2_j.html#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>1k</span>
+<span id="cb8-17"><a href="inflation-ave-r2_j.html#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>.01</span>
+<span id="cb8-18"><a href="inflation-ave-r2_j.html#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="inflation-ave-r2_j.html#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb8-20"><a href="inflation-ave-r2_j.html#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb8-21"><a href="inflation-ave-r2_j.html#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb8-22"><a href="inflation-ave-r2_j.html#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 2G</span></span>
+<span id="cb8-23"><a href="inflation-ave-r2_j.html#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb8-24"><a href="inflation-ave-r2_j.html#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 20:00:0</span></span>
+<span id="cb8-25"><a href="inflation-ave-r2_j.html#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="inflation-ave-r2_j.html#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb8-27"><a href="inflation-ave-r2_j.html#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb8-28"><a href="inflation-ave-r2_j.html#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb8-29"><a href="inflation-ave-r2_j.html#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="inflation-ave-r2_j.html#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="st">for i in {1..100}; do</span></span>
+<span id="cb8-31"><a href="inflation-ave-r2_j.html#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-32"><a href="inflation-ave-r2_j.html#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="st"># to change</span></span>
+<span id="cb8-33"><a href="inflation-ave-r2_j.html#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="st">use=../gen/snps-unrel-inds.use</span></span>
+<span id="cb8-34"><a href="inflation-ave-r2_j.html#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="st">m=1000</span></span>
+<span id="cb8-35"><a href="inflation-ave-r2_j.html#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="st">nm=1k</span></span>
+<span id="cb8-36"><a href="inflation-ave-r2_j.html#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="st">maf=.01</span></span>
+<span id="cb8-37"><a href="inflation-ave-r2_j.html#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="st">lista=../inflation/sensitivity/lista-maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb8-38"><a href="inflation-ave-r2_j.html#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="st">dir=../inflation/sensitivity/maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb8-39"><a href="inflation-ave-r2_j.html#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="st">listb=</span><span class="dt">\$</span><span class="st">dir/listb-</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb8-40"><a href="inflation-ave-r2_j.html#cb8-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-41"><a href="inflation-ave-r2_j.html#cb8-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-42"><a href="inflation-ave-r2_j.html#cb8-42" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb8-43"><a href="inflation-ave-r2_j.html#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="st">  # 1. select list b [to be recycled]</span></span>
+<span id="cb8-44"><a href="inflation-ave-r2_j.html#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb8-45"><a href="inflation-ave-r2_j.html#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb8-46"><a href="inflation-ave-r2_j.html#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="st">  awk &#39;{split(</span><span class="dt">\$</span><span class="st">1, a, </span><span class="dt">\&quot;</span><span class="st">:</span><span class="dt">\&quot;</span><span class="st">); if (a[1]&gt;=8) print </span><span class="dt">\$</span><span class="st">1 }&#39; </span><span class="dt">\$</span><span class="st">use | shuf | head -n </span><span class="dt">\$</span><span class="st">m &gt;</span><span class="dt">\$</span><span class="st">listb</span></span>
+<span id="cb8-47"><a href="inflation-ave-r2_j.html#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb8-48"><a href="inflation-ave-r2_j.html#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb8-49"><a href="inflation-ave-r2_j.html#cb8-49" aria-hidden="true" tabindex="-1"></a><span class="st">  # 2. good gwas</span></span>
+<span id="cb8-50"><a href="inflation-ave-r2_j.html#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb8-51"><a href="inflation-ave-r2_j.html#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb8-52"><a href="inflation-ave-r2_j.html#cb8-52" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../unrelated/rand.100000</span></span>
+<span id="cb8-53"><a href="inflation-ave-r2_j.html#cb8-53" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-unrel</span></span>
+<span id="cb8-54"><a href="inflation-ave-r2_j.html#cb8-54" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf-snps-good</span></span>
+<span id="cb8-55"><a href="inflation-ave-r2_j.html#cb8-55" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb8-56"><a href="inflation-ave-r2_j.html#cb8-56" aria-hidden="true" tabindex="-1"></a><span class="st">  ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb8-57"><a href="inflation-ave-r2_j.html#cb8-57" aria-hidden="true" tabindex="-1"></a><span class="st">            --calc-inflation </span><span class="dt">\$</span><span class="st">dir/out/</span><span class="dt">\$</span><span class="st">out </span><span class="dt">\</span></span>
+<span id="cb8-58"><a href="inflation-ave-r2_j.html#cb8-58" aria-hidden="true" tabindex="-1"></a><span class="st">            --bfile </span><span class="dt">\$</span><span class="st">bfile </span><span class="dt">\</span></span>
+<span id="cb8-59"><a href="inflation-ave-r2_j.html#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="st">            --keep </span><span class="dt">\$</span><span class="st">id </span><span class="dt">\</span></span>
+<span id="cb8-60"><a href="inflation-ave-r2_j.html#cb8-60" aria-hidden="true" tabindex="-1"></a><span class="st">            --lista </span><span class="dt">\$</span><span class="st">lista </span><span class="dt">\</span></span>
+<span id="cb8-61"><a href="inflation-ave-r2_j.html#cb8-61" aria-hidden="true" tabindex="-1"></a><span class="st">            --listb </span><span class="dt">\$</span><span class="st">listb </span></span>
+<span id="cb8-62"><a href="inflation-ave-r2_j.html#cb8-62" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb8-63"><a href="inflation-ave-r2_j.html#cb8-63" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb8-64"><a href="inflation-ave-r2_j.html#cb8-64" aria-hidden="true" tabindex="-1"></a><span class="st">  # 3. bad gwas</span></span>
+<span id="cb8-65"><a href="inflation-ave-r2_j.html#cb8-65" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb8-66"><a href="inflation-ave-r2_j.html#cb8-66" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb8-67"><a href="inflation-ave-r2_j.html#cb8-67" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../mix-pop-gwas.id</span></span>
+<span id="cb8-68"><a href="inflation-ave-r2_j.html#cb8-68" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-mix</span></span>
+<span id="cb8-69"><a href="inflation-ave-r2_j.html#cb8-69" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf-snps-bad</span></span>
+<span id="cb8-70"><a href="inflation-ave-r2_j.html#cb8-70" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb8-71"><a href="inflation-ave-r2_j.html#cb8-71" aria-hidden="true" tabindex="-1"></a><span class="st">  ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb8-72"><a href="inflation-ave-r2_j.html#cb8-72" aria-hidden="true" tabindex="-1"></a><span class="st">            --calc-inflation </span><span class="dt">\$</span><span class="st">dir/out/</span><span class="dt">\$</span><span class="st">out </span><span class="dt">\</span></span>
+<span id="cb8-73"><a href="inflation-ave-r2_j.html#cb8-73" aria-hidden="true" tabindex="-1"></a><span class="st">            --bfile </span><span class="dt">\$</span><span class="st">bfile </span><span class="dt">\</span></span>
+<span id="cb8-74"><a href="inflation-ave-r2_j.html#cb8-74" aria-hidden="true" tabindex="-1"></a><span class="st">            --keep </span><span class="dt">\$</span><span class="st">id </span><span class="dt">\</span></span>
+<span id="cb8-75"><a href="inflation-ave-r2_j.html#cb8-75" aria-hidden="true" tabindex="-1"></a><span class="st">            --lista </span><span class="dt">\$</span><span class="st">lista </span><span class="dt">\</span></span>
+<span id="cb8-76"><a href="inflation-ave-r2_j.html#cb8-76" aria-hidden="true" tabindex="-1"></a><span class="st">            --listb </span><span class="dt">\$</span><span class="st">listb </span></span>
+<span id="cb8-77"><a href="inflation-ave-r2_j.html#cb8-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-78"><a href="inflation-ave-r2_j.html#cb8-78" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb8-79"><a href="inflation-ave-r2_j.html#cb8-79" aria-hidden="true" tabindex="-1"></a><span class="st">  # 4. compute ave r2 [each column corresponds to a SNP in lista]</span></span>
+<span id="cb8-80"><a href="inflation-ave-r2_j.html#cb8-80" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb8-81"><a href="inflation-ave-r2_j.html#cb8-81" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb8-82"><a href="inflation-ave-r2_j.html#cb8-82" aria-hidden="true" tabindex="-1"></a><span class="st">  Rscript --vanilla ../inflation/sensitivity/calc-ave-r2.r </span><span class="dt">\$</span><span class="st">m </span><span class="dt">\$</span><span class="st">nm </span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb8-83"><a href="inflation-ave-r2_j.html#cb8-83" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb8-84"><a href="inflation-ave-r2_j.html#cb8-84" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb8-85"><a href="inflation-ave-r2_j.html#cb8-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-86"><a href="inflation-ave-r2_j.html#cb8-86" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span></span>
+<span id="cb8-87"><a href="inflation-ave-r2_j.html#cb8-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-88"><a href="inflation-ave-r2_j.html#cb8-88" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb8-89"><a href="inflation-ave-r2_j.html#cb8-89" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>1k</span>
+<span id="cb8-90"><a href="inflation-ave-r2_j.html#cb8-90" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>.01</span>
+<span id="cb8-91"><a href="inflation-ave-r2_j.html#cb8-91" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span> <span class="op">&gt;</span>../job-records/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="inflation-ave-r2_j.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb9-2"><a href="inflation-ave-r2_j.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># define a R function to compute ave r_j^2 for each i</span></span>
+<span id="cb9-3"><a href="inflation-ave-r2_j.html#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb9-4"><a href="inflation-ave-r2_j.html#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="inflation-ave-r2_j.html#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">stringsAsFactors=</span><span class="cn">FALSE</span>)</span>
+<span id="cb9-6"><a href="inflation-ave-r2_j.html#cb9-6" aria-hidden="true" tabindex="-1"></a>ip<span class="ot">&lt;-</span><span class="fu">commandArgs</span>(<span class="at">trailingOnly=</span><span class="cn">TRUE</span>)</span>
+<span id="cb9-7"><a href="inflation-ave-r2_j.html#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">warn=</span><span class="dv">1</span>)</span>
+<span id="cb9-8"><a href="inflation-ave-r2_j.html#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="inflation-ave-r2_j.html#cb9-9" aria-hidden="true" tabindex="-1"></a>compute_ave_r2<span class="ot">=</span><span class="cf">function</span>(m,nm,maf){</span>
+<span id="cb9-10"><a href="inflation-ave-r2_j.html#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="inflation-ave-r2_j.html#cb9-11" aria-hidden="true" tabindex="-1"></a>m<span class="ot">=</span><span class="fu">as.numeric</span>(m)</span>
+<span id="cb9-12"><a href="inflation-ave-r2_j.html#cb9-12" aria-hidden="true" tabindex="-1"></a>nm<span class="ot">=</span><span class="fu">as.character</span>(nm)</span>
+<span id="cb9-13"><a href="inflation-ave-r2_j.html#cb9-13" aria-hidden="true" tabindex="-1"></a>maf<span class="ot">=</span><span class="fu">as.character</span>(maf)</span>
+<span id="cb9-14"><a href="inflation-ave-r2_j.html#cb9-14" aria-hidden="true" tabindex="-1"></a>dir<span class="ot">=</span><span class="fu">paste0</span>(<span class="st">&quot;../inflation/sensitivity/maf&quot;</span>,maf)</span>
+<span id="cb9-15"><a href="inflation-ave-r2_j.html#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="inflation-ave-r2_j.html#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb9-17"><a href="inflation-ave-r2_j.html#cb9-17" aria-hidden="true" tabindex="-1"></a>names<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;good&quot;</span>, <span class="st">&quot;bad&quot;</span>)</span>
+<span id="cb9-18"><a href="inflation-ave-r2_j.html#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="inflation-ave-r2_j.html#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(names)){</span>
+<span id="cb9-20"><a href="inflation-ave-r2_j.html#cb9-20" aria-hidden="true" tabindex="-1"></a>gwas<span class="ot">=</span>names[i]</span>
+<span id="cb9-21"><a href="inflation-ave-r2_j.html#cb9-21" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(dir,<span class="st">&quot;/out/&quot;</span>, nm,<span class="st">&quot;-maf&quot;</span>,maf,<span class="st">&quot;-snps-&quot;</span>, gwas,<span class="st">&quot;.pairwise&quot;</span>), <span class="at">col_names=</span>F)</span>
+<span id="cb9-22"><a href="inflation-ave-r2_j.html#cb9-22" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span>dat[,<span class="sc">-</span><span class="fu">c</span>(m<span class="sc">+</span><span class="dv">1</span>)]<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb9-23"><a href="inflation-ave-r2_j.html#cb9-23" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span><span class="fu">t</span>(<span class="fu">data.frame</span>(<span class="at">ave_r2=</span><span class="fu">apply</span>(dat,<span class="dv">1</span>, mean)))</span>
+<span id="cb9-24"><a href="inflation-ave-r2_j.html#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(out,<span class="fu">paste0</span>(dir,<span class="st">&quot;/ave-r2-&quot;</span>,nm,<span class="st">&quot;-&quot;</span>,gwas), <span class="at">col.names=</span>F, <span class="at">row.names=</span>F, <span class="at">quote=</span>F, <span class="at">append=</span>T)</span>
+<span id="cb9-25"><a href="inflation-ave-r2_j.html#cb9-25" aria-hidden="true" tabindex="-1"></a> }</span>
+<span id="cb9-26"><a href="inflation-ave-r2_j.html#cb9-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-27"><a href="inflation-ave-r2_j.html#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="inflation-ave-r2_j.html#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_ave_r2</span>(ip[<span class="dv">1</span>],ip[<span class="dv">2</span>],ip[<span class="dv">3</span>])</span></code></pre></div>
+</div>
+<div id="m5k-maf0.01" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> m=5k &amp; maf=0.01</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="inflation-ave-r2_j.html#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="inflation-ave-r2_j.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::</span></span>
+<span id="cb10-3"><a href="inflation-ave-r2_j.html#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># m=5k &amp; maf = .01</span></span>
+<span id="cb10-4"><a href="inflation-ave-r2_j.html#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::</span></span>
+<span id="cb10-5"><a href="inflation-ave-r2_j.html#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="inflation-ave-r2_j.html#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># to change</span></span>
+<span id="cb10-7"><a href="inflation-ave-r2_j.html#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>5k</span>
+<span id="cb10-8"><a href="inflation-ave-r2_j.html#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>.01</span>
+<span id="cb10-9"><a href="inflation-ave-r2_j.html#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="inflation-ave-r2_j.html#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb10-11"><a href="inflation-ave-r2_j.html#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb10-12"><a href="inflation-ave-r2_j.html#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb10-13"><a href="inflation-ave-r2_j.html#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 10G</span></span>
+<span id="cb10-14"><a href="inflation-ave-r2_j.html#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb10-15"><a href="inflation-ave-r2_j.html#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 20:00:0</span></span>
+<span id="cb10-16"><a href="inflation-ave-r2_j.html#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="inflation-ave-r2_j.html#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb10-18"><a href="inflation-ave-r2_j.html#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb10-19"><a href="inflation-ave-r2_j.html#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb10-20"><a href="inflation-ave-r2_j.html#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="inflation-ave-r2_j.html#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="st">for i in {1..100}; do</span></span>
+<span id="cb10-22"><a href="inflation-ave-r2_j.html#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="inflation-ave-r2_j.html#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="st"># to change</span></span>
+<span id="cb10-24"><a href="inflation-ave-r2_j.html#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="st">use=../gen/snps-unrel-inds.use</span></span>
+<span id="cb10-25"><a href="inflation-ave-r2_j.html#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="st">m=5000</span></span>
+<span id="cb10-26"><a href="inflation-ave-r2_j.html#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="st">nm=5k</span></span>
+<span id="cb10-27"><a href="inflation-ave-r2_j.html#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="st">maf=.01</span></span>
+<span id="cb10-28"><a href="inflation-ave-r2_j.html#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="st">lista=../inflation/sensitivity/lista-maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb10-29"><a href="inflation-ave-r2_j.html#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="st">dir=../inflation/sensitivity/maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb10-30"><a href="inflation-ave-r2_j.html#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="st">listb=</span><span class="dt">\$</span><span class="st">dir/listb-</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb10-31"><a href="inflation-ave-r2_j.html#cb10-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-32"><a href="inflation-ave-r2_j.html#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="inflation-ave-r2_j.html#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb10-34"><a href="inflation-ave-r2_j.html#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="st">  # 1. select list b [to be recycled]</span></span>
+<span id="cb10-35"><a href="inflation-ave-r2_j.html#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb10-36"><a href="inflation-ave-r2_j.html#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb10-37"><a href="inflation-ave-r2_j.html#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="st">  awk &#39;{split(</span><span class="dt">\$</span><span class="st">1, a, </span><span class="dt">\&quot;</span><span class="st">:</span><span class="dt">\&quot;</span><span class="st">); if (a[1]&gt;=8) print </span><span class="dt">\$</span><span class="st">1 }&#39; </span><span class="dt">\$</span><span class="st">use | shuf | head -n </span><span class="dt">\$</span><span class="st">m &gt;</span><span class="dt">\$</span><span class="st">listb</span></span>
+<span id="cb10-38"><a href="inflation-ave-r2_j.html#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb10-39"><a href="inflation-ave-r2_j.html#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb10-40"><a href="inflation-ave-r2_j.html#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="st">  # 2. good gwas</span></span>
+<span id="cb10-41"><a href="inflation-ave-r2_j.html#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb10-42"><a href="inflation-ave-r2_j.html#cb10-42" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb10-43"><a href="inflation-ave-r2_j.html#cb10-43" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../unrelated/rand.100000</span></span>
+<span id="cb10-44"><a href="inflation-ave-r2_j.html#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-unrel</span></span>
+<span id="cb10-45"><a href="inflation-ave-r2_j.html#cb10-45" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf-snps-good</span></span>
+<span id="cb10-46"><a href="inflation-ave-r2_j.html#cb10-46" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb10-47"><a href="inflation-ave-r2_j.html#cb10-47" aria-hidden="true" tabindex="-1"></a><span class="st">  ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb10-48"><a href="inflation-ave-r2_j.html#cb10-48" aria-hidden="true" tabindex="-1"></a><span class="st">            --calc-inflation </span><span class="dt">\$</span><span class="st">dir/out/</span><span class="dt">\$</span><span class="st">out </span><span class="dt">\</span></span>
+<span id="cb10-49"><a href="inflation-ave-r2_j.html#cb10-49" aria-hidden="true" tabindex="-1"></a><span class="st">            --bfile </span><span class="dt">\$</span><span class="st">bfile </span><span class="dt">\</span></span>
+<span id="cb10-50"><a href="inflation-ave-r2_j.html#cb10-50" aria-hidden="true" tabindex="-1"></a><span class="st">            --keep </span><span class="dt">\$</span><span class="st">id </span><span class="dt">\</span></span>
+<span id="cb10-51"><a href="inflation-ave-r2_j.html#cb10-51" aria-hidden="true" tabindex="-1"></a><span class="st">            --lista </span><span class="dt">\$</span><span class="st">lista </span><span class="dt">\</span></span>
+<span id="cb10-52"><a href="inflation-ave-r2_j.html#cb10-52" aria-hidden="true" tabindex="-1"></a><span class="st">            --listb </span><span class="dt">\$</span><span class="st">listb </span></span>
+<span id="cb10-53"><a href="inflation-ave-r2_j.html#cb10-53" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb10-54"><a href="inflation-ave-r2_j.html#cb10-54" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb10-55"><a href="inflation-ave-r2_j.html#cb10-55" aria-hidden="true" tabindex="-1"></a><span class="st">  # 3. bad gwas</span></span>
+<span id="cb10-56"><a href="inflation-ave-r2_j.html#cb10-56" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb10-57"><a href="inflation-ave-r2_j.html#cb10-57" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb10-58"><a href="inflation-ave-r2_j.html#cb10-58" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../mix-pop-gwas.id</span></span>
+<span id="cb10-59"><a href="inflation-ave-r2_j.html#cb10-59" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-mix</span></span>
+<span id="cb10-60"><a href="inflation-ave-r2_j.html#cb10-60" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf-snps-bad</span></span>
+<span id="cb10-61"><a href="inflation-ave-r2_j.html#cb10-61" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb10-62"><a href="inflation-ave-r2_j.html#cb10-62" aria-hidden="true" tabindex="-1"></a><span class="st">  ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb10-63"><a href="inflation-ave-r2_j.html#cb10-63" aria-hidden="true" tabindex="-1"></a><span class="st">            --calc-inflation </span><span class="dt">\$</span><span class="st">dir/out/</span><span class="dt">\$</span><span class="st">out </span><span class="dt">\</span></span>
+<span id="cb10-64"><a href="inflation-ave-r2_j.html#cb10-64" aria-hidden="true" tabindex="-1"></a><span class="st">            --bfile </span><span class="dt">\$</span><span class="st">bfile </span><span class="dt">\</span></span>
+<span id="cb10-65"><a href="inflation-ave-r2_j.html#cb10-65" aria-hidden="true" tabindex="-1"></a><span class="st">            --keep </span><span class="dt">\$</span><span class="st">id </span><span class="dt">\</span></span>
+<span id="cb10-66"><a href="inflation-ave-r2_j.html#cb10-66" aria-hidden="true" tabindex="-1"></a><span class="st">            --lista </span><span class="dt">\$</span><span class="st">lista </span><span class="dt">\</span></span>
+<span id="cb10-67"><a href="inflation-ave-r2_j.html#cb10-67" aria-hidden="true" tabindex="-1"></a><span class="st">            --listb </span><span class="dt">\$</span><span class="st">listb </span></span>
+<span id="cb10-68"><a href="inflation-ave-r2_j.html#cb10-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-69"><a href="inflation-ave-r2_j.html#cb10-69" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb10-70"><a href="inflation-ave-r2_j.html#cb10-70" aria-hidden="true" tabindex="-1"></a><span class="st">  # 4. compute ave r2 [each column corresponds to a SNP in lista]</span></span>
+<span id="cb10-71"><a href="inflation-ave-r2_j.html#cb10-71" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb10-72"><a href="inflation-ave-r2_j.html#cb10-72" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb10-73"><a href="inflation-ave-r2_j.html#cb10-73" aria-hidden="true" tabindex="-1"></a><span class="st">  Rscript --vanilla ../inflation/sensitivity/calc-ave-r2.r </span><span class="dt">\$</span><span class="st">m </span><span class="dt">\$</span><span class="st">nm </span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb10-74"><a href="inflation-ave-r2_j.html#cb10-74" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb10-75"><a href="inflation-ave-r2_j.html#cb10-75" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb10-76"><a href="inflation-ave-r2_j.html#cb10-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-77"><a href="inflation-ave-r2_j.html#cb10-77" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span></span>
+<span id="cb10-78"><a href="inflation-ave-r2_j.html#cb10-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-79"><a href="inflation-ave-r2_j.html#cb10-79" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb10-80"><a href="inflation-ave-r2_j.html#cb10-80" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>5k</span>
+<span id="cb10-81"><a href="inflation-ave-r2_j.html#cb10-81" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>.01</span>
+<span id="cb10-82"><a href="inflation-ave-r2_j.html#cb10-82" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span> <span class="op">&gt;</span>../job-records/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span></span></code></pre></div>
+</div>
+<div id="m10k-maf0.01" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> m=10k &amp; maf=0.01</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="inflation-ave-r2_j.html#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-2"><a href="inflation-ave-r2_j.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::</span></span>
+<span id="cb11-3"><a href="inflation-ave-r2_j.html#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># m=10k &amp; maf = .01</span></span>
+<span id="cb11-4"><a href="inflation-ave-r2_j.html#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::</span></span>
+<span id="cb11-5"><a href="inflation-ave-r2_j.html#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="inflation-ave-r2_j.html#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># to change</span></span>
+<span id="cb11-7"><a href="inflation-ave-r2_j.html#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>10k</span>
+<span id="cb11-8"><a href="inflation-ave-r2_j.html#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>.01</span>
+<span id="cb11-9"><a href="inflation-ave-r2_j.html#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="inflation-ave-r2_j.html#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb11-11"><a href="inflation-ave-r2_j.html#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb11-12"><a href="inflation-ave-r2_j.html#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb11-13"><a href="inflation-ave-r2_j.html#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb11-14"><a href="inflation-ave-r2_j.html#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb11-15"><a href="inflation-ave-r2_j.html#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 20:00:0</span></span>
+<span id="cb11-16"><a href="inflation-ave-r2_j.html#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="inflation-ave-r2_j.html#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb11-18"><a href="inflation-ave-r2_j.html#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb11-19"><a href="inflation-ave-r2_j.html#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb11-20"><a href="inflation-ave-r2_j.html#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="inflation-ave-r2_j.html#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="st">for i in {1..100}; do</span></span>
+<span id="cb11-22"><a href="inflation-ave-r2_j.html#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="inflation-ave-r2_j.html#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="st"># to change</span></span>
+<span id="cb11-24"><a href="inflation-ave-r2_j.html#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="st">use=../gen/snps-unrel-inds.use</span></span>
+<span id="cb11-25"><a href="inflation-ave-r2_j.html#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="st">m=10000</span></span>
+<span id="cb11-26"><a href="inflation-ave-r2_j.html#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="st">nm=10k</span></span>
+<span id="cb11-27"><a href="inflation-ave-r2_j.html#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="st">maf=.01</span></span>
+<span id="cb11-28"><a href="inflation-ave-r2_j.html#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="st">lista=../inflation/sensitivity/lista-maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb11-29"><a href="inflation-ave-r2_j.html#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="st">dir=../inflation/sensitivity/maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb11-30"><a href="inflation-ave-r2_j.html#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="st">listb=</span><span class="dt">\$</span><span class="st">dir/listb-</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb11-31"><a href="inflation-ave-r2_j.html#cb11-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-32"><a href="inflation-ave-r2_j.html#cb11-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-33"><a href="inflation-ave-r2_j.html#cb11-33" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb11-34"><a href="inflation-ave-r2_j.html#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="st">  # 1. select list b [to be recycled]</span></span>
+<span id="cb11-35"><a href="inflation-ave-r2_j.html#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb11-36"><a href="inflation-ave-r2_j.html#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb11-37"><a href="inflation-ave-r2_j.html#cb11-37" aria-hidden="true" tabindex="-1"></a><span class="st">  awk &#39;{split(</span><span class="dt">\$</span><span class="st">1, a, </span><span class="dt">\&quot;</span><span class="st">:</span><span class="dt">\&quot;</span><span class="st">); if (a[1]&gt;=8) print </span><span class="dt">\$</span><span class="st">1 }&#39; </span><span class="dt">\$</span><span class="st">use | shuf | head -n </span><span class="dt">\$</span><span class="st">m &gt;</span><span class="dt">\$</span><span class="st">listb</span></span>
+<span id="cb11-38"><a href="inflation-ave-r2_j.html#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb11-39"><a href="inflation-ave-r2_j.html#cb11-39" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb11-40"><a href="inflation-ave-r2_j.html#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="st">  # 2. good gwas</span></span>
+<span id="cb11-41"><a href="inflation-ave-r2_j.html#cb11-41" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb11-42"><a href="inflation-ave-r2_j.html#cb11-42" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb11-43"><a href="inflation-ave-r2_j.html#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../unrelated/rand.100000</span></span>
+<span id="cb11-44"><a href="inflation-ave-r2_j.html#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-unrel</span></span>
+<span id="cb11-45"><a href="inflation-ave-r2_j.html#cb11-45" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf-snps-good</span></span>
+<span id="cb11-46"><a href="inflation-ave-r2_j.html#cb11-46" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb11-47"><a href="inflation-ave-r2_j.html#cb11-47" aria-hidden="true" tabindex="-1"></a><span class="st">  ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb11-48"><a href="inflation-ave-r2_j.html#cb11-48" aria-hidden="true" tabindex="-1"></a><span class="st">            --calc-inflation </span><span class="dt">\$</span><span class="st">dir/out/</span><span class="dt">\$</span><span class="st">out </span><span class="dt">\</span></span>
+<span id="cb11-49"><a href="inflation-ave-r2_j.html#cb11-49" aria-hidden="true" tabindex="-1"></a><span class="st">            --bfile </span><span class="dt">\$</span><span class="st">bfile </span><span class="dt">\</span></span>
+<span id="cb11-50"><a href="inflation-ave-r2_j.html#cb11-50" aria-hidden="true" tabindex="-1"></a><span class="st">            --keep </span><span class="dt">\$</span><span class="st">id </span><span class="dt">\</span></span>
+<span id="cb11-51"><a href="inflation-ave-r2_j.html#cb11-51" aria-hidden="true" tabindex="-1"></a><span class="st">            --lista </span><span class="dt">\$</span><span class="st">lista </span><span class="dt">\</span></span>
+<span id="cb11-52"><a href="inflation-ave-r2_j.html#cb11-52" aria-hidden="true" tabindex="-1"></a><span class="st">            --listb </span><span class="dt">\$</span><span class="st">listb </span></span>
+<span id="cb11-53"><a href="inflation-ave-r2_j.html#cb11-53" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb11-54"><a href="inflation-ave-r2_j.html#cb11-54" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb11-55"><a href="inflation-ave-r2_j.html#cb11-55" aria-hidden="true" tabindex="-1"></a><span class="st">  # 3. bad gwas</span></span>
+<span id="cb11-56"><a href="inflation-ave-r2_j.html#cb11-56" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb11-57"><a href="inflation-ave-r2_j.html#cb11-57" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb11-58"><a href="inflation-ave-r2_j.html#cb11-58" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../mix-pop-gwas.id</span></span>
+<span id="cb11-59"><a href="inflation-ave-r2_j.html#cb11-59" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-mix</span></span>
+<span id="cb11-60"><a href="inflation-ave-r2_j.html#cb11-60" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf-snps-bad</span></span>
+<span id="cb11-61"><a href="inflation-ave-r2_j.html#cb11-61" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb11-62"><a href="inflation-ave-r2_j.html#cb11-62" aria-hidden="true" tabindex="-1"></a><span class="st">  ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb11-63"><a href="inflation-ave-r2_j.html#cb11-63" aria-hidden="true" tabindex="-1"></a><span class="st">            --calc-inflation </span><span class="dt">\$</span><span class="st">dir/out/</span><span class="dt">\$</span><span class="st">out </span><span class="dt">\</span></span>
+<span id="cb11-64"><a href="inflation-ave-r2_j.html#cb11-64" aria-hidden="true" tabindex="-1"></a><span class="st">            --bfile </span><span class="dt">\$</span><span class="st">bfile </span><span class="dt">\</span></span>
+<span id="cb11-65"><a href="inflation-ave-r2_j.html#cb11-65" aria-hidden="true" tabindex="-1"></a><span class="st">            --keep </span><span class="dt">\$</span><span class="st">id </span><span class="dt">\</span></span>
+<span id="cb11-66"><a href="inflation-ave-r2_j.html#cb11-66" aria-hidden="true" tabindex="-1"></a><span class="st">            --lista </span><span class="dt">\$</span><span class="st">lista </span><span class="dt">\</span></span>
+<span id="cb11-67"><a href="inflation-ave-r2_j.html#cb11-67" aria-hidden="true" tabindex="-1"></a><span class="st">            --listb </span><span class="dt">\$</span><span class="st">listb </span></span>
+<span id="cb11-68"><a href="inflation-ave-r2_j.html#cb11-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-69"><a href="inflation-ave-r2_j.html#cb11-69" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb11-70"><a href="inflation-ave-r2_j.html#cb11-70" aria-hidden="true" tabindex="-1"></a><span class="st">  # 4. compute ave r2 [each column corresponds to a SNP in lista]</span></span>
+<span id="cb11-71"><a href="inflation-ave-r2_j.html#cb11-71" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb11-72"><a href="inflation-ave-r2_j.html#cb11-72" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb11-73"><a href="inflation-ave-r2_j.html#cb11-73" aria-hidden="true" tabindex="-1"></a><span class="st">  Rscript --vanilla ../inflation/sensitivity/calc-ave-r2.r </span><span class="dt">\$</span><span class="st">m </span><span class="dt">\$</span><span class="st">nm </span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb11-74"><a href="inflation-ave-r2_j.html#cb11-74" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb11-75"><a href="inflation-ave-r2_j.html#cb11-75" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb11-76"><a href="inflation-ave-r2_j.html#cb11-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-77"><a href="inflation-ave-r2_j.html#cb11-77" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span></span>
+<span id="cb11-78"><a href="inflation-ave-r2_j.html#cb11-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-79"><a href="inflation-ave-r2_j.html#cb11-79" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb11-80"><a href="inflation-ave-r2_j.html#cb11-80" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>10k</span>
+<span id="cb11-81"><a href="inflation-ave-r2_j.html#cb11-81" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>.01</span>
+<span id="cb11-82"><a href="inflation-ave-r2_j.html#cb11-82" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span> <span class="op">&gt;</span>../job-records/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span></span></code></pre></div>
+</div>
+<div id="m20k-maf0.01" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> m=20k &amp; maf=0.01</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="inflation-ave-r2_j.html#cb12-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-2"><a href="inflation-ave-r2_j.html#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::</span></span>
+<span id="cb12-3"><a href="inflation-ave-r2_j.html#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># m=20k &amp; maf = .01</span></span>
+<span id="cb12-4"><a href="inflation-ave-r2_j.html#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::</span></span>
+<span id="cb12-5"><a href="inflation-ave-r2_j.html#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="inflation-ave-r2_j.html#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># to change</span></span>
+<span id="cb12-7"><a href="inflation-ave-r2_j.html#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>20k</span>
+<span id="cb12-8"><a href="inflation-ave-r2_j.html#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>.01</span>
+<span id="cb12-9"><a href="inflation-ave-r2_j.html#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="inflation-ave-r2_j.html#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb12-11"><a href="inflation-ave-r2_j.html#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb12-12"><a href="inflation-ave-r2_j.html#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb12-13"><a href="inflation-ave-r2_j.html#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb12-14"><a href="inflation-ave-r2_j.html#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb12-15"><a href="inflation-ave-r2_j.html#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 20:00:0</span></span>
+<span id="cb12-16"><a href="inflation-ave-r2_j.html#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="inflation-ave-r2_j.html#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb12-18"><a href="inflation-ave-r2_j.html#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb12-19"><a href="inflation-ave-r2_j.html#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb12-20"><a href="inflation-ave-r2_j.html#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="inflation-ave-r2_j.html#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="st">for i in {1..100}; do</span></span>
+<span id="cb12-22"><a href="inflation-ave-r2_j.html#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="inflation-ave-r2_j.html#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="st"># to change</span></span>
+<span id="cb12-24"><a href="inflation-ave-r2_j.html#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="st">use=../gen/snps-unrel-inds.use</span></span>
+<span id="cb12-25"><a href="inflation-ave-r2_j.html#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="st">m=20000</span></span>
+<span id="cb12-26"><a href="inflation-ave-r2_j.html#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="st">nm=20k</span></span>
+<span id="cb12-27"><a href="inflation-ave-r2_j.html#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="st">maf=.01</span></span>
+<span id="cb12-28"><a href="inflation-ave-r2_j.html#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="st">lista=../inflation/sensitivity/lista-maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb12-29"><a href="inflation-ave-r2_j.html#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="st">dir=../inflation/sensitivity/maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb12-30"><a href="inflation-ave-r2_j.html#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="st">listb=</span><span class="dt">\$</span><span class="st">dir/listb-</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb12-31"><a href="inflation-ave-r2_j.html#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-32"><a href="inflation-ave-r2_j.html#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-33"><a href="inflation-ave-r2_j.html#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb12-34"><a href="inflation-ave-r2_j.html#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="st">  # 1. select list b [to be recycled]</span></span>
+<span id="cb12-35"><a href="inflation-ave-r2_j.html#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb12-36"><a href="inflation-ave-r2_j.html#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb12-37"><a href="inflation-ave-r2_j.html#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="st">  awk &#39;{split(</span><span class="dt">\$</span><span class="st">1, a, </span><span class="dt">\&quot;</span><span class="st">:</span><span class="dt">\&quot;</span><span class="st">); if (a[1]&gt;=8) print </span><span class="dt">\$</span><span class="st">1 }&#39; </span><span class="dt">\$</span><span class="st">use | shuf | head -n </span><span class="dt">\$</span><span class="st">m &gt;</span><span class="dt">\$</span><span class="st">listb</span></span>
+<span id="cb12-38"><a href="inflation-ave-r2_j.html#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb12-39"><a href="inflation-ave-r2_j.html#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb12-40"><a href="inflation-ave-r2_j.html#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="st">  # 2. good gwas</span></span>
+<span id="cb12-41"><a href="inflation-ave-r2_j.html#cb12-41" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb12-42"><a href="inflation-ave-r2_j.html#cb12-42" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb12-43"><a href="inflation-ave-r2_j.html#cb12-43" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../unrelated/rand.100000</span></span>
+<span id="cb12-44"><a href="inflation-ave-r2_j.html#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-unrel</span></span>
+<span id="cb12-45"><a href="inflation-ave-r2_j.html#cb12-45" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf-snps-good</span></span>
+<span id="cb12-46"><a href="inflation-ave-r2_j.html#cb12-46" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb12-47"><a href="inflation-ave-r2_j.html#cb12-47" aria-hidden="true" tabindex="-1"></a><span class="st">  ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb12-48"><a href="inflation-ave-r2_j.html#cb12-48" aria-hidden="true" tabindex="-1"></a><span class="st">            --calc-inflation </span><span class="dt">\$</span><span class="st">dir/out/</span><span class="dt">\$</span><span class="st">out </span><span class="dt">\</span></span>
+<span id="cb12-49"><a href="inflation-ave-r2_j.html#cb12-49" aria-hidden="true" tabindex="-1"></a><span class="st">            --bfile </span><span class="dt">\$</span><span class="st">bfile </span><span class="dt">\</span></span>
+<span id="cb12-50"><a href="inflation-ave-r2_j.html#cb12-50" aria-hidden="true" tabindex="-1"></a><span class="st">            --keep </span><span class="dt">\$</span><span class="st">id </span><span class="dt">\</span></span>
+<span id="cb12-51"><a href="inflation-ave-r2_j.html#cb12-51" aria-hidden="true" tabindex="-1"></a><span class="st">            --lista </span><span class="dt">\$</span><span class="st">lista </span><span class="dt">\</span></span>
+<span id="cb12-52"><a href="inflation-ave-r2_j.html#cb12-52" aria-hidden="true" tabindex="-1"></a><span class="st">            --listb </span><span class="dt">\$</span><span class="st">listb </span></span>
+<span id="cb12-53"><a href="inflation-ave-r2_j.html#cb12-53" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb12-54"><a href="inflation-ave-r2_j.html#cb12-54" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb12-55"><a href="inflation-ave-r2_j.html#cb12-55" aria-hidden="true" tabindex="-1"></a><span class="st">  # 3. bad gwas</span></span>
+<span id="cb12-56"><a href="inflation-ave-r2_j.html#cb12-56" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb12-57"><a href="inflation-ave-r2_j.html#cb12-57" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb12-58"><a href="inflation-ave-r2_j.html#cb12-58" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../mix-pop-gwas.id</span></span>
+<span id="cb12-59"><a href="inflation-ave-r2_j.html#cb12-59" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-mix</span></span>
+<span id="cb12-60"><a href="inflation-ave-r2_j.html#cb12-60" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="dt">\$</span><span class="st">nm-maf</span><span class="dt">\$</span><span class="st">maf-snps-bad</span></span>
+<span id="cb12-61"><a href="inflation-ave-r2_j.html#cb12-61" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb12-62"><a href="inflation-ave-r2_j.html#cb12-62" aria-hidden="true" tabindex="-1"></a><span class="st">  ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb12-63"><a href="inflation-ave-r2_j.html#cb12-63" aria-hidden="true" tabindex="-1"></a><span class="st">            --calc-inflation </span><span class="dt">\$</span><span class="st">dir/out/</span><span class="dt">\$</span><span class="st">out </span><span class="dt">\</span></span>
+<span id="cb12-64"><a href="inflation-ave-r2_j.html#cb12-64" aria-hidden="true" tabindex="-1"></a><span class="st">            --bfile </span><span class="dt">\$</span><span class="st">bfile </span><span class="dt">\</span></span>
+<span id="cb12-65"><a href="inflation-ave-r2_j.html#cb12-65" aria-hidden="true" tabindex="-1"></a><span class="st">            --keep </span><span class="dt">\$</span><span class="st">id </span><span class="dt">\</span></span>
+<span id="cb12-66"><a href="inflation-ave-r2_j.html#cb12-66" aria-hidden="true" tabindex="-1"></a><span class="st">            --lista </span><span class="dt">\$</span><span class="st">lista </span><span class="dt">\</span></span>
+<span id="cb12-67"><a href="inflation-ave-r2_j.html#cb12-67" aria-hidden="true" tabindex="-1"></a><span class="st">            --listb </span><span class="dt">\$</span><span class="st">listb </span></span>
+<span id="cb12-68"><a href="inflation-ave-r2_j.html#cb12-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-69"><a href="inflation-ave-r2_j.html#cb12-69" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb12-70"><a href="inflation-ave-r2_j.html#cb12-70" aria-hidden="true" tabindex="-1"></a><span class="st">  # 4. compute ave r2 [each column corresponds to a SNP in lista]</span></span>
+<span id="cb12-71"><a href="inflation-ave-r2_j.html#cb12-71" aria-hidden="true" tabindex="-1"></a><span class="st">  #::</span></span>
+<span id="cb12-72"><a href="inflation-ave-r2_j.html#cb12-72" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb12-73"><a href="inflation-ave-r2_j.html#cb12-73" aria-hidden="true" tabindex="-1"></a><span class="st">  Rscript --vanilla ../inflation/sensitivity/calc-ave-r2.r </span><span class="dt">\$</span><span class="st">m </span><span class="dt">\$</span><span class="st">nm </span><span class="dt">\$</span><span class="st">maf</span></span>
+<span id="cb12-74"><a href="inflation-ave-r2_j.html#cb12-74" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb12-75"><a href="inflation-ave-r2_j.html#cb12-75" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb12-76"><a href="inflation-ave-r2_j.html#cb12-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-77"><a href="inflation-ave-r2_j.html#cb12-77" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span></span>
+<span id="cb12-78"><a href="inflation-ave-r2_j.html#cb12-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-79"><a href="inflation-ave-r2_j.html#cb12-79" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb12-80"><a href="inflation-ave-r2_j.html#cb12-80" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>20k</span>
+<span id="cb12-81"><a href="inflation-ave-r2_j.html#cb12-81" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>.01</span>
+<span id="cb12-82"><a href="inflation-ave-r2_j.html#cb12-82" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span> <span class="op">&gt;</span>../job-records/calc-ave-r2-<span class="va">$nm</span>-maf<span class="va">$maf</span></span></code></pre></div>
+</div>
+<div id="summary" class="section level2" number="5.5">
+<h2><span class="header-section-number">5.5</span> summary</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="inflation-ave-r2_j.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb13-2"><a href="inflation-ave-r2_j.html#cb13-2" aria-hidden="true" tabindex="-1"></a>dir<span class="ot">=</span><span class="st">&quot;inflation/sensitivity/maf.01/&quot;</span></span>
+<span id="cb13-3"><a href="inflation-ave-r2_j.html#cb13-3" aria-hidden="true" tabindex="-1"></a>snps<span class="ot">=</span><span class="fu">read.table</span>(<span class="fu">paste0</span>(dir,<span class="st">&quot;/out/1k-maf.01-snps-bad.predictorsa&quot;</span>), <span class="at">stringsAsFactors =</span> F, <span class="at">header=</span>F)</span>
+<span id="cb13-4"><a href="inflation-ave-r2_j.html#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># note: the snp set for list a is constant across different m&#39;s</span></span>
+<span id="cb13-5"><a href="inflation-ave-r2_j.html#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="inflation-ave-r2_j.html#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># extract data</span></span>
+<span id="cb13-7"><a href="inflation-ave-r2_j.html#cb13-7" aria-hidden="true" tabindex="-1"></a>m<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;1k&quot;</span>,<span class="st">&quot;5k&quot;</span>,<span class="st">&quot;10k&quot;</span>, <span class="st">&quot;20k&quot;</span>)</span>
+<span id="cb13-8"><a href="inflation-ave-r2_j.html#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="inflation-ave-r2_j.html#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(m)){</span>
+<span id="cb13-10"><a href="inflation-ave-r2_j.html#cb13-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-11"><a href="inflation-ave-r2_j.html#cb13-11" aria-hidden="true" tabindex="-1"></a>  dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(dir,<span class="st">&quot;ave-r2-&quot;</span>,m[i],<span class="st">&quot;-bad&quot;</span>),<span class="at">col_names=</span>F)</span>
+<span id="cb13-12"><a href="inflation-ave-r2_j.html#cb13-12" aria-hidden="true" tabindex="-1"></a>  ave0<span class="ot">=</span><span class="fu">apply</span>(dat,<span class="dv">2</span>,mean)</span>
+<span id="cb13-13"><a href="inflation-ave-r2_j.html#cb13-13" aria-hidden="true" tabindex="-1"></a>  sd0<span class="ot">=</span><span class="fu">apply</span>(dat,<span class="dv">2</span>,sd)</span>
+<span id="cb13-14"><a href="inflation-ave-r2_j.html#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="inflation-ave-r2_j.html#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(i<span class="sc">==</span><span class="dv">1</span>){ave<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">snp=</span>snps<span class="sc">$</span>V1,ave0, <span class="at">stringsAsFactors =</span> F);</span>
+<span id="cb13-16"><a href="inflation-ave-r2_j.html#cb13-16" aria-hidden="true" tabindex="-1"></a>            <span class="fu">names</span>(ave)[i<span class="sc">+</span><span class="dv">1</span>]<span class="ot">=</span><span class="fu">paste0</span>(<span class="st">&quot;m_&quot;</span>,m[i])</span>
+<span id="cb13-17"><a href="inflation-ave-r2_j.html#cb13-17" aria-hidden="true" tabindex="-1"></a>            sd<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">snp=</span>snps<span class="sc">$</span>V1,sd0, <span class="at">stringsAsFactors =</span> F);</span>
+<span id="cb13-18"><a href="inflation-ave-r2_j.html#cb13-18" aria-hidden="true" tabindex="-1"></a>            <span class="fu">names</span>(sd)[i<span class="sc">+</span><span class="dv">1</span>]<span class="ot">=</span><span class="fu">paste0</span>(<span class="st">&quot;m_&quot;</span>,m[i])</span>
+<span id="cb13-19"><a href="inflation-ave-r2_j.html#cb13-19" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {ave<span class="ot">=</span><span class="fu">cbind</span>(ave,ave0); </span>
+<span id="cb13-20"><a href="inflation-ave-r2_j.html#cb13-20" aria-hidden="true" tabindex="-1"></a>          <span class="fu">names</span>(ave)[i<span class="sc">+</span><span class="dv">1</span>]<span class="ot">=</span><span class="fu">paste0</span>(<span class="st">&quot;m_&quot;</span>,m[i])</span>
+<span id="cb13-21"><a href="inflation-ave-r2_j.html#cb13-21" aria-hidden="true" tabindex="-1"></a>          sd<span class="ot">=</span><span class="fu">cbind</span>(sd,sd0); </span>
+<span id="cb13-22"><a href="inflation-ave-r2_j.html#cb13-22" aria-hidden="true" tabindex="-1"></a>          <span class="fu">names</span>(sd)[i<span class="sc">+</span><span class="dv">1</span>]<span class="ot">=</span><span class="fu">paste0</span>(<span class="st">&quot;m_&quot;</span>,m[i])</span>
+<span id="cb13-23"><a href="inflation-ave-r2_j.html#cb13-23" aria-hidden="true" tabindex="-1"></a>          } </span>
+<span id="cb13-24"><a href="inflation-ave-r2_j.html#cb13-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-25"><a href="inflation-ave-r2_j.html#cb13-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-26"><a href="inflation-ave-r2_j.html#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co"># organize data</span></span>
+<span id="cb13-27"><a href="inflation-ave-r2_j.html#cb13-27" aria-hidden="true" tabindex="-1"></a>ord<span class="ot">=</span><span class="fu">order</span>(ave<span class="sc">$</span>m_20k,<span class="at">decreasing=</span>F)</span>
+<span id="cb13-28"><a href="inflation-ave-r2_j.html#cb13-28" aria-hidden="true" tabindex="-1"></a>ave<span class="ot">=</span>ave[ord,]</span>
+<span id="cb13-29"><a href="inflation-ave-r2_j.html#cb13-29" aria-hidden="true" tabindex="-1"></a>sd<span class="ot">=</span>sd[ord,]</span>
+<span id="cb13-30"><a href="inflation-ave-r2_j.html#cb13-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-31"><a href="inflation-ave-r2_j.html#cb13-31" aria-hidden="true" tabindex="-1"></a>cutoff<span class="ot">=</span><span class="fu">quantile</span>(ave<span class="sc">$</span>m_20k, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.01</span>))</span>
+<span id="cb13-32"><a href="inflation-ave-r2_j.html#cb13-32" aria-hidden="true" tabindex="-1"></a>ave<span class="sc">$</span>quant_bin<span class="ot">=</span><span class="fu">cut</span>(ave<span class="sc">$</span>m_20k, <span class="at">breaks=</span>cutoff, </span>
+<span id="cb13-33"><a href="inflation-ave-r2_j.html#cb13-33" aria-hidden="true" tabindex="-1"></a>                  <span class="at">include.lowest=</span>T,</span>
+<span id="cb13-34"><a href="inflation-ave-r2_j.html#cb13-34" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb13-35"><a href="inflation-ave-r2_j.html#cb13-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-36"><a href="inflation-ave-r2_j.html#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="co"># check alignment of ave r^2_j for different m</span></span>
+<span id="cb13-37"><a href="inflation-ave-r2_j.html#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb13-38"><a href="inflation-ave-r2_j.html#cb13-38" aria-hidden="true" tabindex="-1"></a>dir<span class="ot">=</span><span class="st">&quot;inflation/sensitivity/maf.01/&quot;</span></span>
+<span id="cb13-39"><a href="inflation-ave-r2_j.html#cb13-39" aria-hidden="true" tabindex="-1"></a>snps<span class="ot">=</span><span class="fu">read.table</span>(<span class="fu">paste0</span>(dir,<span class="st">&quot;/out/1k-maf.01-snps-bad.predictorsa&quot;</span>), <span class="at">stringsAsFactors =</span> F, <span class="at">header=</span>F)</span>
+<span id="cb13-40"><a href="inflation-ave-r2_j.html#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="co"># note: the snp set for list a is constant across different m&#39;s</span></span>
+<span id="cb13-41"><a href="inflation-ave-r2_j.html#cb13-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-42"><a href="inflation-ave-r2_j.html#cb13-42" aria-hidden="true" tabindex="-1"></a><span class="co"># extract data</span></span>
+<span id="cb13-43"><a href="inflation-ave-r2_j.html#cb13-43" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="st">&quot;fig/ave-r2-1st-vs-2nd-run-by-m.png&quot;</span>, <span class="at">res=</span><span class="dv">400</span> , <span class="at">width=</span><span class="dv">40</span>, <span class="at">height=</span><span class="dv">10</span>, <span class="at">units=</span><span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb13-44"><a href="inflation-ave-r2_j.html#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">4</span>), <span class="at">pty=</span><span class="st">&quot;s&quot;</span>)</span>
+<span id="cb13-45"><a href="inflation-ave-r2_j.html#cb13-45" aria-hidden="true" tabindex="-1"></a>m<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;1k&quot;</span>,<span class="st">&quot;5k&quot;</span>,<span class="st">&quot;10k&quot;</span>, <span class="st">&quot;20k&quot;</span>)</span>
+<span id="cb13-46"><a href="inflation-ave-r2_j.html#cb13-46" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(m)){</span>
+<span id="cb13-47"><a href="inflation-ave-r2_j.html#cb13-47" aria-hidden="true" tabindex="-1"></a>  dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(dir,<span class="st">&quot;ave-r2-&quot;</span>,m[i],<span class="st">&quot;-bad&quot;</span>),<span class="at">col_names=</span>F)</span>
+<span id="cb13-48"><a href="inflation-ave-r2_j.html#cb13-48" aria-hidden="true" tabindex="-1"></a>  sel<span class="ot">=</span><span class="fu">t</span>(dat[<span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">20</span>),])</span>
+<span id="cb13-49"><a href="inflation-ave-r2_j.html#cb13-49" aria-hidden="true" tabindex="-1"></a>  start<span class="ot">=</span><span class="fu">min</span>(<span class="fu">c</span>(sel[,<span class="dv">1</span>],sel[,<span class="dv">2</span>]))</span>
+<span id="cb13-50"><a href="inflation-ave-r2_j.html#cb13-50" aria-hidden="true" tabindex="-1"></a>  end<span class="ot">=</span><span class="fu">max</span>(<span class="fu">c</span>(sel[,<span class="dv">1</span>],sel[,<span class="dv">2</span>]))</span>
+<span id="cb13-51"><a href="inflation-ave-r2_j.html#cb13-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(sel[,<span class="dv">1</span>], sel[,<span class="dv">2</span>],</span>
+<span id="cb13-52"><a href="inflation-ave-r2_j.html#cb13-52" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlim=</span><span class="fu">c</span>(start,end), <span class="at">ylim=</span><span class="fu">c</span>(start, end),</span>
+<span id="cb13-53"><a href="inflation-ave-r2_j.html#cb13-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab=</span><span class="st">&quot;1st run&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;2nd run&quot;</span>, <span class="at">main=</span>m[i], <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb13-54"><a href="inflation-ave-r2_j.html#cb13-54" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex =</span> <span class="dv">1</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span><span class="st">&quot;darkgray&quot;</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb13-55"><a href="inflation-ave-r2_j.html#cb13-55" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">col=</span><span class="st">&quot;darkgray&quot;</span>, <span class="at">lwd=</span><span class="fl">1.5</span>, <span class="at">lty=</span><span class="dv">1</span>)</span>
+<span id="cb13-56"><a href="inflation-ave-r2_j.html#cb13-56" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-57"><a href="inflation-ave-r2_j.html#cb13-57" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="inflation-ave-r2_j.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="do">## PLOTS TO WORK ON</span></span>
+<span id="cb14-2"><a href="inflation-ave-r2_j.html#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="st">&quot;fig/ave-r2.png&quot;</span>, <span class="at">res=</span><span class="dv">400</span> , <span class="at">width=</span><span class="dv">30</span>, <span class="at">height=</span><span class="dv">20</span>, <span class="at">units=</span><span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb14-3"><a href="inflation-ave-r2_j.html#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#par(mfrow=c(1,3))</span></span>
+<span id="cb14-4"><a href="inflation-ave-r2_j.html#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#par(mar=c(5, 14, 2, 2))</span></span>
+<span id="cb14-5"><a href="inflation-ave-r2_j.html#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># set up plotting region</span></span>
+<span id="cb14-6"><a href="inflation-ave-r2_j.html#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="inflation-ave-r2_j.html#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="do">##### UP TO HERE</span></span>
+<span id="cb14-8"><a href="inflation-ave-r2_j.html#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="inflation-ave-r2_j.html#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="st">&quot;fig/ave-r2.png&quot;</span>, <span class="at">res=</span><span class="dv">400</span> , <span class="at">width=</span><span class="dv">20</span>, <span class="at">height=</span><span class="dv">20</span>, <span class="at">units=</span><span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb14-10"><a href="inflation-ave-r2_j.html#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ave<span class="sc">$</span>m_1k[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>], <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">type=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>, </span>
+<span id="cb14-11"><a href="inflation-ave-r2_j.html#cb14-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.1</span>, <span class="fl">0.6</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">dim</span>(dat2)[<span class="dv">1</span>]<span class="sc">+</span><span class="fl">0.5</span>), </span>
+<span id="cb14-12"><a href="inflation-ave-r2_j.html#cb14-12" aria-hidden="true" tabindex="-1"></a>     <span class="co">#xaxs=&quot;i&quot;, yaxs=&quot;i&quot;, </span></span>
+<span id="cb14-13"><a href="inflation-ave-r2_j.html#cb14-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;&quot;</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
+<span id="cb14-14"><a href="inflation-ave-r2_j.html#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># add upper and lower bounds</span></span>
+<span id="cb14-15"><a href="inflation-ave-r2_j.html#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) <span class="fu">lines</span>(<span class="at">x=</span><span class="fu">c</span>(ave<span class="sc">$</span>m_1k[i], ave<span class="sc">$</span>m_1k[i]<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>sd<span class="sc">$</span>m_1k[i]), </span>
+<span id="cb14-16"><a href="inflation-ave-r2_j.html#cb14-16" aria-hidden="true" tabindex="-1"></a>                      <span class="at">y=</span><span class="fu">c</span>(i,i),<span class="at">lwd=</span><span class="dv">3</span>,<span class="at">lty=</span><span class="dv">1</span>,<span class="at">col=</span><span class="st">&quot;lightgrey&quot;</span>)</span>
+<span id="cb14-17"><a href="inflation-ave-r2_j.html#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) <span class="fu">lines</span>(<span class="at">x=</span><span class="fu">c</span>(ave<span class="sc">$</span>m_1k[i]<span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>sd<span class="sc">$</span>m_1k[i], ave<span class="sc">$</span>m_1k[i]),</span>
+<span id="cb14-18"><a href="inflation-ave-r2_j.html#cb14-18" aria-hidden="true" tabindex="-1"></a>                      <span class="at">y=</span><span class="fu">c</span>(i,i),<span class="at">lwd=</span><span class="dv">3</span>, <span class="at">lty=</span><span class="dv">1</span>, <span class="at">col=</span><span class="st">&quot;lightgrey&quot;</span>)</span>
+<span id="cb14-19"><a href="inflation-ave-r2_j.html#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co"># add point estimates</span></span>
+<span id="cb14-20"><a href="inflation-ave-r2_j.html#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x=</span>ave<span class="sc">$</span>m_1k[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>],<span class="at">y=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">pch=</span><span class="dv">19</span>, <span class="at">cex=</span><span class="fl">1.2</span>, <span class="at">col=</span><span class="st">&quot;powderblue&quot;</span>)</span>
+<span id="cb14-21"><a href="inflation-ave-r2_j.html#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co"># label points</span></span>
+<span id="cb14-22"><a href="inflation-ave-r2_j.html#cb14-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="inflation-ave-r2_j.html#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co"># add x- axis </span></span>
+<span id="cb14-24"><a href="inflation-ave-r2_j.html#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co">#axis(1, at=0.1*(0:6), labels=TRUE, tick=TRUE, outer=FALSE)</span></span>
+<span id="cb14-25"><a href="inflation-ave-r2_j.html#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">#axis(2, at=1:dim(dat2)[1]+0.1, labels=dat2$full, tick=FALSE, outer=FALSE, las=2,</span></span>
+<span id="cb14-26"><a href="inflation-ave-r2_j.html#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co">#     hadj=1, padj=1, xpd=T)</span></span>
+<span id="cb14-27"><a href="inflation-ave-r2_j.html#cb14-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-28"><a href="inflation-ave-r2_j.html#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co"># add lables along y axis</span></span>
+<span id="cb14-29"><a href="inflation-ave-r2_j.html#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co">#mtext(&quot;Trait&quot;,at=c(-0.08,11),adj=1,cex=2,col=&quot;steelblue&quot;, font=2)</span></span>
+<span id="cb14-30"><a href="inflation-ave-r2_j.html#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co">#mtext(&quot;N&quot;,at=c(-0.015,11),adj=1,cex=2,col=&quot;steelblue&quot;, font=2)</span></span>
+<span id="cb14-31"><a href="inflation-ave-r2_j.html#cb14-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-32"><a href="inflation-ave-r2_j.html#cb14-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-33"><a href="inflation-ave-r2_j.html#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co"># add trait names, n &amp; p-values</span></span>
+<span id="cb14-34"><a href="inflation-ave-r2_j.html#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co">#for (i in seq(1,10,by=1)) text(-0.07,i,dat2$full[i],cex=1.5, adj=1, font=2, xpd=T)</span></span>
+<span id="cb14-35"><a href="inflation-ave-r2_j.html#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="co">#for (i in seq(1,10,by=1)) text(-0.01,i,dat2$n[i],cex=1.1, adj=1, font=2, xpd=T, col=&quot;slategray&quot;)</span></span>
+<span id="cb14-36"><a href="inflation-ave-r2_j.html#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co">#text(0.3, -1 , &quot;SNP-based Heritability Estimate (95% CI)&quot;,adj=0.5,cex=1.2, font=1, xpd=T)</span></span>
+<span id="cb14-37"><a href="inflation-ave-r2_j.html#cb14-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-38"><a href="inflation-ave-r2_j.html#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>Show that estimated inflation correlates well with difference in <span class="math inline">\(\overline{r_j^2}\)</span> between bad and good GWAS.
+I guess it will be nice to have more variety. E.g., instead of good and bad, have good, a bit bad (e.g., 1000 non-europeans), a bit more bad (2000 non-europeans), … bad (7000 non-europeans).</li>
+</ol>
+<p>Would be great to know the slope of this regression. Can you estimate it by regressing <span class="math inline">\(S_j\)</span> on <span class="math inline">\(\overline{r_j^2}\)</span> from the bad GWAS? But if we can, we just say the slope is less than n</p>
+<p>You showed that if you regress inflation on <span class="math inline">\(\overline{r_j^2}\)</span> and MAF, that MAF is not significant (nor if you use log(MAF) or exp(MAF) or (MAFX(1-MAF))).
+Can you also include info score - hopefully this is also not significant.
+If Maf and Info scores are redundant, this strengthens argument for using r2j</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"></code></pre></div>
+<p>We can now report average inflation of test statistics (mean(r2j) x n x h2, which is upper bounded by mean(r2j) x n), AND we can report estimated per-SNP inflation of test statistics (r2j x n x j2)</p>
+<p>Eg., we can say that if you use UKBB recommended samples, with MAF&gt;.01, the average inflation will be less than 0.5 units, while the maximum inflation will be less than 1 unit.</p>
+<p>However, maybe we find that if you analyse rare SNPs (e.g. 0.0001 &lt; MAF &lt; .01), the maximum inflation is much higher (so people must be careful).</p>
+<p>What happens if you have a meta-analysis - how does inflation accumulate over cohorts?</p>
+<p>Possible way to write up this paper:</p>
+<p>Perform a good and bad GWAS of height</p>
+<p>Figure 1a - show that GIF performs poorly (because test statistics of good GWAS do not follow a chisq(1) distribution)</p>
+<p>Figure 1b - use test statistics of good GWAS to show that LDSC performs badly, because it assumes causal variation is constant [Do you mean the choice of heritability model affects inflation estimates? But we found for good GWASs, ldsc under gcta is OK for most traits.]</p>
+<p>Figure 1c - use difference between test statistics to show that LDSC performs badly because it assumes inflation is constant.</p>
+<p>(in supplement, can show same results for other traits).</p>
+<p>Figure 2 - show that r2j is independent of true signal (test statistics from good gwas), but predicts well inflation (difference)</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="mathematical-details.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="good.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/04_ave_r2_ij.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["bookdown-demo.pdf", "bookdown-demo.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

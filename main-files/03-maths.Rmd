@@ -3,4 +3,68 @@
 
 Here we detail the mathematics behind the project.
 
-1. **$trK$**
+## $tr(K_{right}K_{left})$ 
+
+
+## verification
+
+Here we want to verify the followings:
+
+  1. $r^2_{i,j} \overset{H_0}{\sim} beta (\alpha=(k-1)/2, \beta=(n-k)/2)$, where k= # of regressors including the intercept (so for an univariate regression, k=2), and n = sample size.
+  * $E[r^2_{i,j}]=\alpha/(\alpha + \beta)$
+  * $var[r^2_{i,j}]=\alpha \beta/[(\alpha+\beta)^2(\alpha+\beta+1)]$
+  
+  2.  $T = \sum_{i,j}^{m_1,m_2} r^2_{i,j} \overset{H_0}{\sim} N(1/n, var[r^2_{i,j}])$
+
+To do so, we computed $r^2_{i,j}=cor(x_i, x_j)^2$ for $n = 1k , m_1=m_2=1k$ in following ways.
+
+  1. simulated data: $x \sim N(0,1)$
+  
+  2. real genotype data: $x$ from two chromosomes.
+
+We expect to see:
+
+  1. $r^2_{i,j} \overset{H_0}{\sim} beta (\alpha=0.5, \beta=499)$
+  2. $T \overset{H_0}{\sim} N(1/1000, var[r^2_{i,j}])$
+  
+```{r eval=F}
+
+#::
+# verify distribution of r^2
+#::
+
+n=100000
+k=2
+alpha=(k-1)/2
+beta=(n-k)/2
+m=1000 
+
+for(i in 1:m){
+  x1=rnorm(n)
+  x2=rnorm(n)
+  y=cor(x1,x2)^2
+  if(i==1){out=y} else {out=c(out,y)}
+}
+
+x=seq(0.00000001,0.0015,0.000001)
+density=dbeta(x, alpha, beta)
+options(scipen=0)
+hist(out, breaks=100, freq=F, main="", 
+     col="lightgray", border="lightgray",
+     xlab="r^2", las=1)
+lines(x, density, col="red")
+#mean(out)
+#1/n
+exp=alpha/(alpha+beta)
+var=alpha*beta/(((alpha+beta)^2)*(alpha+beta+1))
+exp
+var
+
+exp*n
+var*n
+
+```
+
+2. using real data
+
+

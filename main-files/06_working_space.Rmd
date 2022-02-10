@@ -1,0 +1,396 @@
+
+# compute $\sum_{i,j}^{m_1, m_2}r^2_{i,j}$ 
+
+## good GWAS-all qced snps
+
+```{bash eval=F }
+
+#::::
+# here we define a R function to compute sum(r^2)
+#:::
+
+echo "# here we define a R function to compute sum(r^2)
+options(stringsAsFactors=FALSE)
+ip<-commandArgs(trailingOnly=TRUE)
+options(warn=1)
+
+require(vroom)
+
+compute_sumr2=function(filein, fileout){
+
+  dir=\"/home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/inflation/\"
+  dat=vroom(paste0(dir,\"out/\", filein), col_names=F)
+  r=dat[lower.tri(dat, diag = T)]
+  sumr2=sum(r^2)
+  write.table(cbind(sumr2, length(r)), paste0(dir,\"summary/\", fileout),
+  col.names=F, row.names=F, quote=F, append=T)
+}
+
+compute_sumr2(ip[1],ip[2])
+">inflation/calc-sum-r2.r
+
+```
+
+
+```{bash eval=F}
+
+# script
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 10
+#SBATCH -t 4:00:0
+
+#:::
+# 0. define vars & create snp lists
+#:::
+
+  m=1000
+  nm=1k
+  lista=left-snps-goodgwas-$nm
+  listb=right-snps-goodgwas-$nm
+  out=$nm-snps-goodgwas
+  filein=$nm-snps-goodgwas.pairwise
+  fileout=sum-r2-$nm-snps-goodgwas
+
+# loop and recycle files to avoid storage problems
+
+for i in {1..500}; do
+
+    #::
+    # 1. create snp lists & use ldak to compute r_i,j
+    #::
+    
+      shuf ../gen/left-hapmap3.snps | head -n $m > ../inflation/$lista 
+      shuf ../gen/right-hapmap3.snps | head -n $m > ../inflation/$listb
+      
+      ./ldak5.2 --max-threads 10 \
+                --calc-inflation ../inflation/out/$out \
+                --bfile ../gen/geno-unrel \
+                --lista ../inflation/$lista \
+                --listb ../inflation/$listb 
+    
+    #::
+    # 2. compute sum(r^2): see for details
+    #::
+    
+      Rscript --vanilla ../inflation/calc-sum-r2.r $filein $fileout
+
+done
+
+">sh_script/calc-sum-r2
+
+# submit the job
+m=1000
+nm=1k
+
+sbatch -A snpher ../sh_script/calc-sum-r2 >../job-records/calc-sum-r2-$nm-snps-goodgwas
+
+```
+
+## good GWASs- ldak-thin snps
+
+```{bash eval=F}
+
+# script
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 10
+#SBATCH -t 4:00:0
+
+#:::
+# 0. define vars & create snp lists
+#:::
+
+# to be changed
+
+  m=1000
+  nm=1k
+  snpa=../gen/left-mix-pop.snps
+  snpb=../gen/right-mix-pop.snps
+  id=../mix-pop-gwas.id
+  bfile=../gen/geno-mix
+  lista=left-snps-badgwas-$nm
+  listb=right-snps-badgwas-$nm
+  out=$nm-snps-badgwas
+  filein=$nm-snps-badgwas.pairwise
+  fileout=sum-r2-$nm-snps-badgwas
+
+# loop and recycle files to avoid storage problems
+
+for i in {1..500}; do
+
+    #::
+    # 1. create snp lists & use ldak to compute r_i,j
+    #::
+    
+      shuf $snpa | head -n $m > ../inflation/$lista 
+      shuf $snpb | head -n $m > ../inflation/$listb
+      
+      ./ldak5.2 --max-threads 10 \
+                --calc-inflation ../inflation/out/$out \
+                --bfile $bfile \
+                --keep $id \
+                --lista ../inflation/$lista \
+                --listb ../inflation/$listb 
+    
+    #::
+    # 2. compute sum(r^2): see for details
+    #::
+    
+      Rscript --vanilla ../inflation/calc-sum-r2.r $filein $fileout
+
+done
+
+">sh_script/calc-sum-r2
+
+# submit the job
+m=1000
+nm=1k
+
+sbatch -A snpher ../sh_script/calc-sum-r2 >../job-records/calc-sum-r2-$nm-snps-badgwas
+
+```
+
+## bad GWASs-all qced snps
+
+```{bash eval=F}
+
+# script
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 10
+#SBATCH -t 4:00:0
+
+#:::
+# 0. define vars & create snp lists
+#:::
+
+# to be changed
+
+  m=1000
+  nm=1k
+  snpa=../gen/left-mix-pop.snps
+  snpb=../gen/right-mix-pop.snps
+  id=../mix-pop-gwas.id
+  bfile=../gen/geno-mix
+  lista=left-snps-badgwas-$nm
+  listb=right-snps-badgwas-$nm
+  out=$nm-snps-badgwas
+  filein=$nm-snps-badgwas.pairwise
+  fileout=sum-r2-$nm-snps-badgwas
+
+# loop and recycle files to avoid storage problems
+
+for i in {1..500}; do
+
+    #::
+    # 1. create snp lists & use ldak to compute r_i,j
+    #::
+    
+      shuf $snpa | head -n $m > ../inflation/$lista 
+      shuf $snpb | head -n $m > ../inflation/$listb
+      
+      ./ldak5.2 --max-threads 10 \
+                --calc-inflation ../inflation/out/$out \
+                --bfile $bfile \
+                --keep $id \
+                --lista ../inflation/$lista \
+                --listb ../inflation/$listb 
+    
+    #::
+    # 2. compute sum(r^2): see for details
+    #::
+    
+      Rscript --vanilla ../inflation/calc-sum-r2.r $filein $fileout
+
+done
+
+">sh_script/calc-sum-r2
+
+# submit the job
+m=1000
+nm=1k
+
+sbatch -A snpher ../sh_script/calc-sum-r2 >../job-records/calc-sum-r2-$nm-snps-badgwas
+
+```
+
+## summary
+
+```{bash eval=F}
+
+#::
+# ave r_ij^2
+#::
+
+# good gwas
+grep 'Average squared correlation' sh_out/calc-sum-r2-60083794.out | awk '{split($0, a, ";") split(a[1], b, " "); print b[5]}' > inflation/summary/ave-r2-1k-snps-goodgwas
+
+# bad gwas
+grep 'Average squared correlation' sh_out/calc-sum-r2-60086056.out | awk '{split($0, a, ";") split(a[1], b, " "); print b[5]}' > inflation/summary/ave-r2-1k-snps-badgwas
+
+R
+good=read.table("inflation/summary/ave-r2-1k-snps-goodgwas", header=F)
+bad=read.table("inflation/summary/ave-r2-1k-snps-badgwas", header=F)
+
+png("fig/ave-r2-his-1k-snps.png",
+    width =40, height = 20, units = "cm", res=600)
+par(mfrow=c(1,2))
+hist(good$V1, main="ave r2 good GWAS", breaks=50, freq=F, 
+    col="lightgray", border="lightgray")
+hist(bad$V1, main="ave r2 bad GWAS", breaks=50, freq=F, 
+    col="lightgray", border="lightgray")
+dev.off()
+# mean var
+# good 1.004277e-05 2.172758e-16
+# bad 0.0003566028 9.250966e-10
+
+#::
+# r_ij^2
+#::
+
+require(vroom)
+good=vroom("inflation/out/1k-snps-goodgwas.pairwise", col_names=F)
+bad=vroom("inflation/out/1k-snps-badgwas.pairwise", col_names=F)
+r2_good=c(as.matrix(good)^2)
+r2_bad=c(as.matrix(bad)^2)
+
+png("fig/r2-his-1k-snps.png",
+    width =40, height = 20, units = "cm", res=600)
+par(mfrow=c(1,2))
+hist(r2_good, main="r2 good GWAS", breaks=100, freq=F, 
+    col="lightgray", border="lightgray")
+hist(r2_bad, main="r2 bad GWAS", breaks=100, freq=F, 
+    col="lightgray", border="lightgray")
+dev.off()
+# mean var
+# good 1.002858e-05 2.020087e-10
+# bad 0.0003632657 2.666479e-06
+
+```
+
+
+```{r eval=F}
+# good gwas
+dat=read.table("inflation/summary/sum-r2-1k-snps-goodgwas", header=F)
+png(paste0("fig/sumr2-good-gwas-1k-snps.png"),
+    width =20, height = 20, units = "cm", res=600)
+hist(dat$V1, main="good GWAS")
+dev.off()
+
+# bad gwas
+dat=read.table("inflation/summary/sum-r2-1k-snps-badgwas", header=F)
+png(paste0("fig/sumr2-bad-gwas-1k-snps.png"),
+    width =20, height = 20, units = "cm", res=600)
+hist(dat$V1, main="bad GWAS")
+dev.off()
+
+```
+
+## New
+
+1. compute average r2 for each i.
+```{r eval=F}
+
+#:::
+# 1. compute r^2
+#:::
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 10
+#SBATCH -t 4:00:0
+
+#:::
+# 0. define vars & create snp lists
+#:::
+
+# to be changed
+m=10000
+nm=10k
+lista=left-snps-unrel-inds-\$nm
+listb=right-snps-unrel-inds-\$nm
+
+# NOTE: both good and bad gwas share the same snp list: snps-unrel-inds.use
+awk '{split(\$1, a, \":\"); if (a[1]<8) print \$1 }' ../gen/snps-unrel-inds.use | shuf | head -n \$m >../inflation/\$lista  
+awk '{split(\$1, a, \":\"); if (a[1]>=8) print \$1 }' ../gen/snps-unrel-inds.use | shuf | head -n \$m >../inflation/\$listb
+
+#::
+# 1. good gwas
+#::
+
+id=../unrelated/rand.100000
+bfile=../gen/geno-unrel
+out=\$nm-snps-goodgwas
+  
+./ldak5.2 --max-threads 10 \
+          --calc-inflation ../inflation/out/\$out \
+          --bfile \$bfile \
+          --keep \$id \
+          --lista ../inflation/\$lista \
+          --listb ../inflation/\$listb 
+
+#::
+# 2. bad gwas
+#::
+
+id=../mix-pop-gwas.id
+bfile=../gen/geno-mix
+out=\$nm-snps-badgwas
+  
+./ldak5.2 --max-threads 10 \
+          --calc-inflation ../inflation/out/\$out \
+          --bfile \$bfile \
+          --keep \$id \
+          --lista ../inflation/\$lista \
+          --listb ../inflation/\$listb 
+    
+">sh_script/calc-sum-r2
+
+# submit the job
+m=10000
+nm=10k
+
+sbatch -A snpher ../sh_script/calc-sum-r2 >../job-records/calc-sum-r2-$nm-snps
+
+#:::
+# 2. compute ave r_j^2 for each i
+#:::
+
+R
+require(vroom)
+names=c("goodgwas", "badgwas")
+
+for(i in 1:length(names)){
+nm=names[i]
+dat=vroom(paste0("inflation/out/10k-snps-",nm,".pairwise"), col_names=F)
+lista=read.table(paste0("inflation/out/10k-snps-",nm,".predictorsa"), stringsAsFactors = F)
+listb=read.table(paste0("inflation/out/10k-snps-",nm,".predictorsb"), stringsAsFactors = F)
+
+dat=dat[,-c(10001)]^2
+outb=data.frame(predictor=listb$V1, ave_r2=apply(dat,2, mean))
+outa=data.frame(predictor=lista$V1, ave_r2=apply(dat,1, mean))
+out=rbind(outa,outb)
+
+write.table(out,paste0("summary/ave-r2-by-snp-",nm), col.names=F, row.names=F, quote=F)  
+}
+
+#:::
+# 3. convert to rs system
+#:::
+
+awk '(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}' doug/ukbb.ldsc summary/ave-r2-by-snp-goodgwas > summary/ave-r2-by-snp-goodgwas-rs
+
+awk '(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}' doug/ukbb.ldsc summary/ave-r2-by-snp-badgwas > summary/ave-r2-by-snp-badgwas-rs
+
+```
+
+

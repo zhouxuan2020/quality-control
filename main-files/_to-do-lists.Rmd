@@ -1,0 +1,12 @@
+
+# To do list
+
+1. Is it sufficient to use SNPs from two chromosomes?
+2. ldak-thin snps only?
+3. check the LD(or sum_r_ij^2) of the SNPs with low LD in the original ldsc analysis.
+ Correlate the LD score from ldsc with the cross-chromosome LD score
+
+4. write down equations for revised ldsc
+use average LD x m1*m2
+
+5. compute LD scores using individual level data.

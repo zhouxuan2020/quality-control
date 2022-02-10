@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>10 compute \(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\) | GWAS Quality Control</title>
+  <meta name="description" content="10 compute \(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\) | GWAS Quality Control" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="10 compute \(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\) | GWAS Quality Control" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="10 compute \(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\) | GWAS Quality Control" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="control.html"/>
+
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Quality Control Project</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> General Info</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#topic"><i class="fa fa-check"></i><b>1.1</b> Topic</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#frequently-used-commands"><i class="fa fa-check"></i><b>1.2</b> Frequently used commands</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="summaries.html"><a href="summaries.html"><i class="fa fa-check"></i><b>2</b> Summaries</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="summaries.html"><a href="summaries.html#good-gwas"><i class="fa fa-check"></i><b>2.1</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher"><i class="fa fa-check"></i><b>2.1.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.1.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression"><i class="fa fa-check"></i><b>2.1.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="summaries.html"><a href="summaries.html#bad-gwas"><i class="fa fa-check"></i><b>2.2</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-1"><i class="fa fa-check"></i><b>2.2.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.2.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-1"><i class="fa fa-check"></i><b>2.2.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="summaries.html"><a href="summaries.html#ukbb-recommended"><i class="fa fa-check"></i><b>2.3</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-2"><i class="fa fa-check"></i><b>2.3.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.3.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-2"><i class="fa fa-check"></i><b>2.3.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="summaries.html"><a href="summaries.html#control-gwas"><i class="fa fa-check"></i><b>2.4</b> Control GWAS</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-3"><i class="fa fa-check"></i><b>2.4.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.4.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-3"><i class="fa fa-check"></i><b>2.4.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html"><i class="fa fa-check"></i><b>3</b> Good VS Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-statistics-ld-score"><i class="fa fa-check"></i><b>3.1</b> test statistics ~ LD score</a></li>
+<li class="chapter" data-level="3.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#new-models"><i class="fa fa-check"></i><b>3.2</b> New models?</a></li>
+<li class="chapter" data-level="3.3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#ld-scores-based-on-individual-level-data"><i class="fa fa-check"></i><b>3.3</b> LD scores based on individual level data</a></li>
+<li class="chapter" data-level="3.4" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-the-new-model"><i class="fa fa-check"></i><b>3.4</b> Test the new model</a></li>
+<li class="chapter" data-level="3.5" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#predictors-of-inflation"><i class="fa fa-check"></i><b>3.5</b> predictors of inflation?</a></li>
+<li class="chapter" data-level="3.6" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#regress-bad-chisq-mean-r2_j"><i class="fa fa-check"></i><b>3.6</b> regress bad chisq ~ mean r^2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="mathematical-details.html"><a href="mathematical-details.html"><i class="fa fa-check"></i><b>4</b> Mathematical Details</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="mathematical-details.html"><a href="mathematical-details.html#trk_rightk_left"><i class="fa fa-check"></i><b>4.1</b> <span class="math inline">\(tr(K_{right}K_{left})\)</span></a></li>
+<li class="chapter" data-level="4.2" data-path="mathematical-details.html"><a href="mathematical-details.html#verification"><i class="fa fa-check"></i><b>4.2</b> verification</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html"><i class="fa fa-check"></i><b>5</b> inflation ~ ave <span class="math inline">\(r^2_j\)</span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html#m1k-maf0.01"><i class="fa fa-check"></i><b>5.1</b> m=1k &amp; maf=0.01</a></li>
+<li class="chapter" data-level="5.2" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html#m5k-maf0.01"><i class="fa fa-check"></i><b>5.2</b> m=5k &amp; maf=0.01</a></li>
+<li class="chapter" data-level="5.3" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html#m10k-maf0.01"><i class="fa fa-check"></i><b>5.3</b> m=10k &amp; maf=0.01</a></li>
+<li class="chapter" data-level="5.4" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html#m20k-maf0.01"><i class="fa fa-check"></i><b>5.4</b> m=20k &amp; maf=0.01</a></li>
+<li class="chapter" data-level="5.5" data-path="inflation-ave-r2_j.html"><a href="inflation-ave-r2_j.html#summary"><i class="fa fa-check"></i><b>5.5</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="good.html"><a href="good.html"><i class="fa fa-check"></i><b>6</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="good.html"><a href="good.html#goodid"><i class="fa fa-check"></i><b>6.1</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="6.2" data-path="good.html"><a href="good.html#extract-covariates"><i class="fa fa-check"></i><b>6.2</b> extract covariates</a></li>
+<li class="chapter" data-level="6.3" data-path="good.html"><a href="good.html#gwas"><i class="fa fa-check"></i><b>6.3</b> GWAS</a></li>
+<li class="chapter" data-level="6.4" data-path="good.html"><a href="good.html#ldsc-intercept"><i class="fa fa-check"></i><b>6.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="good.html"><a href="good.html#under-gcta"><i class="fa fa-check"></i><b>6.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="6.4.2" data-path="good.html"><a href="good.html#under-ldak-thin"><i class="fa fa-check"></i><b>6.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="6.4.3" data-path="good.html"><a href="good.html#summary-1"><i class="fa fa-check"></i><b>6.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="good.html"><a href="good.html#reml"><i class="fa fa-check"></i><b>6.5</b> REML</a>
+<ul>
+<li class="chapter" data-level="6.5.1" data-path="good.html"><a href="good.html#making-grms"><i class="fa fa-check"></i><b>6.5.1</b> making grms</a></li>
+<li class="chapter" data-level="6.5.2" data-path="good.html"><a href="good.html#fast-reml"><i class="fa fa-check"></i><b>6.5.2</b> fast-reml</a></li>
+<li class="chapter" data-level="6.5.3" data-path="good.html"><a href="good.html#inflation-test"><i class="fa fa-check"></i><b>6.5.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="good.html"><a href="good.html#he"><i class="fa fa-check"></i><b>6.6</b> HE</a>
+<ul>
+<li class="chapter" data-level="6.6.1" data-path="good.html"><a href="good.html#estimation"><i class="fa fa-check"></i><b>6.6.1</b> estimation</a></li>
+<li class="chapter" data-level="6.6.2" data-path="good.html"><a href="good.html#summary-2"><i class="fa fa-check"></i><b>6.6.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="bad.html"><a href="bad.html"><i class="fa fa-check"></i><b>7</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="bad.html"><a href="bad.html#badid"><i class="fa fa-check"></i><b>7.1</b> ID list</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="bad.html"><a href="bad.html#initial-selection"><i class="fa fa-check"></i><b>7.1.1</b> initial selection</a></li>
+<li class="chapter" data-level="7.1.2" data-path="bad.html"><a href="bad.html#relatedness-filtering"><i class="fa fa-check"></i><b>7.1.2</b> relatedness filtering</a></li>
+<li class="chapter" data-level="7.1.3" data-path="bad.html"><a href="bad.html#final-list"><i class="fa fa-check"></i><b>7.1.3</b> final list</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="bad.html"><a href="bad.html#gwas-1"><i class="fa fa-check"></i><b>7.2</b> GWAS</a></li>
+<li class="chapter" data-level="7.3" data-path="bad.html"><a href="bad.html#ldsc-intercept-1"><i class="fa fa-check"></i><b>7.3</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="bad.html"><a href="bad.html#under-gcta-1"><i class="fa fa-check"></i><b>7.3.1</b> under gcta</a></li>
+<li class="chapter" data-level="7.3.2" data-path="bad.html"><a href="bad.html#under-ldak-thin-1"><i class="fa fa-check"></i><b>7.3.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="7.3.3" data-path="bad.html"><a href="bad.html#summary-3"><i class="fa fa-check"></i><b>7.3.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="bad.html"><a href="bad.html#reml-1"><i class="fa fa-check"></i><b>7.4</b> REML</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="bad.html"><a href="bad.html#making-grms-1"><i class="fa fa-check"></i><b>7.4.1</b> making grms</a></li>
+<li class="chapter" data-level="7.4.2" data-path="bad.html"><a href="bad.html#fast-reml-1"><i class="fa fa-check"></i><b>7.4.2</b> fast-reml</a></li>
+<li class="chapter" data-level="7.4.3" data-path="bad.html"><a href="bad.html#inflation-test-1"><i class="fa fa-check"></i><b>7.4.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="bad.html"><a href="bad.html#he-1"><i class="fa fa-check"></i><b>7.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="7.5.1" data-path="bad.html"><a href="bad.html#estimation-1"><i class="fa fa-check"></i><b>7.5.1</b> estimation</a></li>
+<li class="chapter" data-level="7.5.2" data-path="bad.html"><a href="bad.html#summary-4"><i class="fa fa-check"></i><b>7.5.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ukbb.html"><a href="ukbb.html"><i class="fa fa-check"></i><b>8</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ukbb.html"><a href="ukbb.html#total-n-337k"><i class="fa fa-check"></i><b>8.1</b> total N = 337k</a></li>
+<li class="chapter" data-level="8.2" data-path="ukbb.html"><a href="ukbb.html#qc-of-hp3-snps"><i class="fa fa-check"></i><b>8.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="8.3" data-path="ukbb.html"><a href="ukbb.html#gwas-2"><i class="fa fa-check"></i><b>8.3</b> GWAS</a></li>
+<li class="chapter" data-level="8.4" data-path="ukbb.html"><a href="ukbb.html#ldsc-intercept-2"><i class="fa fa-check"></i><b>8.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="ukbb.html"><a href="ukbb.html#under-gcta-2"><i class="fa fa-check"></i><b>8.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="8.4.2" data-path="ukbb.html"><a href="ukbb.html#under-ldak-thin-2"><i class="fa fa-check"></i><b>8.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="8.4.3" data-path="ukbb.html"><a href="ukbb.html#summary-5"><i class="fa fa-check"></i><b>8.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="ukbb.html"><a href="ukbb.html#he-2"><i class="fa fa-check"></i><b>8.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="ukbb.html"><a href="ukbb.html#making-grms-2"><i class="fa fa-check"></i><b>8.5.1</b> making grms</a></li>
+<li class="chapter" data-level="8.5.2" data-path="ukbb.html"><a href="ukbb.html#estimation-2"><i class="fa fa-check"></i><b>8.5.2</b> estimation</a></li>
+<li class="chapter" data-level="8.5.3" data-path="ukbb.html"><a href="ukbb.html#summary-6"><i class="fa fa-check"></i><b>8.5.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="control.html"><a href="control.html"><i class="fa fa-check"></i><b>9</b> control GWAS</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="control.html"><a href="control.html#id-list"><i class="fa fa-check"></i><b>9.1</b> ID list</a></li>
+<li class="chapter" data-level="9.2" data-path="control.html"><a href="control.html#qc-of-hp3-snps-1"><i class="fa fa-check"></i><b>9.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="9.3" data-path="control.html"><a href="control.html#gwas-3"><i class="fa fa-check"></i><b>9.3</b> GWAS</a></li>
+<li class="chapter" data-level="9.4" data-path="control.html"><a href="control.html#ldsc-intercept-3"><i class="fa fa-check"></i><b>9.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="control.html"><a href="control.html#under-gcta-3"><i class="fa fa-check"></i><b>9.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="9.4.2" data-path="control.html"><a href="control.html#under-ldak-thin-3"><i class="fa fa-check"></i><b>9.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="9.4.3" data-path="control.html"><a href="control.html#summary-7"><i class="fa fa-check"></i><b>9.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="control.html"><a href="control.html#he-3"><i class="fa fa-check"></i><b>9.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="9.5.1" data-path="control.html"><a href="control.html#making-grms-3"><i class="fa fa-check"></i><b>9.5.1</b> making grms</a></li>
+<li class="chapter" data-level="9.5.2" data-path="control.html"><a href="control.html#estimation-3"><i class="fa fa-check"></i><b>9.5.2</b> estimation</a></li>
+<li class="chapter" data-level="9.5.3" data-path="control.html"><a href="control.html#summary-8"><i class="fa fa-check"></i><b>9.5.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html"><i class="fa fa-check"></i><b>10</b> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwas-all-qced-snps"><i class="fa fa-check"></i><b>10.1</b> good GWAS-all qced snps</a></li>
+<li class="chapter" data-level="10.2" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwass--ldak-thin-snps"><i class="fa fa-check"></i><b>10.2</b> good GWASs- ldak-thin snps</a></li>
+<li class="chapter" data-level="10.3" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#bad-gwass-all-qced-snps"><i class="fa fa-check"></i><b>10.3</b> bad GWASs-all qced snps</a></li>
+<li class="chapter" data-level="10.4" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#summary-9"><i class="fa fa-check"></i><b>10.4</b> summary</a></li>
+<li class="chapter" data-level="10.5" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#new"><i class="fa fa-check"></i><b>10.5</b> New</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">GWAS Quality Control</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="compute-sum_ijm_1-m_2r2_ij" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></h1>
+<div id="good-gwas-all-qced-snps" class="section level2" number="10.1">
+<h2><span class="header-section-number">10.1</span> good GWAS-all qced snps</h2>
+<div class="sourceCode" id="cb57"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb57-1"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-2"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="co">#::::</span></span>
+<span id="cb57-3"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="co"># here we define a R function to compute sum(r^2)</span></span>
+<span id="cb57-4"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb57-5"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-6"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;# here we define a R function to compute sum(r^2)</span></span>
+<span id="cb57-7"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="st">options(stringsAsFactors=FALSE)</span></span>
+<span id="cb57-8"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="st">ip&lt;-commandArgs(trailingOnly=TRUE)</span></span>
+<span id="cb57-9"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-9" aria-hidden="true" tabindex="-1"></a><span class="st">options(warn=1)</span></span>
+<span id="cb57-10"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-11"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-11" aria-hidden="true" tabindex="-1"></a><span class="st">require(vroom)</span></span>
+<span id="cb57-12"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-13"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="st">compute_sumr2=function(filein, fileout){</span></span>
+<span id="cb57-14"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-15"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-15" aria-hidden="true" tabindex="-1"></a><span class="st">  dir=</span><span class="dt">\&quot;</span><span class="st">/home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/inflation/</span><span class="dt">\&quot;</span></span>
+<span id="cb57-16"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-16" aria-hidden="true" tabindex="-1"></a><span class="st">  dat=vroom(paste0(dir,</span><span class="dt">\&quot;</span><span class="st">out/</span><span class="dt">\&quot;</span><span class="st">, filein), col_names=F)</span></span>
+<span id="cb57-17"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-17" aria-hidden="true" tabindex="-1"></a><span class="st">  r=dat[lower.tri(dat, diag = T)]</span></span>
+<span id="cb57-18"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-18" aria-hidden="true" tabindex="-1"></a><span class="st">  sumr2=sum(r^2)</span></span>
+<span id="cb57-19"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-19" aria-hidden="true" tabindex="-1"></a><span class="st">  write.table(cbind(sumr2, length(r)), paste0(dir,</span><span class="dt">\&quot;</span><span class="st">summary/</span><span class="dt">\&quot;</span><span class="st">, fileout),</span></span>
+<span id="cb57-20"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-20" aria-hidden="true" tabindex="-1"></a><span class="st">  col.names=F, row.names=F, quote=F, append=T)</span></span>
+<span id="cb57-21"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-21" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb57-22"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-23"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-23" aria-hidden="true" tabindex="-1"></a><span class="st">compute_sumr2(ip[1],ip[2])</span></span>
+<span id="cb57-24"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb57-24" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>inflation/calc-sum-r2.r</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb58-1"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-2"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="co"># script</span></span>
+<span id="cb58-3"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb58-4"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb58-5"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb58-6"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb58-7"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb58-8"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-8" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 4:00:0</span></span>
+<span id="cb58-9"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-10"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-10" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb58-11"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-11" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb58-12"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-12" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb58-13"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-14"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-14" aria-hidden="true" tabindex="-1"></a><span class="st">  m=1000</span></span>
+<span id="cb58-15"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-15" aria-hidden="true" tabindex="-1"></a><span class="st">  nm=1k</span></span>
+<span id="cb58-16"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-16" aria-hidden="true" tabindex="-1"></a><span class="st">  lista=left-snps-goodgwas-</span><span class="va">$nm</span></span>
+<span id="cb58-17"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-17" aria-hidden="true" tabindex="-1"></a><span class="st">  listb=right-snps-goodgwas-</span><span class="va">$nm</span></span>
+<span id="cb58-18"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-18" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="va">$nm</span><span class="st">-snps-goodgwas</span></span>
+<span id="cb58-19"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-19" aria-hidden="true" tabindex="-1"></a><span class="st">  filein=</span><span class="va">$nm</span><span class="st">-snps-goodgwas.pairwise</span></span>
+<span id="cb58-20"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-20" aria-hidden="true" tabindex="-1"></a><span class="st">  fileout=sum-r2-</span><span class="va">$nm</span><span class="st">-snps-goodgwas</span></span>
+<span id="cb58-21"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-22"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-22" aria-hidden="true" tabindex="-1"></a><span class="st"># loop and recycle files to avoid storage problems</span></span>
+<span id="cb58-23"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-24"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-24" aria-hidden="true" tabindex="-1"></a><span class="st">for i in {1..500}; do</span></span>
+<span id="cb58-25"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-26"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-26" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb58-27"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-27" aria-hidden="true" tabindex="-1"></a><span class="st">    # 1. create snp lists &amp; use ldak to compute r_i,j</span></span>
+<span id="cb58-28"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-28" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb58-29"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-29" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb58-30"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-30" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf ../gen/left-hapmap3.snps | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$lista</span><span class="st"> </span></span>
+<span id="cb58-31"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-31" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf ../gen/right-hapmap3.snps | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$listb</span></span>
+<span id="cb58-32"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-32" aria-hidden="true" tabindex="-1"></a><span class="st">      </span></span>
+<span id="cb58-33"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-33" aria-hidden="true" tabindex="-1"></a><span class="st">      ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb58-34"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-34" aria-hidden="true" tabindex="-1"></a><span class="st">                --calc-inflation ../inflation/out/</span><span class="va">$out</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb58-35"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-35" aria-hidden="true" tabindex="-1"></a><span class="st">                --bfile ../gen/geno-unrel </span><span class="dt">\</span></span>
+<span id="cb58-36"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-36" aria-hidden="true" tabindex="-1"></a><span class="st">                --lista ../inflation/</span><span class="va">$lista</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb58-37"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-37" aria-hidden="true" tabindex="-1"></a><span class="st">                --listb ../inflation/</span><span class="va">$listb</span><span class="st"> </span></span>
+<span id="cb58-38"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-38" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb58-39"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-39" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb58-40"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-40" aria-hidden="true" tabindex="-1"></a><span class="st">    # 2. compute sum(r^2): see for details</span></span>
+<span id="cb58-41"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-41" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb58-42"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-42" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb58-43"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-43" aria-hidden="true" tabindex="-1"></a><span class="st">      Rscript --vanilla ../inflation/calc-sum-r2.r </span><span class="va">$filein</span><span class="st"> </span><span class="va">$fileout</span></span>
+<span id="cb58-44"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-45"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-45" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb58-46"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-47"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-47" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-sum-r2</span>
+<span id="cb58-48"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-49"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-49" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb58-50"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-50" aria-hidden="true" tabindex="-1"></a><span class="va">m</span><span class="op">=</span>1000</span>
+<span id="cb58-51"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-51" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>1k</span>
+<span id="cb58-52"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-53"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb58-53" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-sum-r2 <span class="op">&gt;</span>../job-records/calc-sum-r2-<span class="va">$nm</span>-snps-goodgwas</span></code></pre></div>
+</div>
+<div id="good-gwass--ldak-thin-snps" class="section level2" number="10.2">
+<h2><span class="header-section-number">10.2</span> good GWASs- ldak-thin snps</h2>
+<div class="sourceCode" id="cb59"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb59-1"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-2"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="co"># script</span></span>
+<span id="cb59-3"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb59-4"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb59-5"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb59-6"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-6" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb59-7"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-7" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb59-8"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-8" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 4:00:0</span></span>
+<span id="cb59-9"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-10"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-10" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb59-11"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-11" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb59-12"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-12" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb59-13"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-14"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-14" aria-hidden="true" tabindex="-1"></a><span class="st"># to be changed</span></span>
+<span id="cb59-15"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-16"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-16" aria-hidden="true" tabindex="-1"></a><span class="st">  m=1000</span></span>
+<span id="cb59-17"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-17" aria-hidden="true" tabindex="-1"></a><span class="st">  nm=1k</span></span>
+<span id="cb59-18"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-18" aria-hidden="true" tabindex="-1"></a><span class="st">  snpa=../gen/left-mix-pop.snps</span></span>
+<span id="cb59-19"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-19" aria-hidden="true" tabindex="-1"></a><span class="st">  snpb=../gen/right-mix-pop.snps</span></span>
+<span id="cb59-20"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-20" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../mix-pop-gwas.id</span></span>
+<span id="cb59-21"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-21" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-mix</span></span>
+<span id="cb59-22"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-22" aria-hidden="true" tabindex="-1"></a><span class="st">  lista=left-snps-badgwas-</span><span class="va">$nm</span></span>
+<span id="cb59-23"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-23" aria-hidden="true" tabindex="-1"></a><span class="st">  listb=right-snps-badgwas-</span><span class="va">$nm</span></span>
+<span id="cb59-24"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-24" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="va">$nm</span><span class="st">-snps-badgwas</span></span>
+<span id="cb59-25"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-25" aria-hidden="true" tabindex="-1"></a><span class="st">  filein=</span><span class="va">$nm</span><span class="st">-snps-badgwas.pairwise</span></span>
+<span id="cb59-26"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-26" aria-hidden="true" tabindex="-1"></a><span class="st">  fileout=sum-r2-</span><span class="va">$nm</span><span class="st">-snps-badgwas</span></span>
+<span id="cb59-27"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-28"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-28" aria-hidden="true" tabindex="-1"></a><span class="st"># loop and recycle files to avoid storage problems</span></span>
+<span id="cb59-29"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-30"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-30" aria-hidden="true" tabindex="-1"></a><span class="st">for i in {1..500}; do</span></span>
+<span id="cb59-31"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-32"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-32" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb59-33"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-33" aria-hidden="true" tabindex="-1"></a><span class="st">    # 1. create snp lists &amp; use ldak to compute r_i,j</span></span>
+<span id="cb59-34"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-34" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb59-35"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-35" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb59-36"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-36" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf </span><span class="va">$snpa</span><span class="st"> | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$lista</span><span class="st"> </span></span>
+<span id="cb59-37"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-37" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf </span><span class="va">$snpb</span><span class="st"> | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$listb</span></span>
+<span id="cb59-38"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-38" aria-hidden="true" tabindex="-1"></a><span class="st">      </span></span>
+<span id="cb59-39"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-39" aria-hidden="true" tabindex="-1"></a><span class="st">      ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb59-40"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-40" aria-hidden="true" tabindex="-1"></a><span class="st">                --calc-inflation ../inflation/out/</span><span class="va">$out</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb59-41"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-41" aria-hidden="true" tabindex="-1"></a><span class="st">                --bfile </span><span class="va">$bfile</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb59-42"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-42" aria-hidden="true" tabindex="-1"></a><span class="st">                --keep </span><span class="va">$id</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb59-43"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-43" aria-hidden="true" tabindex="-1"></a><span class="st">                --lista ../inflation/</span><span class="va">$lista</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb59-44"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-44" aria-hidden="true" tabindex="-1"></a><span class="st">                --listb ../inflation/</span><span class="va">$listb</span><span class="st"> </span></span>
+<span id="cb59-45"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-45" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb59-46"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-46" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb59-47"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-47" aria-hidden="true" tabindex="-1"></a><span class="st">    # 2. compute sum(r^2): see for details</span></span>
+<span id="cb59-48"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-48" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb59-49"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-49" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb59-50"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-50" aria-hidden="true" tabindex="-1"></a><span class="st">      Rscript --vanilla ../inflation/calc-sum-r2.r </span><span class="va">$filein</span><span class="st"> </span><span class="va">$fileout</span></span>
+<span id="cb59-51"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-52"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-52" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb59-53"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-54"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-54" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-sum-r2</span>
+<span id="cb59-55"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-56"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-56" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb59-57"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-57" aria-hidden="true" tabindex="-1"></a><span class="va">m</span><span class="op">=</span>1000</span>
+<span id="cb59-58"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-58" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>1k</span>
+<span id="cb59-59"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-60"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb59-60" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-sum-r2 <span class="op">&gt;</span>../job-records/calc-sum-r2-<span class="va">$nm</span>-snps-badgwas</span></code></pre></div>
+</div>
+<div id="bad-gwass-all-qced-snps" class="section level2" number="10.3">
+<h2><span class="header-section-number">10.3</span> bad GWASs-all qced snps</h2>
+<div class="sourceCode" id="cb60"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb60-1"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-2"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="co"># script</span></span>
+<span id="cb60-3"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb60-4"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb60-5"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-5" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb60-6"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-6" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb60-7"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-7" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb60-8"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-8" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 4:00:0</span></span>
+<span id="cb60-9"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-10"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-10" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb60-11"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-11" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb60-12"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-12" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb60-13"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-14"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-14" aria-hidden="true" tabindex="-1"></a><span class="st"># to be changed</span></span>
+<span id="cb60-15"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-16"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-16" aria-hidden="true" tabindex="-1"></a><span class="st">  m=1000</span></span>
+<span id="cb60-17"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-17" aria-hidden="true" tabindex="-1"></a><span class="st">  nm=1k</span></span>
+<span id="cb60-18"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-18" aria-hidden="true" tabindex="-1"></a><span class="st">  snpa=../gen/left-mix-pop.snps</span></span>
+<span id="cb60-19"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-19" aria-hidden="true" tabindex="-1"></a><span class="st">  snpb=../gen/right-mix-pop.snps</span></span>
+<span id="cb60-20"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-20" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../mix-pop-gwas.id</span></span>
+<span id="cb60-21"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-21" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-mix</span></span>
+<span id="cb60-22"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-22" aria-hidden="true" tabindex="-1"></a><span class="st">  lista=left-snps-badgwas-</span><span class="va">$nm</span></span>
+<span id="cb60-23"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-23" aria-hidden="true" tabindex="-1"></a><span class="st">  listb=right-snps-badgwas-</span><span class="va">$nm</span></span>
+<span id="cb60-24"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-24" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="va">$nm</span><span class="st">-snps-badgwas</span></span>
+<span id="cb60-25"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-25" aria-hidden="true" tabindex="-1"></a><span class="st">  filein=</span><span class="va">$nm</span><span class="st">-snps-badgwas.pairwise</span></span>
+<span id="cb60-26"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-26" aria-hidden="true" tabindex="-1"></a><span class="st">  fileout=sum-r2-</span><span class="va">$nm</span><span class="st">-snps-badgwas</span></span>
+<span id="cb60-27"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-28"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-28" aria-hidden="true" tabindex="-1"></a><span class="st"># loop and recycle files to avoid storage problems</span></span>
+<span id="cb60-29"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-30"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-30" aria-hidden="true" tabindex="-1"></a><span class="st">for i in {1..500}; do</span></span>
+<span id="cb60-31"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-32"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-32" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb60-33"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-33" aria-hidden="true" tabindex="-1"></a><span class="st">    # 1. create snp lists &amp; use ldak to compute r_i,j</span></span>
+<span id="cb60-34"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-34" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb60-35"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-35" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb60-36"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-36" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf </span><span class="va">$snpa</span><span class="st"> | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$lista</span><span class="st"> </span></span>
+<span id="cb60-37"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-37" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf </span><span class="va">$snpb</span><span class="st"> | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$listb</span></span>
+<span id="cb60-38"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-38" aria-hidden="true" tabindex="-1"></a><span class="st">      </span></span>
+<span id="cb60-39"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-39" aria-hidden="true" tabindex="-1"></a><span class="st">      ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb60-40"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-40" aria-hidden="true" tabindex="-1"></a><span class="st">                --calc-inflation ../inflation/out/</span><span class="va">$out</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb60-41"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-41" aria-hidden="true" tabindex="-1"></a><span class="st">                --bfile </span><span class="va">$bfile</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb60-42"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-42" aria-hidden="true" tabindex="-1"></a><span class="st">                --keep </span><span class="va">$id</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb60-43"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-43" aria-hidden="true" tabindex="-1"></a><span class="st">                --lista ../inflation/</span><span class="va">$lista</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb60-44"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-44" aria-hidden="true" tabindex="-1"></a><span class="st">                --listb ../inflation/</span><span class="va">$listb</span><span class="st"> </span></span>
+<span id="cb60-45"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-45" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb60-46"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-46" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb60-47"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-47" aria-hidden="true" tabindex="-1"></a><span class="st">    # 2. compute sum(r^2): see for details</span></span>
+<span id="cb60-48"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-48" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb60-49"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-49" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb60-50"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-50" aria-hidden="true" tabindex="-1"></a><span class="st">      Rscript --vanilla ../inflation/calc-sum-r2.r </span><span class="va">$filein</span><span class="st"> </span><span class="va">$fileout</span></span>
+<span id="cb60-51"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-52"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-52" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb60-53"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-54"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-54" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-sum-r2</span>
+<span id="cb60-55"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-56"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-56" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb60-57"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-57" aria-hidden="true" tabindex="-1"></a><span class="va">m</span><span class="op">=</span>1000</span>
+<span id="cb60-58"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-58" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>1k</span>
+<span id="cb60-59"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-60"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb60-60" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-sum-r2 <span class="op">&gt;</span>../job-records/calc-sum-r2-<span class="va">$nm</span>-snps-badgwas</span></code></pre></div>
+</div>
+<div id="summary-9" class="section level2" number="10.4">
+<h2><span class="header-section-number">10.4</span> summary</h2>
+<div class="sourceCode" id="cb61"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb61-1"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-2"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="co">#::</span></span>
+<span id="cb61-3"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ave r_ij^2</span></span>
+<span id="cb61-4"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="co">#::</span></span>
+<span id="cb61-5"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-6"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="co"># good gwas</span></span>
+<span id="cb61-7"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-7" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">&#39;Average squared correlation&#39;</span> sh_out/calc-sum-r2-60083794.out <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{split($0, a, &quot;;&quot;) split(a[1], b, &quot; &quot;); print b[5]}&#39;</span> <span class="op">&gt;</span> inflation/summary/ave-r2-1k-snps-goodgwas</span>
+<span id="cb61-8"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-9"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-9" aria-hidden="true" tabindex="-1"></a><span class="co"># bad gwas</span></span>
+<span id="cb61-10"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-10" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">&#39;Average squared correlation&#39;</span> sh_out/calc-sum-r2-60086056.out <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{split($0, a, &quot;;&quot;) split(a[1], b, &quot; &quot;); print b[5]}&#39;</span> <span class="op">&gt;</span> inflation/summary/ave-r2-1k-snps-badgwas</span>
+<span id="cb61-11"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-12"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-12" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span></span>
+<span id="cb61-13"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-13" aria-hidden="true" tabindex="-1"></a><span class="va">good</span><span class="op">=</span>read.table<span class="kw">(</span><span class="st">&quot;inflation/summary/ave-r2-1k-snps-goodgwas&quot;</span><span class="ex">,</span> header=F<span class="kw">)</span></span>
+<span id="cb61-14"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-14" aria-hidden="true" tabindex="-1"></a><span class="va">bad</span><span class="op">=</span>read.table<span class="kw">(</span><span class="st">&quot;inflation/summary/ave-r2-1k-snps-badgwas&quot;</span><span class="ex">,</span> header=F<span class="kw">)</span></span>
+<span id="cb61-15"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-16"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-16" aria-hidden="true" tabindex="-1"></a><span class="ex">png</span><span class="er">(</span><span class="st">&quot;fig/ave-r2-his-1k-snps.png&quot;</span><span class="ex">,</span></span>
+<span id="cb61-17"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-17" aria-hidden="true" tabindex="-1"></a>    <span class="ex">width</span> =40, height = 20, units = <span class="st">&quot;cm&quot;</span>, res=600<span class="kw">)</span></span>
+<span id="cb61-18"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-18" aria-hidden="true" tabindex="-1"></a><span class="ex">par</span><span class="er">(</span><span class="va">mfrow</span><span class="op">=</span>c<span class="kw">(</span><span class="ex">1,2</span><span class="kw">))</span></span>
+<span id="cb61-19"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-19" aria-hidden="true" tabindex="-1"></a><span class="ex">hist</span><span class="er">(</span><span class="ex">good</span><span class="va">$V1</span><span class="ex">,</span> main=<span class="st">&quot;ave r2 good GWAS&quot;</span>, breaks=50, freq=F, </span>
+<span id="cb61-20"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-20" aria-hidden="true" tabindex="-1"></a>    <span class="va">col</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span>, <span class="va">border</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span><span class="kw">)</span></span>
+<span id="cb61-21"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-21" aria-hidden="true" tabindex="-1"></a><span class="ex">hist</span><span class="er">(</span><span class="ex">bad</span><span class="va">$V1</span><span class="ex">,</span> main=<span class="st">&quot;ave r2 bad GWAS&quot;</span>, breaks=50, freq=F, </span>
+<span id="cb61-22"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-22" aria-hidden="true" tabindex="-1"></a>    <span class="va">col</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span>, <span class="va">border</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span><span class="kw">)</span></span>
+<span id="cb61-23"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-23" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off()</span></span>
+<span id="cb61-24"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-24" aria-hidden="true" tabindex="-1"></a><span class="co"># mean var</span></span>
+<span id="cb61-25"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-25" aria-hidden="true" tabindex="-1"></a><span class="co"># good 1.004277e-05 2.172758e-16</span></span>
+<span id="cb61-26"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-26" aria-hidden="true" tabindex="-1"></a><span class="co"># bad 0.0003566028 9.250966e-10</span></span>
+<span id="cb61-27"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-28"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-28" aria-hidden="true" tabindex="-1"></a><span class="co">#::</span></span>
+<span id="cb61-29"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-29" aria-hidden="true" tabindex="-1"></a><span class="co"># r_ij^2</span></span>
+<span id="cb61-30"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-30" aria-hidden="true" tabindex="-1"></a><span class="co">#::</span></span>
+<span id="cb61-31"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-32"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-32" aria-hidden="true" tabindex="-1"></a><span class="ex">require</span><span class="er">(</span><span class="ex">vroom</span><span class="kw">)</span></span>
+<span id="cb61-33"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-33" aria-hidden="true" tabindex="-1"></a><span class="va">good</span><span class="op">=</span>vroom<span class="kw">(</span><span class="st">&quot;inflation/out/1k-snps-goodgwas.pairwise&quot;</span><span class="ex">,</span> col_names=F<span class="kw">)</span></span>
+<span id="cb61-34"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-34" aria-hidden="true" tabindex="-1"></a><span class="va">bad</span><span class="op">=</span>vroom<span class="kw">(</span><span class="st">&quot;inflation/out/1k-snps-badgwas.pairwise&quot;</span><span class="ex">,</span> col_names=F<span class="kw">)</span></span>
+<span id="cb61-35"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-35" aria-hidden="true" tabindex="-1"></a><span class="va">r2_good</span><span class="op">=</span>c<span class="kw">(</span><span class="ex">as.matrix</span><span class="er">(</span><span class="ex">good</span><span class="kw">)</span><span class="ex">^2</span><span class="kw">)</span></span>
+<span id="cb61-36"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-36" aria-hidden="true" tabindex="-1"></a><span class="va">r2_bad</span><span class="op">=</span>c<span class="kw">(</span><span class="ex">as.matrix</span><span class="er">(</span><span class="ex">bad</span><span class="kw">)</span><span class="ex">^2</span><span class="kw">)</span></span>
+<span id="cb61-37"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-38"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-38" aria-hidden="true" tabindex="-1"></a><span class="ex">png</span><span class="er">(</span><span class="st">&quot;fig/r2-his-1k-snps.png&quot;</span><span class="ex">,</span></span>
+<span id="cb61-39"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-39" aria-hidden="true" tabindex="-1"></a>    <span class="ex">width</span> =40, height = 20, units = <span class="st">&quot;cm&quot;</span>, res=600<span class="kw">)</span></span>
+<span id="cb61-40"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-40" aria-hidden="true" tabindex="-1"></a><span class="ex">par</span><span class="er">(</span><span class="va">mfrow</span><span class="op">=</span>c<span class="kw">(</span><span class="ex">1,2</span><span class="kw">))</span></span>
+<span id="cb61-41"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-41" aria-hidden="true" tabindex="-1"></a><span class="ex">hist</span><span class="er">(</span><span class="ex">r2_good,</span> main=<span class="st">&quot;r2 good GWAS&quot;</span>, breaks=100, freq=F, </span>
+<span id="cb61-42"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-42" aria-hidden="true" tabindex="-1"></a>    <span class="va">col</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span>, <span class="va">border</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span><span class="kw">)</span></span>
+<span id="cb61-43"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-43" aria-hidden="true" tabindex="-1"></a><span class="ex">hist</span><span class="er">(</span><span class="ex">r2_bad,</span> main=<span class="st">&quot;r2 bad GWAS&quot;</span>, breaks=100, freq=F, </span>
+<span id="cb61-44"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-44" aria-hidden="true" tabindex="-1"></a>    <span class="va">col</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span>, <span class="va">border</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span><span class="kw">)</span></span>
+<span id="cb61-45"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-45" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off()</span></span>
+<span id="cb61-46"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-46" aria-hidden="true" tabindex="-1"></a><span class="co"># mean var</span></span>
+<span id="cb61-47"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-47" aria-hidden="true" tabindex="-1"></a><span class="co"># good 1.002858e-05 2.020087e-10</span></span>
+<span id="cb61-48"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb61-48" aria-hidden="true" tabindex="-1"></a><span class="co"># bad 0.0003632657 2.666479e-06</span></span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># good gwas</span></span>
+<span id="cb62-2"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-2" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;inflation/summary/sum-r2-1k-snps-goodgwas&quot;</span>, <span class="at">header=</span>F)</span>
+<span id="cb62-3"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/sumr2-good-gwas-1k-snps.png&quot;</span>),</span>
+<span id="cb62-4"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span><span class="dv">20</span>, <span class="at">height =</span> <span class="dv">20</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb62-5"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(dat<span class="sc">$</span>V1, <span class="at">main=</span><span class="st">&quot;good GWAS&quot;</span>)</span>
+<span id="cb62-6"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb62-7"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-8"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-8" aria-hidden="true" tabindex="-1"></a><span class="co"># bad gwas</span></span>
+<span id="cb62-9"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-9" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;inflation/summary/sum-r2-1k-snps-badgwas&quot;</span>, <span class="at">header=</span>F)</span>
+<span id="cb62-10"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-10" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/sumr2-bad-gwas-1k-snps.png&quot;</span>),</span>
+<span id="cb62-11"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span><span class="dv">20</span>, <span class="at">height =</span> <span class="dv">20</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb62-12"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-12" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(dat<span class="sc">$</span>V1, <span class="at">main=</span><span class="st">&quot;bad GWAS&quot;</span>)</span>
+<span id="cb62-13"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb62-13" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+</div>
+<div id="new" class="section level2" number="10.5">
+<h2><span class="header-section-number">10.5</span> New</h2>
+<ol style="list-style-type: decimal">
+<li>compute average r2 for each i.</li>
+</ol>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb63-2"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. compute r^2</span></span>
+<span id="cb63-3"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb63-4"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-5" aria-hidden="true" tabindex="-1"></a>echo <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb63-6"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-6" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="sc">\&quot;</span><span class="st">s04|s05</span><span class="sc">\&quot;</span></span>
+<span id="cb63-7"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-7" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb63-8"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-8" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb63-9"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-9" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb63-10"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-10" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 4:00:0</span></span>
+<span id="cb63-11"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-12"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-12" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb63-13"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-13" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb63-14"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-14" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb63-15"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-16"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-16" aria-hidden="true" tabindex="-1"></a><span class="st"># to be changed</span></span>
+<span id="cb63-17"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-17" aria-hidden="true" tabindex="-1"></a><span class="st">m=10000</span></span>
+<span id="cb63-18"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-18" aria-hidden="true" tabindex="-1"></a><span class="st">nm=10k</span></span>
+<span id="cb63-19"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-19" aria-hidden="true" tabindex="-1"></a><span class="st">lista=left-snps-unrel-inds-\$nm</span></span>
+<span id="cb63-20"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-20" aria-hidden="true" tabindex="-1"></a><span class="st">listb=right-snps-unrel-inds-\$nm</span></span>
+<span id="cb63-21"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-22"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-22" aria-hidden="true" tabindex="-1"></a><span class="st"># NOTE: both good and bad gwas share the same snp list: snps-unrel-inds.use</span></span>
+<span id="cb63-23"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-23" aria-hidden="true" tabindex="-1"></a><span class="st">awk &#39;{split(\$1, a, </span><span class="sc">\&quot;</span><span class="st">:</span><span class="sc">\&quot;</span><span class="st">); if (a[1]&lt;8) print \$1 }&#39; ../gen/snps-unrel-inds.use | shuf | head -n \$m &gt;../inflation/\$lista  </span></span>
+<span id="cb63-24"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-24" aria-hidden="true" tabindex="-1"></a><span class="st">awk &#39;{split(\$1, a, </span><span class="sc">\&quot;</span><span class="st">:</span><span class="sc">\&quot;</span><span class="st">); if (a[1]&gt;=8) print \$1 }&#39; ../gen/snps-unrel-inds.use | shuf | head -n \$m &gt;../inflation/\$listb</span></span>
+<span id="cb63-25"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-26"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-26" aria-hidden="true" tabindex="-1"></a><span class="st">#::</span></span>
+<span id="cb63-27"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-27" aria-hidden="true" tabindex="-1"></a><span class="st"># 1. good gwas</span></span>
+<span id="cb63-28"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-28" aria-hidden="true" tabindex="-1"></a><span class="st">#::</span></span>
+<span id="cb63-29"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-30"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-30" aria-hidden="true" tabindex="-1"></a><span class="st">id=../unrelated/rand.100000</span></span>
+<span id="cb63-31"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-31" aria-hidden="true" tabindex="-1"></a><span class="st">bfile=../gen/geno-unrel</span></span>
+<span id="cb63-32"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-32" aria-hidden="true" tabindex="-1"></a><span class="st">out=\$nm-snps-goodgwas</span></span>
+<span id="cb63-33"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-33" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb63-34"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-34" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.2 --max-threads 10 \</span></span>
+<span id="cb63-35"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-35" aria-hidden="true" tabindex="-1"></a><span class="st">          --calc-inflation ../inflation/out/\$out \</span></span>
+<span id="cb63-36"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-36" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile \$bfile \</span></span>
+<span id="cb63-37"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-37" aria-hidden="true" tabindex="-1"></a><span class="st">          --keep \$id \</span></span>
+<span id="cb63-38"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-38" aria-hidden="true" tabindex="-1"></a><span class="st">          --lista ../inflation/\$lista \</span></span>
+<span id="cb63-39"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-39" aria-hidden="true" tabindex="-1"></a><span class="st">          --listb ../inflation/\$listb </span></span>
+<span id="cb63-40"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-41"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-41" aria-hidden="true" tabindex="-1"></a><span class="st">#::</span></span>
+<span id="cb63-42"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-42" aria-hidden="true" tabindex="-1"></a><span class="st"># 2. bad gwas</span></span>
+<span id="cb63-43"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-43" aria-hidden="true" tabindex="-1"></a><span class="st">#::</span></span>
+<span id="cb63-44"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-45"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-45" aria-hidden="true" tabindex="-1"></a><span class="st">id=../mix-pop-gwas.id</span></span>
+<span id="cb63-46"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-46" aria-hidden="true" tabindex="-1"></a><span class="st">bfile=../gen/geno-mix</span></span>
+<span id="cb63-47"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-47" aria-hidden="true" tabindex="-1"></a><span class="st">out=\$nm-snps-badgwas</span></span>
+<span id="cb63-48"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-48" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb63-49"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-49" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.2 --max-threads 10 \</span></span>
+<span id="cb63-50"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-50" aria-hidden="true" tabindex="-1"></a><span class="st">          --calc-inflation ../inflation/out/\$out \</span></span>
+<span id="cb63-51"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-51" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile \$bfile \</span></span>
+<span id="cb63-52"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-52" aria-hidden="true" tabindex="-1"></a><span class="st">          --keep \$id \</span></span>
+<span id="cb63-53"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-53" aria-hidden="true" tabindex="-1"></a><span class="st">          --lista ../inflation/\$lista \</span></span>
+<span id="cb63-54"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-54" aria-hidden="true" tabindex="-1"></a><span class="st">          --listb ../inflation/\$listb </span></span>
+<span id="cb63-55"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-55" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb63-56"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-56" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="sc">&gt;</span>sh_script<span class="sc">/</span>calc<span class="sc">-</span>sum<span class="sc">-</span>r2</span>
+<span id="cb63-57"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-58"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-58" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb63-59"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-59" aria-hidden="true" tabindex="-1"></a>m<span class="ot">=</span><span class="dv">10000</span></span>
+<span id="cb63-60"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-60" aria-hidden="true" tabindex="-1"></a>nm<span class="ot">=</span>10k</span>
+<span id="cb63-61"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-62"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-62" aria-hidden="true" tabindex="-1"></a>sbatch <span class="sc">-</span>A snpher ..<span class="sc">/</span>sh_script<span class="sc">/</span>calc<span class="sc">-</span>sum<span class="sc">-</span>r2 <span class="sc">&gt;</span>..<span class="sc">/</span>job<span class="sc">-</span>records<span class="sc">/</span>calc<span class="sc">-</span>sum<span class="sc">-</span>r2<span class="sc">-</span><span class="er">$</span>nm<span class="sc">-</span>snps</span>
+<span id="cb63-63"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-64"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-64" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb63-65"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-65" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. compute ave r_j^2 for each i</span></span>
+<span id="cb63-66"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-66" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb63-67"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-68"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-68" aria-hidden="true" tabindex="-1"></a>R</span>
+<span id="cb63-69"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-69" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb63-70"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-70" aria-hidden="true" tabindex="-1"></a>names<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;goodgwas&quot;</span>, <span class="st">&quot;badgwas&quot;</span>)</span>
+<span id="cb63-71"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-72"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-72" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(names)){</span>
+<span id="cb63-73"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-73" aria-hidden="true" tabindex="-1"></a>nm<span class="ot">=</span>names[i]</span>
+<span id="cb63-74"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-74" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;inflation/out/10k-snps-&quot;</span>,nm,<span class="st">&quot;.pairwise&quot;</span>), <span class="at">col_names=</span>F)</span>
+<span id="cb63-75"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-75" aria-hidden="true" tabindex="-1"></a>lista<span class="ot">=</span><span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">&quot;inflation/out/10k-snps-&quot;</span>,nm,<span class="st">&quot;.predictorsa&quot;</span>), <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb63-76"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-76" aria-hidden="true" tabindex="-1"></a>listb<span class="ot">=</span><span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">&quot;inflation/out/10k-snps-&quot;</span>,nm,<span class="st">&quot;.predictorsb&quot;</span>), <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb63-77"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-78"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-78" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span>dat[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">10001</span>)]<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb63-79"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-79" aria-hidden="true" tabindex="-1"></a>outb<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">predictor=</span>listb<span class="sc">$</span>V1, <span class="at">ave_r2=</span><span class="fu">apply</span>(dat,<span class="dv">2</span>, mean))</span>
+<span id="cb63-80"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-80" aria-hidden="true" tabindex="-1"></a>outa<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">predictor=</span>lista<span class="sc">$</span>V1, <span class="at">ave_r2=</span><span class="fu">apply</span>(dat,<span class="dv">1</span>, mean))</span>
+<span id="cb63-81"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-81" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span><span class="fu">rbind</span>(outa,outb)</span>
+<span id="cb63-82"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-83"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-83" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(out,<span class="fu">paste0</span>(<span class="st">&quot;summary/ave-r2-by-snp-&quot;</span>,nm), <span class="at">col.names=</span>F, <span class="at">row.names=</span>F, <span class="at">quote=</span>F)  </span>
+<span id="cb63-84"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-84" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb63-85"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-86"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-86" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb63-87"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-87" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. convert to rs system</span></span>
+<span id="cb63-88"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-88" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb63-89"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-90"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-90" aria-hidden="true" tabindex="-1"></a>awk <span class="st">&#39;(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}&#39;</span> doug<span class="sc">/</span>ukbb.ldsc summary<span class="sc">/</span>ave<span class="sc">-</span>r2<span class="sc">-</span>by<span class="sc">-</span>snp<span class="sc">-</span>goodgwas <span class="sc">&gt;</span> summary<span class="sc">/</span>ave<span class="sc">-</span>r2<span class="sc">-</span>by<span class="sc">-</span>snp<span class="sc">-</span>goodgwas<span class="sc">-</span>rs</span>
+<span id="cb63-91"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-92"><a href="compute-sum_ijm_1-m_2r2_ij.html#cb63-92" aria-hidden="true" tabindex="-1"></a>awk <span class="st">&#39;(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}&#39;</span> doug<span class="sc">/</span>ukbb.ldsc summary<span class="sc">/</span>ave<span class="sc">-</span>r2<span class="sc">-</span>by<span class="sc">-</span>snp<span class="sc">-</span>badgwas <span class="sc">&gt;</span> summary<span class="sc">/</span>ave<span class="sc">-</span>r2<span class="sc">-</span>by<span class="sc">-</span>snp<span class="sc">-</span>badgwas<span class="sc">-</span>rs</span></code></pre></div>
+
+<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div class="csl-entry">
+Bulik-Sullivan, B. K., Loh, P.-R., Finucane, H. K., Ripke, S., Yang, J., Patterson, N., Daly, M. J., Price, A. L., &amp; Neale, B. M. (2015). LD score regression distinguishes confounding from polygenicity in genome-wide association studies. <em>Nature Genetics</em>, <em>47</em>(3), 291–295.
+</div>
+<div class="csl-entry">
+Holmes, J. B., Speed, D., &amp; Balding, D. J. (2019). Summary statistic analyses can mistake confounding bias for heritability. <em>Genetic Epidemiology</em>, <em>43</em>(8), 930–940. https://doi.org/<a href="https://doi.org/10.1002/gepi.22259">https://doi.org/10.1002/gepi.22259</a>
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="control.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/06_working_space.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["bookdown-demo.pdf", "bookdown-demo.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
