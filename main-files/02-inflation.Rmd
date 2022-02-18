@@ -735,7 +735,7 @@ plot(sel$r2_good, sel$good_chisq,
 }
 dev.off()
 
-# regression: chisq test stats ~ ave r^2_j
+# regression: chisq test stats ~ ave r^2_j --------------------------------------
 require(vroom)
 traits=c("awake","bmi","chron","ever",
         "neur","pulse","quals", "fvc", "height","imp",

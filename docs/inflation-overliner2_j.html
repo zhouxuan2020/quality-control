@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 inflation ~ \(\overline{r^2_j}\) | GWAS Quality Control</title>
+  <meta name="description" content="5 inflation ~ \(\overline{r^2_j}\) | GWAS Quality Control" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 inflation ~ \(\overline{r^2_j}\) | GWAS Quality Control" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 inflation ~ \(\overline{r^2_j}\) | GWAS Quality Control" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="mathematical-details.html"/>
+<link rel="next" href="good.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Quality Control Project</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> General Info</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#topic"><i class="fa fa-check"></i><b>1.1</b> Topic</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#frequently-used-commands"><i class="fa fa-check"></i><b>1.2</b> Frequently used commands</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="summaries.html"><a href="summaries.html"><i class="fa fa-check"></i><b>2</b> Summaries</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="summaries.html"><a href="summaries.html#good-gwas"><i class="fa fa-check"></i><b>2.1</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher"><i class="fa fa-check"></i><b>2.1.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.1.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression"><i class="fa fa-check"></i><b>2.1.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="summaries.html"><a href="summaries.html#bad-gwas"><i class="fa fa-check"></i><b>2.2</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-1"><i class="fa fa-check"></i><b>2.2.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.2.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-1"><i class="fa fa-check"></i><b>2.2.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="summaries.html"><a href="summaries.html#ukbb-recommended"><i class="fa fa-check"></i><b>2.3</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-2"><i class="fa fa-check"></i><b>2.3.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.3.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-2"><i class="fa fa-check"></i><b>2.3.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="summaries.html"><a href="summaries.html#control-gwas"><i class="fa fa-check"></i><b>2.4</b> Control GWAS</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-3"><i class="fa fa-check"></i><b>2.4.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.4.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-3"><i class="fa fa-check"></i><b>2.4.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html"><i class="fa fa-check"></i><b>3</b> Good VS Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-statistics-ld-score"><i class="fa fa-check"></i><b>3.1</b> test statistics ~ LD score</a></li>
+<li class="chapter" data-level="3.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#new-models"><i class="fa fa-check"></i><b>3.2</b> New models?</a></li>
+<li class="chapter" data-level="3.3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#ld-scores-based-on-individual-level-data"><i class="fa fa-check"></i><b>3.3</b> LD scores based on individual level data</a></li>
+<li class="chapter" data-level="3.4" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-the-new-model"><i class="fa fa-check"></i><b>3.4</b> Test the new model</a></li>
+<li class="chapter" data-level="3.5" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#predictors-of-inflation"><i class="fa fa-check"></i><b>3.5</b> predictors of inflation?</a></li>
+<li class="chapter" data-level="3.6" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#regress-bad-chisq-mean-r2_j"><i class="fa fa-check"></i><b>3.6</b> regress bad chisq ~ mean r^2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="mathematical-details.html"><a href="mathematical-details.html"><i class="fa fa-check"></i><b>4</b> Mathematical Details</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="mathematical-details.html"><a href="mathematical-details.html#trk_rightk_left"><i class="fa fa-check"></i><b>4.1</b> <span class="math inline">\(tr(K_{right}K_{left})\)</span></a></li>
+<li class="chapter" data-level="4.2" data-path="mathematical-details.html"><a href="mathematical-details.html#verification"><i class="fa fa-check"></i><b>4.2</b> verification</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="inflation-overliner2_j.html"><a href="inflation-overliner2_j.html"><i class="fa fa-check"></i><b>5</b> inflation ~ <span class="math inline">\(\overline{r^2_j}\)</span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="inflation-overliner2_j.html"><a href="inflation-overliner2_j.html#robustness-of-overliner2_j"><i class="fa fa-check"></i><b>5.1</b> Robustness of <span class="math inline">\(\overline{r^2_j}\)</span></a></li>
+<li class="chapter" data-level="5.2" data-path="inflation-overliner2_j.html"><a href="inflation-overliner2_j.html#results-summary"><i class="fa fa-check"></i><b>5.2</b> results summary</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="good.html"><a href="good.html"><i class="fa fa-check"></i><b>6</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="good.html"><a href="good.html#goodid"><i class="fa fa-check"></i><b>6.1</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="6.2" data-path="good.html"><a href="good.html#extract-covariates"><i class="fa fa-check"></i><b>6.2</b> extract covariates</a></li>
+<li class="chapter" data-level="6.3" data-path="good.html"><a href="good.html#gwas"><i class="fa fa-check"></i><b>6.3</b> GWAS</a></li>
+<li class="chapter" data-level="6.4" data-path="good.html"><a href="good.html#ldsc-intercept"><i class="fa fa-check"></i><b>6.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="good.html"><a href="good.html#under-gcta"><i class="fa fa-check"></i><b>6.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="6.4.2" data-path="good.html"><a href="good.html#under-ldak-thin"><i class="fa fa-check"></i><b>6.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="6.4.3" data-path="good.html"><a href="good.html#summary"><i class="fa fa-check"></i><b>6.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="good.html"><a href="good.html#reml"><i class="fa fa-check"></i><b>6.5</b> REML</a>
+<ul>
+<li class="chapter" data-level="6.5.1" data-path="good.html"><a href="good.html#making-grms"><i class="fa fa-check"></i><b>6.5.1</b> making grms</a></li>
+<li class="chapter" data-level="6.5.2" data-path="good.html"><a href="good.html#fast-reml"><i class="fa fa-check"></i><b>6.5.2</b> fast-reml</a></li>
+<li class="chapter" data-level="6.5.3" data-path="good.html"><a href="good.html#inflation-test"><i class="fa fa-check"></i><b>6.5.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="good.html"><a href="good.html#he"><i class="fa fa-check"></i><b>6.6</b> HE</a>
+<ul>
+<li class="chapter" data-level="6.6.1" data-path="good.html"><a href="good.html#estimation"><i class="fa fa-check"></i><b>6.6.1</b> estimation</a></li>
+<li class="chapter" data-level="6.6.2" data-path="good.html"><a href="good.html#summary-1"><i class="fa fa-check"></i><b>6.6.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="bad.html"><a href="bad.html"><i class="fa fa-check"></i><b>7</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="bad.html"><a href="bad.html#badid"><i class="fa fa-check"></i><b>7.1</b> ID list</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="bad.html"><a href="bad.html#initial-selection"><i class="fa fa-check"></i><b>7.1.1</b> initial selection</a></li>
+<li class="chapter" data-level="7.1.2" data-path="bad.html"><a href="bad.html#relatedness-filtering"><i class="fa fa-check"></i><b>7.1.2</b> relatedness filtering</a></li>
+<li class="chapter" data-level="7.1.3" data-path="bad.html"><a href="bad.html#final-list"><i class="fa fa-check"></i><b>7.1.3</b> final list</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="bad.html"><a href="bad.html#gwas-1"><i class="fa fa-check"></i><b>7.2</b> GWAS</a></li>
+<li class="chapter" data-level="7.3" data-path="bad.html"><a href="bad.html#ldsc-intercept-1"><i class="fa fa-check"></i><b>7.3</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="bad.html"><a href="bad.html#under-gcta-1"><i class="fa fa-check"></i><b>7.3.1</b> under gcta</a></li>
+<li class="chapter" data-level="7.3.2" data-path="bad.html"><a href="bad.html#under-ldak-thin-1"><i class="fa fa-check"></i><b>7.3.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="7.3.3" data-path="bad.html"><a href="bad.html#summary-2"><i class="fa fa-check"></i><b>7.3.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="bad.html"><a href="bad.html#reml-1"><i class="fa fa-check"></i><b>7.4</b> REML</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="bad.html"><a href="bad.html#making-grms-1"><i class="fa fa-check"></i><b>7.4.1</b> making grms</a></li>
+<li class="chapter" data-level="7.4.2" data-path="bad.html"><a href="bad.html#fast-reml-1"><i class="fa fa-check"></i><b>7.4.2</b> fast-reml</a></li>
+<li class="chapter" data-level="7.4.3" data-path="bad.html"><a href="bad.html#inflation-test-1"><i class="fa fa-check"></i><b>7.4.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="bad.html"><a href="bad.html#he-1"><i class="fa fa-check"></i><b>7.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="7.5.1" data-path="bad.html"><a href="bad.html#estimation-1"><i class="fa fa-check"></i><b>7.5.1</b> estimation</a></li>
+<li class="chapter" data-level="7.5.2" data-path="bad.html"><a href="bad.html#summary-3"><i class="fa fa-check"></i><b>7.5.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ukbb.html"><a href="ukbb.html"><i class="fa fa-check"></i><b>8</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ukbb.html"><a href="ukbb.html#total-n-337k"><i class="fa fa-check"></i><b>8.1</b> total N = 337k</a></li>
+<li class="chapter" data-level="8.2" data-path="ukbb.html"><a href="ukbb.html#qc-of-hp3-snps"><i class="fa fa-check"></i><b>8.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="8.3" data-path="ukbb.html"><a href="ukbb.html#gwas-2"><i class="fa fa-check"></i><b>8.3</b> GWAS</a></li>
+<li class="chapter" data-level="8.4" data-path="ukbb.html"><a href="ukbb.html#ldsc-intercept-2"><i class="fa fa-check"></i><b>8.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="ukbb.html"><a href="ukbb.html#under-gcta-2"><i class="fa fa-check"></i><b>8.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="8.4.2" data-path="ukbb.html"><a href="ukbb.html#under-ldak-thin-2"><i class="fa fa-check"></i><b>8.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="8.4.3" data-path="ukbb.html"><a href="ukbb.html#summary-4"><i class="fa fa-check"></i><b>8.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="ukbb.html"><a href="ukbb.html#he-2"><i class="fa fa-check"></i><b>8.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="ukbb.html"><a href="ukbb.html#making-grms-2"><i class="fa fa-check"></i><b>8.5.1</b> making grms</a></li>
+<li class="chapter" data-level="8.5.2" data-path="ukbb.html"><a href="ukbb.html#estimation-2"><i class="fa fa-check"></i><b>8.5.2</b> estimation</a></li>
+<li class="chapter" data-level="8.5.3" data-path="ukbb.html"><a href="ukbb.html#summary-5"><i class="fa fa-check"></i><b>8.5.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="control.html"><a href="control.html"><i class="fa fa-check"></i><b>9</b> control GWAS</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="control.html"><a href="control.html#id-list"><i class="fa fa-check"></i><b>9.1</b> ID list</a></li>
+<li class="chapter" data-level="9.2" data-path="control.html"><a href="control.html#qc-of-hp3-snps-1"><i class="fa fa-check"></i><b>9.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="9.3" data-path="control.html"><a href="control.html#gwas-3"><i class="fa fa-check"></i><b>9.3</b> GWAS</a></li>
+<li class="chapter" data-level="9.4" data-path="control.html"><a href="control.html#ldsc-intercept-3"><i class="fa fa-check"></i><b>9.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="control.html"><a href="control.html#under-gcta-3"><i class="fa fa-check"></i><b>9.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="9.4.2" data-path="control.html"><a href="control.html#under-ldak-thin-3"><i class="fa fa-check"></i><b>9.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="9.4.3" data-path="control.html"><a href="control.html#summary-6"><i class="fa fa-check"></i><b>9.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="control.html"><a href="control.html#he-3"><i class="fa fa-check"></i><b>9.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="9.5.1" data-path="control.html"><a href="control.html#making-grms-3"><i class="fa fa-check"></i><b>9.5.1</b> making grms</a></li>
+<li class="chapter" data-level="9.5.2" data-path="control.html"><a href="control.html#estimation-3"><i class="fa fa-check"></i><b>9.5.2</b> estimation</a></li>
+<li class="chapter" data-level="9.5.3" data-path="control.html"><a href="control.html#summary-7"><i class="fa fa-check"></i><b>9.5.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html"><i class="fa fa-check"></i><b>10</b> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwas-all-qced-snps"><i class="fa fa-check"></i><b>10.1</b> good GWAS-all qced snps</a></li>
+<li class="chapter" data-level="10.2" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwass--ldak-thin-snps"><i class="fa fa-check"></i><b>10.2</b> good GWASs- ldak-thin snps</a></li>
+<li class="chapter" data-level="10.3" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#bad-gwass-all-qced-snps"><i class="fa fa-check"></i><b>10.3</b> bad GWASs-all qced snps</a></li>
+<li class="chapter" data-level="10.4" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#summary-8"><i class="fa fa-check"></i><b>10.4</b> summary</a></li>
+<li class="chapter" data-level="10.5" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#compute-overliner2_j"><i class="fa fa-check"></i><b>10.5</b> compute <span class="math inline">\(\overline{r^2_j}\)</span></a></li>
+<li class="chapter" data-level="10.6" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#mixed-pop-gwas-with-pc-as-covariates"><i class="fa fa-check"></i><b>10.6</b> mixed pop GWAS with PC as covariates</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">GWAS Quality Control</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="inflation-overliner2_j" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> inflation ~ <span class="math inline">\(\overline{r^2_j}\)</span></h1>
+<p>New measure of inflation, <span class="math inline">\(\overline{r^2_j}\)</span> - average correlation between SNP j and distant SNPs.</p>
+<ol style="list-style-type: decimal">
+<li>Check if the maths in ldak function is correct. Use –make-snps to generate clean data, and check estimates of average r2j are not significant.</li>
+</ol>
+<p>We did 10 runs and results are non-significant.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="inflation-overliner2_j.html#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-2"><a href="inflation-overliner2_j.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb1-3"><a href="inflation-overliner2_j.html#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb1-4"><a href="inflation-overliner2_j.html#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb1-5"><a href="inflation-overliner2_j.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb1-6"><a href="inflation-overliner2_j.html#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb1-7"><a href="inflation-overliner2_j.html#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 5:00:0</span></span>
+<span id="cb1-8"><a href="inflation-overliner2_j.html#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="inflation-overliner2_j.html#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="st">for i in {1..10}; do</span></span>
+<span id="cb1-10"><a href="inflation-overliner2_j.html#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb1-11"><a href="inflation-overliner2_j.html#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="st">  dir=../inflation/random-snps</span></span>
+<span id="cb1-12"><a href="inflation-overliner2_j.html#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb1-13"><a href="inflation-overliner2_j.html#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="st">  # simulate random snps -------------------------------------------------------</span></span>
+<span id="cb1-14"><a href="inflation-overliner2_j.html#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="st">  ./ldak5.1 --make-snps </span><span class="dt">\$</span><span class="st">dir/20k-snps-100k-inds --num-samples 100000 --num-snps 20000</span></span>
+<span id="cb1-15"><a href="inflation-overliner2_j.html#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb1-16"><a href="inflation-overliner2_j.html#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="st">  # create snp lists -----------------------------------------------------------</span></span>
+<span id="cb1-17"><a href="inflation-overliner2_j.html#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="st">  awk &#39;NR &lt;= 10000 {print </span><span class="dt">\$</span><span class="st">2}&#39; </span><span class="dt">\$</span><span class="st">dir/20k-snps-100k-inds.bim &gt; </span><span class="dt">\$</span><span class="st">dir/lista</span></span>
+<span id="cb1-18"><a href="inflation-overliner2_j.html#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="st">  awk &#39;NR &gt; 10000 {print </span><span class="dt">\$</span><span class="st">2}&#39; </span><span class="dt">\$</span><span class="st">dir/20k-snps-100k-inds.bim &gt; </span><span class="dt">\$</span><span class="st">dir/listb</span></span>
+<span id="cb1-19"><a href="inflation-overliner2_j.html#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb1-20"><a href="inflation-overliner2_j.html#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="st">  # compute r_ij --------------------------------------------------------------</span></span>
+<span id="cb1-21"><a href="inflation-overliner2_j.html#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="st">  ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb1-22"><a href="inflation-overliner2_j.html#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="st">            --calc-inflation </span><span class="dt">\$</span><span class="st">dir/out/20k-random-snps-100k-inds </span><span class="dt">\</span></span>
+<span id="cb1-23"><a href="inflation-overliner2_j.html#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="st">            --bfile </span><span class="dt">\$</span><span class="st">dir/20k-snps-100k-inds </span><span class="dt">\</span></span>
+<span id="cb1-24"><a href="inflation-overliner2_j.html#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="st">            --lista </span><span class="dt">\$</span><span class="st">dir/lista </span><span class="dt">\</span></span>
+<span id="cb1-25"><a href="inflation-overliner2_j.html#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="st">            --listb </span><span class="dt">\$</span><span class="st">dir/listb</span></span>
+<span id="cb1-26"><a href="inflation-overliner2_j.html#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb1-27"><a href="inflation-overliner2_j.html#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-ave-r2j</span>
+<span id="cb1-28"><a href="inflation-overliner2_j.html#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="inflation-overliner2_j.html#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb1-30"><a href="inflation-overliner2_j.html#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-ave-r2j <span class="op">&gt;</span>../job-records/calc-ave-r2j-random-snps</span>
+<span id="cb1-31"><a href="inflation-overliner2_j.html#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="inflation-overliner2_j.html#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># results</span></span>
+<span id="cb1-33"><a href="inflation-overliner2_j.html#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">&quot;Average squared correlation&quot;</span> sh_out/calc-ave-r2j-60721312.out <span class="op">&gt;</span> inflation/random-snps/out/ave-r2j.out</span></code></pre></div>
+<div id="robustness-of-overliner2_j" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Robustness of <span class="math inline">\(\overline{r^2_j}\)</span></h2>
+<ol start="2" style="list-style-type: decimal">
+<li>Ideally, we show <span class="math inline">\(\overline{r^2_j}\)</span> is robust - e.g., it is not sensitive to choice of SNPs (e.g., randomly pick 1000, then a different 1000). It is not sensitive to MAF threshold (e.g., if you restrict to MAF&gt;.1, MAF&gt;.01, MAF&gt;.001).</li>
+</ol>
+<p>To test the robustness of <span class="math inline">\(\overline{r^2_j}\)</span>, we randomly chose 1k SNPs from chromosomes 1-7 and computed the <span class="math inline">\(\overline{r^2_j}\)</span> for these SNPs using 1k, 5k, 10k and 20k SNPs chosen randomly from chromosomes 8-22. We resampled the SNPs and repeated the calculation for 100 times.</p>
+<p>So we want to test if <span class="math inline">\(\overline{r^2_j}\)</span> is sensitive to
+* the choice of SNPs? var(r^2_j) for a given j.
+* the number of SNPs? 1k, 5k, 10k, 20k
+* the MAF threshold? MAF &gt; .1, MAF &gt; 0.01, MAF &gt; 0.001</p>
+<ul>
+<li>For MAF &gt; 0.01, <span class="math inline">\(\overline{r^2_j}\)</span> is not sensitive to the choice of SNPs and slightly sensitive to the number of SNPs. Based on different set of SNPs, <span class="math inline">\(\overline{r^2_j}\)</span> align well. The alignment is better for m &gt; 10k than for m &lt; 10k.</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li>Show that estimated inflation correlates well with difference in <span class="math inline">\(\overline{r_j^2}\)</span> between bad and good GWAS.
+I guess it will be nice to have more variety. E.g., instead of good and bad, have good, a bit bad (e.g., 1000 non-europeans), a bit more bad (2000 non-europeans), … bad (7000 non-europeans).</li>
+</ol>
+<p>Would be great to know the slope of this regression. Can you estimate it by regressing <span class="math inline">\(S_j\)</span> on <span class="math inline">\(\overline{r_j^2}\)</span> from the bad GWAS? But if we can, we just say the slope is less than n</p>
+<p>You showed that if you regress inflation on <span class="math inline">\(\overline{r_j^2}\)</span> and MAF, that MAF is not significant (nor if you use log(MAF) or exp(MAF) or (MAFX(1-MAF))).
+Can you also include info score - hopefully this is also not significant.
+If Maf and Info scores are redundant, this strengthens argument for using r2j</p>
+<p>So we ran the bad GWASs once again using different number of Europeans (n1) &amp; Non-europeans (n2) while keep N = n1+n2=100. We did so for different MAF. For these GWASs, we regress the chi square test statistics on <span class="math inline">\(\overline{r_j^2}\)</span>, MAF &amp; info score.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="inflation-overliner2_j.html#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="inflation-overliner2_j.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-3"><a href="inflation-overliner2_j.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create directories</span></span>
+<span id="cb2-4"><a href="inflation-overliner2_j.html#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-5"><a href="inflation-overliner2_j.html#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="inflation-overliner2_j.html#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> 0k 1k 2k 3k 4k 5k 6k<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-7"><a href="inflation-overliner2_j.html#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> gwas-mix-<span class="va">$i</span>-noneuro</span>
+<span id="cb2-8"><a href="inflation-overliner2_j.html#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-9"><a href="inflation-overliner2_j.html#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># note: previously, the mixed population GWAS was based on 6,472 non-europeans </span></span>
+<span id="cb2-10"><a href="inflation-overliner2_j.html#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> 0k 1k 2k 3k 4k 5k 6k<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-11"><a href="inflation-overliner2_j.html#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> .1 .01 .001<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-12"><a href="inflation-overliner2_j.html#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> gwas-mix-<span class="va">$i</span>-noneuro/maf<span class="va">$j</span></span>
+<span id="cb2-13"><a href="inflation-overliner2_j.html#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-14"><a href="inflation-overliner2_j.html#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-15"><a href="inflation-overliner2_j.html#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="inflation-overliner2_j.html#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-17"><a href="inflation-overliner2_j.html#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># create id lists &amp; snp lists</span></span>
+<span id="cb2-18"><a href="inflation-overliner2_j.html#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-19"><a href="inflation-overliner2_j.html#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="inflation-overliner2_j.html#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># id lists---------------------------------------------------------------------</span></span>
+<span id="cb2-21"><a href="inflation-overliner2_j.html#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># note we used id lists from previous bad GWAS</span></span>
+<span id="cb2-22"><a href="inflation-overliner2_j.html#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="inflation-overliner2_j.html#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co"># noneuropean id  </span></span>
+<span id="cb2-24"><a href="inflation-overliner2_j.html#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> relatedness/asian-cut.05.keep relatedness/black-cut.05.keep <span class="op">&gt;</span> noneuro-unrel.id</span>
+<span id="cb2-25"><a href="inflation-overliner2_j.html#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="inflation-overliner2_j.html#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># mixed pop id</span></span>
+<span id="cb2-27"><a href="inflation-overliner2_j.html#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="va">n1</span><span class="op">=</span><span class="va">(</span>1000 2000 3000 4000 5000 6000<span class="va">)</span></span>
+<span id="cb2-28"><a href="inflation-overliner2_j.html#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span><span class="va">(</span>1k 2k 3k 4k 5k 6k<span class="va">)</span></span>
+<span id="cb2-29"><a href="inflation-overliner2_j.html#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="va">n2</span><span class="op">=</span><span class="va">(</span>99000 98000 97000 96000 95000 94000<span class="va">)</span></span>
+<span id="cb2-30"><a href="inflation-overliner2_j.html#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="inflation-overliner2_j.html#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">0</span><span class="dt">..</span><span class="dv">5</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-32"><a href="inflation-overliner2_j.html#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="ex">shuf</span> noneuro-unrel.id <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> <span class="va">${n1</span><span class="op">[</span><span class="va">$i</span><span class="op">]</span><span class="va">}</span> <span class="op">&gt;</span> noneuro-unrel.rand.<span class="va">${n1</span><span class="op">[</span><span class="va">$i</span><span class="op">]</span><span class="va">}</span></span>
+<span id="cb2-33"><a href="inflation-overliner2_j.html#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="ex">shuf</span> rand.100000 <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> <span class="va">${n2</span><span class="op">[</span><span class="va">$i</span><span class="op">]</span><span class="va">}</span> <span class="op">&gt;</span> white-unrel.rand.<span class="va">${n2</span><span class="op">[</span><span class="va">$i</span><span class="op">]</span><span class="va">}</span></span>
+<span id="cb2-34"><a href="inflation-overliner2_j.html#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> white-unrel.rand.<span class="va">${n2</span><span class="op">[</span><span class="va">$i</span><span class="op">]</span><span class="va">}</span> noneuro-unrel.rand.<span class="va">${n1</span><span class="op">[</span><span class="va">$i</span><span class="op">]</span><span class="va">}</span> <span class="op">&gt;</span> mix-pop-gwas-<span class="va">${nm</span><span class="op">[</span><span class="va">$i</span><span class="op">]</span><span class="va">}</span>-noneuro.id</span>
+<span id="cb2-35"><a href="inflation-overliner2_j.html#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-36"><a href="inflation-overliner2_j.html#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="inflation-overliner2_j.html#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># snp list----------------------------------------------------------------------</span></span>
+<span id="cb2-38"><a href="inflation-overliner2_j.html#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co"># note: for the initial bad gwas, we used the snp list for good gwas</span></span>
+<span id="cb2-39"><a href="inflation-overliner2_j.html#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co"># i.e., ../gen/snps-unrel-inds.use</span></span>
+<span id="cb2-40"><a href="inflation-overliner2_j.html#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co"># gen/geno-unrel.stats is based on QCed genotype data of rand.100000 before maf...</span></span>
+<span id="cb2-41"><a href="inflation-overliner2_j.html#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co"># ... call-rate screening </span></span>
+<span id="cb2-42"><a href="inflation-overliner2_j.html#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="inflation-overliner2_j.html#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="co"># here we want to get snp list of different maf thresholds</span></span>
+<span id="cb2-44"><a href="inflation-overliner2_j.html#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> maf <span class="kw">in</span> .1 .01 .001<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-45"><a href="inflation-overliner2_j.html#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="op">&lt;</span> gen/geno-unrel.stats <span class="at">-v</span> maf=<span class="va">$maf</span> <span class="st">&#39;($5&gt;maf &amp;&amp; $6&gt;=0.95 &amp;&amp; NR&gt;1){print $1}&#39;</span> <span class="op">&gt;</span> gen/snps-unrel-maf<span class="va">$maf</span>.use</span>
+<span id="cb2-46"><a href="inflation-overliner2_j.html#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="fu">wc</span> <span class="at">-l</span> gen/snps-unrel-maf<span class="va">$maf</span>.use</span>
+<span id="cb2-47"><a href="inflation-overliner2_j.html#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-48"><a href="inflation-overliner2_j.html#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="inflation-overliner2_j.html#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co"># maf &gt; 0.1 : 856,746 snps-unrel-maf.1.use</span></span>
+<span id="cb2-50"><a href="inflation-overliner2_j.html#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="co"># maf &gt; 0.01 : 1,103,209 snps-unrel-maf.01.use</span></span>
+<span id="cb2-51"><a href="inflation-overliner2_j.html#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co"># maf &gt; 0.001 : 1,111,494 snps-unrel-maf.001.use</span></span>
+<span id="cb2-52"><a href="inflation-overliner2_j.html#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="inflation-overliner2_j.html#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-54"><a href="inflation-overliner2_j.html#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="co">#  extract genotype data for mixed pop</span></span>
+<span id="cb2-55"><a href="inflation-overliner2_j.html#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-56"><a href="inflation-overliner2_j.html#cb2-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-57"><a href="inflation-overliner2_j.html#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="co"># note: previously geno-mix is based on snps-unrel-inds.use, which is a snp list...</span></span>
+<span id="cb2-58"><a href="inflation-overliner2_j.html#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="co">#... after filtering for maf (maf&gt;0.01) and call rate. So genotype data does not...</span></span>
+<span id="cb2-59"><a href="inflation-overliner2_j.html#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="co">#... contain snps with maf &lt; 0.01. So we need to extract genotype data for this...</span></span>
+<span id="cb2-60"><a href="inflation-overliner2_j.html#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="co">#... set of analysis using overlap-mixed-complete-cov.id and snps-unrel-maf.001.use...</span></span>
+<span id="cb2-61"><a href="inflation-overliner2_j.html#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="co">#...(see above for how the snp list is generated)</span></span>
+<span id="cb2-62"><a href="inflation-overliner2_j.html#cb2-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-63"><a href="inflation-overliner2_j.html#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="co"># bfiles by chr-----------------------------------------------------------------</span></span>
+<span id="cb2-64"><a href="inflation-overliner2_j.html#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-65"><a href="inflation-overliner2_j.html#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb2-66"><a href="inflation-overliner2_j.html#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb2-67"><a href="inflation-overliner2_j.html#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb2-68"><a href="inflation-overliner2_j.html#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb2-69"><a href="inflation-overliner2_j.html#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb2-70"><a href="inflation-overliner2_j.html#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 1:0:0</span></span>
+<span id="cb2-71"><a href="inflation-overliner2_j.html#cb2-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-72"><a href="inflation-overliner2_j.html#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb2-73"><a href="inflation-overliner2_j.html#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="st">         --keep ../overlap-mixed-complete-cov.id </span><span class="dt">\</span></span>
+<span id="cb2-74"><a href="inflation-overliner2_j.html#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="st">         --extract ../gen/snps-unrel-maf.001.use </span><span class="dt">\</span></span>
+<span id="cb2-75"><a href="inflation-overliner2_j.html#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="st">         --make-bed </span><span class="dt">\</span></span>
+<span id="cb2-76"><a href="inflation-overliner2_j.html#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
+<span id="cb2-77"><a href="inflation-overliner2_j.html#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/tmp/bhr</span><span class="va">$j</span><span class="st">-mix </span><span class="dt">\</span></span>
+<span id="cb2-78"><a href="inflation-overliner2_j.html#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3 </span><span class="dt">\</span></span>
+<span id="cb2-79"><a href="inflation-overliner2_j.html#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/chr<span class="va">$j</span>-mix.sh</span>
+<span id="cb2-80"><a href="inflation-overliner2_j.html#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-81"><a href="inflation-overliner2_j.html#cb2-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-82"><a href="inflation-overliner2_j.html#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="co"># submit script</span></span>
+<span id="cb2-83"><a href="inflation-overliner2_j.html#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-84"><a href="inflation-overliner2_j.html#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/chr<span class="va">$i</span>-mix.sh</span>
+<span id="cb2-85"><a href="inflation-overliner2_j.html#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span><span class="op">&gt;</span>../job-records/mkbfile-mix-pop-new</span>
+<span id="cb2-86"><a href="inflation-overliner2_j.html#cb2-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-87"><a href="inflation-overliner2_j.html#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="co"># merge bfiles------------------------------------------------------------------</span></span>
+<span id="cb2-88"><a href="inflation-overliner2_j.html#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> bfile-mix-new.list</span>
+<span id="cb2-89"><a href="inflation-overliner2_j.html#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-90"><a href="inflation-overliner2_j.html#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span>  <span class="st">&quot;../gen/tmp/bhr</span><span class="va">$j</span><span class="st">-mix&quot;</span> <span class="op">&gt;&gt;</span>bfile-mix-new.list</span>
+<span id="cb2-91"><a href="inflation-overliner2_j.html#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-92"><a href="inflation-overliner2_j.html#cb2-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-93"><a href="inflation-overliner2_j.html#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb2-94"><a href="inflation-overliner2_j.html#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb2-95"><a href="inflation-overliner2_j.html#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb2-96"><a href="inflation-overliner2_j.html#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb2-97"><a href="inflation-overliner2_j.html#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb2-98"><a href="inflation-overliner2_j.html#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 10:0:0</span></span>
+<span id="cb2-99"><a href="inflation-overliner2_j.html#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --make-bed ../gen/geno-mix-maf.001 </span><span class="dt">\</span></span>
+<span id="cb2-100"><a href="inflation-overliner2_j.html#cb2-100" aria-hidden="true" tabindex="-1"></a><span class="st">          --mbfile ../gen/bfile-mix-new.list </span><span class="dt">\</span></span>
+<span id="cb2-101"><a href="inflation-overliner2_j.html#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 3 </span><span class="dt">\</span></span>
+<span id="cb2-102"><a href="inflation-overliner2_j.html#cb2-102" aria-hidden="true" tabindex="-1"></a><span class="st">          --exclude-dups YES  </span></span>
+<span id="cb2-103"><a href="inflation-overliner2_j.html#cb2-103" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/merge-mbfiles-mix.sh</span>
+<span id="cb2-104"><a href="inflation-overliner2_j.html#cb2-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-105"><a href="inflation-overliner2_j.html#cb2-105" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the script</span></span>
+<span id="cb2-106"><a href="inflation-overliner2_j.html#cb2-106" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/merge-mbfiles-mix.sh <span class="op">&gt;</span>../job-records/merge-mbfiles-mix-pop-maf.001</span>
+<span id="cb2-107"><a href="inflation-overliner2_j.html#cb2-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-108"><a href="inflation-overliner2_j.html#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-109"><a href="inflation-overliner2_j.html#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="co">#  get INFO score</span></span>
+<span id="cb2-110"><a href="inflation-overliner2_j.html#cb2-110" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-111"><a href="inflation-overliner2_j.html#cb2-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-112"><a href="inflation-overliner2_j.html#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="co"># here we repeat the QC step for the good gwas to compute the INFO score</span></span>
+<span id="cb2-113"><a href="inflation-overliner2_j.html#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="co"># note: since the MAF is based on snp list after QC for rand.100000, here we compute...</span></span>
+<span id="cb2-114"><a href="inflation-overliner2_j.html#cb2-114" aria-hidden="true" tabindex="-1"></a><span class="co">#...INFO based on the same list of participants.</span></span>
+<span id="cb2-115"><a href="inflation-overliner2_j.html#cb2-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-116"><a href="inflation-overliner2_j.html#cb2-116" aria-hidden="true" tabindex="-1"></a><span class="co"># make QCed pgen files---------------------------------------------------------- </span></span>
+<span id="cb2-117"><a href="inflation-overliner2_j.html#cb2-117" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-118"><a href="inflation-overliner2_j.html#cb2-118" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb2-119"><a href="inflation-overliner2_j.html#cb2-119" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb2-120"><a href="inflation-overliner2_j.html#cb2-120" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb2-121"><a href="inflation-overliner2_j.html#cb2-121" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb2-122"><a href="inflation-overliner2_j.html#cb2-122" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb2-123"><a href="inflation-overliner2_j.html#cb2-123" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 1:0:0</span></span>
+<span id="cb2-124"><a href="inflation-overliner2_j.html#cb2-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-125"><a href="inflation-overliner2_j.html#cb2-125" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb2-126"><a href="inflation-overliner2_j.html#cb2-126" aria-hidden="true" tabindex="-1"></a><span class="st">         --keep ../unrelated/rand.100000 </span><span class="dt">\</span></span>
+<span id="cb2-127"><a href="inflation-overliner2_j.html#cb2-127" aria-hidden="true" tabindex="-1"></a><span class="st">         --extract ../doug/ukbb.ldsc </span><span class="dt">\</span></span>
+<span id="cb2-128"><a href="inflation-overliner2_j.html#cb2-128" aria-hidden="true" tabindex="-1"></a><span class="st">         --hwe 0.0001 </span><span class="dt">\</span></span>
+<span id="cb2-129"><a href="inflation-overliner2_j.html#cb2-129" aria-hidden="true" tabindex="-1"></a><span class="st">         --hard-call-threshold .05 </span><span class="dt">\</span></span>
+<span id="cb2-130"><a href="inflation-overliner2_j.html#cb2-130" aria-hidden="true" tabindex="-1"></a><span class="st">         --mach-r2-filter 0.8 2 </span><span class="dt">\</span></span>
+<span id="cb2-131"><a href="inflation-overliner2_j.html#cb2-131" aria-hidden="true" tabindex="-1"></a><span class="st">         --make-pgen </span><span class="dt">\</span></span>
+<span id="cb2-132"><a href="inflation-overliner2_j.html#cb2-132" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
+<span id="cb2-133"><a href="inflation-overliner2_j.html#cb2-133" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/tmp/bhr</span><span class="va">$j</span><span class="st">-unrel </span><span class="dt">\</span></span>
+<span id="cb2-134"><a href="inflation-overliner2_j.html#cb2-134" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3</span></span>
+<span id="cb2-135"><a href="inflation-overliner2_j.html#cb2-135" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/chr<span class="va">$j</span>.sh</span>
+<span id="cb2-136"><a href="inflation-overliner2_j.html#cb2-136" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-137"><a href="inflation-overliner2_j.html#cb2-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-138"><a href="inflation-overliner2_j.html#cb2-138" aria-hidden="true" tabindex="-1"></a><span class="co"># submit jobs</span></span>
+<span id="cb2-139"><a href="inflation-overliner2_j.html#cb2-139" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-140"><a href="inflation-overliner2_j.html#cb2-140" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/chr<span class="va">$j</span>.sh</span>
+<span id="cb2-141"><a href="inflation-overliner2_j.html#cb2-141" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/qc-unrel-pgen</span>
+<span id="cb2-142"><a href="inflation-overliner2_j.html#cb2-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-143"><a href="inflation-overliner2_j.html#cb2-143" aria-hidden="true" tabindex="-1"></a><span class="co"># compute info score------------------------------------------------------------</span></span>
+<span id="cb2-144"><a href="inflation-overliner2_j.html#cb2-144" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-145"><a href="inflation-overliner2_j.html#cb2-145" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb2-146"><a href="inflation-overliner2_j.html#cb2-146" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb2-147"><a href="inflation-overliner2_j.html#cb2-147" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb2-148"><a href="inflation-overliner2_j.html#cb2-148" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb2-149"><a href="inflation-overliner2_j.html#cb2-149" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb2-150"><a href="inflation-overliner2_j.html#cb2-150" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 1:0:0</span></span>
+<span id="cb2-151"><a href="inflation-overliner2_j.html#cb2-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-152"><a href="inflation-overliner2_j.html#cb2-152" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/tmp/bhr</span><span class="va">$j</span><span class="st">-unrel </span><span class="dt">\</span></span>
+<span id="cb2-153"><a href="inflation-overliner2_j.html#cb2-153" aria-hidden="true" tabindex="-1"></a><span class="st">         --keep ../unrelated/rand.100000 </span><span class="dt">\</span></span>
+<span id="cb2-154"><a href="inflation-overliner2_j.html#cb2-154" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3 </span><span class="dt">\</span></span>
+<span id="cb2-155"><a href="inflation-overliner2_j.html#cb2-155" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
+<span id="cb2-156"><a href="inflation-overliner2_j.html#cb2-156" aria-hidden="true" tabindex="-1"></a><span class="st">         --freq cols=chrom,ref,alt,altfreq,machr2 </span><span class="dt">\</span></span>
+<span id="cb2-157"><a href="inflation-overliner2_j.html#cb2-157" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/info/chr</span><span class="va">$j</span><span class="st"> </span></span>
+<span id="cb2-158"><a href="inflation-overliner2_j.html#cb2-158" aria-hidden="true" tabindex="-1"></a><span class="st">        </span></span>
+<span id="cb2-159"><a href="inflation-overliner2_j.html#cb2-159" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/info-chr<span class="va">$j</span>.sh</span>
+<span id="cb2-160"><a href="inflation-overliner2_j.html#cb2-160" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-161"><a href="inflation-overliner2_j.html#cb2-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-162"><a href="inflation-overliner2_j.html#cb2-162" aria-hidden="true" tabindex="-1"></a><span class="co"># submit file</span></span>
+<span id="cb2-163"><a href="inflation-overliner2_j.html#cb2-163" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-164"><a href="inflation-overliner2_j.html#cb2-164" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/info-chr<span class="va">$j</span>.sh</span>
+<span id="cb2-165"><a href="inflation-overliner2_j.html#cb2-165" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/compute-info-score</span>
+<span id="cb2-166"><a href="inflation-overliner2_j.html#cb2-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-167"><a href="inflation-overliner2_j.html#cb2-167" aria-hidden="true" tabindex="-1"></a><span class="co"># combine files</span></span>
+<span id="cb2-168"><a href="inflation-overliner2_j.html#cb2-168" aria-hidden="true" tabindex="-1"></a><span class="va">dir</span><span class="op">=</span>gen/info</span>
+<span id="cb2-169"><a href="inflation-overliner2_j.html#cb2-169" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="va">$dir</span>/rand.100000-qced-afreq </span>
+<span id="cb2-170"><a href="inflation-overliner2_j.html#cb2-170" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-171"><a href="inflation-overliner2_j.html#cb2-171" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$i</span> <span class="ot">==</span> 1 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-172"><a href="inflation-overliner2_j.html#cb2-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;{print $0}&#39;</span> <span class="va">$dir</span>/chr<span class="va">$i</span>.afreq <span class="op">&gt;</span> <span class="va">$dir</span>/rand.100000-qced.afreq</span>
+<span id="cb2-173"><a href="inflation-overliner2_j.html#cb2-173" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span> </span>
+<span id="cb2-174"><a href="inflation-overliner2_j.html#cb2-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;NR&gt;1 {print $0}&#39;</span> <span class="va">$dir</span>/chr<span class="va">$i</span>.afreq <span class="op">&gt;&gt;</span> <span class="va">$dir</span>/rand.100000-qced.afreq</span>
+<span id="cb2-175"><a href="inflation-overliner2_j.html#cb2-175" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb2-176"><a href="inflation-overliner2_j.html#cb2-176" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-177"><a href="inflation-overliner2_j.html#cb2-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-178"><a href="inflation-overliner2_j.html#cb2-178" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-179"><a href="inflation-overliner2_j.html#cb2-179" aria-hidden="true" tabindex="-1"></a><span class="co"># GWASs</span></span>
+<span id="cb2-180"><a href="inflation-overliner2_j.html#cb2-180" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-181"><a href="inflation-overliner2_j.html#cb2-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-182"><a href="inflation-overliner2_j.html#cb2-182" aria-hidden="true" tabindex="-1"></a><span class="co">## </span><span class="al">NOTE</span><span class="co">: for maf &gt;0.001, we will have to redo the GWAS, because geno-mix only ...</span></span>
+<span id="cb2-183"><a href="inflation-overliner2_j.html#cb2-183" aria-hidden="true" tabindex="-1"></a><span class="co">#...contains snps with maf &gt; 0.01. See below</span></span>
+<span id="cb2-184"><a href="inflation-overliner2_j.html#cb2-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-185"><a href="inflation-overliner2_j.html#cb2-185" aria-hidden="true" tabindex="-1"></a><span class="co"># for 0k, i.e., the good gwas without PC as covariates--------------------------------------</span></span>
+<span id="cb2-186"><a href="inflation-overliner2_j.html#cb2-186" aria-hidden="true" tabindex="-1"></a><span class="va">n</span><span class="op">=</span>0k</span>
+<span id="cb2-187"><a href="inflation-overliner2_j.html#cb2-187" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{awake</span><span class="op">,</span><span class="dt">bmi</span><span class="op">,</span><span class="dt">chron</span><span class="op">,</span><span class="dt">ever</span><span class="op">,</span><span class="dt">fvc</span><span class="op">,</span><span class="dt">height</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">neur</span><span class="op">,</span><span class="dt">pulse</span><span class="op">,</span><span class="dt">quals</span><span class="op">,</span><span class="dt">reaction</span><span class="op">,</span><span class="dt">sbp</span><span class="op">,</span><span class="dt">snoring</span><span class="op">,</span><span class="dt">hyper}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-188"><a href="inflation-overliner2_j.html#cb2-188" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> maf <span class="kw">in</span> <span class="dt">{.1</span><span class="op">,</span><span class="dt">.01</span><span class="op">,</span><span class="dt">.001}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-189"><a href="inflation-overliner2_j.html#cb2-189" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb2-190"><a href="inflation-overliner2_j.html#cb2-190" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb2-191"><a href="inflation-overliner2_j.html#cb2-191" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb2-192"><a href="inflation-overliner2_j.html#cb2-192" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 7G</span></span>
+<span id="cb2-193"><a href="inflation-overliner2_j.html#cb2-193" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 2</span></span>
+<span id="cb2-194"><a href="inflation-overliner2_j.html#cb2-194" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 2:00:0</span></span>
+<span id="cb2-195"><a href="inflation-overliner2_j.html#cb2-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-196"><a href="inflation-overliner2_j.html#cb2-196" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --linear ../gwas-mix-</span><span class="va">$n</span><span class="st">-noneuro/maf</span><span class="va">$maf</span><span class="st">/</span><span class="va">$i</span><span class="st">-linear </span><span class="dt">\</span></span>
+<span id="cb2-197"><a href="inflation-overliner2_j.html#cb2-197" aria-hidden="true" tabindex="-1"></a><span class="st">          --pheno ../phen/continuous-traits/</span><span class="va">$i</span><span class="st">.raw.pheno </span><span class="dt">\</span></span>
+<span id="cb2-198"><a href="inflation-overliner2_j.html#cb2-198" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile ../gen/geno-mix </span><span class="dt">\</span></span>
+<span id="cb2-199"><a href="inflation-overliner2_j.html#cb2-199" aria-hidden="true" tabindex="-1"></a><span class="st">          --covar ../phen/basic-covariates.use </span><span class="dt">\</span></span>
+<span id="cb2-200"><a href="inflation-overliner2_j.html#cb2-200" aria-hidden="true" tabindex="-1"></a><span class="st">          --keep ../rand.100000 </span><span class="dt">\</span></span>
+<span id="cb2-201"><a href="inflation-overliner2_j.html#cb2-201" aria-hidden="true" tabindex="-1"></a><span class="st">          --extract ../gen/snps-unrel-maf</span><span class="va">$maf</span><span class="st">.use </span><span class="dt">\</span></span>
+<span id="cb2-202"><a href="inflation-overliner2_j.html#cb2-202" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 2</span></span>
+<span id="cb2-203"><a href="inflation-overliner2_j.html#cb2-203" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/<span class="va">$i</span>-linear-<span class="va">$n</span>-noneuro-maf-<span class="va">$maf</span>.sh</span>
+<span id="cb2-204"><a href="inflation-overliner2_j.html#cb2-204" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-205"><a href="inflation-overliner2_j.html#cb2-205" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-206"><a href="inflation-overliner2_j.html#cb2-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-207"><a href="inflation-overliner2_j.html#cb2-207" aria-hidden="true" tabindex="-1"></a><span class="co"># submit files------------------------------------------------------------------</span></span>
+<span id="cb2-208"><a href="inflation-overliner2_j.html#cb2-208" aria-hidden="true" tabindex="-1"></a><span class="va">n</span><span class="op">=</span>0k</span>
+<span id="cb2-209"><a href="inflation-overliner2_j.html#cb2-209" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{awake</span><span class="op">,</span><span class="dt">bmi</span><span class="op">,</span><span class="dt">chron</span><span class="op">,</span><span class="dt">ever</span><span class="op">,</span><span class="dt">fvc</span><span class="op">,</span><span class="dt">height</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">neur</span><span class="op">,</span><span class="dt">pulse</span><span class="op">,</span><span class="dt">quals</span><span class="op">,</span><span class="dt">reaction</span><span class="op">,</span><span class="dt">sbp</span><span class="op">,</span><span class="dt">snoring</span><span class="op">,</span><span class="dt">hyper}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-210"><a href="inflation-overliner2_j.html#cb2-210" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> maf <span class="kw">in</span> <span class="dt">{.1</span><span class="op">,</span><span class="dt">.01</span><span class="op">,</span><span class="dt">.001}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-211"><a href="inflation-overliner2_j.html#cb2-211" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/<span class="va">$i</span>-linear-<span class="va">$n</span>-noneuro-maf-<span class="va">$maf</span>.sh</span>
+<span id="cb2-212"><a href="inflation-overliner2_j.html#cb2-212" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-213"><a href="inflation-overliner2_j.html#cb2-213" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span><span class="op">&gt;</span>../job-records/bad-gwas-0k-noneuro</span>
+<span id="cb2-214"><a href="inflation-overliner2_j.html#cb2-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-215"><a href="inflation-overliner2_j.html#cb2-215" aria-hidden="true" tabindex="-1"></a><span class="co"># for 1k to 6k------------------------------------------------------------------</span></span>
+<span id="cb2-216"><a href="inflation-overliner2_j.html#cb2-216" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{awake</span><span class="op">,</span><span class="dt">bmi</span><span class="op">,</span><span class="dt">chron</span><span class="op">,</span><span class="dt">ever</span><span class="op">,</span><span class="dt">fvc</span><span class="op">,</span><span class="dt">height</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">neur</span><span class="op">,</span><span class="dt">pulse</span><span class="op">,</span><span class="dt">quals</span><span class="op">,</span><span class="dt">reaction</span><span class="op">,</span><span class="dt">sbp</span><span class="op">,</span><span class="dt">snoring</span><span class="op">,</span><span class="dt">hyper}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-217"><a href="inflation-overliner2_j.html#cb2-217" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="dt">{1k</span><span class="op">,</span><span class="dt">2k</span><span class="op">,</span><span class="dt">3k</span><span class="op">,</span><span class="dt">4k</span><span class="op">,</span><span class="dt">5k</span><span class="op">,</span><span class="dt">6k}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-218"><a href="inflation-overliner2_j.html#cb2-218" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> maf <span class="kw">in</span> <span class="dt">{.1</span><span class="op">,</span><span class="dt">.01</span><span class="op">,</span><span class="dt">.001}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-219"><a href="inflation-overliner2_j.html#cb2-219" aria-hidden="true" tabindex="-1"></a><span class="co">#for j in {1..22}; do</span></span>
+<span id="cb2-220"><a href="inflation-overliner2_j.html#cb2-220" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb2-221"><a href="inflation-overliner2_j.html#cb2-221" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb2-222"><a href="inflation-overliner2_j.html#cb2-222" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb2-223"><a href="inflation-overliner2_j.html#cb2-223" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 7G</span></span>
+<span id="cb2-224"><a href="inflation-overliner2_j.html#cb2-224" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 2</span></span>
+<span id="cb2-225"><a href="inflation-overliner2_j.html#cb2-225" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 8:00:0</span></span>
+<span id="cb2-226"><a href="inflation-overliner2_j.html#cb2-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-227"><a href="inflation-overliner2_j.html#cb2-227" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --linear ../gwas-mix-</span><span class="va">$n</span><span class="st">-noneuro/maf</span><span class="va">$maf</span><span class="st">/</span><span class="va">$i</span><span class="st">-linear </span><span class="dt">\</span></span>
+<span id="cb2-228"><a href="inflation-overliner2_j.html#cb2-228" aria-hidden="true" tabindex="-1"></a><span class="st">          --pheno ../phen/continuous-traits/</span><span class="va">$i</span><span class="st">.raw.pheno </span><span class="dt">\</span></span>
+<span id="cb2-229"><a href="inflation-overliner2_j.html#cb2-229" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile ../gen/geno-mix </span><span class="dt">\</span></span>
+<span id="cb2-230"><a href="inflation-overliner2_j.html#cb2-230" aria-hidden="true" tabindex="-1"></a><span class="st">          --covar ../phen/basic-covariates.use </span><span class="dt">\</span></span>
+<span id="cb2-231"><a href="inflation-overliner2_j.html#cb2-231" aria-hidden="true" tabindex="-1"></a><span class="st">          --keep ../mix-pop-gwas-</span><span class="va">$n</span><span class="st">-noneuro.id </span><span class="dt">\</span></span>
+<span id="cb2-232"><a href="inflation-overliner2_j.html#cb2-232" aria-hidden="true" tabindex="-1"></a><span class="st">          --extract ../gen/snps-unrel-maf</span><span class="va">$maf</span><span class="st">.use </span><span class="dt">\</span></span>
+<span id="cb2-233"><a href="inflation-overliner2_j.html#cb2-233" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 2</span></span>
+<span id="cb2-234"><a href="inflation-overliner2_j.html#cb2-234" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/<span class="va">$i</span>-linear-<span class="va">$n</span>-noneuro-maf-<span class="va">$maf</span>.sh</span>
+<span id="cb2-235"><a href="inflation-overliner2_j.html#cb2-235" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-236"><a href="inflation-overliner2_j.html#cb2-236" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-237"><a href="inflation-overliner2_j.html#cb2-237" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-238"><a href="inflation-overliner2_j.html#cb2-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-239"><a href="inflation-overliner2_j.html#cb2-239" aria-hidden="true" tabindex="-1"></a><span class="co"># submit files------------------------------------------------------------------</span></span>
+<span id="cb2-240"><a href="inflation-overliner2_j.html#cb2-240" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{awake</span><span class="op">,</span><span class="dt">bmi</span><span class="op">,</span><span class="dt">chron</span><span class="op">,</span><span class="dt">ever</span><span class="op">,</span><span class="dt">fvc</span><span class="op">,</span><span class="dt">height</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">neur</span><span class="op">,</span><span class="dt">pulse</span><span class="op">,</span><span class="dt">quals</span><span class="op">,</span><span class="dt">reaction</span><span class="op">,</span><span class="dt">sbp</span><span class="op">,</span><span class="dt">snoring</span><span class="op">,</span><span class="dt">hyper}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-241"><a href="inflation-overliner2_j.html#cb2-241" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="dt">{1k</span><span class="op">,</span><span class="dt">2k</span><span class="op">,</span><span class="dt">3k</span><span class="op">,</span><span class="dt">4k</span><span class="op">,</span><span class="dt">5k</span><span class="op">,</span><span class="dt">6k}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-242"><a href="inflation-overliner2_j.html#cb2-242" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> maf <span class="kw">in</span> <span class="dt">{.1</span><span class="op">,</span><span class="dt">.01</span><span class="op">,</span><span class="dt">.001}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-243"><a href="inflation-overliner2_j.html#cb2-243" aria-hidden="true" tabindex="-1"></a><span class="co">#for j in {1..22}; do</span></span>
+<span id="cb2-244"><a href="inflation-overliner2_j.html#cb2-244" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/<span class="va">$i</span>-linear-<span class="va">$n</span>-noneuro-maf-<span class="va">$maf</span>.sh</span>
+<span id="cb2-245"><a href="inflation-overliner2_j.html#cb2-245" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-246"><a href="inflation-overliner2_j.html#cb2-246" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-247"><a href="inflation-overliner2_j.html#cb2-247" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span><span class="op">&gt;</span>../job-records/bad-gwas</span>
+<span id="cb2-248"><a href="inflation-overliner2_j.html#cb2-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-249"><a href="inflation-overliner2_j.html#cb2-249" aria-hidden="true" tabindex="-1"></a><span class="co"># check job completion</span></span>
+<span id="cb2-250"><a href="inflation-overliner2_j.html#cb2-250" aria-hidden="true" tabindex="-1"></a><span class="va">file</span><span class="op">=</span>job-records/bad-gwas</span>
+<span id="cb2-251"><a href="inflation-overliner2_j.html#cb2-251" aria-hidden="true" tabindex="-1"></a><span class="va">jobs</span><span class="op">=</span><span class="kw">`</span><span class="fu">awk</span> <span class="st">&#39;{print $4}&#39;</span> <span class="va">$file</span><span class="kw">`</span></span>
+<span id="cb2-252"><a href="inflation-overliner2_j.html#cb2-252" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="va">$file</span>-tmp</span>
+<span id="cb2-253"><a href="inflation-overliner2_j.html#cb2-253" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="va">$jobs</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-254"><a href="inflation-overliner2_j.html#cb2-254" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="at">-v</span> i=<span class="va">$i</span> <span class="st">&#39;$1~/Name/ {print i, $2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/name.tmp </span>
+<span id="cb2-255"><a href="inflation-overliner2_j.html#cb2-255" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/State/ {print$2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/state.tmp</span>
+<span id="cb2-256"><a href="inflation-overliner2_j.html#cb2-256" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Cores/ {print$2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/cores.tmp</span>
+<span id="cb2-257"><a href="inflation-overliner2_j.html#cb2-257" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Used walltime/ {print $2 &quot;:&quot; $3 &quot;:&quot; $4}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/time.tmp</span>
+<span id="cb2-258"><a href="inflation-overliner2_j.html#cb2-258" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/mem.tmp</span>
+<span id="cb2-259"><a href="inflation-overliner2_j.html#cb2-259" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-260"><a href="inflation-overliner2_j.html#cb2-260" aria-hidden="true" tabindex="-1"></a><span class="ex">paste</span> <span class="va">$file</span>-tmp/name.tmp <span class="dt">\</span></span>
+<span id="cb2-261"><a href="inflation-overliner2_j.html#cb2-261" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/state.tmp <span class="dt">\</span></span>
+<span id="cb2-262"><a href="inflation-overliner2_j.html#cb2-262" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/cores.tmp <span class="dt">\</span></span>
+<span id="cb2-263"><a href="inflation-overliner2_j.html#cb2-263" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/time.tmp <span class="dt">\</span></span>
+<span id="cb2-264"><a href="inflation-overliner2_j.html#cb2-264" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/mem.tmp <span class="dt">\</span></span>
+<span id="cb2-265"><a href="inflation-overliner2_j.html#cb2-265" aria-hidden="true" tabindex="-1"></a>      <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;BEGIN{print &quot;ID name state cores time mem&quot;}{print $0}&#39;</span> <span class="op">&gt;</span> <span class="va">$file</span>.out</span>
+<span id="cb2-266"><a href="inflation-overliner2_j.html#cb2-266" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-r</span> <span class="va">$file</span>-tmp</span>
+<span id="cb2-267"><a href="inflation-overliner2_j.html#cb2-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-268"><a href="inflation-overliner2_j.html#cb2-268" aria-hidden="true" tabindex="-1"></a><span class="co"># combine results for some--------------------------------------------------- </span></span>
+<span id="cb2-269"><a href="inflation-overliner2_j.html#cb2-269" aria-hidden="true" tabindex="-1"></a><span class="co"># only for .summaries &amp; .pvalues</span></span>
+<span id="cb2-270"><a href="inflation-overliner2_j.html#cb2-270" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{awake</span><span class="op">,</span><span class="dt">bmi</span><span class="op">,</span><span class="dt">chron</span><span class="op">,</span><span class="dt">ever</span><span class="op">,</span><span class="dt">fvc</span><span class="op">,</span><span class="dt">height</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">neur</span><span class="op">,</span><span class="dt">quals</span><span class="op">,</span><span class="dt">pulse</span><span class="op">,</span><span class="dt">reaction</span><span class="op">,</span><span class="dt">sbp</span><span class="op">,</span><span class="dt">snoring</span><span class="op">,</span><span class="dt">hyper}</span><span class="kw">;</span> <span class="cf">do</span> </span>
+<span id="cb2-271"><a href="inflation-overliner2_j.html#cb2-271" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-272"><a href="inflation-overliner2_j.html#cb2-272" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$j</span> <span class="ot">==</span> 1 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-273"><a href="inflation-overliner2_j.html#cb2-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;{print $0}&#39;</span> <span class="va">$i</span>-linear-chr-<span class="va">$j</span>.summaries <span class="op">&gt;</span> <span class="va">$i</span>-linear.summaries</span>
+<span id="cb2-274"><a href="inflation-overliner2_j.html#cb2-274" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;{print $0}&#39;</span> <span class="va">$i</span>-linear-chr-<span class="va">$j</span>.pvalues <span class="op">&gt;</span> <span class="va">$i</span>-linear.pvalues</span>
+<span id="cb2-275"><a href="inflation-overliner2_j.html#cb2-275" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span> </span>
+<span id="cb2-276"><a href="inflation-overliner2_j.html#cb2-276" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;NR&gt;1 {print $0}&#39;</span> <span class="va">$i</span>-linear-chr-<span class="va">$j</span>.summaries <span class="op">&gt;&gt;</span> <span class="va">$i</span>-linear.summaries</span>
+<span id="cb2-277"><a href="inflation-overliner2_j.html#cb2-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;NR&gt;1 {print $0}&#39;</span> <span class="va">$i</span>-linear-chr-<span class="va">$j</span>.pvalues <span class="op">&gt;&gt;</span> <span class="va">$i</span>-linear.pvalues</span>
+<span id="cb2-278"><a href="inflation-overliner2_j.html#cb2-278" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb2-279"><a href="inflation-overliner2_j.html#cb2-279" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-280"><a href="inflation-overliner2_j.html#cb2-280" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-281"><a href="inflation-overliner2_j.html#cb2-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-282"><a href="inflation-overliner2_j.html#cb2-282" aria-hidden="true" tabindex="-1"></a><span class="co"># repeat gwas for maf&gt;.001 -----------------------------------------------------</span></span>
+<span id="cb2-283"><a href="inflation-overliner2_j.html#cb2-283" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>.001</span>
+<span id="cb2-284"><a href="inflation-overliner2_j.html#cb2-284" aria-hidden="true" tabindex="-1"></a><span class="va">bfile</span><span class="op">=</span>../gen/geno-mix-maf.001</span>
+<span id="cb2-285"><a href="inflation-overliner2_j.html#cb2-285" aria-hidden="true" tabindex="-1"></a><span class="va">n</span><span class="op">=</span><span class="va">(</span>0k 1k 2k 3k 4k 5k 6k<span class="va">)</span></span>
+<span id="cb2-286"><a href="inflation-overliner2_j.html#cb2-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-287"><a href="inflation-overliner2_j.html#cb2-287" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{awake</span><span class="op">,</span><span class="dt">bmi</span><span class="op">,</span><span class="dt">chron</span><span class="op">,</span><span class="dt">ever</span><span class="op">,</span><span class="dt">fvc</span><span class="op">,</span><span class="dt">height</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">neur</span><span class="op">,</span><span class="dt">pulse</span><span class="op">,</span><span class="dt">quals</span><span class="op">,</span><span class="dt">reaction</span><span class="op">,</span><span class="dt">sbp</span><span class="op">,</span><span class="dt">snoring</span><span class="op">,</span><span class="dt">hyper}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-288"><a href="inflation-overliner2_j.html#cb2-288" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">0</span><span class="dt">..</span><span class="dv">6</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-289"><a href="inflation-overliner2_j.html#cb2-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-290"><a href="inflation-overliner2_j.html#cb2-290" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>../gwas-mix-<span class="va">${n</span><span class="op">[</span><span class="va">$j</span><span class="op">]</span><span class="va">}</span>-noneuro/maf<span class="va">$maf</span>/<span class="va">$i</span>-linear</span>
+<span id="cb2-291"><a href="inflation-overliner2_j.html#cb2-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-292"><a href="inflation-overliner2_j.html#cb2-292" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$j</span> <span class="ot">==</span> 1 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-293"><a href="inflation-overliner2_j.html#cb2-293" aria-hidden="true" tabindex="-1"></a>  <span class="va">id</span><span class="op">=</span>../rand.100000</span>
+<span id="cb2-294"><a href="inflation-overliner2_j.html#cb2-294" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb2-295"><a href="inflation-overliner2_j.html#cb2-295" aria-hidden="true" tabindex="-1"></a>  <span class="va">id</span><span class="op">=</span>../mix-pop-gwas-<span class="va">${n</span><span class="op">[</span><span class="va">$j</span><span class="op">]</span><span class="va">}</span>-noneuro.id</span>
+<span id="cb2-296"><a href="inflation-overliner2_j.html#cb2-296" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb2-297"><a href="inflation-overliner2_j.html#cb2-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-298"><a href="inflation-overliner2_j.html#cb2-298" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb2-299"><a href="inflation-overliner2_j.html#cb2-299" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb2-300"><a href="inflation-overliner2_j.html#cb2-300" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb2-301"><a href="inflation-overliner2_j.html#cb2-301" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 7G</span></span>
+<span id="cb2-302"><a href="inflation-overliner2_j.html#cb2-302" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 2</span></span>
+<span id="cb2-303"><a href="inflation-overliner2_j.html#cb2-303" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 01:30:0</span></span>
+<span id="cb2-304"><a href="inflation-overliner2_j.html#cb2-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-305"><a href="inflation-overliner2_j.html#cb2-305" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --linear </span><span class="va">$out</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb2-306"><a href="inflation-overliner2_j.html#cb2-306" aria-hidden="true" tabindex="-1"></a><span class="st">          --pheno ../phen/continuous-traits/</span><span class="va">$i</span><span class="st">.raw.pheno </span><span class="dt">\</span></span>
+<span id="cb2-307"><a href="inflation-overliner2_j.html#cb2-307" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile </span><span class="va">$bfile</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb2-308"><a href="inflation-overliner2_j.html#cb2-308" aria-hidden="true" tabindex="-1"></a><span class="st">          --covar ../phen/basic-covariates.use </span><span class="dt">\</span></span>
+<span id="cb2-309"><a href="inflation-overliner2_j.html#cb2-309" aria-hidden="true" tabindex="-1"></a><span class="st">          --keep </span><span class="va">$id</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb2-310"><a href="inflation-overliner2_j.html#cb2-310" aria-hidden="true" tabindex="-1"></a><span class="st">          --extract ../gen/snps-unrel-maf</span><span class="va">$maf</span><span class="st">.use </span><span class="dt">\</span></span>
+<span id="cb2-311"><a href="inflation-overliner2_j.html#cb2-311" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 2</span></span>
+<span id="cb2-312"><a href="inflation-overliner2_j.html#cb2-312" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/<span class="va">$i</span>-linear-<span class="va">${n</span><span class="op">[</span><span class="va">$j</span><span class="op">]</span><span class="va">}</span>-noneuro-maf-<span class="va">$maf</span>.sh</span>
+<span id="cb2-313"><a href="inflation-overliner2_j.html#cb2-313" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-314"><a href="inflation-overliner2_j.html#cb2-314" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-315"><a href="inflation-overliner2_j.html#cb2-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-316"><a href="inflation-overliner2_j.html#cb2-316" aria-hidden="true" tabindex="-1"></a><span class="co"># submit files------------------------------------------------------------------</span></span>
+<span id="cb2-317"><a href="inflation-overliner2_j.html#cb2-317" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>.001</span>
+<span id="cb2-318"><a href="inflation-overliner2_j.html#cb2-318" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{awake</span><span class="op">,</span><span class="dt">bmi</span><span class="op">,</span><span class="dt">chron</span><span class="op">,</span><span class="dt">ever</span><span class="op">,</span><span class="dt">fvc</span><span class="op">,</span><span class="dt">height</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">neur</span><span class="op">,</span><span class="dt">pulse</span><span class="op">,</span><span class="dt">quals</span><span class="op">,</span><span class="dt">reaction</span><span class="op">,</span><span class="dt">sbp</span><span class="op">,</span><span class="dt">snoring</span><span class="op">,</span><span class="dt">hyper}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-319"><a href="inflation-overliner2_j.html#cb2-319" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="dt">{0k</span><span class="op">,</span><span class="dt">1k</span><span class="op">,</span><span class="dt">2k</span><span class="op">,</span><span class="dt">3k</span><span class="op">,</span><span class="dt">4k</span><span class="op">,</span><span class="dt">5k</span><span class="op">,</span><span class="dt">6k}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-320"><a href="inflation-overliner2_j.html#cb2-320" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/<span class="va">$i</span>-linear-<span class="va">$n</span>-noneuro-maf-<span class="va">$maf</span>.sh</span>
+<span id="cb2-321"><a href="inflation-overliner2_j.html#cb2-321" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-322"><a href="inflation-overliner2_j.html#cb2-322" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span><span class="op">&gt;</span>../job-records/bad-gwas</span>
+<span id="cb2-323"><a href="inflation-overliner2_j.html#cb2-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-324"><a href="inflation-overliner2_j.html#cb2-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-325"><a href="inflation-overliner2_j.html#cb2-325" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-326"><a href="inflation-overliner2_j.html#cb2-326" aria-hidden="true" tabindex="-1"></a><span class="co">#  compute ave r^2_j</span></span>
+<span id="cb2-327"><a href="inflation-overliner2_j.html#cb2-327" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-328"><a href="inflation-overliner2_j.html#cb2-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-329"><a href="inflation-overliner2_j.html#cb2-329" aria-hidden="true" tabindex="-1"></a><span class="co"># create snp lists--------------------------------------------------------------</span></span>
+<span id="cb2-330"><a href="inflation-overliner2_j.html#cb2-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-331"><a href="inflation-overliner2_j.html#cb2-331" aria-hidden="true" tabindex="-1"></a><span class="co"># note: we do this for three snp lists</span></span>
+<span id="cb2-332"><a href="inflation-overliner2_j.html#cb2-332" aria-hidden="true" tabindex="-1"></a><span class="co"># maf &gt; 0.1 : 856,746 gen/snps-unrel-maf.1.use</span></span>
+<span id="cb2-333"><a href="inflation-overliner2_j.html#cb2-333" aria-hidden="true" tabindex="-1"></a><span class="co"># maf &gt; 0.01 : 1,103,209 gen/snps-unrel-maf.01.use</span></span>
+<span id="cb2-334"><a href="inflation-overliner2_j.html#cb2-334" aria-hidden="true" tabindex="-1"></a><span class="co"># maf &gt; 0.001 : 1,111,494 gen/snps-unrel-maf.001.use</span></span>
+<span id="cb2-335"><a href="inflation-overliner2_j.html#cb2-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-336"><a href="inflation-overliner2_j.html#cb2-336" aria-hidden="true" tabindex="-1"></a><span class="va">m</span><span class="op">=</span>10000</span>
+<span id="cb2-337"><a href="inflation-overliner2_j.html#cb2-337" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>10k</span>
+<span id="cb2-338"><a href="inflation-overliner2_j.html#cb2-338" aria-hidden="true" tabindex="-1"></a><span class="va">dir1</span><span class="op">=</span>gen</span>
+<span id="cb2-339"><a href="inflation-overliner2_j.html#cb2-339" aria-hidden="true" tabindex="-1"></a><span class="va">dir2</span><span class="op">=</span>inflation</span>
+<span id="cb2-340"><a href="inflation-overliner2_j.html#cb2-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-341"><a href="inflation-overliner2_j.html#cb2-341" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{.1</span><span class="op">,</span><span class="dt">.01</span><span class="op">,</span><span class="dt">.001}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-342"><a href="inflation-overliner2_j.html#cb2-342" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{split($1, a, &quot;:&quot;); if (a[1]&lt;8) print $1 }&#39;</span> <span class="va">$dir1</span>/snps-unrel-maf<span class="va">$i</span>.use <span class="kw">|</span> <span class="ex">shuf</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> <span class="va">$m</span> <span class="op">&gt;</span><span class="va">$dir2</span>/left-snps-unrel-maf<span class="va">$i</span>-<span class="va">$nm</span>  </span>
+<span id="cb2-343"><a href="inflation-overliner2_j.html#cb2-343" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{split($1, a, &quot;:&quot;); if (a[1]&gt;=8) print $1 }&#39;</span> <span class="va">$dir1</span>/snps-unrel-maf<span class="va">$i</span>.use <span class="kw">|</span> <span class="ex">shuf</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> <span class="va">$m</span> <span class="op">&gt;</span><span class="va">$dir2</span>/right-snps-unrel-maf<span class="va">$i</span>-<span class="va">$nm</span></span>
+<span id="cb2-344"><a href="inflation-overliner2_j.html#cb2-344" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-345"><a href="inflation-overliner2_j.html#cb2-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-346"><a href="inflation-overliner2_j.html#cb2-346" aria-hidden="true" tabindex="-1"></a><span class="co"># compute r_ij using ldak -------------------------------------------------------</span></span>
+<span id="cb2-347"><a href="inflation-overliner2_j.html#cb2-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-348"><a href="inflation-overliner2_j.html#cb2-348" aria-hidden="true" tabindex="-1"></a><span class="va">n</span><span class="op">=</span><span class="va">(</span>0k 1k 2k 3k 4k 5k 6k<span class="va">)</span></span>
+<span id="cb2-349"><a href="inflation-overliner2_j.html#cb2-349" aria-hidden="true" tabindex="-1"></a><span class="va">indir</span><span class="op">=</span>../inflation</span>
+<span id="cb2-350"><a href="inflation-overliner2_j.html#cb2-350" aria-hidden="true" tabindex="-1"></a><span class="va">outdir</span><span class="op">=</span>../inflation/out</span>
+<span id="cb2-351"><a href="inflation-overliner2_j.html#cb2-351" aria-hidden="true" tabindex="-1"></a><span class="va">bfile</span><span class="op">=</span>../gen/geno-mix-maf.001</span>
+<span id="cb2-352"><a href="inflation-overliner2_j.html#cb2-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-353"><a href="inflation-overliner2_j.html#cb2-353" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">0</span><span class="dt">..</span><span class="dv">6</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-354"><a href="inflation-overliner2_j.html#cb2-354" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{.1</span><span class="op">,</span><span class="dt">.01</span><span class="op">,</span><span class="dt">.001}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-355"><a href="inflation-overliner2_j.html#cb2-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-356"><a href="inflation-overliner2_j.html#cb2-356" aria-hidden="true" tabindex="-1"></a><span class="co"># define vars</span></span>
+<span id="cb2-357"><a href="inflation-overliner2_j.html#cb2-357" aria-hidden="true" tabindex="-1"></a><span class="va">lista</span><span class="op">=</span><span class="va">$indir</span>/right-snps-unrel-maf<span class="va">$i</span>-10k</span>
+<span id="cb2-358"><a href="inflation-overliner2_j.html#cb2-358" aria-hidden="true" tabindex="-1"></a><span class="va">listb</span><span class="op">=</span><span class="va">$indir</span>/left-snps-unrel-maf<span class="va">$i</span>-10k</span>
+<span id="cb2-359"><a href="inflation-overliner2_j.html#cb2-359" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span><span class="va">$outdir</span>/10k-snps-mix-pop-gwas-<span class="va">${n</span><span class="op">[</span><span class="va">$j</span><span class="op">]</span><span class="va">}</span>-noneuro-maf<span class="va">$i</span></span>
+<span id="cb2-360"><a href="inflation-overliner2_j.html#cb2-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-361"><a href="inflation-overliner2_j.html#cb2-361" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$j</span> <span class="ot">==</span> 0 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-362"><a href="inflation-overliner2_j.html#cb2-362" aria-hidden="true" tabindex="-1"></a>  <span class="va">id</span><span class="op">=</span>../rand.100000</span>
+<span id="cb2-363"><a href="inflation-overliner2_j.html#cb2-363" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span> </span>
+<span id="cb2-364"><a href="inflation-overliner2_j.html#cb2-364" aria-hidden="true" tabindex="-1"></a>  <span class="va">id</span><span class="op">=</span>../mix-pop-gwas-<span class="va">${n</span><span class="op">[</span><span class="va">$j</span><span class="op">]</span><span class="va">}</span>-noneuro.id</span>
+<span id="cb2-365"><a href="inflation-overliner2_j.html#cb2-365" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb2-366"><a href="inflation-overliner2_j.html#cb2-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-367"><a href="inflation-overliner2_j.html#cb2-367" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb2-368"><a href="inflation-overliner2_j.html#cb2-368" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb2-369"><a href="inflation-overliner2_j.html#cb2-369" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb2-370"><a href="inflation-overliner2_j.html#cb2-370" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb2-371"><a href="inflation-overliner2_j.html#cb2-371" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb2-372"><a href="inflation-overliner2_j.html#cb2-372" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 2:00:0</span></span>
+<span id="cb2-373"><a href="inflation-overliner2_j.html#cb2-373" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb2-374"><a href="inflation-overliner2_j.html#cb2-374" aria-hidden="true" tabindex="-1"></a><span class="st">          --calc-inflation </span><span class="va">$out</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb2-375"><a href="inflation-overliner2_j.html#cb2-375" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile </span><span class="va">$bfile</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb2-376"><a href="inflation-overliner2_j.html#cb2-376" aria-hidden="true" tabindex="-1"></a><span class="st">          --keep </span><span class="va">$id</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb2-377"><a href="inflation-overliner2_j.html#cb2-377" aria-hidden="true" tabindex="-1"></a><span class="st">          --lista </span><span class="va">$lista</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb2-378"><a href="inflation-overliner2_j.html#cb2-378" aria-hidden="true" tabindex="-1"></a><span class="st">          --listb </span><span class="va">$listb</span></span>
+<span id="cb2-379"><a href="inflation-overliner2_j.html#cb2-379" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-r-10k-snps-mix-pop-gwas-<span class="va">${n</span><span class="op">[</span><span class="va">$j</span><span class="op">]</span><span class="va">}</span>-noneuro-maf<span class="va">$i</span></span>
+<span id="cb2-380"><a href="inflation-overliner2_j.html#cb2-380" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-381"><a href="inflation-overliner2_j.html#cb2-381" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-382"><a href="inflation-overliner2_j.html#cb2-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-383"><a href="inflation-overliner2_j.html#cb2-383" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb2-384"><a href="inflation-overliner2_j.html#cb2-384" aria-hidden="true" tabindex="-1"></a><span class="va">n</span><span class="op">=</span><span class="va">(</span>0k 1k 2k 3k 4k 5k 6k<span class="va">)</span></span>
+<span id="cb2-385"><a href="inflation-overliner2_j.html#cb2-385" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">0</span><span class="dt">..</span><span class="dv">6</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-386"><a href="inflation-overliner2_j.html#cb2-386" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{.1</span><span class="op">,</span><span class="dt">.01</span><span class="op">,</span><span class="dt">.001}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-387"><a href="inflation-overliner2_j.html#cb2-387" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-r-10k-snps-mix-pop-gwas-<span class="va">${n</span><span class="op">[</span><span class="va">$j</span><span class="op">]</span><span class="va">}</span>-noneuro-maf<span class="va">$i</span></span>
+<span id="cb2-388"><a href="inflation-overliner2_j.html#cb2-388" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-389"><a href="inflation-overliner2_j.html#cb2-389" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span><span class="op">&gt;</span>../job-records/calc-r</span>
+<span id="cb2-390"><a href="inflation-overliner2_j.html#cb2-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-391"><a href="inflation-overliner2_j.html#cb2-391" aria-hidden="true" tabindex="-1"></a><span class="co">#  compute ave r_j^2 for each i-------------------------------------------------</span></span>
+<span id="cb2-392"><a href="inflation-overliner2_j.html#cb2-392" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span></span>
+<span id="cb2-393"><a href="inflation-overliner2_j.html#cb2-393" aria-hidden="true" tabindex="-1"></a><span class="ex">require</span><span class="er">(</span><span class="ex">vroom</span><span class="kw">)</span></span>
+<span id="cb2-394"><a href="inflation-overliner2_j.html#cb2-394" aria-hidden="true" tabindex="-1"></a><span class="va">n</span><span class="op">=</span>c<span class="kw">(</span><span class="st">&quot;0k&quot;</span><span class="ex">,</span><span class="st">&quot;1k&quot;</span><span class="ex">,</span> <span class="st">&quot;2k&quot;</span>, <span class="st">&quot;3k&quot;</span>, <span class="st">&quot;4k&quot;</span>, <span class="st">&quot;5k&quot;</span>, <span class="st">&quot;6k&quot;</span><span class="kw">)</span></span>
+<span id="cb2-395"><a href="inflation-overliner2_j.html#cb2-395" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>c<span class="kw">(</span><span class="st">&quot;.1&quot;</span><span class="ex">,</span><span class="st">&quot;.01&quot;</span><span class="ex">,</span><span class="st">&quot;.001&quot;</span><span class="kw">)</span></span>
+<span id="cb2-396"><a href="inflation-overliner2_j.html#cb2-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-397"><a href="inflation-overliner2_j.html#cb2-397" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span><span class="kw">(</span><span class="ex">j</span> in 1:length<span class="er">(</span><span class="ex">maf</span><span class="kw">)){</span></span>
+<span id="cb2-398"><a href="inflation-overliner2_j.html#cb2-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-399"><a href="inflation-overliner2_j.html#cb2-399" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span><span class="kw">(</span><span class="ex">i</span> in 1:length<span class="er">(</span><span class="ex">n</span><span class="kw">)){</span></span>
+<span id="cb2-400"><a href="inflation-overliner2_j.html#cb2-400" aria-hidden="true" tabindex="-1"></a>    <span class="va">nm</span><span class="op">=</span>paste0<span class="kw">(</span><span class="st">&quot;10k-snps-mix-pop-gwas-&quot;</span><span class="ex">,n[i],</span><span class="st">&quot;-noneuro-maf&quot;</span><span class="ex">,maf[j]</span><span class="kw">)</span></span>
+<span id="cb2-401"><a href="inflation-overliner2_j.html#cb2-401" aria-hidden="true" tabindex="-1"></a>    <span class="va">dat</span><span class="op">=</span>vroom<span class="kw">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">&quot;inflation/out/&quot;</span><span class="ex">,nm,</span><span class="st">&quot;.pairwise&quot;</span><span class="kw">)</span><span class="ex">,</span> col_names=F<span class="kw">)</span></span>
+<span id="cb2-402"><a href="inflation-overliner2_j.html#cb2-402" aria-hidden="true" tabindex="-1"></a>    <span class="va">lista</span><span class="op">=</span>read.table<span class="kw">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">&quot;inflation/out/&quot;</span><span class="ex">,nm,</span><span class="st">&quot;.predictorsa&quot;</span><span class="kw">)</span><span class="ex">,</span> stringsAsFactors = F<span class="kw">)</span></span>
+<span id="cb2-403"><a href="inflation-overliner2_j.html#cb2-403" aria-hidden="true" tabindex="-1"></a>    <span class="va">listb</span><span class="op">=</span>read.table<span class="kw">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">&quot;inflation/out/&quot;</span><span class="ex">,nm,</span><span class="st">&quot;.predictorsb&quot;</span><span class="kw">)</span><span class="ex">,</span> stringsAsFactors = F<span class="kw">)</span></span>
+<span id="cb2-404"><a href="inflation-overliner2_j.html#cb2-404" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-405"><a href="inflation-overliner2_j.html#cb2-405" aria-hidden="true" tabindex="-1"></a>    <span class="va">dat</span><span class="op">=</span>dat[,-c<span class="kw">(</span><span class="ex">10001</span><span class="kw">)</span><span class="ex">]^2</span></span>
+<span id="cb2-406"><a href="inflation-overliner2_j.html#cb2-406" aria-hidden="true" tabindex="-1"></a>    <span class="va">outb</span><span class="op">=</span>data.frame<span class="kw">(</span><span class="va">predictor</span><span class="op">=</span>listb<span class="va">$V1</span>, <span class="va">ave_r2</span><span class="op">=</span>apply<span class="kw">(</span><span class="ex">dat,2,</span> mean<span class="kw">))</span></span>
+<span id="cb2-407"><a href="inflation-overliner2_j.html#cb2-407" aria-hidden="true" tabindex="-1"></a>    <span class="va">outa</span><span class="op">=</span>data.frame<span class="kw">(</span><span class="va">predictor</span><span class="op">=</span>lista<span class="va">$V1</span>, <span class="va">ave_r2</span><span class="op">=</span>apply<span class="kw">(</span><span class="ex">dat,1,</span> mean<span class="kw">))</span></span>
+<span id="cb2-408"><a href="inflation-overliner2_j.html#cb2-408" aria-hidden="true" tabindex="-1"></a>    <span class="va">out</span><span class="op">=</span>rbind<span class="kw">(</span><span class="ex">outa,outb</span><span class="kw">)</span></span>
+<span id="cb2-409"><a href="inflation-overliner2_j.html#cb2-409" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-410"><a href="inflation-overliner2_j.html#cb2-410" aria-hidden="true" tabindex="-1"></a>    <span class="ex">write.table</span><span class="er">(</span><span class="ex">out,paste0</span><span class="er">(</span><span class="st">&quot;summary/ave-r2-&quot;</span><span class="ex">,nm</span><span class="kw">)</span><span class="ex">,</span> col.names=F, row.names=F, quote=F<span class="kw">)</span>  </span>
+<span id="cb2-411"><a href="inflation-overliner2_j.html#cb2-411" aria-hidden="true" tabindex="-1"></a>  <span class="kw">}</span></span>
+<span id="cb2-412"><a href="inflation-overliner2_j.html#cb2-412" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb2-413"><a href="inflation-overliner2_j.html#cb2-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-414"><a href="inflation-overliner2_j.html#cb2-414" aria-hidden="true" tabindex="-1"></a><span class="co"># convert to rs system ---------------------------------------------------------</span></span>
+<span id="cb2-415"><a href="inflation-overliner2_j.html#cb2-415" aria-hidden="true" tabindex="-1"></a><span class="va">n</span><span class="op">=</span><span class="va">(</span>0k 1k 2k 3k 4k 5k 6k<span class="va">)</span></span>
+<span id="cb2-416"><a href="inflation-overliner2_j.html#cb2-416" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">0</span><span class="dt">..</span><span class="dv">6</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-417"><a href="inflation-overliner2_j.html#cb2-417" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{.1</span><span class="op">,</span><span class="dt">.01</span><span class="op">,</span><span class="dt">.001}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-418"><a href="inflation-overliner2_j.html#cb2-418" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}&#39;</span> doug/ukbb.ldsc summary/ave-r2-10k-snps-mix-pop-gwas-<span class="va">${n</span><span class="op">[</span><span class="va">$j</span><span class="op">]</span><span class="va">}</span>-noneuro-maf<span class="va">$i</span> <span class="op">&gt;</span> summary/ave-r2-10k-snps-mix-pop-gwas-<span class="va">${n</span><span class="op">[</span><span class="va">$j</span><span class="op">]</span><span class="va">}</span>-noneuro-maf<span class="va">$i</span>-rs</span>
+<span id="cb2-419"><a href="inflation-overliner2_j.html#cb2-419" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-420"><a href="inflation-overliner2_j.html#cb2-420" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-421"><a href="inflation-overliner2_j.html#cb2-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-422"><a href="inflation-overliner2_j.html#cb2-422" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-423"><a href="inflation-overliner2_j.html#cb2-423" aria-hidden="true" tabindex="-1"></a><span class="co"># extract LD score</span></span>
+<span id="cb2-424"><a href="inflation-overliner2_j.html#cb2-424" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-425"><a href="inflation-overliner2_j.html#cb2-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-426"><a href="inflation-overliner2_j.html#cb2-426" aria-hidden="true" tabindex="-1"></a><span class="co"># convert snp list to rs system ------------------------------------------------</span></span>
+<span id="cb2-427"><a href="inflation-overliner2_j.html#cb2-427" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}&#39;</span> doug/ukbb.ldsc gen/snps-unrel-maf.001.use <span class="op">&gt;</span> gen/snps-unrel-maf.001.use-rs</span>
+<span id="cb2-428"><a href="inflation-overliner2_j.html#cb2-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-429"><a href="inflation-overliner2_j.html#cb2-429" aria-hidden="true" tabindex="-1"></a><span class="co">#  extract ld scores -----------------------------------------------------------</span></span>
+<span id="cb2-430"><a href="inflation-overliner2_j.html#cb2-430" aria-hidden="true" tabindex="-1"></a><span class="va">dir</span><span class="op">=</span>ldsc/eur_w_ld_chr</span>
+<span id="cb2-431"><a href="inflation-overliner2_j.html#cb2-431" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> chrom <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-432"><a href="inflation-overliner2_j.html#cb2-432" aria-hidden="true" tabindex="-1"></a><span class="fu">zcat</span> <span class="va">$dir</span>/<span class="va">$chrom</span>.l2.ldscore.gz <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;NR&gt;1 {print $2, $6}&#39;</span> <span class="op">&gt;</span> ldscore</span>
+<span id="cb2-433"><a href="inflation-overliner2_j.html#cb2-433" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$1];next}($1 in a){print $0}&#39;</span> gen/snps-unrel-maf.001.use-rs ldscore <span class="op">&gt;</span> temp</span>
+<span id="cb2-434"><a href="inflation-overliner2_j.html#cb2-434" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$chrom</span> <span class="ot">-eq</span> 1 <span class="bu">]</span></span>
+<span id="cb2-435"><a href="inflation-overliner2_j.html#cb2-435" aria-hidden="true" tabindex="-1"></a><span class="cf">then</span> </span>
+<span id="cb2-436"><a href="inflation-overliner2_j.html#cb2-436" aria-hidden="true" tabindex="-1"></a> <span class="fu">mv</span> temp snps-unrel-maf.001.ldscore</span>
+<span id="cb2-437"><a href="inflation-overliner2_j.html#cb2-437" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb2-438"><a href="inflation-overliner2_j.html#cb2-438" aria-hidden="true" tabindex="-1"></a> <span class="fu">cat</span> snps-unrel-maf.001.ldscore temp <span class="op">&gt;</span> temp2</span>
+<span id="cb2-439"><a href="inflation-overliner2_j.html#cb2-439" aria-hidden="true" tabindex="-1"></a> <span class="fu">mv</span> temp2 snps-unrel-maf.001.ldscore</span>
+<span id="cb2-440"><a href="inflation-overliner2_j.html#cb2-440" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb2-441"><a href="inflation-overliner2_j.html#cb2-441" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$chrom</span></span>
+<span id="cb2-442"><a href="inflation-overliner2_j.html#cb2-442" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-443"><a href="inflation-overliner2_j.html#cb2-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-444"><a href="inflation-overliner2_j.html#cb2-444" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-445"><a href="inflation-overliner2_j.html#cb2-445" aria-hidden="true" tabindex="-1"></a><span class="co">#  put info together</span></span>
+<span id="cb2-446"><a href="inflation-overliner2_j.html#cb2-446" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb2-447"><a href="inflation-overliner2_j.html#cb2-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-448"><a href="inflation-overliner2_j.html#cb2-448" aria-hidden="true" tabindex="-1"></a><span class="co"># INFO: gen/info rand.100000-qced.afreq </span></span>
+<span id="cb2-449"><a href="inflation-overliner2_j.html#cb2-449" aria-hidden="true" tabindex="-1"></a><span class="co"># maf: gen/geno-mix-maf.001.stats</span></span>
+<span id="cb2-450"><a href="inflation-overliner2_j.html#cb2-450" aria-hidden="true" tabindex="-1"></a><span class="co"># chi square : trait-linear.summaries</span></span>
+<span id="cb2-451"><a href="inflation-overliner2_j.html#cb2-451" aria-hidden="true" tabindex="-1"></a><span class="co"># ave r^2_j: e.g, summary/ave-r2-10k-snps-mix-pop-gwas-$i-noneuro-maf$j</span></span>
+<span id="cb2-452"><a href="inflation-overliner2_j.html#cb2-452" aria-hidden="true" tabindex="-1"></a><span class="co"># ld score from ldsc ref panel: snps-unrel-maf.001.ldscore; in rs</span></span>
+<span id="cb2-453"><a href="inflation-overliner2_j.html#cb2-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-454"><a href="inflation-overliner2_j.html#cb2-454" aria-hidden="true" tabindex="-1"></a><span class="co"># required files</span></span>
+<span id="cb2-455"><a href="inflation-overliner2_j.html#cb2-455" aria-hidden="true" tabindex="-1"></a><span class="va">maf</span><span class="op">=</span>gen/geno-mix-maf.001.stats <span class="co"># use as the snp list to integrate all info</span></span>
+<span id="cb2-456"><a href="inflation-overliner2_j.html#cb2-456" aria-hidden="true" tabindex="-1"></a><span class="va">info</span><span class="op">=</span>gen/info/rand.100000-qced.afreq</span>
+<span id="cb2-457"><a href="inflation-overliner2_j.html#cb2-457" aria-hidden="true" tabindex="-1"></a><span class="va">rs</span><span class="op">=</span>doug/ukbb.ldsc</span>
+<span id="cb2-458"><a href="inflation-overliner2_j.html#cb2-458" aria-hidden="true" tabindex="-1"></a><span class="va">ldsc</span><span class="op">=</span>snps-unrel-maf.001.ldscore</span>
+<span id="cb2-459"><a href="inflation-overliner2_j.html#cb2-459" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-460"><a href="inflation-overliner2_j.html#cb2-460" aria-hidden="true" tabindex="-1"></a><span class="co"># temporary files</span></span>
+<span id="cb2-461"><a href="inflation-overliner2_j.html#cb2-461" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR &gt; 1 {print $1, $5 }&#39;</span> <span class="va">$maf</span> <span class="op">&gt;</span> tmp/maf.tmp</span>
+<span id="cb2-462"><a href="inflation-overliner2_j.html#cb2-462" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR==FNR {a[$2]; b[$2]=$6; next} </span></span>
+<span id="cb2-463"><a href="inflation-overliner2_j.html#cb2-463" aria-hidden="true" tabindex="-1"></a><span class="st">              {if ($1 in a) print b[$1] ;</span></span>
+<span id="cb2-464"><a href="inflation-overliner2_j.html#cb2-464" aria-hidden="true" tabindex="-1"></a><span class="st">               else print &quot;NA&quot;}&#39;</span> <span class="va">$info</span> tmp/maf.tmp  <span class="op">&gt;</span> tmp/info.tmp</span>
+<span id="cb2-465"><a href="inflation-overliner2_j.html#cb2-465" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR==FNR {a[$2]; b[$2]=$1; next} ($1 in a) {print b[$1], $0}&#39;</span> <span class="va">$rs</span> <span class="va">$ldsc</span> <span class="op">&gt;</span> tmp/ldsc.tmp1</span>
+<span id="cb2-466"><a href="inflation-overliner2_j.html#cb2-466" aria-hidden="true" tabindex="-1"></a><span class="co"># here we make sure the order of the rows are the same as maf.tmp</span></span>
+<span id="cb2-467"><a href="inflation-overliner2_j.html#cb2-467" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR==FNR {a[$1]; b[$1]=$2; c[$1]=$3 ; next} </span></span>
+<span id="cb2-468"><a href="inflation-overliner2_j.html#cb2-468" aria-hidden="true" tabindex="-1"></a><span class="st">     {if ($1 in a) print b[$1], c[$1];</span></span>
+<span id="cb2-469"><a href="inflation-overliner2_j.html#cb2-469" aria-hidden="true" tabindex="-1"></a><span class="st">      else print &quot;NA&quot;}&#39;</span> tmp/ldsc.tmp1 tmp/maf.tmp <span class="op">&gt;</span> tmp/ldsc.tmp</span>
+<span id="cb2-470"><a href="inflation-overliner2_j.html#cb2-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-471"><a href="inflation-overliner2_j.html#cb2-471" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> trait <span class="kw">in</span> <span class="dt">{awake</span><span class="op">,</span><span class="dt">bmi</span><span class="op">,</span><span class="dt">chron</span><span class="op">,</span><span class="dt">ever</span><span class="op">,</span><span class="dt">fvc</span><span class="op">,</span><span class="dt">height</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">neur</span><span class="op">,</span><span class="dt">pulse</span><span class="op">,</span><span class="dt">quals</span><span class="op">,</span><span class="dt">reaction</span><span class="op">,</span><span class="dt">sbp</span><span class="op">,</span><span class="dt">snoring</span><span class="op">,</span><span class="dt">hyper}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-472"><a href="inflation-overliner2_j.html#cb2-472" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> <span class="dt">{0k</span><span class="op">,</span><span class="dt">1k</span><span class="op">,</span><span class="dt">2k</span><span class="op">,</span><span class="dt">3k</span><span class="op">,</span><span class="dt">4k</span><span class="op">,</span><span class="dt">5k</span><span class="op">,</span><span class="dt">6k}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-473"><a href="inflation-overliner2_j.html#cb2-473" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{.1</span><span class="op">,</span><span class="dt">.01</span><span class="op">,</span><span class="dt">.001}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-474"><a href="inflation-overliner2_j.html#cb2-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-475"><a href="inflation-overliner2_j.html#cb2-475" aria-hidden="true" tabindex="-1"></a><span class="co"># define files</span></span>
+<span id="cb2-476"><a href="inflation-overliner2_j.html#cb2-476" aria-hidden="true" tabindex="-1"></a><span class="va">gwas</span><span class="op">=</span>gwas-mix-<span class="va">$n</span>-noneuro/maf<span class="va">$j</span>/<span class="va">$trait</span>-linear.summaries</span>
+<span id="cb2-477"><a href="inflation-overliner2_j.html#cb2-477" aria-hidden="true" tabindex="-1"></a><span class="va">aver2</span><span class="op">=</span>summary/ave-r2-10k-snps-mix-pop-gwas-<span class="va">$n</span>-noneuro-maf<span class="va">$j</span></span>
+<span id="cb2-478"><a href="inflation-overliner2_j.html#cb2-478" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>gwas-mix-all-out/<span class="va">$trait</span>-mix-pop-gwas-<span class="va">$n</span>-noneuro-maf<span class="va">$j</span>.out</span>
+<span id="cb2-479"><a href="inflation-overliner2_j.html#cb2-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-480"><a href="inflation-overliner2_j.html#cb2-480" aria-hidden="true" tabindex="-1"></a><span class="co"># create temporary files</span></span>
+<span id="cb2-481"><a href="inflation-overliner2_j.html#cb2-481" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR==FNR {a[$1]; b[$1]=$2; next} </span></span>
+<span id="cb2-482"><a href="inflation-overliner2_j.html#cb2-482" aria-hidden="true" tabindex="-1"></a><span class="st">     {if ($1 in a) print b[$1]; </span></span>
+<span id="cb2-483"><a href="inflation-overliner2_j.html#cb2-483" aria-hidden="true" tabindex="-1"></a><span class="st">     else print &quot;NA&quot; }&#39;</span> <span class="va">$aver2</span> tmp/maf.tmp <span class="op">&gt;</span> tmp/aver2.tmp</span>
+<span id="cb2-484"><a href="inflation-overliner2_j.html#cb2-484" aria-hidden="true" tabindex="-1"></a>     </span>
+<span id="cb2-485"><a href="inflation-overliner2_j.html#cb2-485" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR==FNR {a[$1]; b[$1]=$5; next} </span></span>
+<span id="cb2-486"><a href="inflation-overliner2_j.html#cb2-486" aria-hidden="true" tabindex="-1"></a><span class="st">     {if ($1 in a) print b[$1]; </span></span>
+<span id="cb2-487"><a href="inflation-overliner2_j.html#cb2-487" aria-hidden="true" tabindex="-1"></a><span class="st">     else print &quot;NA&quot; }&#39;</span> <span class="va">$gwas</span> tmp/maf.tmp <span class="op">&gt;</span> tmp/gwas.tmp     </span>
+<span id="cb2-488"><a href="inflation-overliner2_j.html#cb2-488" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-489"><a href="inflation-overliner2_j.html#cb2-489" aria-hidden="true" tabindex="-1"></a><span class="co"># put info together</span></span>
+<span id="cb2-490"><a href="inflation-overliner2_j.html#cb2-490" aria-hidden="true" tabindex="-1"></a><span class="ex">paste</span> tmp/maf.tmp <span class="dt">\</span></span>
+<span id="cb2-491"><a href="inflation-overliner2_j.html#cb2-491" aria-hidden="true" tabindex="-1"></a>      tmp/info.tmp <span class="dt">\</span></span>
+<span id="cb2-492"><a href="inflation-overliner2_j.html#cb2-492" aria-hidden="true" tabindex="-1"></a>      tmp/gwas.tmp <span class="dt">\</span></span>
+<span id="cb2-493"><a href="inflation-overliner2_j.html#cb2-493" aria-hidden="true" tabindex="-1"></a>      tmp/aver2.tmp <span class="dt">\</span></span>
+<span id="cb2-494"><a href="inflation-overliner2_j.html#cb2-494" aria-hidden="true" tabindex="-1"></a>      tmp/ldsc.tmp <span class="dt">\</span></span>
+<span id="cb2-495"><a href="inflation-overliner2_j.html#cb2-495" aria-hidden="true" tabindex="-1"></a>      <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;BEGIN{OFS=&quot;;&quot;;print &quot;snp;maf;info;chisq;aver2;rs;ldsc&quot;}</span></span>
+<span id="cb2-496"><a href="inflation-overliner2_j.html#cb2-496" aria-hidden="true" tabindex="-1"></a><span class="st">              {$1=$1}1&#39;</span> <span class="op">&gt;</span> <span class="va">$out</span></span>
+<span id="cb2-497"><a href="inflation-overliner2_j.html#cb2-497" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-498"><a href="inflation-overliner2_j.html#cb2-498" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-499"><a href="inflation-overliner2_j.html#cb2-499" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+</div>
+<div id="results-summary" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> results summary</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="inflation-overliner2_j.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb3-2"><a href="inflation-overliner2_j.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot chisq ~ aver2_j</span></span>
+<span id="cb3-3"><a href="inflation-overliner2_j.html#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb3-4"><a href="inflation-overliner2_j.html#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="inflation-overliner2_j.html#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># function to plot a single trait---------------------------------------------------</span></span>
+<span id="cb3-6"><a href="inflation-overliner2_j.html#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="inflation-overliner2_j.html#cb3-7" aria-hidden="true" tabindex="-1"></a>make_plot<span class="ot">=</span><span class="cf">function</span>(trait, maf, n_noneuro){</span>
+<span id="cb3-8"><a href="inflation-overliner2_j.html#cb3-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-9"><a href="inflation-overliner2_j.html#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># define variables</span></span>
+<span id="cb3-10"><a href="inflation-overliner2_j.html#cb3-10" aria-hidden="true" tabindex="-1"></a>  n_noneuro<span class="ot">=</span>n_noneuro</span>
+<span id="cb3-11"><a href="inflation-overliner2_j.html#cb3-11" aria-hidden="true" tabindex="-1"></a>  trait<span class="ot">=</span>trait</span>
+<span id="cb3-12"><a href="inflation-overliner2_j.html#cb3-12" aria-hidden="true" tabindex="-1"></a>  maf<span class="ot">=</span>maf</span>
+<span id="cb3-13"><a href="inflation-overliner2_j.html#cb3-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-14"><a href="inflation-overliner2_j.html#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># define color</span></span>
+<span id="cb3-15"><a href="inflation-overliner2_j.html#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb3-16"><a href="inflation-overliner2_j.html#cb3-16" aria-hidden="true" tabindex="-1"></a>  qual_col_pals <span class="ot">=</span> brewer.pal.info[brewer.pal.info<span class="sc">$</span>category <span class="sc">==</span> <span class="st">&#39;qual&#39;</span>,]</span>
+<span id="cb3-17"><a href="inflation-overliner2_j.html#cb3-17" aria-hidden="true" tabindex="-1"></a>  col_vector <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">mapply</span>(brewer.pal, qual_col_pals<span class="sc">$</span>maxcolors, <span class="fu">rownames</span>(qual_col_pals)))</span>
+<span id="cb3-18"><a href="inflation-overliner2_j.html#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
+<span id="cb3-19"><a href="inflation-overliner2_j.html#cb3-19" aria-hidden="true" tabindex="-1"></a>  mycol<span class="ot">=</span><span class="fu">sample</span>(col_vector,<span class="dv">7</span>)</span>
+<span id="cb3-20"><a href="inflation-overliner2_j.html#cb3-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-21"><a href="inflation-overliner2_j.html#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot</span></span>
+<span id="cb3-22"><a href="inflation-overliner2_j.html#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">length</span>(n_noneuro)<span class="sc">:</span><span class="dv">1</span>){</span>
+<span id="cb3-23"><a href="inflation-overliner2_j.html#cb3-23" aria-hidden="true" tabindex="-1"></a>    n<span class="ot">=</span>n_noneuro[i]</span>
+<span id="cb3-24"><a href="inflation-overliner2_j.html#cb3-24" aria-hidden="true" tabindex="-1"></a>    file<span class="ot">=</span><span class="fu">paste0</span>(<span class="st">&quot;gwas-mix-all-out/&quot;</span>,trait,<span class="st">&quot;-mix-pop-gwas-&quot;</span>,n,</span>
+<span id="cb3-25"><a href="inflation-overliner2_j.html#cb3-25" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;-noneuro-maf&quot;</span>,maf,<span class="st">&quot;.out&quot;</span>)</span>
+<span id="cb3-26"><a href="inflation-overliner2_j.html#cb3-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-27"><a href="inflation-overliner2_j.html#cb3-27" aria-hidden="true" tabindex="-1"></a>    dat<span class="ot">=</span><span class="fu">vroom</span>(file, <span class="at">col_names=</span>T, <span class="at">delim=</span><span class="st">&quot;;&quot;</span>)</span>
+<span id="cb3-28"><a href="inflation-overliner2_j.html#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># bin a variable by quantile</span></span>
+<span id="cb3-29"><a href="inflation-overliner2_j.html#cb3-29" aria-hidden="true" tabindex="-1"></a>    cutoff<span class="ot">=</span><span class="fu">quantile</span>(dat<span class="sc">$</span>aver2, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.005</span>), <span class="at">na.rm=</span>T)</span>
+<span id="cb3-30"><a href="inflation-overliner2_j.html#cb3-30" aria-hidden="true" tabindex="-1"></a>    dat<span class="sc">$</span>bin<span class="ot">=</span><span class="fu">cut</span>(dat<span class="sc">$</span>aver2, <span class="at">breaks=</span>cutoff, <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb3-31"><a href="inflation-overliner2_j.html#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># average chisq by bin values</span></span>
+<span id="cb3-32"><a href="inflation-overliner2_j.html#cb3-32" aria-hidden="true" tabindex="-1"></a>    out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">chisq_ave=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>chisq,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean))</span>
+<span id="cb3-33"><a href="inflation-overliner2_j.html#cb3-33" aria-hidden="true" tabindex="-1"></a>    out<span class="sc">$</span>bin_val<span class="ot">=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>aver2,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean)</span>
+<span id="cb3-34"><a href="inflation-overliner2_j.html#cb3-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-35"><a href="inflation-overliner2_j.html#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(i<span class="sc">==</span><span class="fu">length</span>(n_noneuro)){</span>
+<span id="cb3-36"><a href="inflation-overliner2_j.html#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(out<span class="sc">$</span>bin_val, out<span class="sc">$</span>chisq_ave,</span>
+<span id="cb3-37"><a href="inflation-overliner2_j.html#cb3-37" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;ave r2&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;ave chisq&quot;</span>,</span>
+<span id="cb3-38"><a href="inflation-overliner2_j.html#cb3-38" aria-hidden="true" tabindex="-1"></a>         <span class="at">main=</span>trait, <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb3-39"><a href="inflation-overliner2_j.html#cb3-39" aria-hidden="true" tabindex="-1"></a>         <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span>mycol[i], <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb3-40"><a href="inflation-overliner2_j.html#cb3-40" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb3-41"><a href="inflation-overliner2_j.html#cb3-41" aria-hidden="true" tabindex="-1"></a>      <span class="fu">points</span>(out<span class="sc">$</span>bin_val, out<span class="sc">$</span>chisq_ave,</span>
+<span id="cb3-42"><a href="inflation-overliner2_j.html#cb3-42" aria-hidden="true" tabindex="-1"></a>           <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">bg=</span>mycol[i], <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb3-43"><a href="inflation-overliner2_j.html#cb3-43" aria-hidden="true" tabindex="-1"></a>    } <span class="co"># end of conditional statement</span></span>
+<span id="cb3-44"><a href="inflation-overliner2_j.html#cb3-44" aria-hidden="true" tabindex="-1"></a>  } <span class="co"># end of loop over n</span></span>
+<span id="cb3-45"><a href="inflation-overliner2_j.html#cb3-45" aria-hidden="true" tabindex="-1"></a>   <span class="co"># add a legend</span></span>
+<span id="cb3-46"><a href="inflation-overliner2_j.html#cb3-46" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-47"><a href="inflation-overliner2_j.html#cb3-47" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span>(trait<span class="sc">==</span><span class="st">&quot;awake&quot;</span>){</span>
+<span id="cb3-48"><a href="inflation-overliner2_j.html#cb3-48" aria-hidden="true" tabindex="-1"></a>     <span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="at">pch=</span><span class="dv">19</span>, <span class="at">legend=</span>n_noneuro, <span class="at">col=</span>mycol, <span class="at">cex=</span><span class="fl">1.5</span>, <span class="at">box.lty=</span><span class="dv">0</span>)}</span>
+<span id="cb3-49"><a href="inflation-overliner2_j.html#cb3-49" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb3-50"><a href="inflation-overliner2_j.html#cb3-50" aria-hidden="true" tabindex="-1"></a>} <span class="co"># end of function</span></span>
+<span id="cb3-51"><a href="inflation-overliner2_j.html#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="inflation-overliner2_j.html#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="co"># make a plot ------------------------------------------------------------------</span></span>
+<span id="cb3-53"><a href="inflation-overliner2_j.html#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-54"><a href="inflation-overliner2_j.html#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="co"># maf = .01----------------------------</span></span>
+<span id="cb3-55"><a href="inflation-overliner2_j.html#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb3-56"><a href="inflation-overliner2_j.html#cb3-56" aria-hidden="true" tabindex="-1"></a>n_noneuro<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;0k&quot;</span>,<span class="st">&quot;1k&quot;</span>, <span class="st">&quot;2k&quot;</span>, <span class="st">&quot;3k&quot;</span>, <span class="st">&quot;4k&quot;</span>, <span class="st">&quot;5k&quot;</span>, <span class="st">&quot;6k&quot;</span>)</span>
+<span id="cb3-57"><a href="inflation-overliner2_j.html#cb3-57" aria-hidden="true" tabindex="-1"></a>maf_threshold<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;.1&quot;</span>,<span class="st">&quot;.01&quot;</span>,<span class="st">&quot;.001&quot;</span>)</span>
+<span id="cb3-58"><a href="inflation-overliner2_j.html#cb3-58" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb3-59"><a href="inflation-overliner2_j.html#cb3-59" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb3-60"><a href="inflation-overliner2_j.html#cb3-60" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb3-61"><a href="inflation-overliner2_j.html#cb3-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-62"><a href="inflation-overliner2_j.html#cb3-62" aria-hidden="true" tabindex="-1"></a>maf<span class="ot">=</span>maf_threshold[<span class="dv">2</span>]</span>
+<span id="cb3-63"><a href="inflation-overliner2_j.html#cb3-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-64"><a href="inflation-overliner2_j.html#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/mix-pop-gwas-chisq-by-aver2-bin.png&quot;</span>),</span>
+<span id="cb3-65"><a href="inflation-overliner2_j.html#cb3-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">50</span>, <span class="at">height =</span> <span class="dv">30</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb3-66"><a href="inflation-overliner2_j.html#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">5</span>))</span>
+<span id="cb3-67"><a href="inflation-overliner2_j.html#cb3-67" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
+<span id="cb3-68"><a href="inflation-overliner2_j.html#cb3-68" aria-hidden="true" tabindex="-1"></a>      trait<span class="ot">=</span>traits[i]</span>
+<span id="cb3-69"><a href="inflation-overliner2_j.html#cb3-69" aria-hidden="true" tabindex="-1"></a>      <span class="fu">make_plot</span>(trait, maf, n_noneuro)</span>
+<span id="cb3-70"><a href="inflation-overliner2_j.html#cb3-70" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-71"><a href="inflation-overliner2_j.html#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb3-72"><a href="inflation-overliner2_j.html#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-73"><a href="inflation-overliner2_j.html#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="co"># maf = .001----------------------------</span></span>
+<span id="cb3-74"><a href="inflation-overliner2_j.html#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb3-75"><a href="inflation-overliner2_j.html#cb3-75" aria-hidden="true" tabindex="-1"></a>n_noneuro<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;0k&quot;</span>,<span class="st">&quot;1k&quot;</span>, <span class="st">&quot;2k&quot;</span>, <span class="st">&quot;3k&quot;</span>, <span class="st">&quot;4k&quot;</span>, <span class="st">&quot;5k&quot;</span>, <span class="st">&quot;6k&quot;</span>)</span>
+<span id="cb3-76"><a href="inflation-overliner2_j.html#cb3-76" aria-hidden="true" tabindex="-1"></a>maf_threshold<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;.1&quot;</span>,<span class="st">&quot;.01&quot;</span>,<span class="st">&quot;.001&quot;</span>)</span>
+<span id="cb3-77"><a href="inflation-overliner2_j.html#cb3-77" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb3-78"><a href="inflation-overliner2_j.html#cb3-78" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb3-79"><a href="inflation-overliner2_j.html#cb3-79" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb3-80"><a href="inflation-overliner2_j.html#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-81"><a href="inflation-overliner2_j.html#cb3-81" aria-hidden="true" tabindex="-1"></a>maf<span class="ot">=</span>maf_threshold[<span class="dv">3</span>]</span>
+<span id="cb3-82"><a href="inflation-overliner2_j.html#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-83"><a href="inflation-overliner2_j.html#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/mix-pop-gwas-chisq-by-aver2-bin-maf.001.png&quot;</span>),</span>
+<span id="cb3-84"><a href="inflation-overliner2_j.html#cb3-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">50</span>, <span class="at">height =</span> <span class="dv">30</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb3-85"><a href="inflation-overliner2_j.html#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">5</span>))</span>
+<span id="cb3-86"><a href="inflation-overliner2_j.html#cb3-86" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
+<span id="cb3-87"><a href="inflation-overliner2_j.html#cb3-87" aria-hidden="true" tabindex="-1"></a>      trait<span class="ot">=</span>traits[i]</span>
+<span id="cb3-88"><a href="inflation-overliner2_j.html#cb3-88" aria-hidden="true" tabindex="-1"></a>      <span class="fu">make_plot</span>(trait, maf, n_noneuro)</span>
+<span id="cb3-89"><a href="inflation-overliner2_j.html#cb3-89" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-90"><a href="inflation-overliner2_j.html#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb3-91"><a href="inflation-overliner2_j.html#cb3-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-92"><a href="inflation-overliner2_j.html#cb3-92" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb3-93"><a href="inflation-overliner2_j.html#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate slope: chisq ~ aver2_j</span></span>
+<span id="cb3-94"><a href="inflation-overliner2_j.html#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb3-95"><a href="inflation-overliner2_j.html#cb3-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-96"><a href="inflation-overliner2_j.html#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb3-97"><a href="inflation-overliner2_j.html#cb3-97" aria-hidden="true" tabindex="-1"></a>n_noneuro<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;0k&quot;</span>,<span class="st">&quot;1k&quot;</span>, <span class="st">&quot;2k&quot;</span>, <span class="st">&quot;3k&quot;</span>, <span class="st">&quot;4k&quot;</span>, <span class="st">&quot;5k&quot;</span>, <span class="st">&quot;6k&quot;</span>)</span>
+<span id="cb3-98"><a href="inflation-overliner2_j.html#cb3-98" aria-hidden="true" tabindex="-1"></a>maf_threshold<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;.1&quot;</span>,<span class="st">&quot;.01&quot;</span>,<span class="st">&quot;.001&quot;</span>)</span>
+<span id="cb3-99"><a href="inflation-overliner2_j.html#cb3-99" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb3-100"><a href="inflation-overliner2_j.html#cb3-100" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb3-101"><a href="inflation-overliner2_j.html#cb3-101" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb3-102"><a href="inflation-overliner2_j.html#cb3-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-103"><a href="inflation-overliner2_j.html#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(maf_threshold)){</span>
+<span id="cb3-104"><a href="inflation-overliner2_j.html#cb3-104" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(n_noneuro)){</span>
+<span id="cb3-105"><a href="inflation-overliner2_j.html#cb3-105" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
+<span id="cb3-106"><a href="inflation-overliner2_j.html#cb3-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-107"><a href="inflation-overliner2_j.html#cb3-107" aria-hidden="true" tabindex="-1"></a>    maf<span class="ot">=</span>maf_threshold[i]</span>
+<span id="cb3-108"><a href="inflation-overliner2_j.html#cb3-108" aria-hidden="true" tabindex="-1"></a>    n<span class="ot">=</span>n_noneuro[j]</span>
+<span id="cb3-109"><a href="inflation-overliner2_j.html#cb3-109" aria-hidden="true" tabindex="-1"></a>    trait<span class="ot">=</span>traits[k]</span>
+<span id="cb3-110"><a href="inflation-overliner2_j.html#cb3-110" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-111"><a href="inflation-overliner2_j.html#cb3-111" aria-hidden="true" tabindex="-1"></a>    file<span class="ot">=</span><span class="fu">paste0</span>(<span class="st">&quot;gwas-mix-all-out/&quot;</span>,trait,<span class="st">&quot;-mix-pop-gwas-&quot;</span>,n,</span>
+<span id="cb3-112"><a href="inflation-overliner2_j.html#cb3-112" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;-noneuro-maf&quot;</span>,maf,<span class="st">&quot;.out&quot;</span>)</span>
+<span id="cb3-113"><a href="inflation-overliner2_j.html#cb3-113" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-114"><a href="inflation-overliner2_j.html#cb3-114" aria-hidden="true" tabindex="-1"></a>    dat<span class="ot">=</span><span class="fu">vroom</span>(file, <span class="at">col_names=</span>T, <span class="at">delim=</span><span class="st">&quot;;&quot;</span>)</span>
+<span id="cb3-115"><a href="inflation-overliner2_j.html#cb3-115" aria-hidden="true" tabindex="-1"></a>    mod1<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> aver2,<span class="at">data=</span>dat)</span>
+<span id="cb3-116"><a href="inflation-overliner2_j.html#cb3-116" aria-hidden="true" tabindex="-1"></a>    mod2<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> ldsc,<span class="at">data=</span>dat)</span>
+<span id="cb3-117"><a href="inflation-overliner2_j.html#cb3-117" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-118"><a href="inflation-overliner2_j.html#cb3-118" aria-hidden="true" tabindex="-1"></a>    slope0<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">trait=</span>trait,</span>
+<span id="cb3-119"><a href="inflation-overliner2_j.html#cb3-119" aria-hidden="true" tabindex="-1"></a>                      <span class="at">maf_threshold=</span>maf,</span>
+<span id="cb3-120"><a href="inflation-overliner2_j.html#cb3-120" aria-hidden="true" tabindex="-1"></a>                      <span class="at">n_noneuro=</span>n,</span>
+<span id="cb3-121"><a href="inflation-overliner2_j.html#cb3-121" aria-hidden="true" tabindex="-1"></a>                      <span class="at">slope_aver2=</span><span class="fu">coef</span>(mod1)[<span class="dv">2</span>],</span>
+<span id="cb3-122"><a href="inflation-overliner2_j.html#cb3-122" aria-hidden="true" tabindex="-1"></a>                      <span class="at">p_aver2=</span><span class="fu">summary</span>(mod1)<span class="sc">$</span>coefficients[,<span class="dv">4</span>][<span class="dv">2</span>],</span>
+<span id="cb3-123"><a href="inflation-overliner2_j.html#cb3-123" aria-hidden="true" tabindex="-1"></a>                      <span class="at">slope_ldsc=</span><span class="fu">coef</span>(mod2)[<span class="dv">2</span>],</span>
+<span id="cb3-124"><a href="inflation-overliner2_j.html#cb3-124" aria-hidden="true" tabindex="-1"></a>                      <span class="at">p_ldsc=</span><span class="fu">summary</span>(mod2)<span class="sc">$</span>coefficients[,<span class="dv">4</span>][<span class="dv">2</span>],</span>
+<span id="cb3-125"><a href="inflation-overliner2_j.html#cb3-125" aria-hidden="true" tabindex="-1"></a>                      <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb3-126"><a href="inflation-overliner2_j.html#cb3-126" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-127"><a href="inflation-overliner2_j.html#cb3-127" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(i<span class="sc">==</span><span class="dv">1</span> <span class="sc">&amp;</span> j<span class="sc">==</span><span class="dv">1</span> <span class="sc">&amp;</span> k<span class="sc">==</span><span class="dv">1</span>){slope<span class="ot">=</span>slope0} <span class="cf">else</span> {slope<span class="ot">=</span><span class="fu">rbind</span>(slope,slope0)}</span>
+<span id="cb3-128"><a href="inflation-overliner2_j.html#cb3-128" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-129"><a href="inflation-overliner2_j.html#cb3-129" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-130"><a href="inflation-overliner2_j.html#cb3-130" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-131"><a href="inflation-overliner2_j.html#cb3-131" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-132"><a href="inflation-overliner2_j.html#cb3-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-133"><a href="inflation-overliner2_j.html#cb3-133" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span>slope[<span class="fu">order</span>(slope<span class="sc">$</span>trait, slope<span class="sc">$</span>maf_threshold, slope<span class="sc">$</span>n_noneuro),]</span>
+<span id="cb3-134"><a href="inflation-overliner2_j.html#cb3-134" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(out,<span class="st">&quot;summary/mix-pop-gwas-slope.txt&quot;</span>, <span class="at">col.names=</span>T, <span class="at">row.names=</span>F, <span class="at">quote=</span>F)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="inflation-overliner2_j.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb4-2"><a href="inflation-overliner2_j.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot chisq ~ aver2_j by maf | n_noneuro</span></span>
+<span id="cb4-3"><a href="inflation-overliner2_j.html#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb4-4"><a href="inflation-overliner2_j.html#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="inflation-overliner2_j.html#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># function to plot a single trait---------------------------------------------------</span></span>
+<span id="cb4-6"><a href="inflation-overliner2_j.html#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="inflation-overliner2_j.html#cb4-7" aria-hidden="true" tabindex="-1"></a>make_plot<span class="ot">=</span><span class="cf">function</span>(trait, maf_threshold, n){</span>
+<span id="cb4-8"><a href="inflation-overliner2_j.html#cb4-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-9"><a href="inflation-overliner2_j.html#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># define variables</span></span>
+<span id="cb4-10"><a href="inflation-overliner2_j.html#cb4-10" aria-hidden="true" tabindex="-1"></a>  n<span class="ot">=</span>n</span>
+<span id="cb4-11"><a href="inflation-overliner2_j.html#cb4-11" aria-hidden="true" tabindex="-1"></a>  trait<span class="ot">=</span>trait</span>
+<span id="cb4-12"><a href="inflation-overliner2_j.html#cb4-12" aria-hidden="true" tabindex="-1"></a>  maf_threshold<span class="ot">=</span>maf_threshold</span>
+<span id="cb4-13"><a href="inflation-overliner2_j.html#cb4-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-14"><a href="inflation-overliner2_j.html#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># define color</span></span>
+<span id="cb4-15"><a href="inflation-overliner2_j.html#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb4-16"><a href="inflation-overliner2_j.html#cb4-16" aria-hidden="true" tabindex="-1"></a>  qual_col_pals <span class="ot">=</span> brewer.pal.info[brewer.pal.info<span class="sc">$</span>category <span class="sc">==</span> <span class="st">&#39;qual&#39;</span>,]</span>
+<span id="cb4-17"><a href="inflation-overliner2_j.html#cb4-17" aria-hidden="true" tabindex="-1"></a>  col_vector <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">mapply</span>(brewer.pal, qual_col_pals<span class="sc">$</span>maxcolors, <span class="fu">rownames</span>(qual_col_pals)))</span>
+<span id="cb4-18"><a href="inflation-overliner2_j.html#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
+<span id="cb4-19"><a href="inflation-overliner2_j.html#cb4-19" aria-hidden="true" tabindex="-1"></a>  mycol<span class="ot">=</span><span class="fu">sample</span>(col_vector,<span class="fu">length</span>(maf_threshold))</span>
+<span id="cb4-20"><a href="inflation-overliner2_j.html#cb4-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-21"><a href="inflation-overliner2_j.html#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot</span></span>
+<span id="cb4-22"><a href="inflation-overliner2_j.html#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(maf_threshold)){</span>
+<span id="cb4-23"><a href="inflation-overliner2_j.html#cb4-23" aria-hidden="true" tabindex="-1"></a>    maf<span class="ot">=</span>maf_threshold[i]</span>
+<span id="cb4-24"><a href="inflation-overliner2_j.html#cb4-24" aria-hidden="true" tabindex="-1"></a>    file<span class="ot">=</span><span class="fu">paste0</span>(<span class="st">&quot;gwas-mix-all-out/&quot;</span>,trait,<span class="st">&quot;-mix-pop-gwas-&quot;</span>,n,</span>
+<span id="cb4-25"><a href="inflation-overliner2_j.html#cb4-25" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;-noneuro-maf&quot;</span>,maf,<span class="st">&quot;.out&quot;</span>)</span>
+<span id="cb4-26"><a href="inflation-overliner2_j.html#cb4-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-27"><a href="inflation-overliner2_j.html#cb4-27" aria-hidden="true" tabindex="-1"></a>    dat<span class="ot">=</span><span class="fu">vroom</span>(file, <span class="at">col_names=</span>T, <span class="at">delim=</span><span class="st">&quot;;&quot;</span>)</span>
+<span id="cb4-28"><a href="inflation-overliner2_j.html#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># bin a variable by quantile</span></span>
+<span id="cb4-29"><a href="inflation-overliner2_j.html#cb4-29" aria-hidden="true" tabindex="-1"></a>    cutoff<span class="ot">=</span><span class="fu">quantile</span>(dat<span class="sc">$</span>aver2, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.005</span>), <span class="at">na.rm=</span>T)</span>
+<span id="cb4-30"><a href="inflation-overliner2_j.html#cb4-30" aria-hidden="true" tabindex="-1"></a>    dat<span class="sc">$</span>bin<span class="ot">=</span><span class="fu">cut</span>(dat<span class="sc">$</span>aver2, <span class="at">breaks=</span>cutoff, <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb4-31"><a href="inflation-overliner2_j.html#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># average chisq by bin values</span></span>
+<span id="cb4-32"><a href="inflation-overliner2_j.html#cb4-32" aria-hidden="true" tabindex="-1"></a>    out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">chisq_ave=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>chisq,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean))</span>
+<span id="cb4-33"><a href="inflation-overliner2_j.html#cb4-33" aria-hidden="true" tabindex="-1"></a>    out<span class="sc">$</span>bin_val<span class="ot">=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>aver2,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean)</span>
+<span id="cb4-34"><a href="inflation-overliner2_j.html#cb4-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-35"><a href="inflation-overliner2_j.html#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(i<span class="sc">==</span><span class="dv">1</span>){</span>
+<span id="cb4-36"><a href="inflation-overliner2_j.html#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(out<span class="sc">$</span>bin_val, out<span class="sc">$</span>chisq_ave,</span>
+<span id="cb4-37"><a href="inflation-overliner2_j.html#cb4-37" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;ave r2&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;ave chisq&quot;</span>,</span>
+<span id="cb4-38"><a href="inflation-overliner2_j.html#cb4-38" aria-hidden="true" tabindex="-1"></a>         <span class="at">main=</span><span class="fu">paste0</span>(trait,<span class="st">&quot; &quot;</span>, n,<span class="st">&quot; non-european&quot;</span>), <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb4-39"><a href="inflation-overliner2_j.html#cb4-39" aria-hidden="true" tabindex="-1"></a>         <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span>mycol[i], <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb4-40"><a href="inflation-overliner2_j.html#cb4-40" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb4-41"><a href="inflation-overliner2_j.html#cb4-41" aria-hidden="true" tabindex="-1"></a>      <span class="fu">points</span>(out<span class="sc">$</span>bin_val, out<span class="sc">$</span>chisq_ave,</span>
+<span id="cb4-42"><a href="inflation-overliner2_j.html#cb4-42" aria-hidden="true" tabindex="-1"></a>           <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">bg=</span>mycol[i], <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb4-43"><a href="inflation-overliner2_j.html#cb4-43" aria-hidden="true" tabindex="-1"></a>    } <span class="co"># end of conditional statement</span></span>
+<span id="cb4-44"><a href="inflation-overliner2_j.html#cb4-44" aria-hidden="true" tabindex="-1"></a>  } <span class="co"># end of loop over maf</span></span>
+<span id="cb4-45"><a href="inflation-overliner2_j.html#cb4-45" aria-hidden="true" tabindex="-1"></a>   <span class="co"># add a legend</span></span>
+<span id="cb4-46"><a href="inflation-overliner2_j.html#cb4-46" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span>(trait<span class="sc">==</span><span class="st">&quot;awake&quot;</span>){</span>
+<span id="cb4-47"><a href="inflation-overliner2_j.html#cb4-47" aria-hidden="true" tabindex="-1"></a>     <span class="fu">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="at">pch=</span><span class="dv">19</span>, <span class="at">legend=</span>maf_threshold, <span class="at">col=</span>mycol, <span class="at">cex=</span><span class="fl">1.5</span>, <span class="at">box.lty=</span><span class="dv">0</span>)}</span>
+<span id="cb4-48"><a href="inflation-overliner2_j.html#cb4-48" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb4-49"><a href="inflation-overliner2_j.html#cb4-49" aria-hidden="true" tabindex="-1"></a>} <span class="co"># end of function</span></span>
+<span id="cb4-50"><a href="inflation-overliner2_j.html#cb4-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-51"><a href="inflation-overliner2_j.html#cb4-51" aria-hidden="true" tabindex="-1"></a><span class="co"># make a plot ------------------------------------------------------------------</span></span>
+<span id="cb4-52"><a href="inflation-overliner2_j.html#cb4-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-53"><a href="inflation-overliner2_j.html#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb4-54"><a href="inflation-overliner2_j.html#cb4-54" aria-hidden="true" tabindex="-1"></a>n_noneuro<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;0k&quot;</span>,<span class="st">&quot;1k&quot;</span>, <span class="st">&quot;2k&quot;</span>, <span class="st">&quot;3k&quot;</span>, <span class="st">&quot;4k&quot;</span>, <span class="st">&quot;5k&quot;</span>, <span class="st">&quot;6k&quot;</span>)</span>
+<span id="cb4-55"><a href="inflation-overliner2_j.html#cb4-55" aria-hidden="true" tabindex="-1"></a>maf_threshold<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;.1&quot;</span>,<span class="st">&quot;.01&quot;</span>,<span class="st">&quot;.001&quot;</span>)</span>
+<span id="cb4-56"><a href="inflation-overliner2_j.html#cb4-56" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb4-57"><a href="inflation-overliner2_j.html#cb4-57" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb4-58"><a href="inflation-overliner2_j.html#cb4-58" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb4-59"><a href="inflation-overliner2_j.html#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-60"><a href="inflation-overliner2_j.html#cb4-60" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(n_noneuro)){</span>
+<span id="cb4-61"><a href="inflation-overliner2_j.html#cb4-61" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-62"><a href="inflation-overliner2_j.html#cb4-62" aria-hidden="true" tabindex="-1"></a>  n<span class="ot">=</span>n_noneuro[j]</span>
+<span id="cb4-63"><a href="inflation-overliner2_j.html#cb4-63" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot give an n for non-european</span></span>
+<span id="cb4-64"><a href="inflation-overliner2_j.html#cb4-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/mix-pop-gwas-chisq-by-aver2-bin-&quot;</span>,n,<span class="st">&quot;-noneuro.png&quot;</span>),</span>
+<span id="cb4-65"><a href="inflation-overliner2_j.html#cb4-65" aria-hidden="true" tabindex="-1"></a>      <span class="at">width =</span> <span class="dv">50</span>, <span class="at">height =</span> <span class="dv">30</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb4-66"><a href="inflation-overliner2_j.html#cb4-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">5</span>))</span>
+<span id="cb4-67"><a href="inflation-overliner2_j.html#cb4-67" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
+<span id="cb4-68"><a href="inflation-overliner2_j.html#cb4-68" aria-hidden="true" tabindex="-1"></a>        trait<span class="ot">=</span>traits[i]</span>
+<span id="cb4-69"><a href="inflation-overliner2_j.html#cb4-69" aria-hidden="true" tabindex="-1"></a>        <span class="fu">make_plot</span>(trait, maf_threshold, n)</span>
+<span id="cb4-70"><a href="inflation-overliner2_j.html#cb4-70" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb4-71"><a href="inflation-overliner2_j.html#cb4-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dev.off</span>()</span>
+<span id="cb4-72"><a href="inflation-overliner2_j.html#cb4-72" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>We can now report average inflation of test statistics (mean(r2j) x n x h2, which is upper bounded by mean(r2j) x n), AND we can report estimated per-SNP inflation of test statistics (r2j x n x j2)</p>
+<p>Eg., we can say that if you use UKBB recommended samples, with MAF&gt;.01, the average inflation will be less than 0.5 units, while the maximum inflation will be less than 1 unit.</p>
+<p>However, maybe we find that if you analyse rare SNPs (e.g. 0.0001 &lt; MAF &lt; .01), the maximum inflation is much higher (so people must be careful).</p>
+<p>What happens if you have a meta-analysis - how does inflation accumulate over cohorts?</p>
+<p>Possible way to write up this paper:</p>
+<p>Perform a good and bad GWAS of height</p>
+<p>Figure 1a - show that GIF performs poorly (because test statistics of good GWAS do not follow a chisq(1) distribution)</p>
+<p>Figure 1b - use test statistics of good GWAS to show that LDSC performs badly, because it assumes causal variation is constant [Do you mean the choice of heritability model affects inflation estimates? But we found for good GWASs, ldsc under gcta is OK for most traits.]</p>
+<p>Figure 1c - use difference between test statistics to show that LDSC performs badly because it assumes inflation is constant.</p>
+<p>(in supplement, can show same results for other traits).</p>
+<p>Figure 2 - show that r2j is independent of true signal (test statistics from good gwas), but predicts well inflation (difference)</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="mathematical-details.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="good.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/04_ave_r2_ij.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["bookdown-demo.pdf", "bookdown-demo.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -7,6 +7,8 @@ tab:he-ukbb
 tab:ldsc-sumher-control
 tab:he-control
 fig:good-vs-bad-by-ldscorebin
+fig:aver2-alignment-by-run
+fig:aver2-alignment-by-maf
 general-info
 topic
 frequently-used-commands
@@ -33,12 +35,15 @@ regress-bad-chisq-mean-r2_j
 mathematical-details
 trk_rightk_left
 verification
-inflation-ave-r2_j
-m1k-maf0.01
-m5k-maf0.01
-m10k-maf0.01
-m20k-maf0.01
+chi-square-overliner2_j
+overliner2_j-choice-of-snps
+number-of-snps
+maf
+st-run
+st-run-1
 summary
+varying-levels-of-confouding
+results-summary
 good
 goodid
 extract-covariates
@@ -100,4 +105,5 @@ good-gwas-all-qced-snps
 good-gwass--ldak-thin-snps
 bad-gwass-all-qced-snps
 summary-9
-new
+compute-overliner2_j
+mixed-pop-gwas-with-pc-as-covariates

@@ -293,7 +293,7 @@ dev.off()
 
 ```
 
-## New
+## compute $\overline{r^2_j}$
 
 1. compute average r2 for each i.
 ```{r eval=F}
@@ -392,5 +392,222 @@ awk '(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}' doug/ukbb.ldsc 
 awk '(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}' doug/ukbb.ldsc summary/ave-r2-by-snp-badgwas > summary/ave-r2-by-snp-badgwas-rs
 
 ```
+
+## mixed pop GWAS with PC as covariates
+
+Previously we conducted mixed pop GWAS with the first 40 PC as covariates. Since we used the same genotype data (i.e., the same individuals) as for the bad GWASs, $\overline{r^2_j}$ is the same. The difference is the chi-square test statistics. Here we want to check if the relationship between $\overline{r^2_j}$ and chi square still exists for the bad gwas.
+
+```{R eval=F}
+
+# align GWAS test statistics with ld score-------------------------------------- 
+dir1="gwas-mix-with-cov/"
+dir2="unrelated/gwas-good/"
+dir3="gwas-mix/"
+
+require("vroom")
+snps=vroom("overlap-control-good-bad.ldscore", col_names=F)
+names(snps)=c("snp","ldsc_ref")
+
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp",
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+  
+  trait=traits[i]
+  dat1=vroom(paste0(dir1,trait,"-linear-rs.summaries"), col_names=T)
+  dat2=vroom(paste0(dir2,trait,"-linear-rs.summaries"), col_names=T)
+  dat3=vroom(paste0(dir3,trait,"-linear-rs.summaries"), col_names=T)
+  
+  m1=match(snps$snp, dat1$SNP)
+  m2=match(snps$snp, dat2$SNP)
+  m3=match(snps$snp, dat3$SNP)
+  out=data.frame(SNP=snps$snp,
+                 ldsc_ref=snps$ldsc_ref,
+                  bad_cov_chisq=dat1$Z[m1]^2,
+                  good_chisq=dat2$Z[m2]^2,
+                  bad_chisq=dat3$Z[m3]^2, stringsAsFactors = F)
+  out=out[complete.cases(out),]
+  # bin LD scores according to quantiles
+  cutoff1=quantile(out$ldsc_ref, probs = seq(0, 1, 0.005))
+  out$ldsc_ref_bin=cut(out$ldsc_ref, breaks=cutoff1, labels=1:(length(cutoff1)-1))
+  write.table(out,paste0("summary/",trait,"-gwas-test-stats-compare3.txt"), 
+              col.names=T, row.names=F, quote=F)
+}
+
+# align chisq with ave r^2_j----------------------------------------------------
+
+stat=vroom("gen/geno-unrel-rs.maf", col_names=F)
+r2_good=vroom("summary/ave-r2-by-snp-goodgwas-rs", col_names=F)
+r2_bad=vroom("summary/ave-r2-by-snp-badgwas-rs", col_names=F)
+
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+  
+trait=traits[i]
+dat=vroom(paste0("summary/",trait,"-gwas-test-stats-compare3.txt"), col_names=T)
+inflation=data.frame(snp=dat$SNP,
+                     inflation=dat$bad_chisq-dat$good_chisq,
+                     bad_chisq=dat$bad_chisq,
+                     bad_cov_chisq=dat$bad_cov_chisq,
+                     good_chisq=dat$good_chisq,
+                     stringsAsFactors = F)
+
+m1=match(inflation$snp, stat$X1)
+m2=match(inflation$snp,r2_good$X1)
+m3=match(inflation$snp,r2_bad$X1)
+out=data.frame(inflation,
+               maf=stat$X4[m1], 
+               r2_good=r2_good$X2[m2],
+               r2_bad=r2_bad$X2[m2], stringsAsFactors = F)
+
+# bin maf & r2_bad according to quantiles
+cutoff1=quantile(out$maf, probs = seq(0, 1, 0.005), na.rm=T)
+cutoff2=quantile(out$r2_bad, probs = seq(0, 1, 0.005), na.rm=T)
+cutoff3=quantile(out$r2_good, probs = seq(0, 1, 0.005), na.rm=T)
+
+out$maf_bin=cut(out$maf, breaks=cutoff1, labels=1:(length(cutoff1)-1))
+out$r2_bad_bin=cut(out$r2_bad, breaks=cutoff2, labels=1:(length(cutoff2)-1))
+out$r2_good_bin=cut(out$r2_good, breaks=cutoff3, labels=1:(length(cutoff3)-1))
+
+write.table(out,paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), 
+            col.names=T, row.names=F, quote=F)
+}
+
+# plot bad chisq by binned ave r2 --------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+png(paste0("fig/badgwas-with-cov-chisq-by-aver2-bin.png"),
+    width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5))
+for(i in 1:length(traits)){
+trait=traits[i]
+dat=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+sel=dat[,c("snp","bad_cov_chisq","r2_bad","r2_bad_bin")]
+sel=sel[complete.cases(sel),]
+out=data.frame(bad_cov_chisq=tapply(sel$bad_cov_chisq,INDEX=sel$r2_bad_bin, mean))
+out$r2_bad_bin=1:dim(out)[1]
+out$r2_bad_bin_val=tapply(sel$r2_bad,INDEX=sel$r2_bad_bin, mean)
+
+plot(out$r2_bad_bin_val, out$bad_cov_chisq,
+     xlab="ave r2", ylab="chisq test stat",
+     main=trait, las=1,
+     cex = 1.5, pch=21,  bg="grey", col="white", lwd=0.5)
+}
+dev.off()
+
+# plot good chisq by binned ave r2 --------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+png(paste0("fig/goodgwas-chisq-by-aver2-bin.png"),
+    width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5))
+for(i in 1:length(traits)){
+trait=traits[i]
+dat=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+sel=dat[,c("snp","good_chisq","r2_good","r2_good_bin")]
+sel=sel[complete.cases(sel),]
+out=data.frame(good_chisq=tapply(sel$good_chisq,INDEX=sel$r2_good_bin, mean))
+out$r2_good_bin=1:dim(out)[1]
+out$r2_good_bin_val=tapply(sel$r2_good,INDEX=sel$r2_good_bin, mean)
+
+plot(out$r2_good_bin_val, out$good_chisq,
+     xlab="ave r2", ylab="chisq test stat",
+     main=trait, las=1,
+     cex = 1.5, pch=21,  bg="grey", col="white", lwd=0.5)
+}
+dev.off()
+
+# plot chisq by ldsc----------------------------------------------------------- 
+
+require("vroom")
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp",
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/badgwas-with-cov-by-ldscbin.png"),
+    width =50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5))
+
+for(i in 1:length(traits)){
+trait=traits[i]
+trait
+dat=vroom(paste0("summary/",trait,"-gwas-test-stats-compare3.txt"), col_names=T)
+out1=data.frame(ave_ldscore=tapply(dat$ldsc_ref,INDEX=dat$ldsc_ref_bin, mean),
+               ave_good_chisq=tapply(dat$good_chisq,INDEX=dat$ldsc_ref_bin, mean),
+               ave_bad_cov_chisq=tapply(dat$bad_cov_chisq,INDEX=dat$ldsc_ref_bin, mean))
+               
+#out2=data.frame(ave_ldscore=tapply(dat$ldsc_mix,INDEX=dat$ldsc_mix_bin, mean),
+#               ave_control_chisq=tapply(dat$control_chisq,INDEX=dat$ldsc_mix_bin, mean),
+#               ave_good_chisq=tapply(dat$good_chisq,INDEX=dat$ldsc_mix_bin, mean),
+#              ave_bad_chisq=tapply(dat$bad_chisq,INDEX=dat$ldsc_mix_bin, mean))
+
+end=round(max(c(out1[,2], out1[,3])),0)
+#end2=round(max(c(out2[,2], out2[,3], out2[,4])),0)
+#end=max(end1,end2)
+start=0
+
+plot(out1$ave_ldscore, out1$ave_good_chisq,
+     xlab="ldscore", ylab="mean chisquare", 
+     ylim=c(start, end),
+     main=trait, las=1,
+     cex = 1.5, pch=21,  bg="gray", col="white", lwd=0.5)
+points(out1$ave_ldscore, out1$ave_bad_cov_chisq,
+       cex = 1.5, pch=21, col="white", bg="orange")
+}
+dev.off()
+
+# regress chi square from bad gwas with cov on ldsc
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+         "neur","pulse","quals", "fvc", "height","imp",
+         "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+
+trait=traits[i]
+trait
+dat=vroom(paste0("summary/",trait,"-gwas-test-stats-compare3.txt"), col_names=T)
+dat2=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+m=match(dat$SNP,dat2$snp)
+out=data.frame(dat2[m,-c(9:11)],dat[,-c(1,3:6)])
+out=out[complete.cases(out),]
+
+#ldsc_ref2=(out$ldsc_ref)^2
+#r2_bad2=(out$r2_bad)^2
+mod0=lm(bad_cov_chisq ~ 1,data=out)
+mod1=lm(bad_cov_chisq ~ ldsc_ref,data=out)
+mod1.1=lm(bad_chisq ~ ldsc_ref + ldsc_ref2 ,data=out)
+mod2=lm(bad_chisq ~ r2_bad, data=out)
+mod2.1=lm(bad_chisq ~ r2_bad + r2_bad2, data=out)
+mod3=lm(bad_chisq ~ r2_bad + ldsc_ref ,data=out)
+mod3.1=lm(bad_chisq ~ r2_bad + ldsc_ref + ldsc_ref2 ,data=out)
+mod3.2=lm(bad_chisq ~ r2_bad + ldsc_ref + ldsc_ref2 + r2_bad*ldsc_ref ,data=out)
+mod4=lm(bad_chisq ~ r2_bad + ldsc_ref + r2_bad*ldsc_ref ,data=out)
+
+p0=data.frame(trait=trait,
+              p_r2=anova(mod2, mod0)$P[2],
+              p_r2_2=anova(mod2.1, mod2)$P[2],
+              p_ldsc=anova(mod3,mod2)$P[2],
+              p_ldsc2=anova(mod3.1,mod3)$P[2],
+              p_ldsc_r2=anova(mod4,mod3)$P[2],
+              stringsAsFactors = F)
+
+if(i==1){p=p0} else{p=rbind(p,p0)}
+}
+p_bad=p
+
+
+```
+
+
 
 
