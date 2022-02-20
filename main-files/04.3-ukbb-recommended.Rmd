@@ -128,7 +128,7 @@ awk < geno-norm-100k.stats '($5>.01 && $6>=0.95 && NR>1){print $1}' > snps-norm-
  
 ```
 
-## GWAS
+## GWAS-100k
 
 ```{bash eval=F}
 
@@ -178,7 +178,66 @@ rm -r $file-tmp
 
 ```
 
-## ldsc intercept
+## GWAS-337k
+
+Here we do gwas for all recommended individuals. Previously we make bfiles of these individuals.
+
+  * **bfile** (after QC) gen/geno-norm
+  * **id list** ukbb-recommend.id
+
+```{bash eval=F}
+
+# snp list----------------------------------------------------------------------
+# MAF & call rate filtering
+awk < gen/geno-norm.stats '($5>.01 && $6>=0.95 && NR>1){print $1}' > gen/snps-norm.use #1,100,715 snps
+
+# GWAS -------------------------------------------------------------------------
+mkdir gwas-norm-337k
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../gwas-norm-337k/$i-linear \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-norm \
+          --keep ../ukbb-recommend.id \
+          --extract ../gen/snps-norm.use \
+          --covar ../phen/covariates.use \
+          --max-threads 3 \
+"> sh_script/$i-linear.sh
+done
+
+# submit files------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear.sh
+done>../job-records/gwas-norm-337k
+
+# check job completion----------------------------------------------------------
+file=job-records/gwas-norm-337k
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+```
+
+## ldsc-100k
 
 ### under gcta
 
@@ -457,6 +516,68 @@ grep Intercept_Estimate *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1
 grep Intercept_SD *ldak-thin.extra | awk '{ split($1, a, /[-]/); print a[1], $2}' >../summary/sumher-ldak-thin-norm-100k-sd
 cd ../summary/
 paste sumher-ldak-thin-norm-100k-est sumher-ldak-thin-norm-100k-sd | awk '{print $1, $2, $4}' > sumher-ldak-thin-norm-100k
+
+```
+
+## ldsc-337k
+
+```{bash eval=F}
+ #:::::::::::::
+# using original ldsc
+#:::::::::::::
+
+# format stats for ldsc--------------------------------------------------------- 
+library(vroom)
+options(scipen = 100)
+rs=vroom("doug/ukbb.ldsc", col_names=F)
+phen=c("awake","bmi","chron","ever","fvc",
+       "height","imp","neur","pulse","quals",
+       "reaction","sbp","snoring","hyper", "quals")
+
+for(i in phen){
+  stat=vroom(paste0("gwas-norm-337k/",i,"-linear.summaries"), col_names=T)
+  p=vroom(paste0("gwas-norm-337k/",i,"-linear.pvalues"), col_names=T)
+  m1=match(rs$X1, stat$Predictor)
+  m2=match(rs$X1, p$Predictor)
+  out=data.frame(SNP=rs$X2,
+                 N=stat$n[m1],
+                 Z=(sqrt(stat$Stat)*stat$Direction)[m1],
+                 A1=stat$A1[m1],
+                 A2=stat$A2[m1], 
+                 pval=p$P[m2], stringsAsFactors=F)
+  out=out[complete.cases(out),]
+  write.table(out, paste0("gwas-norm-337k/",i,"-linear-rs.summaries"), 
+  col.names=T, row.names=F, quote=F)
+}
+
+# perform ldsc------------------------------------------------------------------
+mkdir out-norm-337k
+
+for i in {awake,bmi,chron,ever,fvc,height,quals,imp,neur,pulse,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 3
+#SBATCH -t 24:00:0
+
+.././munge_sumstats.py \
+--sumstats ../../gwas-norm-337k/$i-linear-rs.summaries \
+--out ../out-norm-337k/$i \
+--merge-alleles ../w_hm3.snplist
+
+.././ldsc.py \
+--h2 ../out-norm-337k/$i.sumstats.gz \
+--ref-ld-chr ../eur_w_ld_chr/ \
+--w-ld-chr ../eur_w_ld_chr/ \
+--out ../out-norm-337k/$i-ldsc
+">sh_script/ldsc-$i-norm-337k.sh
+done
+
+# submit jobs-------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,reaction,sbp,snoring,hyper,quals}; do
+sbatch -A snpher ../sh_script/ldsc-$i-norm-337k.sh
+done>../../job-records/ldsc-norm-337k
 
 ```
 

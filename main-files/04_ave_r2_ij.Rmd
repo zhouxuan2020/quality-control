@@ -807,20 +807,20 @@ for(i in 1:length(n)){
     dat1.2=read.table(paste0(dir,"summary/ave-r2-",nm2),stringsAsFactors = F)
     dat2.2=read.table(paste0(dir,"summary-run2/ave-r2-",nm2),stringsAsFactors = F)
     
-    start=min(c(dat1.1$V2,dat1.2$V2,dat2.1$V2,dat1.2$V2))
-    end=max(c(dat1.1$V2,dat1.2$V2,dat2.1$V2,dat1.2$V2))
+    start=min(c(dat1.1$V2,dat1.2$V2,dat2.1$V2,dat2.2$V2))
+    end=max(c(dat1.1$V2,dat1.2$V2,dat2.1$V2,dat2.2$V2))
     
       plot(dat1.1$V2, dat2.1$V2,
            xlim=c(start,end), ylim=c(start, end),
            xlab="1st run", ylab="2nd run", 
            main=paste0(m[j]," snps"," ",n[i]," non-european"), las=1,
-           cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
       points(dat1.2$V2, dat2.2$V2,
-           cex = 1.5, pch=21, col="white", bg="lightgray", lwd=0.5)
+           cex = 1.5, pch=21, col="white", bg="orange", lwd=0.5)
       abline(0, 1, col="darkgray", lwd=1.5, lty=1)
       
       if(i==1 & j==1) {legend("topleft", pch=19, legend=c("maf > .1","maf < .1"), 
-             col=c("orange", "lightgray"), cex=1.5, box.lty=0)}
+             col=c("darkgray", "orange"), cex=1.5, box.lty=0)}
   }
 }
 dev.off()
@@ -847,8 +847,8 @@ for(i in 1:length(n)){
     dat2.1=read.table(paste0(dir,"summary-run2/ave-r2-",nm1),stringsAsFactors = F)
     dat2.2=read.table(paste0(dir,"summary-run2/ave-r2-",nm2),stringsAsFactors = F)
     
-    start=min(c(dat1.1$V2,dat1.2$V2,dat2.1$V2,dat1.2$V2))
-    end=max(c(dat1.1$V2,dat1.2$V2,dat2.1$V2,dat1.2$V2))
+    start=min(c(dat1.1$V2,dat1.2$V2,dat2.1$V2,dat2.2$V2))
+    end=max(c(dat1.1$V2,dat1.2$V2,dat2.1$V2,dat2.2$V2))
     
       plot(dat1.1$V2, dat1.2$V2,
            xlim=c(start,end), ylim=c(start, end),
@@ -925,7 +925,6 @@ for(i in 1:length(n)){
 }
 
 ```
-
 
 ## varying levels of confouding
 
@@ -1278,12 +1277,17 @@ done>../job-records/bad-gwas
 
 m=10000
 nm=10k
-dir1=gen
-dir2=inflation
 
 for i in {.1,.01,.001}; do
-awk '{split($1, a, ":"); if (a[1]<8) print $1 }' $dir1/snps-unrel-maf$i.use | shuf | head -n $m >$dir2/left-snps-unrel-maf$i-$nm  
-awk '{split($1, a, ":"); if (a[1]>=8) print $1 }' $dir1/snps-unrel-maf$i.use | shuf | head -n $m >$dir2/right-snps-unrel-maf$i-$nm
+# define vars
+infile=gen/snps-unrel-maf$i.use
+left=inflation/left-snps-unrel-maf$i-$nm
+right=inflation/right-snps-unrel-maf$i-$nm
+
+awk '{split($1, a, ":");
+    if (a[1]<8) print $1 }' $infile | shuf | head -n $m >$left  
+awk '{split($1, a, ":");
+    if (a[1]>=8) print $1 }' $infile | shuf | head -n $m >$right
 done
 
 # compute r_ij using ldak -------------------------------------------------------
@@ -1354,20 +1358,15 @@ for(j in 1:length(maf)){
   }
 }
 
-# convert to rs system ---------------------------------------------------------
-n=(0k 1k 2k 3k 4k 5k 6k)
-for j in {0..6}; do
-for i in {.1,.01,.001}; do
-awk '(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}' doug/ukbb.ldsc summary/ave-r2-10k-snps-mix-pop-gwas-${n[$j]}-noneuro-maf$i > summary/ave-r2-10k-snps-mix-pop-gwas-${n[$j]}-noneuro-maf$i-rs
-done
-done
-
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 # extract LD score
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 # convert snp list to rs system ------------------------------------------------
-awk '(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}' doug/ukbb.ldsc gen/snps-unrel-maf.001.use > gen/snps-unrel-maf.001.use-rs
+infile=gen/snps-unrel-maf.001.use
+outfile=gen/snps-unrel-maf.001.use-rs
+awk '(NR==FNR){a[$1]; b[$1]=$2; next}
+     ($1 in a){print b[$1], $2}' doug/ukbb.ldsc $infile > $outfile
 
 #  extract ld scores -----------------------------------------------------------
 dir=ldsc/eur_w_ld_chr
