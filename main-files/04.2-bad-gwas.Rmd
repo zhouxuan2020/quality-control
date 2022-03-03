@@ -553,21 +553,22 @@ done
 
 ### calc aver2_j
 
-Note we previously computed aver2_j based using `geno-mix` data. see \@ref(calc_aver2_j).
+Note we previously computed aver2_j based using `geno-mix` data. see \@ref(aver2j).
+Results are stored in `summary/ave-r2-by-snp-badgwas`
 
 ### bolt-lmm
 
 ```{bash eval=F}
 
-mkdir gwas-norm-337k-out
+mkdir gwas-bolt-lmm-out
 
 for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
 
-gwas=gwas-norm-337k/$trait-linear.summaries
-aver2=summary/ave-r2-10k-snps-ukbb-norm
-out=gwas-norm-337k-out/$trait.out
+gwas=BOLT-LMM_v2.3.5/gwas-bad/$trait.out
+aver2=summary/ave-r2-by-snp-badgwas
+out=gwas-bolt-lmm-out/$trait.out
 
-awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
+awk 'NR>1 {print $1, ($9/$10)^2 }' $gwas > tmp/gwas.tmp    
 
 awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
      {if ($1 in a) print b[$1]; 
@@ -587,13 +588,14 @@ done
 
 ```{bash eval=F}
 
-mkdir gwas-norm-337k-out
+mkdir gwas-mix-pc-out
 
+for j in {1..10}; do
 for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
 
-gwas=gwas-norm-337k/$trait-linear.summaries
-aver2=summary/ave-r2-10k-snps-ukbb-norm
-out=gwas-norm-337k-out/$trait.out
+gwas=gwas-mix-$j'PC'/$trait-linear.summaries
+aver2=summary/ave-r2-by-snp-badgwas
+out=gwas-mix-pc-out/$trait-$j'PC'.out
 
 awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
 
@@ -607,6 +609,7 @@ paste tmp/gwas.tmp \
       | awk 'BEGIN{OFS=";" ; 
                   print "snp;chisq;aver2"}
              {$1=$1}1' > $out
+done
 done
 
 ```

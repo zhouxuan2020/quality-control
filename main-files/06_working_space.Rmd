@@ -1,5 +1,5 @@
 
-# compute $\sum_{i,j}^{m_1, m_2}r^2_{i,j}$ {#calc_aver2_j}
+# compute $\sum_{i,j}^{m_1, m_2}r^2_{i,j}$ 
 
 ## good GWAS-all qced snps
 
@@ -293,7 +293,7 @@ dev.off()
 
 ```
 
-## compute $\overline{r^2_j}$
+## compute aver2_j {#aver2j}
 
 1. compute average r2 for each i.
 ```{r eval=F}

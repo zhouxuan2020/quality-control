@@ -147,3 +147,5 @@ bad-gwass-all-qced-snps
 summary-10
 compute-overliner2_j
 mixed-pop-gwas-with-pc-as-covariates
+compute-sum_ijm_1-m_2r2_ij
+aver2j
