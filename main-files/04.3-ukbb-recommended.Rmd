@@ -180,7 +180,7 @@ rm -r $file-tmp
 
 ## GWAS-337k
 
-Here we do gwas for all recommended individuals. Previously we make bfiles of these individuals.
+Here we do gwas for all recommended individuals. Previously we made a bfile for all these individuals.
 
   * **bfile** (after QC) gen/geno-norm
   * **id list** ukbb-recommend.id
@@ -579,7 +579,185 @@ for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,reaction,sbp,snoring,hy
 sbatch -A snpher ../sh_script/ldsc-$i-norm-337k.sh
 done>../../job-records/ldsc-norm-337k
 
+# summary ----------------------------------------------------------------------
+
+grep Intercept *ldsc.log | awk '{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}' > ../../summary/ldsc-norm-337k
+
+R
+ldsc=read.table("summary/ldsc-norm-337k", header=F, stringsAsFactors = F)
+
+# get p-values for Wald tests
+# H0: intercept = 1
+alpha=0.05/14 # Bonferroni corrected alpha
+ldsc=data.frame(trait=ldsc$V1, est=ldsc$V2, se=ldsc$V3,
+                wald_p=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F),
+                sig=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F) < alpha,
+                stringsAsFactors = F)
 ```
+
+## aver2_j-337k
+
+### calc
+
+```{bash eval=F}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#  snp lists
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+# new directory
+mkdir inflation/norm
+mkdir inflation/norm/out
+
+# lista & listb
+m=10000
+infile=gen/snps-norm.use
+left=inflation/norm/left-snps
+right=inflation/norm/right-snps
+
+awk '{split($1, a, ":");
+    if (a[1]<8) print $1 }' $infile | shuf | head -n $m >$left  
+awk '{split($1, a, ":");
+    if (a[1]>=8) print $1 }' $infile | shuf | head -n $m >$right
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#  compute ave r^2_j
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+lista=../inflation/norm/right-snps
+listb=../inflation/norm/left-snps
+bfile=../gen/geno-norm
+out=../inflation/norm/out/10k-snps
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 60G
+#SBATCH -c 7
+#SBATCH -t 00:10:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-r-10k-snps
+
+# submit the job
+sbatch -A snpher ../sh_script/calc-r-10k-snps >../job-records/calc-r-norm
+
+#  compute ave r_j^2 for each i-------------------------------------------------
+R
+require(vroom)
+
+nm="10k-snps"
+dat=vroom(paste0("inflation/norm/out/",nm,".pairwise"), col_names=F)
+lista=read.table(paste0("inflation/norm/out/",nm,".predictorsa"), 
+                stringsAsFactors = F)
+listb=read.table(paste0("inflation/norm/out/",nm,".predictorsb"), 
+                stringsAsFactors = F)
+
+dat=dat[,-c(10001)]^2
+outb=data.frame(predictor=listb$V1, ave_r2=apply(dat,2, mean))
+outa=data.frame(predictor=lista$V1, ave_r2=apply(dat,1, mean))
+out=rbind(outa,outb)
+
+write.table(out,paste0("summary/ave-r2-",nm, "-ukbb-norm"), col.names=F, row.names=F, quote=F)  
+
+```
+
+### organize data
+
+```{bash eval=F}
+
+mkdir gwas-norm-337k-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=gwas-norm-337k/$trait-linear.summaries
+aver2=summary/ave-r2-10k-snps-ukbb-norm
+out=gwas-norm-337k-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2"}
+             {$1=$1}1' > $out
+done
+
+```
+
+### chisq ~ aver2_j
+
+```{R eval=F}
+
+#::::::::::::::::::::::::::::::::::::::::::::::
+# estimate slope: chisq ~ aver2_j
+#::::::::::::::::::::::::::::::::::::::::::::::
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+
+trait=traits[i]
+
+file=paste0("gwas-norm-337k-out/",trait,".out")
+
+dat=vroom(file, col_names=T, delim=";")
+dat=dat[complete.cases(dat),]
+mod=lm(chisq ~ aver2,data=dat)
+
+slope0=data.frame(trait=trait,
+                  slope_aver2=coef(mod)[2],
+                  p_aver2=summary(mod)$coefficients[,4][2],
+                  stringsAsFactors = F)
+
+if(i==1){slope=slope0} else {slope=rbind(slope,slope0)}
+
+}
+
+#::::::::::::::::::::::::::::::::::::::::::::::
+# plot chisq ~ aver2_j  
+#::::::::::::::::::::::::::::::::::::::::::::::
+# make a plot ------------------------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+        
+png(paste0("fig/chisq-by-aver2-bin-ukbb-recommend-337k.png"),
+      width = 50, height = 30, units = "cm", res=600)
+  par(mfrow=c(3,5))
+
+for (i in 1:length(traits)){
+    trait=traits[i]
+    file=paste0("gwas-norm-337k-out/",trait,".out")
+    dat=vroom(file, col_names=T, delim=";")
+    # bin a variable by quantile
+    cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+    dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+    # average chisq by bin values
+    out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+    out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+
+plot(out$bin_val, out$chisq_ave,
+         xlab="ave r2", ylab="ave chisq",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
+ }
+dev.off()
+
+```
+
 
 ## HE
 

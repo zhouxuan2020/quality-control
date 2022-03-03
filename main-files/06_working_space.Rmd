@@ -1,5 +1,5 @@
 
-# compute $\sum_{i,j}^{m_1, m_2}r^2_{i,j}$ 
+# compute $\sum_{i,j}^{m_1, m_2}r^2_{i,j}$ {#calc_aver2_j}
 
 ## good GWAS-all qced snps
 

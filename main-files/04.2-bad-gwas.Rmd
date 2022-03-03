@@ -4,6 +4,7 @@
 ## ID list {#badid}
 
 ### initial selection
+
 Randomly select participants with complete data and use the SNP list as for unrelated.
 
 ```{bash eval=F}
@@ -256,12 +257,15 @@ cat white.rand.93528 relatedness/asian-cut.05.keep relatedness/black-cut.05.keep
 
 ```
 
-## GWAS
+## GWAS-lm
 
-We use basic covariates only: age, sex and townsend
+### basic cov
+
+We use basic covariates only: age, sex and townsend.
 
 ```{bash eval=F}
-# covariates
+
+# covariates--------------------------------------------------------------------
 awk '{print $1, $2, $3, $4, $5}' covariates.use > basic-covariates.use
 awk 'NR<=5{print $0}' covariates.use-names > basic-covariates.use
 
@@ -286,6 +290,7 @@ echo "#"'!'"/bin/bash
 "> sh_script/$i-linear-chr-$j.sh
 done
 done
+
 # --covar ../phen/covariates.use
 
 # submit files------------------------------------------------------------------
@@ -329,6 +334,283 @@ done
 done
 
 ```
+
+### basic cov + PC
+Here we add PC one at a time until the tenth as covariates and conduct GWAS
+
+```{bash eval=F}
+# covariates--------------------------------------------------------------------
+R
+options(scipen = 999)
+require(vroom)
+cov=vroom("phen/covariates.phen", col_names=T)
+nm=c("eid","age","sex_gen", "townsend", paste0("pc",1:40))
+cov=cov[,nm]
+
+for(i in 1:10){
+  sel=c("eid","eid","age","sex_gen", "townsend", paste0("pc", 1:i))
+  out=cov[,sel]
+  file1=paste0("phen/covariates-basic-",i,"PC.use")
+  file2=paste0("phen/covariates-basic-",i,"PC.use-names")
+  write.table(out,file1, col.names=F, row.names=F,quote=F)
+  write.table(names(out),file2, col.names=F, row.names=F,quote=F)
+}
+
+# gwas--------------------------------------------------------------------------
+for j in {1..10}; do
+mkdir gwas-mix-$j'PC'
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+out=../gwas-mix-$j'PC'/$i-linear
+cov=../phen/covariates-basic-$j'PC'.use
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 6G
+#SBATCH -c 2
+#SBATCH -t 6:0:0
+
+./ldak5.1 --linear $out \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-mix \
+          --covar $cov \
+          --keep ../mix-pop-gwas.id \
+          --extract ../gen/snps-unrel-inds.use \
+          --max-threads 2 \
+"> sh_script/$i-linear-$j'PC'.sh
+done
+done
+
+# submit files------------------------------------------------------------------
+for j in {1..10}; do
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear-$j'PC'.sh
+done
+done>../job-records/gwas-mix-pc
+
+# check job completion----------------------------------------------------------
+file=job-records/gwas-mix-pc
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+
+```
+
+## GWAS-bolt-lmm
+
+```{bash eval=F}
+
+# make filter files-------------------------------------------------------------
+fam=gen/geno-mix.fam
+bim=gen/geno-mix.bim
+id=mix-pop-gwas.id
+snp=gen/snps-unrel-inds.use
+id_remove=BOLT-LMM_v2.3.5/mix-pop-gwas-id.exclude
+snp_exclude=BOLT-LMM_v2.3.5/snps-unrel-inds.remove
+
+awk 'NR==FNR {a[$1];next} 
+     !($2 in a) {print $2}' $snp $bim > $snp_exclude
+# note the list is empty because $snp & $bim contain the same list
+     
+awk 'NR==FNR {a[$1];next} 
+     !($1 in a) {print $0}' $id $fam > $id_remove
+
+# organize phenotype files------------------------------------------------------
+R
+options(scipen = 999)
+require(vroom)
+
+# covariate file
+cov=vroom("phen/covariates.phen", col_names=T)
+nm=c("age","sex_gen", "townsend" ,paste0("pc",1:40))
+
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+    trait=traits[i]
+    dat=vroom(paste0("phen/continuous-traits/",trait,".raw.pheno"), col_names=F)
+    m=match(dat$X1,cov$eid)
+    
+    out=data.frame(FID=dat$X1,
+                   IID=dat$X2,
+                   PHENO=dat$X3,
+                   cov[m,nm])
+    old=names(out)
+    new=c(names(out)[1:3], paste0("COV",1:43))
+    names(out)=new
+    write.table(out,paste0("BOLT-LMM_v2.3.5/dat/",trait,".dat"), col.names=T,
+                row.names=F, quote=F)
+    if(i==1){
+            out.nm=data.frame(name=new,true_name=old, stringsAsFactors=F)
+            write.table(out.nm,"BOLT-LMM_v2.3.5/dat/cov-names", 
+            col.names=T, row.names=F, quote=F)
+            }
+}
+
+# model SNPs--------------------------------------------------------------------
+# subset snps used in GRM for BOLT-LMM
+# we previously thinned SNPs: see 'relatedness filtering' section of bad GWAS
+# Now we just merge them across chromsomes
+out=thin/geno-mix-thin-snps
+rm $out 
+for i in {1..22}; do
+awk '{print $0}' thin/thin-chr$i.in >> $out
+done
+
+# run BOLT-LMM------------------------------------------------------------------
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+dir=../gwas-bad
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 5G
+#SBATCH -c 10
+#SBATCH -t 5:0:0
+
+../bolt --bfile=../gen/geno-mix \
+         --phenoFile=../dat/$i.dat \
+         --phenoCol=PHENO \
+         --remove=../mix-pop-gwas-id.exclude\
+         --lmm \
+         --LDscoresFile=../tables/LDSCORE.1000G_EUR.tab.gz \
+         --LDscoresMatchBp \
+         --covarFile=../dat/$i.dat \
+         --qCovarCol=COV{1:3}\
+         --modelSnps=../geno-mix-thin-snps \
+         --maxMissingPerSnp=1 \
+         --maxMissingPerIndiv=1 \
+         --statsFile=$dir/$i.out \
+         --numThreads=10 \
+       2>&1 | tee $dir/$i.log
+"> sh_script/$i-bolt-lmm.sh
+done
+
+# submit scripts
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-bolt-lmm.sh
+done>../job-records/bolt-lmm-bad
+
+# check job completion----------------------------------------------------------
+file=job-records/bolt-lmm-bad
+jobs=`awk '{print $4}' $file`
+mkdir $file-tmp
+for i in $jobs; do
+jobinfo $i | awk -F ":" -v i=$i '$1~/Name/ {print i, $2}' >> $file-tmp/name.tmp 
+jobinfo $i | awk -F ":" '$1~/State/ {print$2}' >> $file-tmp/state.tmp
+jobinfo $i | awk -F ":" '$1~/Cores/ {print$2}' >> $file-tmp/cores.tmp
+jobinfo $i | awk -F ":" '$1~/Used walltime/ {print $2 ":" $3 ":" $4}' >> $file-tmp/time.tmp
+jobinfo $i | awk -F ":" '$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}' >> $file-tmp/mem.tmp
+done
+paste $file-tmp/name.tmp \
+      $file-tmp/state.tmp \
+      $file-tmp/cores.tmp \
+      $file-tmp/time.tmp \
+      $file-tmp/mem.tmp \
+      | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
+rm -r $file-tmp
+
+# organize results -------------------------------------------------------------
+mkdir gwas-norm-337k-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=gwas-norm-337k/$trait-linear.summaries
+aver2=summary/ave-r2-10k-snps-ukbb-norm
+out=gwas-norm-337k-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2"}
+             {$1=$1}1' > $out
+done
+
+```
+
+## aver2_j
+
+### calc aver2_j
+
+Note we previously computed aver2_j based using `geno-mix` data. see \@ref(calc_aver2_j).
+
+### bolt-lmm
+
+```{bash eval=F}
+
+mkdir gwas-norm-337k-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=gwas-norm-337k/$trait-linear.summaries
+aver2=summary/ave-r2-10k-snps-ukbb-norm
+out=gwas-norm-337k-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2"}
+             {$1=$1}1' > $out
+done
+
+```
+
+### basic cov + PC
+
+```{bash eval=F}
+
+mkdir gwas-norm-337k-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=gwas-norm-337k/$trait-linear.summaries
+aver2=summary/ave-r2-10k-snps-ukbb-norm
+out=gwas-norm-337k-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2"}
+             {$1=$1}1' > $out
+done
+
+```
+
 
 ## ldsc intercept
 

@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Page not found | GWAS Quality Control</title>
-  <meta name="description" content="Page not found | GWAS Quality Control" />
+  <title>4 Mathematical Details | GWAS Quality Control</title>
+  <meta name="description" content="4 Mathematical Details | GWAS Quality Control" />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Page not found | GWAS Quality Control" />
+  <meta property="og:title" content="4 Mathematical Details | GWAS Quality Control" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Page not found | GWAS Quality Control" />
+  <meta name="twitter:title" content="4 Mathematical Details | GWAS Quality Control" />
   
   
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-
+<link rel="prev" href="good-vs-bad-gwas.html"/>
+<link rel="next" href="chi-square-overliner2_j.html"/>
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -51,6 +51,10 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
@@ -118,6 +122,28 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -361,19 +387,81 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="page-not-found" class="section level1">
-<h1>Page not found</h1>
-<p>The page you requested cannot be found (perhaps it was moved or renamed).</p>
-<p>You may want to try searching to find the page's new location, or use
-the table of contents to find the page you are looking for.</p>
+<div id="mathematical-details" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Mathematical Details</h1>
+<p>Here we detail the mathematics behind the project.</p>
+<div id="trk_rightk_left" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> <span class="math inline">\(tr(K_{right}K_{left})\)</span></h2>
+</div>
+<div id="verification" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> verification</h2>
+<p>Here we want to verify the followings:</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(r^2_{i,j} \overset{H_0}{\sim} beta (\alpha=(k-1)/2, \beta=(n-k)/2)\)</span>, where k= # of regressors including the intercept (so for an univariate regression, k=2), and n = sample size.</li>
+</ol>
+<ul>
+<li><span class="math inline">\(E[r^2_{i,j}]=\alpha/(\alpha + \beta)\)</span></li>
+<li><span class="math inline">\(var[r^2_{i,j}]=\alpha \beta/[(\alpha+\beta)^2(\alpha+\beta+1)]\)</span></li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li><span class="math inline">\(T = \sum_{i,j}^{m_1,m_2} r^2_{i,j} \overset{H_0}{\sim} N(1/n, var[r^2_{i,j}])\)</span></li>
+</ol>
+<p>To do so, we computed <span class="math inline">\(r^2_{i,j}=cor(x_i, x_j)^2\)</span> for <span class="math inline">\(n = 1k , m_1=m_2=1k\)</span> in following ways.</p>
+<ol style="list-style-type: decimal">
+<li><p>simulated data: <span class="math inline">\(x \sim N(0,1)\)</span></p></li>
+<li><p>real genotype data: <span class="math inline">\(x\)</span> from two chromosomes.</p></li>
+</ol>
+<p>We expect to see:</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(r^2_{i,j} \overset{H_0}{\sim} beta (\alpha=0.5, \beta=499)\)</span></li>
+<li><span class="math inline">\(T \overset{H_0}{\sim} N(1/1000, var[r^2_{i,j}])\)</span></li>
+</ol>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="mathematical-details.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#::</span></span>
+<span id="cb6-2"><a href="mathematical-details.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># verify distribution of r^2</span></span>
+<span id="cb6-3"><a href="mathematical-details.html#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#::</span></span>
+<span id="cb6-4"><a href="mathematical-details.html#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="mathematical-details.html#cb6-5" aria-hidden="true" tabindex="-1"></a>n<span class="ot">=</span><span class="dv">100000</span></span>
+<span id="cb6-6"><a href="mathematical-details.html#cb6-6" aria-hidden="true" tabindex="-1"></a>k<span class="ot">=</span><span class="dv">2</span></span>
+<span id="cb6-7"><a href="mathematical-details.html#cb6-7" aria-hidden="true" tabindex="-1"></a>alpha<span class="ot">=</span>(k<span class="dv">-1</span>)<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb6-8"><a href="mathematical-details.html#cb6-8" aria-hidden="true" tabindex="-1"></a>beta<span class="ot">=</span>(n<span class="sc">-</span>k)<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb6-9"><a href="mathematical-details.html#cb6-9" aria-hidden="true" tabindex="-1"></a>m<span class="ot">=</span><span class="dv">1000</span> </span>
+<span id="cb6-10"><a href="mathematical-details.html#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="mathematical-details.html#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>m){</span>
+<span id="cb6-12"><a href="mathematical-details.html#cb6-12" aria-hidden="true" tabindex="-1"></a>  x1<span class="ot">=</span><span class="fu">rnorm</span>(n)</span>
+<span id="cb6-13"><a href="mathematical-details.html#cb6-13" aria-hidden="true" tabindex="-1"></a>  x2<span class="ot">=</span><span class="fu">rnorm</span>(n)</span>
+<span id="cb6-14"><a href="mathematical-details.html#cb6-14" aria-hidden="true" tabindex="-1"></a>  y<span class="ot">=</span><span class="fu">cor</span>(x1,x2)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb6-15"><a href="mathematical-details.html#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(i<span class="sc">==</span><span class="dv">1</span>){out<span class="ot">=</span>y} <span class="cf">else</span> {out<span class="ot">=</span><span class="fu">c</span>(out,y)}</span>
+<span id="cb6-16"><a href="mathematical-details.html#cb6-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-17"><a href="mathematical-details.html#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="mathematical-details.html#cb6-18" aria-hidden="true" tabindex="-1"></a>x<span class="ot">=</span><span class="fu">seq</span>(<span class="fl">0.00000001</span>,<span class="fl">0.0015</span>,<span class="fl">0.000001</span>)</span>
+<span id="cb6-19"><a href="mathematical-details.html#cb6-19" aria-hidden="true" tabindex="-1"></a>density<span class="ot">=</span><span class="fu">dbeta</span>(x, alpha, beta)</span>
+<span id="cb6-20"><a href="mathematical-details.html#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen=</span><span class="dv">0</span>)</span>
+<span id="cb6-21"><a href="mathematical-details.html#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(out, <span class="at">breaks=</span><span class="dv">100</span>, <span class="at">freq=</span>F, <span class="at">main=</span><span class="st">&quot;&quot;</span>, </span>
+<span id="cb6-22"><a href="mathematical-details.html#cb6-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">col=</span><span class="st">&quot;lightgray&quot;</span>, <span class="at">border=</span><span class="st">&quot;lightgray&quot;</span>,</span>
+<span id="cb6-23"><a href="mathematical-details.html#cb6-23" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;r^2&quot;</span>, <span class="at">las=</span><span class="dv">1</span>)</span>
+<span id="cb6-24"><a href="mathematical-details.html#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x, density, <span class="at">col=</span><span class="st">&quot;red&quot;</span>)</span>
+<span id="cb6-25"><a href="mathematical-details.html#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co">#mean(out)</span></span>
+<span id="cb6-26"><a href="mathematical-details.html#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">#1/n</span></span>
+<span id="cb6-27"><a href="mathematical-details.html#cb6-27" aria-hidden="true" tabindex="-1"></a>exp<span class="ot">=</span>alpha<span class="sc">/</span>(alpha<span class="sc">+</span>beta)</span>
+<span id="cb6-28"><a href="mathematical-details.html#cb6-28" aria-hidden="true" tabindex="-1"></a>var<span class="ot">=</span>alpha<span class="sc">*</span>beta<span class="sc">/</span>(((alpha<span class="sc">+</span>beta)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">*</span>(alpha<span class="sc">+</span>beta<span class="sc">+</span><span class="dv">1</span>))</span>
+<span id="cb6-29"><a href="mathematical-details.html#cb6-29" aria-hidden="true" tabindex="-1"></a>exp</span>
+<span id="cb6-30"><a href="mathematical-details.html#cb6-30" aria-hidden="true" tabindex="-1"></a>var</span>
+<span id="cb6-31"><a href="mathematical-details.html#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="mathematical-details.html#cb6-32" aria-hidden="true" tabindex="-1"></a>exp<span class="sc">*</span>n</span>
+<span id="cb6-33"><a href="mathematical-details.html#cb6-33" aria-hidden="true" tabindex="-1"></a>var<span class="sc">*</span>n</span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>using real data</li>
+</ol>
+
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-
+<a href="good-vs-bad-gwas.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="chi-square-overliner2_j.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -404,7 +492,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/%s",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/03-maths.Rmd",
 "text": "Edit"
 },
 "history": {
