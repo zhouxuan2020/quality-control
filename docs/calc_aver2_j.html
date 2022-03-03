@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>12 compute \(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\) | GWAS Quality Control</title>
+  <meta name="description" content="12 compute \(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\) | GWAS Quality Control" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="12 compute \(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\) | GWAS Quality Control" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="12 compute \(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\) | GWAS Quality Control" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="related-individuals.html"/>
+
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Quality Control Project</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> General Info</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#topic"><i class="fa fa-check"></i><b>1.1</b> Topic</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#frequently-used-commands"><i class="fa fa-check"></i><b>1.2</b> Frequently used commands</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="summaries.html"><a href="summaries.html"><i class="fa fa-check"></i><b>2</b> Summaries</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="summaries.html"><a href="summaries.html#good-gwas"><i class="fa fa-check"></i><b>2.1</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher"><i class="fa fa-check"></i><b>2.1.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.1.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression"><i class="fa fa-check"></i><b>2.1.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="summaries.html"><a href="summaries.html#bad-gwas"><i class="fa fa-check"></i><b>2.2</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-1"><i class="fa fa-check"></i><b>2.2.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.2.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-1"><i class="fa fa-check"></i><b>2.2.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="summaries.html"><a href="summaries.html#ukbb-recommended"><i class="fa fa-check"></i><b>2.3</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-2"><i class="fa fa-check"></i><b>2.3.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.3.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-2"><i class="fa fa-check"></i><b>2.3.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="summaries.html"><a href="summaries.html#control-gwas"><i class="fa fa-check"></i><b>2.4</b> Control GWAS</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-3"><i class="fa fa-check"></i><b>2.4.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.4.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-3"><i class="fa fa-check"></i><b>2.4.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html"><i class="fa fa-check"></i><b>3</b> Good VS Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-statistics-ld-score"><i class="fa fa-check"></i><b>3.1</b> test statistics ~ LD score</a></li>
+<li class="chapter" data-level="3.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#new-models"><i class="fa fa-check"></i><b>3.2</b> New models?</a></li>
+<li class="chapter" data-level="3.3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#ld-scores-based-on-individual-level-data"><i class="fa fa-check"></i><b>3.3</b> LD scores based on individual level data</a></li>
+<li class="chapter" data-level="3.4" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-the-new-model"><i class="fa fa-check"></i><b>3.4</b> Test the new model</a></li>
+<li class="chapter" data-level="3.5" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#predictors-of-inflation"><i class="fa fa-check"></i><b>3.5</b> predictors of inflation?</a></li>
+<li class="chapter" data-level="3.6" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#regress-bad-chisq-mean-r2_j"><i class="fa fa-check"></i><b>3.6</b> regress bad chisq ~ mean r^2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="mathematical-details.html"><a href="mathematical-details.html"><i class="fa fa-check"></i><b>4</b> Mathematical Details</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="mathematical-details.html"><a href="mathematical-details.html#trk_rightk_left"><i class="fa fa-check"></i><b>4.1</b> <span class="math inline">\(tr(K_{right}K_{left})\)</span></a></li>
+<li class="chapter" data-level="4.2" data-path="mathematical-details.html"><a href="mathematical-details.html#verification"><i class="fa fa-check"></i><b>4.2</b> verification</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html"><i class="fa fa-check"></i><b>5</b> chi square ~ <span class="math inline">\(\overline{r^2_j}\)</span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#overliner2_j-choice-of-snps"><i class="fa fa-check"></i><b>5.1</b> <span class="math inline">\(\overline{r^2_j}\)</span> &amp; choice of SNPs</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#number-of-snps"><i class="fa fa-check"></i><b>5.1.1</b> number of SNPs</a></li>
+<li class="chapter" data-level="5.1.2" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#maf"><i class="fa fa-check"></i><b>5.1.2</b> maf</a></li>
+<li class="chapter" data-level="5.1.3" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#summary"><i class="fa fa-check"></i><b>5.1.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#varying-levels-of-confouding"><i class="fa fa-check"></i><b>5.2</b> varying levels of confouding</a></li>
+<li class="chapter" data-level="5.3" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#results-summary"><i class="fa fa-check"></i><b>5.3</b> results summary</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="good.html"><a href="good.html"><i class="fa fa-check"></i><b>6</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="good.html"><a href="good.html#goodid"><i class="fa fa-check"></i><b>6.1</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="6.2" data-path="good.html"><a href="good.html#extract-covariates"><i class="fa fa-check"></i><b>6.2</b> extract covariates</a></li>
+<li class="chapter" data-level="6.3" data-path="good.html"><a href="good.html#gwas"><i class="fa fa-check"></i><b>6.3</b> GWAS</a></li>
+<li class="chapter" data-level="6.4" data-path="good.html"><a href="good.html#ldsc-intercept"><i class="fa fa-check"></i><b>6.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="good.html"><a href="good.html#under-gcta"><i class="fa fa-check"></i><b>6.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="6.4.2" data-path="good.html"><a href="good.html#under-ldak-thin"><i class="fa fa-check"></i><b>6.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="6.4.3" data-path="good.html"><a href="good.html#summary-1"><i class="fa fa-check"></i><b>6.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="good.html"><a href="good.html#reml"><i class="fa fa-check"></i><b>6.5</b> REML</a>
+<ul>
+<li class="chapter" data-level="6.5.1" data-path="good.html"><a href="good.html#making-grms"><i class="fa fa-check"></i><b>6.5.1</b> making grms</a></li>
+<li class="chapter" data-level="6.5.2" data-path="good.html"><a href="good.html#fast-reml"><i class="fa fa-check"></i><b>6.5.2</b> fast-reml</a></li>
+<li class="chapter" data-level="6.5.3" data-path="good.html"><a href="good.html#inflation-test"><i class="fa fa-check"></i><b>6.5.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="good.html"><a href="good.html#he"><i class="fa fa-check"></i><b>6.6</b> HE</a>
+<ul>
+<li class="chapter" data-level="6.6.1" data-path="good.html"><a href="good.html#estimation"><i class="fa fa-check"></i><b>6.6.1</b> estimation</a></li>
+<li class="chapter" data-level="6.6.2" data-path="good.html"><a href="good.html#summary-2"><i class="fa fa-check"></i><b>6.6.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="bad.html"><a href="bad.html"><i class="fa fa-check"></i><b>7</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="bad.html"><a href="bad.html#badid"><i class="fa fa-check"></i><b>7.1</b> ID list</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="bad.html"><a href="bad.html#initial-selection"><i class="fa fa-check"></i><b>7.1.1</b> initial selection</a></li>
+<li class="chapter" data-level="7.1.2" data-path="bad.html"><a href="bad.html#relatedness-filtering"><i class="fa fa-check"></i><b>7.1.2</b> relatedness filtering</a></li>
+<li class="chapter" data-level="7.1.3" data-path="bad.html"><a href="bad.html#final-list"><i class="fa fa-check"></i><b>7.1.3</b> final list</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="bad.html"><a href="bad.html#gwas-lm"><i class="fa fa-check"></i><b>7.2</b> GWAS-lm</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="bad.html"><a href="bad.html#basic-cov"><i class="fa fa-check"></i><b>7.2.1</b> basic cov</a></li>
+<li class="chapter" data-level="7.2.2" data-path="bad.html"><a href="bad.html#basic-cov-pc"><i class="fa fa-check"></i><b>7.2.2</b> basic cov + PC</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="bad.html"><a href="bad.html#gwas-bolt-lmm"><i class="fa fa-check"></i><b>7.3</b> GWAS-bolt-lmm</a></li>
+<li class="chapter" data-level="7.4" data-path="bad.html"><a href="bad.html#aver2_j"><i class="fa fa-check"></i><b>7.4</b> aver2_j</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="bad.html"><a href="bad.html#calc-aver2_j"><i class="fa fa-check"></i><b>7.4.1</b> calc aver2_j</a></li>
+<li class="chapter" data-level="7.4.2" data-path="bad.html"><a href="bad.html#bolt-lmm"><i class="fa fa-check"></i><b>7.4.2</b> bolt-lmm</a></li>
+<li class="chapter" data-level="7.4.3" data-path="bad.html"><a href="bad.html#basic-cov-pc-1"><i class="fa fa-check"></i><b>7.4.3</b> basic cov + PC</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="bad.html"><a href="bad.html#ldsc-intercept-1"><i class="fa fa-check"></i><b>7.5</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="7.5.1" data-path="bad.html"><a href="bad.html#under-gcta-1"><i class="fa fa-check"></i><b>7.5.1</b> under gcta</a></li>
+<li class="chapter" data-level="7.5.2" data-path="bad.html"><a href="bad.html#under-ldak-thin-1"><i class="fa fa-check"></i><b>7.5.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="7.5.3" data-path="bad.html"><a href="bad.html#summary-3"><i class="fa fa-check"></i><b>7.5.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="7.6" data-path="bad.html"><a href="bad.html#reml-1"><i class="fa fa-check"></i><b>7.6</b> REML</a>
+<ul>
+<li class="chapter" data-level="7.6.1" data-path="bad.html"><a href="bad.html#making-grms-1"><i class="fa fa-check"></i><b>7.6.1</b> making grms</a></li>
+<li class="chapter" data-level="7.6.2" data-path="bad.html"><a href="bad.html#fast-reml-1"><i class="fa fa-check"></i><b>7.6.2</b> fast-reml</a></li>
+<li class="chapter" data-level="7.6.3" data-path="bad.html"><a href="bad.html#inflation-test-1"><i class="fa fa-check"></i><b>7.6.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="7.7" data-path="bad.html"><a href="bad.html#he-1"><i class="fa fa-check"></i><b>7.7</b> HE</a>
+<ul>
+<li class="chapter" data-level="7.7.1" data-path="bad.html"><a href="bad.html#estimation-1"><i class="fa fa-check"></i><b>7.7.1</b> estimation</a></li>
+<li class="chapter" data-level="7.7.2" data-path="bad.html"><a href="bad.html#summary-4"><i class="fa fa-check"></i><b>7.7.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ukbb.html"><a href="ukbb.html"><i class="fa fa-check"></i><b>8</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ukbb.html"><a href="ukbb.html#total-n-337k"><i class="fa fa-check"></i><b>8.1</b> total N = 337k</a></li>
+<li class="chapter" data-level="8.2" data-path="ukbb.html"><a href="ukbb.html#qc-of-hp3-snps"><i class="fa fa-check"></i><b>8.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="8.3" data-path="ukbb.html"><a href="ukbb.html#gwas-100k"><i class="fa fa-check"></i><b>8.3</b> GWAS-100k</a></li>
+<li class="chapter" data-level="8.4" data-path="ukbb.html"><a href="ukbb.html#gwas-337k"><i class="fa fa-check"></i><b>8.4</b> GWAS-337k</a></li>
+<li class="chapter" data-level="8.5" data-path="ukbb.html"><a href="ukbb.html#ldsc-100k"><i class="fa fa-check"></i><b>8.5</b> ldsc-100k</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="ukbb.html"><a href="ukbb.html#under-gcta-2"><i class="fa fa-check"></i><b>8.5.1</b> under gcta</a></li>
+<li class="chapter" data-level="8.5.2" data-path="ukbb.html"><a href="ukbb.html#under-ldak-thin-2"><i class="fa fa-check"></i><b>8.5.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="8.5.3" data-path="ukbb.html"><a href="ukbb.html#summary-5"><i class="fa fa-check"></i><b>8.5.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="ukbb.html"><a href="ukbb.html#ldsc-337k"><i class="fa fa-check"></i><b>8.6</b> ldsc-337k</a></li>
+<li class="chapter" data-level="8.7" data-path="ukbb.html"><a href="ukbb.html#aver2_j-337k"><i class="fa fa-check"></i><b>8.7</b> aver2_j-337k</a>
+<ul>
+<li class="chapter" data-level="8.7.1" data-path="ukbb.html"><a href="ukbb.html#calc"><i class="fa fa-check"></i><b>8.7.1</b> calc</a></li>
+<li class="chapter" data-level="8.7.2" data-path="ukbb.html"><a href="ukbb.html#organize-data"><i class="fa fa-check"></i><b>8.7.2</b> organize data</a></li>
+<li class="chapter" data-level="8.7.3" data-path="ukbb.html"><a href="ukbb.html#chisq-aver2_j"><i class="fa fa-check"></i><b>8.7.3</b> chisq ~ aver2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="8.8" data-path="ukbb.html"><a href="ukbb.html#he-2"><i class="fa fa-check"></i><b>8.8</b> HE</a>
+<ul>
+<li class="chapter" data-level="8.8.1" data-path="ukbb.html"><a href="ukbb.html#making-grms-2"><i class="fa fa-check"></i><b>8.8.1</b> making grms</a></li>
+<li class="chapter" data-level="8.8.2" data-path="ukbb.html"><a href="ukbb.html#estimation-2"><i class="fa fa-check"></i><b>8.8.2</b> estimation</a></li>
+<li class="chapter" data-level="8.8.3" data-path="ukbb.html"><a href="ukbb.html#summary-6"><i class="fa fa-check"></i><b>8.8.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="control.html"><a href="control.html"><i class="fa fa-check"></i><b>9</b> control GWAS</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="control.html"><a href="control.html#id-list"><i class="fa fa-check"></i><b>9.1</b> ID list</a></li>
+<li class="chapter" data-level="9.2" data-path="control.html"><a href="control.html#qc-of-hp3-snps-1"><i class="fa fa-check"></i><b>9.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="9.3" data-path="control.html"><a href="control.html#gwas-1"><i class="fa fa-check"></i><b>9.3</b> GWAS</a></li>
+<li class="chapter" data-level="9.4" data-path="control.html"><a href="control.html#ldsc-intercept-2"><i class="fa fa-check"></i><b>9.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="control.html"><a href="control.html#under-gcta-3"><i class="fa fa-check"></i><b>9.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="9.4.2" data-path="control.html"><a href="control.html#under-ldak-thin-3"><i class="fa fa-check"></i><b>9.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="9.4.3" data-path="control.html"><a href="control.html#summary-7"><i class="fa fa-check"></i><b>9.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="control.html"><a href="control.html#he-3"><i class="fa fa-check"></i><b>9.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="9.5.1" data-path="control.html"><a href="control.html#making-grms-3"><i class="fa fa-check"></i><b>9.5.1</b> making grms</a></li>
+<li class="chapter" data-level="9.5.2" data-path="control.html"><a href="control.html#estimation-3"><i class="fa fa-check"></i><b>9.5.2</b> estimation</a></li>
+<li class="chapter" data-level="9.5.3" data-path="control.html"><a href="control.html#summary-8"><i class="fa fa-check"></i><b>9.5.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html"><i class="fa fa-check"></i><b>10</b> inclusive GWAS</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#qc"><i class="fa fa-check"></i><b>10.1</b> QC</a></li>
+<li class="chapter" data-level="10.2" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#gwas-telomere-length"><i class="fa fa-check"></i><b>10.2</b> gwas-telomere length</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#aver2_j-1"><i class="fa fa-check"></i><b>10.2.1</b> aver2_j</a></li>
+<li class="chapter" data-level="10.2.2" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#organize-data-1"><i class="fa fa-check"></i><b>10.2.2</b> organize data</a></li>
+<li class="chapter" data-level="10.2.3" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#chisq-aver2_j-1"><i class="fa fa-check"></i><b>10.2.3</b> chisq ~ aver2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#notesconcerns"><i class="fa fa-check"></i><b>10.3</b> notes/concerns</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="related-individuals.html"><a href="related-individuals.html"><i class="fa fa-check"></i><b>11</b> related individuals</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="related-individuals.html"><a href="related-individuals.html#genotyped-snps"><i class="fa fa-check"></i><b>11.1</b> genotyped SNPs</a>
+<ul>
+<li class="chapter" data-level="11.1.1" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-2"><i class="fa fa-check"></i><b>11.1.1</b> aver2_j</a></li>
+<li class="chapter" data-level="11.1.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-2"><i class="fa fa-check"></i><b>11.1.2</b> gwas</a></li>
+<li class="chapter" data-level="11.1.3" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-2"><i class="fa fa-check"></i><b>11.1.3</b> organize data</a></li>
+<li class="chapter" data-level="11.1.4" data-path="related-individuals.html"><a href="related-individuals.html#summary-9"><i class="fa fa-check"></i><b>11.1.4</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="related-individuals.html"><a href="related-individuals.html#hapmap3-snps"><i class="fa fa-check"></i><b>11.2</b> hapmap3 SNPs</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype-data"><i class="fa fa-check"></i><b>11.2.1</b> genotype data</a></li>
+<li class="chapter" data-level="11.2.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-3"><i class="fa fa-check"></i><b>11.2.2</b> gwas</a></li>
+<li class="chapter" data-level="11.2.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-3"><i class="fa fa-check"></i><b>11.2.3</b> aver2_j</a></li>
+<li class="chapter" data-level="11.2.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-3"><i class="fa fa-check"></i><b>11.2.4</b> organize data</a></li>
+<li class="chapter" data-level="11.2.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-2"><i class="fa fa-check"></i><b>11.2.5</b> chisq ~ aver2_j</a></li>
+<li class="chapter" data-level="11.2.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j"><i class="fa fa-check"></i><b>11.2.6</b> inflation ~ aver2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="related-individuals.html"><a href="related-individuals.html#mix-unrel-rel"><i class="fa fa-check"></i><b>11.3</b> mix unrel &amp; rel</a>
+<ul>
+<li class="chapter" data-level="11.3.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype"><i class="fa fa-check"></i><b>11.3.1</b> genotype</a></li>
+<li class="chapter" data-level="11.3.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-4"><i class="fa fa-check"></i><b>11.3.2</b> gwas</a></li>
+<li class="chapter" data-level="11.3.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-4"><i class="fa fa-check"></i><b>11.3.3</b> aver2_j</a></li>
+<li class="chapter" data-level="11.3.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-4"><i class="fa fa-check"></i><b>11.3.4</b> organize data</a></li>
+<li class="chapter" data-level="11.3.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-3"><i class="fa fa-check"></i><b>11.3.5</b> chisq ~ aver2_j</a></li>
+<li class="chapter" data-level="11.3.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j-1"><i class="fa fa-check"></i><b>11.3.6</b> inflation ~ aver2_j</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html"><i class="fa fa-check"></i><b>12</b> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#good-gwas-all-qced-snps"><i class="fa fa-check"></i><b>12.1</b> good GWAS-all qced snps</a></li>
+<li class="chapter" data-level="12.2" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#good-gwass--ldak-thin-snps"><i class="fa fa-check"></i><b>12.2</b> good GWASs- ldak-thin snps</a></li>
+<li class="chapter" data-level="12.3" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#bad-gwass-all-qced-snps"><i class="fa fa-check"></i><b>12.3</b> bad GWASs-all qced snps</a></li>
+<li class="chapter" data-level="12.4" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#summary-10"><i class="fa fa-check"></i><b>12.4</b> summary</a></li>
+<li class="chapter" data-level="12.5" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#compute-overliner2_j"><i class="fa fa-check"></i><b>12.5</b> compute <span class="math inline">\(\overline{r^2_j}\)</span></a></li>
+<li class="chapter" data-level="12.6" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#mixed-pop-gwas-with-pc-as-covariates"><i class="fa fa-check"></i><b>12.6</b> mixed pop GWAS with PC as covariates</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">GWAS Quality Control</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="calc_aver2_j" class="section level1" number="12">
+<h1><span class="header-section-number">12</span> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></h1>
+<div id="good-gwas-all-qced-snps" class="section level2" number="12.1">
+<h2><span class="header-section-number">12.1</span> good GWAS-all qced snps</h2>
+<div class="sourceCode" id="cb86"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb86-1"><a href="calc_aver2_j.html#cb86-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-2"><a href="calc_aver2_j.html#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="co">#::::</span></span>
+<span id="cb86-3"><a href="calc_aver2_j.html#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="co"># here we define a R function to compute sum(r^2)</span></span>
+<span id="cb86-4"><a href="calc_aver2_j.html#cb86-4" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb86-5"><a href="calc_aver2_j.html#cb86-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-6"><a href="calc_aver2_j.html#cb86-6" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;# here we define a R function to compute sum(r^2)</span></span>
+<span id="cb86-7"><a href="calc_aver2_j.html#cb86-7" aria-hidden="true" tabindex="-1"></a><span class="st">options(stringsAsFactors=FALSE)</span></span>
+<span id="cb86-8"><a href="calc_aver2_j.html#cb86-8" aria-hidden="true" tabindex="-1"></a><span class="st">ip&lt;-commandArgs(trailingOnly=TRUE)</span></span>
+<span id="cb86-9"><a href="calc_aver2_j.html#cb86-9" aria-hidden="true" tabindex="-1"></a><span class="st">options(warn=1)</span></span>
+<span id="cb86-10"><a href="calc_aver2_j.html#cb86-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-11"><a href="calc_aver2_j.html#cb86-11" aria-hidden="true" tabindex="-1"></a><span class="st">require(vroom)</span></span>
+<span id="cb86-12"><a href="calc_aver2_j.html#cb86-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-13"><a href="calc_aver2_j.html#cb86-13" aria-hidden="true" tabindex="-1"></a><span class="st">compute_sumr2=function(filein, fileout){</span></span>
+<span id="cb86-14"><a href="calc_aver2_j.html#cb86-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-15"><a href="calc_aver2_j.html#cb86-15" aria-hidden="true" tabindex="-1"></a><span class="st">  dir=</span><span class="dt">\&quot;</span><span class="st">/home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/inflation/</span><span class="dt">\&quot;</span></span>
+<span id="cb86-16"><a href="calc_aver2_j.html#cb86-16" aria-hidden="true" tabindex="-1"></a><span class="st">  dat=vroom(paste0(dir,</span><span class="dt">\&quot;</span><span class="st">out/</span><span class="dt">\&quot;</span><span class="st">, filein), col_names=F)</span></span>
+<span id="cb86-17"><a href="calc_aver2_j.html#cb86-17" aria-hidden="true" tabindex="-1"></a><span class="st">  r=dat[lower.tri(dat, diag = T)]</span></span>
+<span id="cb86-18"><a href="calc_aver2_j.html#cb86-18" aria-hidden="true" tabindex="-1"></a><span class="st">  sumr2=sum(r^2)</span></span>
+<span id="cb86-19"><a href="calc_aver2_j.html#cb86-19" aria-hidden="true" tabindex="-1"></a><span class="st">  write.table(cbind(sumr2, length(r)), paste0(dir,</span><span class="dt">\&quot;</span><span class="st">summary/</span><span class="dt">\&quot;</span><span class="st">, fileout),</span></span>
+<span id="cb86-20"><a href="calc_aver2_j.html#cb86-20" aria-hidden="true" tabindex="-1"></a><span class="st">  col.names=F, row.names=F, quote=F, append=T)</span></span>
+<span id="cb86-21"><a href="calc_aver2_j.html#cb86-21" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb86-22"><a href="calc_aver2_j.html#cb86-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-23"><a href="calc_aver2_j.html#cb86-23" aria-hidden="true" tabindex="-1"></a><span class="st">compute_sumr2(ip[1],ip[2])</span></span>
+<span id="cb86-24"><a href="calc_aver2_j.html#cb86-24" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>inflation/calc-sum-r2.r</span></code></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb87-1"><a href="calc_aver2_j.html#cb87-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-2"><a href="calc_aver2_j.html#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="co"># script</span></span>
+<span id="cb87-3"><a href="calc_aver2_j.html#cb87-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb87-4"><a href="calc_aver2_j.html#cb87-4" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb87-5"><a href="calc_aver2_j.html#cb87-5" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb87-6"><a href="calc_aver2_j.html#cb87-6" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb87-7"><a href="calc_aver2_j.html#cb87-7" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb87-8"><a href="calc_aver2_j.html#cb87-8" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 4:00:0</span></span>
+<span id="cb87-9"><a href="calc_aver2_j.html#cb87-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-10"><a href="calc_aver2_j.html#cb87-10" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb87-11"><a href="calc_aver2_j.html#cb87-11" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb87-12"><a href="calc_aver2_j.html#cb87-12" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb87-13"><a href="calc_aver2_j.html#cb87-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-14"><a href="calc_aver2_j.html#cb87-14" aria-hidden="true" tabindex="-1"></a><span class="st">  m=1000</span></span>
+<span id="cb87-15"><a href="calc_aver2_j.html#cb87-15" aria-hidden="true" tabindex="-1"></a><span class="st">  nm=1k</span></span>
+<span id="cb87-16"><a href="calc_aver2_j.html#cb87-16" aria-hidden="true" tabindex="-1"></a><span class="st">  lista=left-snps-goodgwas-</span><span class="va">$nm</span></span>
+<span id="cb87-17"><a href="calc_aver2_j.html#cb87-17" aria-hidden="true" tabindex="-1"></a><span class="st">  listb=right-snps-goodgwas-</span><span class="va">$nm</span></span>
+<span id="cb87-18"><a href="calc_aver2_j.html#cb87-18" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="va">$nm</span><span class="st">-snps-goodgwas</span></span>
+<span id="cb87-19"><a href="calc_aver2_j.html#cb87-19" aria-hidden="true" tabindex="-1"></a><span class="st">  filein=</span><span class="va">$nm</span><span class="st">-snps-goodgwas.pairwise</span></span>
+<span id="cb87-20"><a href="calc_aver2_j.html#cb87-20" aria-hidden="true" tabindex="-1"></a><span class="st">  fileout=sum-r2-</span><span class="va">$nm</span><span class="st">-snps-goodgwas</span></span>
+<span id="cb87-21"><a href="calc_aver2_j.html#cb87-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-22"><a href="calc_aver2_j.html#cb87-22" aria-hidden="true" tabindex="-1"></a><span class="st"># loop and recycle files to avoid storage problems</span></span>
+<span id="cb87-23"><a href="calc_aver2_j.html#cb87-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-24"><a href="calc_aver2_j.html#cb87-24" aria-hidden="true" tabindex="-1"></a><span class="st">for i in {1..500}; do</span></span>
+<span id="cb87-25"><a href="calc_aver2_j.html#cb87-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-26"><a href="calc_aver2_j.html#cb87-26" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb87-27"><a href="calc_aver2_j.html#cb87-27" aria-hidden="true" tabindex="-1"></a><span class="st">    # 1. create snp lists &amp; use ldak to compute r_i,j</span></span>
+<span id="cb87-28"><a href="calc_aver2_j.html#cb87-28" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb87-29"><a href="calc_aver2_j.html#cb87-29" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb87-30"><a href="calc_aver2_j.html#cb87-30" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf ../gen/left-hapmap3.snps | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$lista</span><span class="st"> </span></span>
+<span id="cb87-31"><a href="calc_aver2_j.html#cb87-31" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf ../gen/right-hapmap3.snps | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$listb</span></span>
+<span id="cb87-32"><a href="calc_aver2_j.html#cb87-32" aria-hidden="true" tabindex="-1"></a><span class="st">      </span></span>
+<span id="cb87-33"><a href="calc_aver2_j.html#cb87-33" aria-hidden="true" tabindex="-1"></a><span class="st">      ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb87-34"><a href="calc_aver2_j.html#cb87-34" aria-hidden="true" tabindex="-1"></a><span class="st">                --calc-inflation ../inflation/out/</span><span class="va">$out</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb87-35"><a href="calc_aver2_j.html#cb87-35" aria-hidden="true" tabindex="-1"></a><span class="st">                --bfile ../gen/geno-unrel </span><span class="dt">\</span></span>
+<span id="cb87-36"><a href="calc_aver2_j.html#cb87-36" aria-hidden="true" tabindex="-1"></a><span class="st">                --lista ../inflation/</span><span class="va">$lista</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb87-37"><a href="calc_aver2_j.html#cb87-37" aria-hidden="true" tabindex="-1"></a><span class="st">                --listb ../inflation/</span><span class="va">$listb</span><span class="st"> </span></span>
+<span id="cb87-38"><a href="calc_aver2_j.html#cb87-38" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb87-39"><a href="calc_aver2_j.html#cb87-39" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb87-40"><a href="calc_aver2_j.html#cb87-40" aria-hidden="true" tabindex="-1"></a><span class="st">    # 2. compute sum(r^2): see for details</span></span>
+<span id="cb87-41"><a href="calc_aver2_j.html#cb87-41" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb87-42"><a href="calc_aver2_j.html#cb87-42" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb87-43"><a href="calc_aver2_j.html#cb87-43" aria-hidden="true" tabindex="-1"></a><span class="st">      Rscript --vanilla ../inflation/calc-sum-r2.r </span><span class="va">$filein</span><span class="st"> </span><span class="va">$fileout</span></span>
+<span id="cb87-44"><a href="calc_aver2_j.html#cb87-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-45"><a href="calc_aver2_j.html#cb87-45" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb87-46"><a href="calc_aver2_j.html#cb87-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-47"><a href="calc_aver2_j.html#cb87-47" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-sum-r2</span>
+<span id="cb87-48"><a href="calc_aver2_j.html#cb87-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-49"><a href="calc_aver2_j.html#cb87-49" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb87-50"><a href="calc_aver2_j.html#cb87-50" aria-hidden="true" tabindex="-1"></a><span class="va">m</span><span class="op">=</span>1000</span>
+<span id="cb87-51"><a href="calc_aver2_j.html#cb87-51" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>1k</span>
+<span id="cb87-52"><a href="calc_aver2_j.html#cb87-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-53"><a href="calc_aver2_j.html#cb87-53" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-sum-r2 <span class="op">&gt;</span>../job-records/calc-sum-r2-<span class="va">$nm</span>-snps-goodgwas</span></code></pre></div>
+</div>
+<div id="good-gwass--ldak-thin-snps" class="section level2" number="12.2">
+<h2><span class="header-section-number">12.2</span> good GWASs- ldak-thin snps</h2>
+<div class="sourceCode" id="cb88"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb88-1"><a href="calc_aver2_j.html#cb88-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-2"><a href="calc_aver2_j.html#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="co"># script</span></span>
+<span id="cb88-3"><a href="calc_aver2_j.html#cb88-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb88-4"><a href="calc_aver2_j.html#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb88-5"><a href="calc_aver2_j.html#cb88-5" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb88-6"><a href="calc_aver2_j.html#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb88-7"><a href="calc_aver2_j.html#cb88-7" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb88-8"><a href="calc_aver2_j.html#cb88-8" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 4:00:0</span></span>
+<span id="cb88-9"><a href="calc_aver2_j.html#cb88-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-10"><a href="calc_aver2_j.html#cb88-10" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb88-11"><a href="calc_aver2_j.html#cb88-11" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb88-12"><a href="calc_aver2_j.html#cb88-12" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb88-13"><a href="calc_aver2_j.html#cb88-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-14"><a href="calc_aver2_j.html#cb88-14" aria-hidden="true" tabindex="-1"></a><span class="st"># to be changed</span></span>
+<span id="cb88-15"><a href="calc_aver2_j.html#cb88-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-16"><a href="calc_aver2_j.html#cb88-16" aria-hidden="true" tabindex="-1"></a><span class="st">  m=1000</span></span>
+<span id="cb88-17"><a href="calc_aver2_j.html#cb88-17" aria-hidden="true" tabindex="-1"></a><span class="st">  nm=1k</span></span>
+<span id="cb88-18"><a href="calc_aver2_j.html#cb88-18" aria-hidden="true" tabindex="-1"></a><span class="st">  snpa=../gen/left-mix-pop.snps</span></span>
+<span id="cb88-19"><a href="calc_aver2_j.html#cb88-19" aria-hidden="true" tabindex="-1"></a><span class="st">  snpb=../gen/right-mix-pop.snps</span></span>
+<span id="cb88-20"><a href="calc_aver2_j.html#cb88-20" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../mix-pop-gwas.id</span></span>
+<span id="cb88-21"><a href="calc_aver2_j.html#cb88-21" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-mix</span></span>
+<span id="cb88-22"><a href="calc_aver2_j.html#cb88-22" aria-hidden="true" tabindex="-1"></a><span class="st">  lista=left-snps-badgwas-</span><span class="va">$nm</span></span>
+<span id="cb88-23"><a href="calc_aver2_j.html#cb88-23" aria-hidden="true" tabindex="-1"></a><span class="st">  listb=right-snps-badgwas-</span><span class="va">$nm</span></span>
+<span id="cb88-24"><a href="calc_aver2_j.html#cb88-24" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="va">$nm</span><span class="st">-snps-badgwas</span></span>
+<span id="cb88-25"><a href="calc_aver2_j.html#cb88-25" aria-hidden="true" tabindex="-1"></a><span class="st">  filein=</span><span class="va">$nm</span><span class="st">-snps-badgwas.pairwise</span></span>
+<span id="cb88-26"><a href="calc_aver2_j.html#cb88-26" aria-hidden="true" tabindex="-1"></a><span class="st">  fileout=sum-r2-</span><span class="va">$nm</span><span class="st">-snps-badgwas</span></span>
+<span id="cb88-27"><a href="calc_aver2_j.html#cb88-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-28"><a href="calc_aver2_j.html#cb88-28" aria-hidden="true" tabindex="-1"></a><span class="st"># loop and recycle files to avoid storage problems</span></span>
+<span id="cb88-29"><a href="calc_aver2_j.html#cb88-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-30"><a href="calc_aver2_j.html#cb88-30" aria-hidden="true" tabindex="-1"></a><span class="st">for i in {1..500}; do</span></span>
+<span id="cb88-31"><a href="calc_aver2_j.html#cb88-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-32"><a href="calc_aver2_j.html#cb88-32" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb88-33"><a href="calc_aver2_j.html#cb88-33" aria-hidden="true" tabindex="-1"></a><span class="st">    # 1. create snp lists &amp; use ldak to compute r_i,j</span></span>
+<span id="cb88-34"><a href="calc_aver2_j.html#cb88-34" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb88-35"><a href="calc_aver2_j.html#cb88-35" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb88-36"><a href="calc_aver2_j.html#cb88-36" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf </span><span class="va">$snpa</span><span class="st"> | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$lista</span><span class="st"> </span></span>
+<span id="cb88-37"><a href="calc_aver2_j.html#cb88-37" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf </span><span class="va">$snpb</span><span class="st"> | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$listb</span></span>
+<span id="cb88-38"><a href="calc_aver2_j.html#cb88-38" aria-hidden="true" tabindex="-1"></a><span class="st">      </span></span>
+<span id="cb88-39"><a href="calc_aver2_j.html#cb88-39" aria-hidden="true" tabindex="-1"></a><span class="st">      ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb88-40"><a href="calc_aver2_j.html#cb88-40" aria-hidden="true" tabindex="-1"></a><span class="st">                --calc-inflation ../inflation/out/</span><span class="va">$out</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb88-41"><a href="calc_aver2_j.html#cb88-41" aria-hidden="true" tabindex="-1"></a><span class="st">                --bfile </span><span class="va">$bfile</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb88-42"><a href="calc_aver2_j.html#cb88-42" aria-hidden="true" tabindex="-1"></a><span class="st">                --keep </span><span class="va">$id</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb88-43"><a href="calc_aver2_j.html#cb88-43" aria-hidden="true" tabindex="-1"></a><span class="st">                --lista ../inflation/</span><span class="va">$lista</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb88-44"><a href="calc_aver2_j.html#cb88-44" aria-hidden="true" tabindex="-1"></a><span class="st">                --listb ../inflation/</span><span class="va">$listb</span><span class="st"> </span></span>
+<span id="cb88-45"><a href="calc_aver2_j.html#cb88-45" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb88-46"><a href="calc_aver2_j.html#cb88-46" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb88-47"><a href="calc_aver2_j.html#cb88-47" aria-hidden="true" tabindex="-1"></a><span class="st">    # 2. compute sum(r^2): see for details</span></span>
+<span id="cb88-48"><a href="calc_aver2_j.html#cb88-48" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb88-49"><a href="calc_aver2_j.html#cb88-49" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb88-50"><a href="calc_aver2_j.html#cb88-50" aria-hidden="true" tabindex="-1"></a><span class="st">      Rscript --vanilla ../inflation/calc-sum-r2.r </span><span class="va">$filein</span><span class="st"> </span><span class="va">$fileout</span></span>
+<span id="cb88-51"><a href="calc_aver2_j.html#cb88-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-52"><a href="calc_aver2_j.html#cb88-52" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb88-53"><a href="calc_aver2_j.html#cb88-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-54"><a href="calc_aver2_j.html#cb88-54" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-sum-r2</span>
+<span id="cb88-55"><a href="calc_aver2_j.html#cb88-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-56"><a href="calc_aver2_j.html#cb88-56" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb88-57"><a href="calc_aver2_j.html#cb88-57" aria-hidden="true" tabindex="-1"></a><span class="va">m</span><span class="op">=</span>1000</span>
+<span id="cb88-58"><a href="calc_aver2_j.html#cb88-58" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>1k</span>
+<span id="cb88-59"><a href="calc_aver2_j.html#cb88-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-60"><a href="calc_aver2_j.html#cb88-60" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-sum-r2 <span class="op">&gt;</span>../job-records/calc-sum-r2-<span class="va">$nm</span>-snps-badgwas</span></code></pre></div>
+</div>
+<div id="bad-gwass-all-qced-snps" class="section level2" number="12.3">
+<h2><span class="header-section-number">12.3</span> bad GWASs-all qced snps</h2>
+<div class="sourceCode" id="cb89"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb89-1"><a href="calc_aver2_j.html#cb89-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-2"><a href="calc_aver2_j.html#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="co"># script</span></span>
+<span id="cb89-3"><a href="calc_aver2_j.html#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb89-4"><a href="calc_aver2_j.html#cb89-4" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb89-5"><a href="calc_aver2_j.html#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb89-6"><a href="calc_aver2_j.html#cb89-6" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb89-7"><a href="calc_aver2_j.html#cb89-7" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb89-8"><a href="calc_aver2_j.html#cb89-8" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 4:00:0</span></span>
+<span id="cb89-9"><a href="calc_aver2_j.html#cb89-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-10"><a href="calc_aver2_j.html#cb89-10" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb89-11"><a href="calc_aver2_j.html#cb89-11" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb89-12"><a href="calc_aver2_j.html#cb89-12" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb89-13"><a href="calc_aver2_j.html#cb89-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-14"><a href="calc_aver2_j.html#cb89-14" aria-hidden="true" tabindex="-1"></a><span class="st"># to be changed</span></span>
+<span id="cb89-15"><a href="calc_aver2_j.html#cb89-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-16"><a href="calc_aver2_j.html#cb89-16" aria-hidden="true" tabindex="-1"></a><span class="st">  m=1000</span></span>
+<span id="cb89-17"><a href="calc_aver2_j.html#cb89-17" aria-hidden="true" tabindex="-1"></a><span class="st">  nm=1k</span></span>
+<span id="cb89-18"><a href="calc_aver2_j.html#cb89-18" aria-hidden="true" tabindex="-1"></a><span class="st">  snpa=../gen/left-mix-pop.snps</span></span>
+<span id="cb89-19"><a href="calc_aver2_j.html#cb89-19" aria-hidden="true" tabindex="-1"></a><span class="st">  snpb=../gen/right-mix-pop.snps</span></span>
+<span id="cb89-20"><a href="calc_aver2_j.html#cb89-20" aria-hidden="true" tabindex="-1"></a><span class="st">  id=../mix-pop-gwas.id</span></span>
+<span id="cb89-21"><a href="calc_aver2_j.html#cb89-21" aria-hidden="true" tabindex="-1"></a><span class="st">  bfile=../gen/geno-mix</span></span>
+<span id="cb89-22"><a href="calc_aver2_j.html#cb89-22" aria-hidden="true" tabindex="-1"></a><span class="st">  lista=left-snps-badgwas-</span><span class="va">$nm</span></span>
+<span id="cb89-23"><a href="calc_aver2_j.html#cb89-23" aria-hidden="true" tabindex="-1"></a><span class="st">  listb=right-snps-badgwas-</span><span class="va">$nm</span></span>
+<span id="cb89-24"><a href="calc_aver2_j.html#cb89-24" aria-hidden="true" tabindex="-1"></a><span class="st">  out=</span><span class="va">$nm</span><span class="st">-snps-badgwas</span></span>
+<span id="cb89-25"><a href="calc_aver2_j.html#cb89-25" aria-hidden="true" tabindex="-1"></a><span class="st">  filein=</span><span class="va">$nm</span><span class="st">-snps-badgwas.pairwise</span></span>
+<span id="cb89-26"><a href="calc_aver2_j.html#cb89-26" aria-hidden="true" tabindex="-1"></a><span class="st">  fileout=sum-r2-</span><span class="va">$nm</span><span class="st">-snps-badgwas</span></span>
+<span id="cb89-27"><a href="calc_aver2_j.html#cb89-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-28"><a href="calc_aver2_j.html#cb89-28" aria-hidden="true" tabindex="-1"></a><span class="st"># loop and recycle files to avoid storage problems</span></span>
+<span id="cb89-29"><a href="calc_aver2_j.html#cb89-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-30"><a href="calc_aver2_j.html#cb89-30" aria-hidden="true" tabindex="-1"></a><span class="st">for i in {1..500}; do</span></span>
+<span id="cb89-31"><a href="calc_aver2_j.html#cb89-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-32"><a href="calc_aver2_j.html#cb89-32" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb89-33"><a href="calc_aver2_j.html#cb89-33" aria-hidden="true" tabindex="-1"></a><span class="st">    # 1. create snp lists &amp; use ldak to compute r_i,j</span></span>
+<span id="cb89-34"><a href="calc_aver2_j.html#cb89-34" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb89-35"><a href="calc_aver2_j.html#cb89-35" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb89-36"><a href="calc_aver2_j.html#cb89-36" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf </span><span class="va">$snpa</span><span class="st"> | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$lista</span><span class="st"> </span></span>
+<span id="cb89-37"><a href="calc_aver2_j.html#cb89-37" aria-hidden="true" tabindex="-1"></a><span class="st">      shuf </span><span class="va">$snpb</span><span class="st"> | head -n </span><span class="va">$m</span><span class="st"> &gt; ../inflation/</span><span class="va">$listb</span></span>
+<span id="cb89-38"><a href="calc_aver2_j.html#cb89-38" aria-hidden="true" tabindex="-1"></a><span class="st">      </span></span>
+<span id="cb89-39"><a href="calc_aver2_j.html#cb89-39" aria-hidden="true" tabindex="-1"></a><span class="st">      ./ldak5.2 --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb89-40"><a href="calc_aver2_j.html#cb89-40" aria-hidden="true" tabindex="-1"></a><span class="st">                --calc-inflation ../inflation/out/</span><span class="va">$out</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb89-41"><a href="calc_aver2_j.html#cb89-41" aria-hidden="true" tabindex="-1"></a><span class="st">                --bfile </span><span class="va">$bfile</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb89-42"><a href="calc_aver2_j.html#cb89-42" aria-hidden="true" tabindex="-1"></a><span class="st">                --keep </span><span class="va">$id</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb89-43"><a href="calc_aver2_j.html#cb89-43" aria-hidden="true" tabindex="-1"></a><span class="st">                --lista ../inflation/</span><span class="va">$lista</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb89-44"><a href="calc_aver2_j.html#cb89-44" aria-hidden="true" tabindex="-1"></a><span class="st">                --listb ../inflation/</span><span class="va">$listb</span><span class="st"> </span></span>
+<span id="cb89-45"><a href="calc_aver2_j.html#cb89-45" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb89-46"><a href="calc_aver2_j.html#cb89-46" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb89-47"><a href="calc_aver2_j.html#cb89-47" aria-hidden="true" tabindex="-1"></a><span class="st">    # 2. compute sum(r^2): see for details</span></span>
+<span id="cb89-48"><a href="calc_aver2_j.html#cb89-48" aria-hidden="true" tabindex="-1"></a><span class="st">    #::</span></span>
+<span id="cb89-49"><a href="calc_aver2_j.html#cb89-49" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb89-50"><a href="calc_aver2_j.html#cb89-50" aria-hidden="true" tabindex="-1"></a><span class="st">      Rscript --vanilla ../inflation/calc-sum-r2.r </span><span class="va">$filein</span><span class="st"> </span><span class="va">$fileout</span></span>
+<span id="cb89-51"><a href="calc_aver2_j.html#cb89-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-52"><a href="calc_aver2_j.html#cb89-52" aria-hidden="true" tabindex="-1"></a><span class="st">done</span></span>
+<span id="cb89-53"><a href="calc_aver2_j.html#cb89-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-54"><a href="calc_aver2_j.html#cb89-54" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-sum-r2</span>
+<span id="cb89-55"><a href="calc_aver2_j.html#cb89-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-56"><a href="calc_aver2_j.html#cb89-56" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb89-57"><a href="calc_aver2_j.html#cb89-57" aria-hidden="true" tabindex="-1"></a><span class="va">m</span><span class="op">=</span>1000</span>
+<span id="cb89-58"><a href="calc_aver2_j.html#cb89-58" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span>1k</span>
+<span id="cb89-59"><a href="calc_aver2_j.html#cb89-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-60"><a href="calc_aver2_j.html#cb89-60" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-sum-r2 <span class="op">&gt;</span>../job-records/calc-sum-r2-<span class="va">$nm</span>-snps-badgwas</span></code></pre></div>
+</div>
+<div id="summary-10" class="section level2" number="12.4">
+<h2><span class="header-section-number">12.4</span> summary</h2>
+<div class="sourceCode" id="cb90"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb90-1"><a href="calc_aver2_j.html#cb90-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-2"><a href="calc_aver2_j.html#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="co">#::</span></span>
+<span id="cb90-3"><a href="calc_aver2_j.html#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ave r_ij^2</span></span>
+<span id="cb90-4"><a href="calc_aver2_j.html#cb90-4" aria-hidden="true" tabindex="-1"></a><span class="co">#::</span></span>
+<span id="cb90-5"><a href="calc_aver2_j.html#cb90-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-6"><a href="calc_aver2_j.html#cb90-6" aria-hidden="true" tabindex="-1"></a><span class="co"># good gwas</span></span>
+<span id="cb90-7"><a href="calc_aver2_j.html#cb90-7" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">&#39;Average squared correlation&#39;</span> sh_out/calc-sum-r2-60083794.out <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{split($0, a, &quot;;&quot;) split(a[1], b, &quot; &quot;); print b[5]}&#39;</span> <span class="op">&gt;</span> inflation/summary/ave-r2-1k-snps-goodgwas</span>
+<span id="cb90-8"><a href="calc_aver2_j.html#cb90-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-9"><a href="calc_aver2_j.html#cb90-9" aria-hidden="true" tabindex="-1"></a><span class="co"># bad gwas</span></span>
+<span id="cb90-10"><a href="calc_aver2_j.html#cb90-10" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">&#39;Average squared correlation&#39;</span> sh_out/calc-sum-r2-60086056.out <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{split($0, a, &quot;;&quot;) split(a[1], b, &quot; &quot;); print b[5]}&#39;</span> <span class="op">&gt;</span> inflation/summary/ave-r2-1k-snps-badgwas</span>
+<span id="cb90-11"><a href="calc_aver2_j.html#cb90-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-12"><a href="calc_aver2_j.html#cb90-12" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span></span>
+<span id="cb90-13"><a href="calc_aver2_j.html#cb90-13" aria-hidden="true" tabindex="-1"></a><span class="va">good</span><span class="op">=</span>read.table<span class="kw">(</span><span class="st">&quot;inflation/summary/ave-r2-1k-snps-goodgwas&quot;</span><span class="ex">,</span> header=F<span class="kw">)</span></span>
+<span id="cb90-14"><a href="calc_aver2_j.html#cb90-14" aria-hidden="true" tabindex="-1"></a><span class="va">bad</span><span class="op">=</span>read.table<span class="kw">(</span><span class="st">&quot;inflation/summary/ave-r2-1k-snps-badgwas&quot;</span><span class="ex">,</span> header=F<span class="kw">)</span></span>
+<span id="cb90-15"><a href="calc_aver2_j.html#cb90-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-16"><a href="calc_aver2_j.html#cb90-16" aria-hidden="true" tabindex="-1"></a><span class="ex">png</span><span class="er">(</span><span class="st">&quot;fig/ave-r2-his-1k-snps.png&quot;</span><span class="ex">,</span></span>
+<span id="cb90-17"><a href="calc_aver2_j.html#cb90-17" aria-hidden="true" tabindex="-1"></a>    <span class="ex">width</span> =40, height = 20, units = <span class="st">&quot;cm&quot;</span>, res=600<span class="kw">)</span></span>
+<span id="cb90-18"><a href="calc_aver2_j.html#cb90-18" aria-hidden="true" tabindex="-1"></a><span class="ex">par</span><span class="er">(</span><span class="va">mfrow</span><span class="op">=</span>c<span class="kw">(</span><span class="ex">1,2</span><span class="kw">))</span></span>
+<span id="cb90-19"><a href="calc_aver2_j.html#cb90-19" aria-hidden="true" tabindex="-1"></a><span class="ex">hist</span><span class="er">(</span><span class="ex">good</span><span class="va">$V1</span><span class="ex">,</span> main=<span class="st">&quot;ave r2 good GWAS&quot;</span>, breaks=50, freq=F, </span>
+<span id="cb90-20"><a href="calc_aver2_j.html#cb90-20" aria-hidden="true" tabindex="-1"></a>    <span class="va">col</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span>, <span class="va">border</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span><span class="kw">)</span></span>
+<span id="cb90-21"><a href="calc_aver2_j.html#cb90-21" aria-hidden="true" tabindex="-1"></a><span class="ex">hist</span><span class="er">(</span><span class="ex">bad</span><span class="va">$V1</span><span class="ex">,</span> main=<span class="st">&quot;ave r2 bad GWAS&quot;</span>, breaks=50, freq=F, </span>
+<span id="cb90-22"><a href="calc_aver2_j.html#cb90-22" aria-hidden="true" tabindex="-1"></a>    <span class="va">col</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span>, <span class="va">border</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span><span class="kw">)</span></span>
+<span id="cb90-23"><a href="calc_aver2_j.html#cb90-23" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off()</span></span>
+<span id="cb90-24"><a href="calc_aver2_j.html#cb90-24" aria-hidden="true" tabindex="-1"></a><span class="co"># mean var</span></span>
+<span id="cb90-25"><a href="calc_aver2_j.html#cb90-25" aria-hidden="true" tabindex="-1"></a><span class="co"># good 1.004277e-05 2.172758e-16</span></span>
+<span id="cb90-26"><a href="calc_aver2_j.html#cb90-26" aria-hidden="true" tabindex="-1"></a><span class="co"># bad 0.0003566028 9.250966e-10</span></span>
+<span id="cb90-27"><a href="calc_aver2_j.html#cb90-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-28"><a href="calc_aver2_j.html#cb90-28" aria-hidden="true" tabindex="-1"></a><span class="co">#::</span></span>
+<span id="cb90-29"><a href="calc_aver2_j.html#cb90-29" aria-hidden="true" tabindex="-1"></a><span class="co"># r_ij^2</span></span>
+<span id="cb90-30"><a href="calc_aver2_j.html#cb90-30" aria-hidden="true" tabindex="-1"></a><span class="co">#::</span></span>
+<span id="cb90-31"><a href="calc_aver2_j.html#cb90-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-32"><a href="calc_aver2_j.html#cb90-32" aria-hidden="true" tabindex="-1"></a><span class="ex">require</span><span class="er">(</span><span class="ex">vroom</span><span class="kw">)</span></span>
+<span id="cb90-33"><a href="calc_aver2_j.html#cb90-33" aria-hidden="true" tabindex="-1"></a><span class="va">good</span><span class="op">=</span>vroom<span class="kw">(</span><span class="st">&quot;inflation/out/1k-snps-goodgwas.pairwise&quot;</span><span class="ex">,</span> col_names=F<span class="kw">)</span></span>
+<span id="cb90-34"><a href="calc_aver2_j.html#cb90-34" aria-hidden="true" tabindex="-1"></a><span class="va">bad</span><span class="op">=</span>vroom<span class="kw">(</span><span class="st">&quot;inflation/out/1k-snps-badgwas.pairwise&quot;</span><span class="ex">,</span> col_names=F<span class="kw">)</span></span>
+<span id="cb90-35"><a href="calc_aver2_j.html#cb90-35" aria-hidden="true" tabindex="-1"></a><span class="va">r2_good</span><span class="op">=</span>c<span class="kw">(</span><span class="ex">as.matrix</span><span class="er">(</span><span class="ex">good</span><span class="kw">)</span><span class="ex">^2</span><span class="kw">)</span></span>
+<span id="cb90-36"><a href="calc_aver2_j.html#cb90-36" aria-hidden="true" tabindex="-1"></a><span class="va">r2_bad</span><span class="op">=</span>c<span class="kw">(</span><span class="ex">as.matrix</span><span class="er">(</span><span class="ex">bad</span><span class="kw">)</span><span class="ex">^2</span><span class="kw">)</span></span>
+<span id="cb90-37"><a href="calc_aver2_j.html#cb90-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-38"><a href="calc_aver2_j.html#cb90-38" aria-hidden="true" tabindex="-1"></a><span class="ex">png</span><span class="er">(</span><span class="st">&quot;fig/r2-his-1k-snps.png&quot;</span><span class="ex">,</span></span>
+<span id="cb90-39"><a href="calc_aver2_j.html#cb90-39" aria-hidden="true" tabindex="-1"></a>    <span class="ex">width</span> =40, height = 20, units = <span class="st">&quot;cm&quot;</span>, res=600<span class="kw">)</span></span>
+<span id="cb90-40"><a href="calc_aver2_j.html#cb90-40" aria-hidden="true" tabindex="-1"></a><span class="ex">par</span><span class="er">(</span><span class="va">mfrow</span><span class="op">=</span>c<span class="kw">(</span><span class="ex">1,2</span><span class="kw">))</span></span>
+<span id="cb90-41"><a href="calc_aver2_j.html#cb90-41" aria-hidden="true" tabindex="-1"></a><span class="ex">hist</span><span class="er">(</span><span class="ex">r2_good,</span> main=<span class="st">&quot;r2 good GWAS&quot;</span>, breaks=100, freq=F, </span>
+<span id="cb90-42"><a href="calc_aver2_j.html#cb90-42" aria-hidden="true" tabindex="-1"></a>    <span class="va">col</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span>, <span class="va">border</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span><span class="kw">)</span></span>
+<span id="cb90-43"><a href="calc_aver2_j.html#cb90-43" aria-hidden="true" tabindex="-1"></a><span class="ex">hist</span><span class="er">(</span><span class="ex">r2_bad,</span> main=<span class="st">&quot;r2 bad GWAS&quot;</span>, breaks=100, freq=F, </span>
+<span id="cb90-44"><a href="calc_aver2_j.html#cb90-44" aria-hidden="true" tabindex="-1"></a>    <span class="va">col</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span>, <span class="va">border</span><span class="op">=</span><span class="st">&quot;lightgray&quot;</span><span class="kw">)</span></span>
+<span id="cb90-45"><a href="calc_aver2_j.html#cb90-45" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off()</span></span>
+<span id="cb90-46"><a href="calc_aver2_j.html#cb90-46" aria-hidden="true" tabindex="-1"></a><span class="co"># mean var</span></span>
+<span id="cb90-47"><a href="calc_aver2_j.html#cb90-47" aria-hidden="true" tabindex="-1"></a><span class="co"># good 1.002858e-05 2.020087e-10</span></span>
+<span id="cb90-48"><a href="calc_aver2_j.html#cb90-48" aria-hidden="true" tabindex="-1"></a><span class="co"># bad 0.0003632657 2.666479e-06</span></span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="calc_aver2_j.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># good gwas</span></span>
+<span id="cb91-2"><a href="calc_aver2_j.html#cb91-2" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;inflation/summary/sum-r2-1k-snps-goodgwas&quot;</span>, <span class="at">header=</span>F)</span>
+<span id="cb91-3"><a href="calc_aver2_j.html#cb91-3" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/sumr2-good-gwas-1k-snps.png&quot;</span>),</span>
+<span id="cb91-4"><a href="calc_aver2_j.html#cb91-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span><span class="dv">20</span>, <span class="at">height =</span> <span class="dv">20</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb91-5"><a href="calc_aver2_j.html#cb91-5" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(dat<span class="sc">$</span>V1, <span class="at">main=</span><span class="st">&quot;good GWAS&quot;</span>)</span>
+<span id="cb91-6"><a href="calc_aver2_j.html#cb91-6" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb91-7"><a href="calc_aver2_j.html#cb91-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-8"><a href="calc_aver2_j.html#cb91-8" aria-hidden="true" tabindex="-1"></a><span class="co"># bad gwas</span></span>
+<span id="cb91-9"><a href="calc_aver2_j.html#cb91-9" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;inflation/summary/sum-r2-1k-snps-badgwas&quot;</span>, <span class="at">header=</span>F)</span>
+<span id="cb91-10"><a href="calc_aver2_j.html#cb91-10" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/sumr2-bad-gwas-1k-snps.png&quot;</span>),</span>
+<span id="cb91-11"><a href="calc_aver2_j.html#cb91-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span><span class="dv">20</span>, <span class="at">height =</span> <span class="dv">20</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb91-12"><a href="calc_aver2_j.html#cb91-12" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(dat<span class="sc">$</span>V1, <span class="at">main=</span><span class="st">&quot;bad GWAS&quot;</span>)</span>
+<span id="cb91-13"><a href="calc_aver2_j.html#cb91-13" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+</div>
+<div id="compute-overliner2_j" class="section level2" number="12.5">
+<h2><span class="header-section-number">12.5</span> compute <span class="math inline">\(\overline{r^2_j}\)</span></h2>
+<ol style="list-style-type: decimal">
+<li>compute average r2 for each i.</li>
+</ol>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="calc_aver2_j.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb92-2"><a href="calc_aver2_j.html#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. compute r^2</span></span>
+<span id="cb92-3"><a href="calc_aver2_j.html#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb92-4"><a href="calc_aver2_j.html#cb92-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-5"><a href="calc_aver2_j.html#cb92-5" aria-hidden="true" tabindex="-1"></a>echo <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb92-6"><a href="calc_aver2_j.html#cb92-6" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="sc">\&quot;</span><span class="st">s04|s05</span><span class="sc">\&quot;</span></span>
+<span id="cb92-7"><a href="calc_aver2_j.html#cb92-7" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb92-8"><a href="calc_aver2_j.html#cb92-8" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb92-9"><a href="calc_aver2_j.html#cb92-9" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb92-10"><a href="calc_aver2_j.html#cb92-10" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 4:00:0</span></span>
+<span id="cb92-11"><a href="calc_aver2_j.html#cb92-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-12"><a href="calc_aver2_j.html#cb92-12" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb92-13"><a href="calc_aver2_j.html#cb92-13" aria-hidden="true" tabindex="-1"></a><span class="st"># 0. define vars &amp; create snp lists</span></span>
+<span id="cb92-14"><a href="calc_aver2_j.html#cb92-14" aria-hidden="true" tabindex="-1"></a><span class="st">#:::</span></span>
+<span id="cb92-15"><a href="calc_aver2_j.html#cb92-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-16"><a href="calc_aver2_j.html#cb92-16" aria-hidden="true" tabindex="-1"></a><span class="st"># to be changed</span></span>
+<span id="cb92-17"><a href="calc_aver2_j.html#cb92-17" aria-hidden="true" tabindex="-1"></a><span class="st">m=10000</span></span>
+<span id="cb92-18"><a href="calc_aver2_j.html#cb92-18" aria-hidden="true" tabindex="-1"></a><span class="st">nm=10k</span></span>
+<span id="cb92-19"><a href="calc_aver2_j.html#cb92-19" aria-hidden="true" tabindex="-1"></a><span class="st">lista=left-snps-unrel-inds-\$nm</span></span>
+<span id="cb92-20"><a href="calc_aver2_j.html#cb92-20" aria-hidden="true" tabindex="-1"></a><span class="st">listb=right-snps-unrel-inds-\$nm</span></span>
+<span id="cb92-21"><a href="calc_aver2_j.html#cb92-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-22"><a href="calc_aver2_j.html#cb92-22" aria-hidden="true" tabindex="-1"></a><span class="st"># NOTE: both good and bad gwas share the same snp list: snps-unrel-inds.use</span></span>
+<span id="cb92-23"><a href="calc_aver2_j.html#cb92-23" aria-hidden="true" tabindex="-1"></a><span class="st">awk &#39;{split(\$1, a, </span><span class="sc">\&quot;</span><span class="st">:</span><span class="sc">\&quot;</span><span class="st">); if (a[1]&lt;8) print \$1 }&#39; ../gen/snps-unrel-inds.use | shuf | head -n \$m &gt;../inflation/\$lista  </span></span>
+<span id="cb92-24"><a href="calc_aver2_j.html#cb92-24" aria-hidden="true" tabindex="-1"></a><span class="st">awk &#39;{split(\$1, a, </span><span class="sc">\&quot;</span><span class="st">:</span><span class="sc">\&quot;</span><span class="st">); if (a[1]&gt;=8) print \$1 }&#39; ../gen/snps-unrel-inds.use | shuf | head -n \$m &gt;../inflation/\$listb</span></span>
+<span id="cb92-25"><a href="calc_aver2_j.html#cb92-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-26"><a href="calc_aver2_j.html#cb92-26" aria-hidden="true" tabindex="-1"></a><span class="st">#::</span></span>
+<span id="cb92-27"><a href="calc_aver2_j.html#cb92-27" aria-hidden="true" tabindex="-1"></a><span class="st"># 1. good gwas</span></span>
+<span id="cb92-28"><a href="calc_aver2_j.html#cb92-28" aria-hidden="true" tabindex="-1"></a><span class="st">#::</span></span>
+<span id="cb92-29"><a href="calc_aver2_j.html#cb92-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-30"><a href="calc_aver2_j.html#cb92-30" aria-hidden="true" tabindex="-1"></a><span class="st">id=../unrelated/rand.100000</span></span>
+<span id="cb92-31"><a href="calc_aver2_j.html#cb92-31" aria-hidden="true" tabindex="-1"></a><span class="st">bfile=../gen/geno-unrel</span></span>
+<span id="cb92-32"><a href="calc_aver2_j.html#cb92-32" aria-hidden="true" tabindex="-1"></a><span class="st">out=\$nm-snps-goodgwas</span></span>
+<span id="cb92-33"><a href="calc_aver2_j.html#cb92-33" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb92-34"><a href="calc_aver2_j.html#cb92-34" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.2 --max-threads 10 \</span></span>
+<span id="cb92-35"><a href="calc_aver2_j.html#cb92-35" aria-hidden="true" tabindex="-1"></a><span class="st">          --calc-inflation ../inflation/out/\$out \</span></span>
+<span id="cb92-36"><a href="calc_aver2_j.html#cb92-36" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile \$bfile \</span></span>
+<span id="cb92-37"><a href="calc_aver2_j.html#cb92-37" aria-hidden="true" tabindex="-1"></a><span class="st">          --keep \$id \</span></span>
+<span id="cb92-38"><a href="calc_aver2_j.html#cb92-38" aria-hidden="true" tabindex="-1"></a><span class="st">          --lista ../inflation/\$lista \</span></span>
+<span id="cb92-39"><a href="calc_aver2_j.html#cb92-39" aria-hidden="true" tabindex="-1"></a><span class="st">          --listb ../inflation/\$listb </span></span>
+<span id="cb92-40"><a href="calc_aver2_j.html#cb92-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-41"><a href="calc_aver2_j.html#cb92-41" aria-hidden="true" tabindex="-1"></a><span class="st">#::</span></span>
+<span id="cb92-42"><a href="calc_aver2_j.html#cb92-42" aria-hidden="true" tabindex="-1"></a><span class="st"># 2. bad gwas</span></span>
+<span id="cb92-43"><a href="calc_aver2_j.html#cb92-43" aria-hidden="true" tabindex="-1"></a><span class="st">#::</span></span>
+<span id="cb92-44"><a href="calc_aver2_j.html#cb92-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-45"><a href="calc_aver2_j.html#cb92-45" aria-hidden="true" tabindex="-1"></a><span class="st">id=../mix-pop-gwas.id</span></span>
+<span id="cb92-46"><a href="calc_aver2_j.html#cb92-46" aria-hidden="true" tabindex="-1"></a><span class="st">bfile=../gen/geno-mix</span></span>
+<span id="cb92-47"><a href="calc_aver2_j.html#cb92-47" aria-hidden="true" tabindex="-1"></a><span class="st">out=\$nm-snps-badgwas</span></span>
+<span id="cb92-48"><a href="calc_aver2_j.html#cb92-48" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb92-49"><a href="calc_aver2_j.html#cb92-49" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.2 --max-threads 10 \</span></span>
+<span id="cb92-50"><a href="calc_aver2_j.html#cb92-50" aria-hidden="true" tabindex="-1"></a><span class="st">          --calc-inflation ../inflation/out/\$out \</span></span>
+<span id="cb92-51"><a href="calc_aver2_j.html#cb92-51" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile \$bfile \</span></span>
+<span id="cb92-52"><a href="calc_aver2_j.html#cb92-52" aria-hidden="true" tabindex="-1"></a><span class="st">          --keep \$id \</span></span>
+<span id="cb92-53"><a href="calc_aver2_j.html#cb92-53" aria-hidden="true" tabindex="-1"></a><span class="st">          --lista ../inflation/\$lista \</span></span>
+<span id="cb92-54"><a href="calc_aver2_j.html#cb92-54" aria-hidden="true" tabindex="-1"></a><span class="st">          --listb ../inflation/\$listb </span></span>
+<span id="cb92-55"><a href="calc_aver2_j.html#cb92-55" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb92-56"><a href="calc_aver2_j.html#cb92-56" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="sc">&gt;</span>sh_script<span class="sc">/</span>calc<span class="sc">-</span>sum<span class="sc">-</span>r2</span>
+<span id="cb92-57"><a href="calc_aver2_j.html#cb92-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-58"><a href="calc_aver2_j.html#cb92-58" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb92-59"><a href="calc_aver2_j.html#cb92-59" aria-hidden="true" tabindex="-1"></a>m<span class="ot">=</span><span class="dv">10000</span></span>
+<span id="cb92-60"><a href="calc_aver2_j.html#cb92-60" aria-hidden="true" tabindex="-1"></a>nm<span class="ot">=</span>10k</span>
+<span id="cb92-61"><a href="calc_aver2_j.html#cb92-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-62"><a href="calc_aver2_j.html#cb92-62" aria-hidden="true" tabindex="-1"></a>sbatch <span class="sc">-</span>A snpher ..<span class="sc">/</span>sh_script<span class="sc">/</span>calc<span class="sc">-</span>sum<span class="sc">-</span>r2 <span class="sc">&gt;</span>..<span class="sc">/</span>job<span class="sc">-</span>records<span class="sc">/</span>calc<span class="sc">-</span>sum<span class="sc">-</span>r2<span class="sc">-</span><span class="er">$</span>nm<span class="sc">-</span>snps</span>
+<span id="cb92-63"><a href="calc_aver2_j.html#cb92-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-64"><a href="calc_aver2_j.html#cb92-64" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb92-65"><a href="calc_aver2_j.html#cb92-65" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. compute ave r_j^2 for each i</span></span>
+<span id="cb92-66"><a href="calc_aver2_j.html#cb92-66" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb92-67"><a href="calc_aver2_j.html#cb92-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-68"><a href="calc_aver2_j.html#cb92-68" aria-hidden="true" tabindex="-1"></a>R</span>
+<span id="cb92-69"><a href="calc_aver2_j.html#cb92-69" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb92-70"><a href="calc_aver2_j.html#cb92-70" aria-hidden="true" tabindex="-1"></a>names<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;goodgwas&quot;</span>, <span class="st">&quot;badgwas&quot;</span>)</span>
+<span id="cb92-71"><a href="calc_aver2_j.html#cb92-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-72"><a href="calc_aver2_j.html#cb92-72" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(names)){</span>
+<span id="cb92-73"><a href="calc_aver2_j.html#cb92-73" aria-hidden="true" tabindex="-1"></a>nm<span class="ot">=</span>names[i]</span>
+<span id="cb92-74"><a href="calc_aver2_j.html#cb92-74" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;inflation/out/10k-snps-&quot;</span>,nm,<span class="st">&quot;.pairwise&quot;</span>), <span class="at">col_names=</span>F)</span>
+<span id="cb92-75"><a href="calc_aver2_j.html#cb92-75" aria-hidden="true" tabindex="-1"></a>lista<span class="ot">=</span><span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">&quot;inflation/out/10k-snps-&quot;</span>,nm,<span class="st">&quot;.predictorsa&quot;</span>), <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb92-76"><a href="calc_aver2_j.html#cb92-76" aria-hidden="true" tabindex="-1"></a>listb<span class="ot">=</span><span class="fu">read.table</span>(<span class="fu">paste0</span>(<span class="st">&quot;inflation/out/10k-snps-&quot;</span>,nm,<span class="st">&quot;.predictorsb&quot;</span>), <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb92-77"><a href="calc_aver2_j.html#cb92-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-78"><a href="calc_aver2_j.html#cb92-78" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span>dat[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">10001</span>)]<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb92-79"><a href="calc_aver2_j.html#cb92-79" aria-hidden="true" tabindex="-1"></a>outb<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">predictor=</span>listb<span class="sc">$</span>V1, <span class="at">ave_r2=</span><span class="fu">apply</span>(dat,<span class="dv">2</span>, mean))</span>
+<span id="cb92-80"><a href="calc_aver2_j.html#cb92-80" aria-hidden="true" tabindex="-1"></a>outa<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">predictor=</span>lista<span class="sc">$</span>V1, <span class="at">ave_r2=</span><span class="fu">apply</span>(dat,<span class="dv">1</span>, mean))</span>
+<span id="cb92-81"><a href="calc_aver2_j.html#cb92-81" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span><span class="fu">rbind</span>(outa,outb)</span>
+<span id="cb92-82"><a href="calc_aver2_j.html#cb92-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-83"><a href="calc_aver2_j.html#cb92-83" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(out,<span class="fu">paste0</span>(<span class="st">&quot;summary/ave-r2-by-snp-&quot;</span>,nm), <span class="at">col.names=</span>F, <span class="at">row.names=</span>F, <span class="at">quote=</span>F)  </span>
+<span id="cb92-84"><a href="calc_aver2_j.html#cb92-84" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb92-85"><a href="calc_aver2_j.html#cb92-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-86"><a href="calc_aver2_j.html#cb92-86" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb92-87"><a href="calc_aver2_j.html#cb92-87" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. convert to rs system</span></span>
+<span id="cb92-88"><a href="calc_aver2_j.html#cb92-88" aria-hidden="true" tabindex="-1"></a><span class="co">#:::</span></span>
+<span id="cb92-89"><a href="calc_aver2_j.html#cb92-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-90"><a href="calc_aver2_j.html#cb92-90" aria-hidden="true" tabindex="-1"></a>awk <span class="st">&#39;(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}&#39;</span> doug<span class="sc">/</span>ukbb.ldsc summary<span class="sc">/</span>ave<span class="sc">-</span>r2<span class="sc">-</span>by<span class="sc">-</span>snp<span class="sc">-</span>goodgwas <span class="sc">&gt;</span> summary<span class="sc">/</span>ave<span class="sc">-</span>r2<span class="sc">-</span>by<span class="sc">-</span>snp<span class="sc">-</span>goodgwas<span class="sc">-</span>rs</span>
+<span id="cb92-91"><a href="calc_aver2_j.html#cb92-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-92"><a href="calc_aver2_j.html#cb92-92" aria-hidden="true" tabindex="-1"></a>awk <span class="st">&#39;(NR==FNR){a[$1]; b[$1]=$2; next}($1 in a){print b[$1], $2}&#39;</span> doug<span class="sc">/</span>ukbb.ldsc summary<span class="sc">/</span>ave<span class="sc">-</span>r2<span class="sc">-</span>by<span class="sc">-</span>snp<span class="sc">-</span>badgwas <span class="sc">&gt;</span> summary<span class="sc">/</span>ave<span class="sc">-</span>r2<span class="sc">-</span>by<span class="sc">-</span>snp<span class="sc">-</span>badgwas<span class="sc">-</span>rs</span></code></pre></div>
+</div>
+<div id="mixed-pop-gwas-with-pc-as-covariates" class="section level2" number="12.6">
+<h2><span class="header-section-number">12.6</span> mixed pop GWAS with PC as covariates</h2>
+<p>Previously we conducted mixed pop GWAS with the first 40 PC as covariates. Since we used the same genotype data (i.e., the same individuals) as for the bad GWASs, <span class="math inline">\(\overline{r^2_j}\)</span> is the same. The difference is the chi-square test statistics. Here we want to check if the relationship between <span class="math inline">\(\overline{r^2_j}\)</span> and chi square still exists for the bad gwas.</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="calc_aver2_j.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># align GWAS test statistics with ld score-------------------------------------- </span></span>
+<span id="cb93-2"><a href="calc_aver2_j.html#cb93-2" aria-hidden="true" tabindex="-1"></a>dir1<span class="ot">=</span><span class="st">&quot;gwas-mix-with-cov/&quot;</span></span>
+<span id="cb93-3"><a href="calc_aver2_j.html#cb93-3" aria-hidden="true" tabindex="-1"></a>dir2<span class="ot">=</span><span class="st">&quot;unrelated/gwas-good/&quot;</span></span>
+<span id="cb93-4"><a href="calc_aver2_j.html#cb93-4" aria-hidden="true" tabindex="-1"></a>dir3<span class="ot">=</span><span class="st">&quot;gwas-mix/&quot;</span></span>
+<span id="cb93-5"><a href="calc_aver2_j.html#cb93-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-6"><a href="calc_aver2_j.html#cb93-6" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(<span class="st">&quot;vroom&quot;</span>)</span>
+<span id="cb93-7"><a href="calc_aver2_j.html#cb93-7" aria-hidden="true" tabindex="-1"></a>snps<span class="ot">=</span><span class="fu">vroom</span>(<span class="st">&quot;overlap-control-good-bad.ldscore&quot;</span>, <span class="at">col_names=</span>F)</span>
+<span id="cb93-8"><a href="calc_aver2_j.html#cb93-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(snps)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;snp&quot;</span>,<span class="st">&quot;ldsc_ref&quot;</span>)</span>
+<span id="cb93-9"><a href="calc_aver2_j.html#cb93-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-10"><a href="calc_aver2_j.html#cb93-10" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb93-11"><a href="calc_aver2_j.html#cb93-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>,</span>
+<span id="cb93-12"><a href="calc_aver2_j.html#cb93-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb93-13"><a href="calc_aver2_j.html#cb93-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-14"><a href="calc_aver2_j.html#cb93-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
+<span id="cb93-15"><a href="calc_aver2_j.html#cb93-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb93-16"><a href="calc_aver2_j.html#cb93-16" aria-hidden="true" tabindex="-1"></a>  trait<span class="ot">=</span>traits[i]</span>
+<span id="cb93-17"><a href="calc_aver2_j.html#cb93-17" aria-hidden="true" tabindex="-1"></a>  dat1<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(dir1,trait,<span class="st">&quot;-linear-rs.summaries&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb93-18"><a href="calc_aver2_j.html#cb93-18" aria-hidden="true" tabindex="-1"></a>  dat2<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(dir2,trait,<span class="st">&quot;-linear-rs.summaries&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb93-19"><a href="calc_aver2_j.html#cb93-19" aria-hidden="true" tabindex="-1"></a>  dat3<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(dir3,trait,<span class="st">&quot;-linear-rs.summaries&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb93-20"><a href="calc_aver2_j.html#cb93-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb93-21"><a href="calc_aver2_j.html#cb93-21" aria-hidden="true" tabindex="-1"></a>  m1<span class="ot">=</span><span class="fu">match</span>(snps<span class="sc">$</span>snp, dat1<span class="sc">$</span>SNP)</span>
+<span id="cb93-22"><a href="calc_aver2_j.html#cb93-22" aria-hidden="true" tabindex="-1"></a>  m2<span class="ot">=</span><span class="fu">match</span>(snps<span class="sc">$</span>snp, dat2<span class="sc">$</span>SNP)</span>
+<span id="cb93-23"><a href="calc_aver2_j.html#cb93-23" aria-hidden="true" tabindex="-1"></a>  m3<span class="ot">=</span><span class="fu">match</span>(snps<span class="sc">$</span>snp, dat3<span class="sc">$</span>SNP)</span>
+<span id="cb93-24"><a href="calc_aver2_j.html#cb93-24" aria-hidden="true" tabindex="-1"></a>  out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">SNP=</span>snps<span class="sc">$</span>snp,</span>
+<span id="cb93-25"><a href="calc_aver2_j.html#cb93-25" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ldsc_ref=</span>snps<span class="sc">$</span>ldsc_ref,</span>
+<span id="cb93-26"><a href="calc_aver2_j.html#cb93-26" aria-hidden="true" tabindex="-1"></a>                  <span class="at">bad_cov_chisq=</span>dat1<span class="sc">$</span>Z[m1]<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb93-27"><a href="calc_aver2_j.html#cb93-27" aria-hidden="true" tabindex="-1"></a>                  <span class="at">good_chisq=</span>dat2<span class="sc">$</span>Z[m2]<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb93-28"><a href="calc_aver2_j.html#cb93-28" aria-hidden="true" tabindex="-1"></a>                  <span class="at">bad_chisq=</span>dat3<span class="sc">$</span>Z[m3]<span class="sc">^</span><span class="dv">2</span>, <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb93-29"><a href="calc_aver2_j.html#cb93-29" aria-hidden="true" tabindex="-1"></a>  out<span class="ot">=</span>out[<span class="fu">complete.cases</span>(out),]</span>
+<span id="cb93-30"><a href="calc_aver2_j.html#cb93-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># bin LD scores according to quantiles</span></span>
+<span id="cb93-31"><a href="calc_aver2_j.html#cb93-31" aria-hidden="true" tabindex="-1"></a>  cutoff1<span class="ot">=</span><span class="fu">quantile</span>(out<span class="sc">$</span>ldsc_ref, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.005</span>))</span>
+<span id="cb93-32"><a href="calc_aver2_j.html#cb93-32" aria-hidden="true" tabindex="-1"></a>  out<span class="sc">$</span>ldsc_ref_bin<span class="ot">=</span><span class="fu">cut</span>(out<span class="sc">$</span>ldsc_ref, <span class="at">breaks=</span>cutoff1, <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff1)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb93-33"><a href="calc_aver2_j.html#cb93-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.table</span>(out,<span class="fu">paste0</span>(<span class="st">&quot;summary/&quot;</span>,trait,<span class="st">&quot;-gwas-test-stats-compare3.txt&quot;</span>), </span>
+<span id="cb93-34"><a href="calc_aver2_j.html#cb93-34" aria-hidden="true" tabindex="-1"></a>              <span class="at">col.names=</span>T, <span class="at">row.names=</span>F, <span class="at">quote=</span>F)</span>
+<span id="cb93-35"><a href="calc_aver2_j.html#cb93-35" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb93-36"><a href="calc_aver2_j.html#cb93-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-37"><a href="calc_aver2_j.html#cb93-37" aria-hidden="true" tabindex="-1"></a><span class="co"># align chisq with ave r^2_j----------------------------------------------------</span></span>
+<span id="cb93-38"><a href="calc_aver2_j.html#cb93-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-39"><a href="calc_aver2_j.html#cb93-39" aria-hidden="true" tabindex="-1"></a>stat<span class="ot">=</span><span class="fu">vroom</span>(<span class="st">&quot;gen/geno-unrel-rs.maf&quot;</span>, <span class="at">col_names=</span>F)</span>
+<span id="cb93-40"><a href="calc_aver2_j.html#cb93-40" aria-hidden="true" tabindex="-1"></a>r2_good<span class="ot">=</span><span class="fu">vroom</span>(<span class="st">&quot;summary/ave-r2-by-snp-goodgwas-rs&quot;</span>, <span class="at">col_names=</span>F)</span>
+<span id="cb93-41"><a href="calc_aver2_j.html#cb93-41" aria-hidden="true" tabindex="-1"></a>r2_bad<span class="ot">=</span><span class="fu">vroom</span>(<span class="st">&quot;summary/ave-r2-by-snp-badgwas-rs&quot;</span>, <span class="at">col_names=</span>F)</span>
+<span id="cb93-42"><a href="calc_aver2_j.html#cb93-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-43"><a href="calc_aver2_j.html#cb93-43" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb93-44"><a href="calc_aver2_j.html#cb93-44" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb93-45"><a href="calc_aver2_j.html#cb93-45" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb93-46"><a href="calc_aver2_j.html#cb93-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-47"><a href="calc_aver2_j.html#cb93-47" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
+<span id="cb93-48"><a href="calc_aver2_j.html#cb93-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb93-49"><a href="calc_aver2_j.html#cb93-49" aria-hidden="true" tabindex="-1"></a>trait<span class="ot">=</span>traits[i]</span>
+<span id="cb93-50"><a href="calc_aver2_j.html#cb93-50" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;summary/&quot;</span>,trait,<span class="st">&quot;-gwas-test-stats-compare3.txt&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb93-51"><a href="calc_aver2_j.html#cb93-51" aria-hidden="true" tabindex="-1"></a>inflation<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">snp=</span>dat<span class="sc">$</span>SNP,</span>
+<span id="cb93-52"><a href="calc_aver2_j.html#cb93-52" aria-hidden="true" tabindex="-1"></a>                     <span class="at">inflation=</span>dat<span class="sc">$</span>bad_chisq<span class="sc">-</span>dat<span class="sc">$</span>good_chisq,</span>
+<span id="cb93-53"><a href="calc_aver2_j.html#cb93-53" aria-hidden="true" tabindex="-1"></a>                     <span class="at">bad_chisq=</span>dat<span class="sc">$</span>bad_chisq,</span>
+<span id="cb93-54"><a href="calc_aver2_j.html#cb93-54" aria-hidden="true" tabindex="-1"></a>                     <span class="at">bad_cov_chisq=</span>dat<span class="sc">$</span>bad_cov_chisq,</span>
+<span id="cb93-55"><a href="calc_aver2_j.html#cb93-55" aria-hidden="true" tabindex="-1"></a>                     <span class="at">good_chisq=</span>dat<span class="sc">$</span>good_chisq,</span>
+<span id="cb93-56"><a href="calc_aver2_j.html#cb93-56" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb93-57"><a href="calc_aver2_j.html#cb93-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-58"><a href="calc_aver2_j.html#cb93-58" aria-hidden="true" tabindex="-1"></a>m1<span class="ot">=</span><span class="fu">match</span>(inflation<span class="sc">$</span>snp, stat<span class="sc">$</span>X1)</span>
+<span id="cb93-59"><a href="calc_aver2_j.html#cb93-59" aria-hidden="true" tabindex="-1"></a>m2<span class="ot">=</span><span class="fu">match</span>(inflation<span class="sc">$</span>snp,r2_good<span class="sc">$</span>X1)</span>
+<span id="cb93-60"><a href="calc_aver2_j.html#cb93-60" aria-hidden="true" tabindex="-1"></a>m3<span class="ot">=</span><span class="fu">match</span>(inflation<span class="sc">$</span>snp,r2_bad<span class="sc">$</span>X1)</span>
+<span id="cb93-61"><a href="calc_aver2_j.html#cb93-61" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span><span class="fu">data.frame</span>(inflation,</span>
+<span id="cb93-62"><a href="calc_aver2_j.html#cb93-62" aria-hidden="true" tabindex="-1"></a>               <span class="at">maf=</span>stat<span class="sc">$</span>X4[m1], </span>
+<span id="cb93-63"><a href="calc_aver2_j.html#cb93-63" aria-hidden="true" tabindex="-1"></a>               <span class="at">r2_good=</span>r2_good<span class="sc">$</span>X2[m2],</span>
+<span id="cb93-64"><a href="calc_aver2_j.html#cb93-64" aria-hidden="true" tabindex="-1"></a>               <span class="at">r2_bad=</span>r2_bad<span class="sc">$</span>X2[m2], <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb93-65"><a href="calc_aver2_j.html#cb93-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-66"><a href="calc_aver2_j.html#cb93-66" aria-hidden="true" tabindex="-1"></a><span class="co"># bin maf &amp; r2_bad according to quantiles</span></span>
+<span id="cb93-67"><a href="calc_aver2_j.html#cb93-67" aria-hidden="true" tabindex="-1"></a>cutoff1<span class="ot">=</span><span class="fu">quantile</span>(out<span class="sc">$</span>maf, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.005</span>), <span class="at">na.rm=</span>T)</span>
+<span id="cb93-68"><a href="calc_aver2_j.html#cb93-68" aria-hidden="true" tabindex="-1"></a>cutoff2<span class="ot">=</span><span class="fu">quantile</span>(out<span class="sc">$</span>r2_bad, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.005</span>), <span class="at">na.rm=</span>T)</span>
+<span id="cb93-69"><a href="calc_aver2_j.html#cb93-69" aria-hidden="true" tabindex="-1"></a>cutoff3<span class="ot">=</span><span class="fu">quantile</span>(out<span class="sc">$</span>r2_good, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.005</span>), <span class="at">na.rm=</span>T)</span>
+<span id="cb93-70"><a href="calc_aver2_j.html#cb93-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-71"><a href="calc_aver2_j.html#cb93-71" aria-hidden="true" tabindex="-1"></a>out<span class="sc">$</span>maf_bin<span class="ot">=</span><span class="fu">cut</span>(out<span class="sc">$</span>maf, <span class="at">breaks=</span>cutoff1, <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff1)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb93-72"><a href="calc_aver2_j.html#cb93-72" aria-hidden="true" tabindex="-1"></a>out<span class="sc">$</span>r2_bad_bin<span class="ot">=</span><span class="fu">cut</span>(out<span class="sc">$</span>r2_bad, <span class="at">breaks=</span>cutoff2, <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff2)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb93-73"><a href="calc_aver2_j.html#cb93-73" aria-hidden="true" tabindex="-1"></a>out<span class="sc">$</span>r2_good_bin<span class="ot">=</span><span class="fu">cut</span>(out<span class="sc">$</span>r2_good, <span class="at">breaks=</span>cutoff3, <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff3)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb93-74"><a href="calc_aver2_j.html#cb93-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-75"><a href="calc_aver2_j.html#cb93-75" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(out,<span class="fu">paste0</span>(<span class="st">&quot;inflation/summary/&quot;</span>,trait,<span class="st">&quot;-inflation-by-maf-r2&quot;</span>), </span>
+<span id="cb93-76"><a href="calc_aver2_j.html#cb93-76" aria-hidden="true" tabindex="-1"></a>            <span class="at">col.names=</span>T, <span class="at">row.names=</span>F, <span class="at">quote=</span>F)</span>
+<span id="cb93-77"><a href="calc_aver2_j.html#cb93-77" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb93-78"><a href="calc_aver2_j.html#cb93-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-79"><a href="calc_aver2_j.html#cb93-79" aria-hidden="true" tabindex="-1"></a><span class="co"># plot bad chisq by binned ave r2 --------------------------------------------------</span></span>
+<span id="cb93-80"><a href="calc_aver2_j.html#cb93-80" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb93-81"><a href="calc_aver2_j.html#cb93-81" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb93-82"><a href="calc_aver2_j.html#cb93-82" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb93-83"><a href="calc_aver2_j.html#cb93-83" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb93-84"><a href="calc_aver2_j.html#cb93-84" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/badgwas-with-cov-chisq-by-aver2-bin.png&quot;</span>),</span>
+<span id="cb93-85"><a href="calc_aver2_j.html#cb93-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">50</span>, <span class="at">height =</span> <span class="dv">30</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb93-86"><a href="calc_aver2_j.html#cb93-86" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">5</span>))</span>
+<span id="cb93-87"><a href="calc_aver2_j.html#cb93-87" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
+<span id="cb93-88"><a href="calc_aver2_j.html#cb93-88" aria-hidden="true" tabindex="-1"></a>trait<span class="ot">=</span>traits[i]</span>
+<span id="cb93-89"><a href="calc_aver2_j.html#cb93-89" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;inflation/summary/&quot;</span>,trait,<span class="st">&quot;-inflation-by-maf-r2&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb93-90"><a href="calc_aver2_j.html#cb93-90" aria-hidden="true" tabindex="-1"></a>sel<span class="ot">=</span>dat[,<span class="fu">c</span>(<span class="st">&quot;snp&quot;</span>,<span class="st">&quot;bad_cov_chisq&quot;</span>,<span class="st">&quot;r2_bad&quot;</span>,<span class="st">&quot;r2_bad_bin&quot;</span>)]</span>
+<span id="cb93-91"><a href="calc_aver2_j.html#cb93-91" aria-hidden="true" tabindex="-1"></a>sel<span class="ot">=</span>sel[<span class="fu">complete.cases</span>(sel),]</span>
+<span id="cb93-92"><a href="calc_aver2_j.html#cb93-92" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">bad_cov_chisq=</span><span class="fu">tapply</span>(sel<span class="sc">$</span>bad_cov_chisq,<span class="at">INDEX=</span>sel<span class="sc">$</span>r2_bad_bin, mean))</span>
+<span id="cb93-93"><a href="calc_aver2_j.html#cb93-93" aria-hidden="true" tabindex="-1"></a>out<span class="sc">$</span>r2_bad_bin<span class="ot">=</span><span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(out)[<span class="dv">1</span>]</span>
+<span id="cb93-94"><a href="calc_aver2_j.html#cb93-94" aria-hidden="true" tabindex="-1"></a>out<span class="sc">$</span>r2_bad_bin_val<span class="ot">=</span><span class="fu">tapply</span>(sel<span class="sc">$</span>r2_bad,<span class="at">INDEX=</span>sel<span class="sc">$</span>r2_bad_bin, mean)</span>
+<span id="cb93-95"><a href="calc_aver2_j.html#cb93-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-96"><a href="calc_aver2_j.html#cb93-96" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out<span class="sc">$</span>r2_bad_bin_val, out<span class="sc">$</span>bad_cov_chisq,</span>
+<span id="cb93-97"><a href="calc_aver2_j.html#cb93-97" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;ave r2&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;chisq test stat&quot;</span>,</span>
+<span id="cb93-98"><a href="calc_aver2_j.html#cb93-98" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span>trait, <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb93-99"><a href="calc_aver2_j.html#cb93-99" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span><span class="st">&quot;grey&quot;</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb93-100"><a href="calc_aver2_j.html#cb93-100" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb93-101"><a href="calc_aver2_j.html#cb93-101" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb93-102"><a href="calc_aver2_j.html#cb93-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-103"><a href="calc_aver2_j.html#cb93-103" aria-hidden="true" tabindex="-1"></a><span class="co"># plot good chisq by binned ave r2 --------------------------------------------------</span></span>
+<span id="cb93-104"><a href="calc_aver2_j.html#cb93-104" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb93-105"><a href="calc_aver2_j.html#cb93-105" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb93-106"><a href="calc_aver2_j.html#cb93-106" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb93-107"><a href="calc_aver2_j.html#cb93-107" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb93-108"><a href="calc_aver2_j.html#cb93-108" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/goodgwas-chisq-by-aver2-bin.png&quot;</span>),</span>
+<span id="cb93-109"><a href="calc_aver2_j.html#cb93-109" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">50</span>, <span class="at">height =</span> <span class="dv">30</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb93-110"><a href="calc_aver2_j.html#cb93-110" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">5</span>))</span>
+<span id="cb93-111"><a href="calc_aver2_j.html#cb93-111" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
+<span id="cb93-112"><a href="calc_aver2_j.html#cb93-112" aria-hidden="true" tabindex="-1"></a>trait<span class="ot">=</span>traits[i]</span>
+<span id="cb93-113"><a href="calc_aver2_j.html#cb93-113" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;inflation/summary/&quot;</span>,trait,<span class="st">&quot;-inflation-by-maf-r2&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb93-114"><a href="calc_aver2_j.html#cb93-114" aria-hidden="true" tabindex="-1"></a>sel<span class="ot">=</span>dat[,<span class="fu">c</span>(<span class="st">&quot;snp&quot;</span>,<span class="st">&quot;good_chisq&quot;</span>,<span class="st">&quot;r2_good&quot;</span>,<span class="st">&quot;r2_good_bin&quot;</span>)]</span>
+<span id="cb93-115"><a href="calc_aver2_j.html#cb93-115" aria-hidden="true" tabindex="-1"></a>sel<span class="ot">=</span>sel[<span class="fu">complete.cases</span>(sel),]</span>
+<span id="cb93-116"><a href="calc_aver2_j.html#cb93-116" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">good_chisq=</span><span class="fu">tapply</span>(sel<span class="sc">$</span>good_chisq,<span class="at">INDEX=</span>sel<span class="sc">$</span>r2_good_bin, mean))</span>
+<span id="cb93-117"><a href="calc_aver2_j.html#cb93-117" aria-hidden="true" tabindex="-1"></a>out<span class="sc">$</span>r2_good_bin<span class="ot">=</span><span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(out)[<span class="dv">1</span>]</span>
+<span id="cb93-118"><a href="calc_aver2_j.html#cb93-118" aria-hidden="true" tabindex="-1"></a>out<span class="sc">$</span>r2_good_bin_val<span class="ot">=</span><span class="fu">tapply</span>(sel<span class="sc">$</span>r2_good,<span class="at">INDEX=</span>sel<span class="sc">$</span>r2_good_bin, mean)</span>
+<span id="cb93-119"><a href="calc_aver2_j.html#cb93-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-120"><a href="calc_aver2_j.html#cb93-120" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out<span class="sc">$</span>r2_good_bin_val, out<span class="sc">$</span>good_chisq,</span>
+<span id="cb93-121"><a href="calc_aver2_j.html#cb93-121" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;ave r2&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;chisq test stat&quot;</span>,</span>
+<span id="cb93-122"><a href="calc_aver2_j.html#cb93-122" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span>trait, <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb93-123"><a href="calc_aver2_j.html#cb93-123" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span><span class="st">&quot;grey&quot;</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb93-124"><a href="calc_aver2_j.html#cb93-124" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb93-125"><a href="calc_aver2_j.html#cb93-125" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb93-126"><a href="calc_aver2_j.html#cb93-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-127"><a href="calc_aver2_j.html#cb93-127" aria-hidden="true" tabindex="-1"></a><span class="co"># plot chisq by ldsc----------------------------------------------------------- </span></span>
+<span id="cb93-128"><a href="calc_aver2_j.html#cb93-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-129"><a href="calc_aver2_j.html#cb93-129" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(<span class="st">&quot;vroom&quot;</span>)</span>
+<span id="cb93-130"><a href="calc_aver2_j.html#cb93-130" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb93-131"><a href="calc_aver2_j.html#cb93-131" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>,</span>
+<span id="cb93-132"><a href="calc_aver2_j.html#cb93-132" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb93-133"><a href="calc_aver2_j.html#cb93-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-134"><a href="calc_aver2_j.html#cb93-134" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/badgwas-with-cov-by-ldscbin.png&quot;</span>),</span>
+<span id="cb93-135"><a href="calc_aver2_j.html#cb93-135" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span><span class="dv">50</span>, <span class="at">height =</span> <span class="dv">30</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb93-136"><a href="calc_aver2_j.html#cb93-136" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">5</span>))</span>
+<span id="cb93-137"><a href="calc_aver2_j.html#cb93-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-138"><a href="calc_aver2_j.html#cb93-138" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
+<span id="cb93-139"><a href="calc_aver2_j.html#cb93-139" aria-hidden="true" tabindex="-1"></a>trait<span class="ot">=</span>traits[i]</span>
+<span id="cb93-140"><a href="calc_aver2_j.html#cb93-140" aria-hidden="true" tabindex="-1"></a>trait</span>
+<span id="cb93-141"><a href="calc_aver2_j.html#cb93-141" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;summary/&quot;</span>,trait,<span class="st">&quot;-gwas-test-stats-compare3.txt&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb93-142"><a href="calc_aver2_j.html#cb93-142" aria-hidden="true" tabindex="-1"></a>out1<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">ave_ldscore=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>ldsc_ref,<span class="at">INDEX=</span>dat<span class="sc">$</span>ldsc_ref_bin, mean),</span>
+<span id="cb93-143"><a href="calc_aver2_j.html#cb93-143" aria-hidden="true" tabindex="-1"></a>               <span class="at">ave_good_chisq=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>good_chisq,<span class="at">INDEX=</span>dat<span class="sc">$</span>ldsc_ref_bin, mean),</span>
+<span id="cb93-144"><a href="calc_aver2_j.html#cb93-144" aria-hidden="true" tabindex="-1"></a>               <span class="at">ave_bad_cov_chisq=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>bad_cov_chisq,<span class="at">INDEX=</span>dat<span class="sc">$</span>ldsc_ref_bin, mean))</span>
+<span id="cb93-145"><a href="calc_aver2_j.html#cb93-145" aria-hidden="true" tabindex="-1"></a>               </span>
+<span id="cb93-146"><a href="calc_aver2_j.html#cb93-146" aria-hidden="true" tabindex="-1"></a><span class="co">#out2=data.frame(ave_ldscore=tapply(dat$ldsc_mix,INDEX=dat$ldsc_mix_bin, mean),</span></span>
+<span id="cb93-147"><a href="calc_aver2_j.html#cb93-147" aria-hidden="true" tabindex="-1"></a><span class="co">#               ave_control_chisq=tapply(dat$control_chisq,INDEX=dat$ldsc_mix_bin, mean),</span></span>
+<span id="cb93-148"><a href="calc_aver2_j.html#cb93-148" aria-hidden="true" tabindex="-1"></a><span class="co">#               ave_good_chisq=tapply(dat$good_chisq,INDEX=dat$ldsc_mix_bin, mean),</span></span>
+<span id="cb93-149"><a href="calc_aver2_j.html#cb93-149" aria-hidden="true" tabindex="-1"></a><span class="co">#              ave_bad_chisq=tapply(dat$bad_chisq,INDEX=dat$ldsc_mix_bin, mean))</span></span>
+<span id="cb93-150"><a href="calc_aver2_j.html#cb93-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-151"><a href="calc_aver2_j.html#cb93-151" aria-hidden="true" tabindex="-1"></a>end<span class="ot">=</span><span class="fu">round</span>(<span class="fu">max</span>(<span class="fu">c</span>(out1[,<span class="dv">2</span>], out1[,<span class="dv">3</span>])),<span class="dv">0</span>)</span>
+<span id="cb93-152"><a href="calc_aver2_j.html#cb93-152" aria-hidden="true" tabindex="-1"></a><span class="co">#end2=round(max(c(out2[,2], out2[,3], out2[,4])),0)</span></span>
+<span id="cb93-153"><a href="calc_aver2_j.html#cb93-153" aria-hidden="true" tabindex="-1"></a><span class="co">#end=max(end1,end2)</span></span>
+<span id="cb93-154"><a href="calc_aver2_j.html#cb93-154" aria-hidden="true" tabindex="-1"></a>start<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb93-155"><a href="calc_aver2_j.html#cb93-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-156"><a href="calc_aver2_j.html#cb93-156" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out1<span class="sc">$</span>ave_ldscore, out1<span class="sc">$</span>ave_good_chisq,</span>
+<span id="cb93-157"><a href="calc_aver2_j.html#cb93-157" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;ldscore&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;mean chisquare&quot;</span>, </span>
+<span id="cb93-158"><a href="calc_aver2_j.html#cb93-158" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim=</span><span class="fu">c</span>(start, end),</span>
+<span id="cb93-159"><a href="calc_aver2_j.html#cb93-159" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span>trait, <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb93-160"><a href="calc_aver2_j.html#cb93-160" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span><span class="st">&quot;gray&quot;</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb93-161"><a href="calc_aver2_j.html#cb93-161" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(out1<span class="sc">$</span>ave_ldscore, out1<span class="sc">$</span>ave_bad_cov_chisq,</span>
+<span id="cb93-162"><a href="calc_aver2_j.html#cb93-162" aria-hidden="true" tabindex="-1"></a>       <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">bg=</span><span class="st">&quot;orange&quot;</span>)</span>
+<span id="cb93-163"><a href="calc_aver2_j.html#cb93-163" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb93-164"><a href="calc_aver2_j.html#cb93-164" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb93-165"><a href="calc_aver2_j.html#cb93-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-166"><a href="calc_aver2_j.html#cb93-166" aria-hidden="true" tabindex="-1"></a><span class="co"># regress chi square from bad gwas with cov on ldsc</span></span>
+<span id="cb93-167"><a href="calc_aver2_j.html#cb93-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-168"><a href="calc_aver2_j.html#cb93-168" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb93-169"><a href="calc_aver2_j.html#cb93-169" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb93-170"><a href="calc_aver2_j.html#cb93-170" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>,</span>
+<span id="cb93-171"><a href="calc_aver2_j.html#cb93-171" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb93-172"><a href="calc_aver2_j.html#cb93-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-173"><a href="calc_aver2_j.html#cb93-173" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
+<span id="cb93-174"><a href="calc_aver2_j.html#cb93-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-175"><a href="calc_aver2_j.html#cb93-175" aria-hidden="true" tabindex="-1"></a>trait<span class="ot">=</span>traits[i]</span>
+<span id="cb93-176"><a href="calc_aver2_j.html#cb93-176" aria-hidden="true" tabindex="-1"></a>trait</span>
+<span id="cb93-177"><a href="calc_aver2_j.html#cb93-177" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;summary/&quot;</span>,trait,<span class="st">&quot;-gwas-test-stats-compare3.txt&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb93-178"><a href="calc_aver2_j.html#cb93-178" aria-hidden="true" tabindex="-1"></a>dat2<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;inflation/summary/&quot;</span>,trait,<span class="st">&quot;-inflation-by-maf-r2&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb93-179"><a href="calc_aver2_j.html#cb93-179" aria-hidden="true" tabindex="-1"></a>m<span class="ot">=</span><span class="fu">match</span>(dat<span class="sc">$</span>SNP,dat2<span class="sc">$</span>snp)</span>
+<span id="cb93-180"><a href="calc_aver2_j.html#cb93-180" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span><span class="fu">data.frame</span>(dat2[m,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">9</span><span class="sc">:</span><span class="dv">11</span>)],dat[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>)])</span>
+<span id="cb93-181"><a href="calc_aver2_j.html#cb93-181" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span>out[<span class="fu">complete.cases</span>(out),]</span>
+<span id="cb93-182"><a href="calc_aver2_j.html#cb93-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-183"><a href="calc_aver2_j.html#cb93-183" aria-hidden="true" tabindex="-1"></a><span class="co">#ldsc_ref2=(out$ldsc_ref)^2</span></span>
+<span id="cb93-184"><a href="calc_aver2_j.html#cb93-184" aria-hidden="true" tabindex="-1"></a><span class="co">#r2_bad2=(out$r2_bad)^2</span></span>
+<span id="cb93-185"><a href="calc_aver2_j.html#cb93-185" aria-hidden="true" tabindex="-1"></a>mod0<span class="ot">=</span><span class="fu">lm</span>(bad_cov_chisq <span class="sc">~</span> <span class="dv">1</span>,<span class="at">data=</span>out)</span>
+<span id="cb93-186"><a href="calc_aver2_j.html#cb93-186" aria-hidden="true" tabindex="-1"></a>mod1<span class="ot">=</span><span class="fu">lm</span>(bad_cov_chisq <span class="sc">~</span> ldsc_ref,<span class="at">data=</span>out)</span>
+<span id="cb93-187"><a href="calc_aver2_j.html#cb93-187" aria-hidden="true" tabindex="-1"></a>mod1<span class="fl">.1</span><span class="ot">=</span><span class="fu">lm</span>(bad_chisq <span class="sc">~</span> ldsc_ref <span class="sc">+</span> ldsc_ref2 ,<span class="at">data=</span>out)</span>
+<span id="cb93-188"><a href="calc_aver2_j.html#cb93-188" aria-hidden="true" tabindex="-1"></a>mod2<span class="ot">=</span><span class="fu">lm</span>(bad_chisq <span class="sc">~</span> r2_bad, <span class="at">data=</span>out)</span>
+<span id="cb93-189"><a href="calc_aver2_j.html#cb93-189" aria-hidden="true" tabindex="-1"></a>mod2<span class="fl">.1</span><span class="ot">=</span><span class="fu">lm</span>(bad_chisq <span class="sc">~</span> r2_bad <span class="sc">+</span> r2_bad2, <span class="at">data=</span>out)</span>
+<span id="cb93-190"><a href="calc_aver2_j.html#cb93-190" aria-hidden="true" tabindex="-1"></a>mod3<span class="ot">=</span><span class="fu">lm</span>(bad_chisq <span class="sc">~</span> r2_bad <span class="sc">+</span> ldsc_ref ,<span class="at">data=</span>out)</span>
+<span id="cb93-191"><a href="calc_aver2_j.html#cb93-191" aria-hidden="true" tabindex="-1"></a>mod3<span class="fl">.1</span><span class="ot">=</span><span class="fu">lm</span>(bad_chisq <span class="sc">~</span> r2_bad <span class="sc">+</span> ldsc_ref <span class="sc">+</span> ldsc_ref2 ,<span class="at">data=</span>out)</span>
+<span id="cb93-192"><a href="calc_aver2_j.html#cb93-192" aria-hidden="true" tabindex="-1"></a>mod3<span class="fl">.2</span><span class="ot">=</span><span class="fu">lm</span>(bad_chisq <span class="sc">~</span> r2_bad <span class="sc">+</span> ldsc_ref <span class="sc">+</span> ldsc_ref2 <span class="sc">+</span> r2_bad<span class="sc">*</span>ldsc_ref ,<span class="at">data=</span>out)</span>
+<span id="cb93-193"><a href="calc_aver2_j.html#cb93-193" aria-hidden="true" tabindex="-1"></a>mod4<span class="ot">=</span><span class="fu">lm</span>(bad_chisq <span class="sc">~</span> r2_bad <span class="sc">+</span> ldsc_ref <span class="sc">+</span> r2_bad<span class="sc">*</span>ldsc_ref ,<span class="at">data=</span>out)</span>
+<span id="cb93-194"><a href="calc_aver2_j.html#cb93-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-195"><a href="calc_aver2_j.html#cb93-195" aria-hidden="true" tabindex="-1"></a>p0<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">trait=</span>trait,</span>
+<span id="cb93-196"><a href="calc_aver2_j.html#cb93-196" aria-hidden="true" tabindex="-1"></a>              <span class="at">p_r2=</span><span class="fu">anova</span>(mod2, mod0)<span class="sc">$</span>P[<span class="dv">2</span>],</span>
+<span id="cb93-197"><a href="calc_aver2_j.html#cb93-197" aria-hidden="true" tabindex="-1"></a>              <span class="at">p_r2_2=</span><span class="fu">anova</span>(mod2<span class="fl">.1</span>, mod2)<span class="sc">$</span>P[<span class="dv">2</span>],</span>
+<span id="cb93-198"><a href="calc_aver2_j.html#cb93-198" aria-hidden="true" tabindex="-1"></a>              <span class="at">p_ldsc=</span><span class="fu">anova</span>(mod3,mod2)<span class="sc">$</span>P[<span class="dv">2</span>],</span>
+<span id="cb93-199"><a href="calc_aver2_j.html#cb93-199" aria-hidden="true" tabindex="-1"></a>              <span class="at">p_ldsc2=</span><span class="fu">anova</span>(mod3<span class="fl">.1</span>,mod3)<span class="sc">$</span>P[<span class="dv">2</span>],</span>
+<span id="cb93-200"><a href="calc_aver2_j.html#cb93-200" aria-hidden="true" tabindex="-1"></a>              <span class="at">p_ldsc_r2=</span><span class="fu">anova</span>(mod4,mod3)<span class="sc">$</span>P[<span class="dv">2</span>],</span>
+<span id="cb93-201"><a href="calc_aver2_j.html#cb93-201" aria-hidden="true" tabindex="-1"></a>              <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb93-202"><a href="calc_aver2_j.html#cb93-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-203"><a href="calc_aver2_j.html#cb93-203" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(i<span class="sc">==</span><span class="dv">1</span>){p<span class="ot">=</span>p0} <span class="cf">else</span>{p<span class="ot">=</span><span class="fu">rbind</span>(p,p0)}</span>
+<span id="cb93-204"><a href="calc_aver2_j.html#cb93-204" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb93-205"><a href="calc_aver2_j.html#cb93-205" aria-hidden="true" tabindex="-1"></a>p_bad<span class="ot">=</span>p</span></code></pre></div>
+
+<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div class="csl-entry">
+Bulik-Sullivan, B. K., Loh, P.-R., Finucane, H. K., Ripke, S., Yang, J., Patterson, N., Daly, M. J., Price, A. L., &amp; Neale, B. M. (2015). LD score regression distinguishes confounding from polygenicity in genome-wide association studies. <em>Nature Genetics</em>, <em>47</em>(3), 291–295.
+</div>
+<div class="csl-entry">
+Holmes, J. B., Speed, D., &amp; Balding, D. J. (2019). Summary statistic analyses can mistake confounding bias for heritability. <em>Genetic Epidemiology</em>, <em>43</em>(8), 930–940. https://doi.org/<a href="https://doi.org/10.1002/gepi.22259">https://doi.org/10.1002/gepi.22259</a>
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="related-individuals.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/06_working_space.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["bookdown-demo.pdf", "bookdown-demo.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

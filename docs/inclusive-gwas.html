@@ -51,6 +51,10 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
@@ -118,6 +122,28 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -225,22 +251,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.2.2" data-path="bad.html"><a href="bad.html#basic-cov-pc"><i class="fa fa-check"></i><b>7.2.2</b> basic cov + PC</a></li>
 </ul></li>
 <li class="chapter" data-level="7.3" data-path="bad.html"><a href="bad.html#gwas-bolt-lmm"><i class="fa fa-check"></i><b>7.3</b> GWAS-bolt-lmm</a></li>
-<li class="chapter" data-level="7.4" data-path="bad.html"><a href="bad.html#ldsc-intercept-1"><i class="fa fa-check"></i><b>7.4</b> ldsc intercept</a>
+<li class="chapter" data-level="7.4" data-path="bad.html"><a href="bad.html#aver2_j"><i class="fa fa-check"></i><b>7.4</b> aver2_j</a>
 <ul>
-<li class="chapter" data-level="7.4.1" data-path="bad.html"><a href="bad.html#under-gcta-1"><i class="fa fa-check"></i><b>7.4.1</b> under gcta</a></li>
-<li class="chapter" data-level="7.4.2" data-path="bad.html"><a href="bad.html#under-ldak-thin-1"><i class="fa fa-check"></i><b>7.4.2</b> under ldak-thin</a></li>
-<li class="chapter" data-level="7.4.3" data-path="bad.html"><a href="bad.html#summary-3"><i class="fa fa-check"></i><b>7.4.3</b> summary</a></li>
+<li class="chapter" data-level="7.4.1" data-path="bad.html"><a href="bad.html#calc-aver2_j"><i class="fa fa-check"></i><b>7.4.1</b> calc aver2_j</a></li>
+<li class="chapter" data-level="7.4.2" data-path="bad.html"><a href="bad.html#bolt-lmm"><i class="fa fa-check"></i><b>7.4.2</b> bolt-lmm</a></li>
+<li class="chapter" data-level="7.4.3" data-path="bad.html"><a href="bad.html#basic-cov-pc-1"><i class="fa fa-check"></i><b>7.4.3</b> basic cov + PC</a></li>
 </ul></li>
-<li class="chapter" data-level="7.5" data-path="bad.html"><a href="bad.html#reml-1"><i class="fa fa-check"></i><b>7.5</b> REML</a>
+<li class="chapter" data-level="7.5" data-path="bad.html"><a href="bad.html#ldsc-intercept-1"><i class="fa fa-check"></i><b>7.5</b> ldsc intercept</a>
 <ul>
-<li class="chapter" data-level="7.5.1" data-path="bad.html"><a href="bad.html#making-grms-1"><i class="fa fa-check"></i><b>7.5.1</b> making grms</a></li>
-<li class="chapter" data-level="7.5.2" data-path="bad.html"><a href="bad.html#fast-reml-1"><i class="fa fa-check"></i><b>7.5.2</b> fast-reml</a></li>
-<li class="chapter" data-level="7.5.3" data-path="bad.html"><a href="bad.html#inflation-test-1"><i class="fa fa-check"></i><b>7.5.3</b> inflation test</a></li>
+<li class="chapter" data-level="7.5.1" data-path="bad.html"><a href="bad.html#under-gcta-1"><i class="fa fa-check"></i><b>7.5.1</b> under gcta</a></li>
+<li class="chapter" data-level="7.5.2" data-path="bad.html"><a href="bad.html#under-ldak-thin-1"><i class="fa fa-check"></i><b>7.5.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="7.5.3" data-path="bad.html"><a href="bad.html#summary-3"><i class="fa fa-check"></i><b>7.5.3</b> summary</a></li>
 </ul></li>
-<li class="chapter" data-level="7.6" data-path="bad.html"><a href="bad.html#he-1"><i class="fa fa-check"></i><b>7.6</b> HE</a>
+<li class="chapter" data-level="7.6" data-path="bad.html"><a href="bad.html#reml-1"><i class="fa fa-check"></i><b>7.6</b> REML</a>
 <ul>
-<li class="chapter" data-level="7.6.1" data-path="bad.html"><a href="bad.html#estimation-1"><i class="fa fa-check"></i><b>7.6.1</b> estimation</a></li>
-<li class="chapter" data-level="7.6.2" data-path="bad.html"><a href="bad.html#summary-4"><i class="fa fa-check"></i><b>7.6.2</b> summary</a></li>
+<li class="chapter" data-level="7.6.1" data-path="bad.html"><a href="bad.html#making-grms-1"><i class="fa fa-check"></i><b>7.6.1</b> making grms</a></li>
+<li class="chapter" data-level="7.6.2" data-path="bad.html"><a href="bad.html#fast-reml-1"><i class="fa fa-check"></i><b>7.6.2</b> fast-reml</a></li>
+<li class="chapter" data-level="7.6.3" data-path="bad.html"><a href="bad.html#inflation-test-1"><i class="fa fa-check"></i><b>7.6.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="7.7" data-path="bad.html"><a href="bad.html#he-1"><i class="fa fa-check"></i><b>7.7</b> HE</a>
+<ul>
+<li class="chapter" data-level="7.7.1" data-path="bad.html"><a href="bad.html#estimation-1"><i class="fa fa-check"></i><b>7.7.1</b> estimation</a></li>
+<li class="chapter" data-level="7.7.2" data-path="bad.html"><a href="bad.html#summary-4"><i class="fa fa-check"></i><b>7.7.2</b> summary</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="ukbb.html"><a href="ukbb.html"><i class="fa fa-check"></i><b>8</b> UKBB recommended</a>
@@ -292,7 +324,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.1" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#qc"><i class="fa fa-check"></i><b>10.1</b> QC</a></li>
 <li class="chapter" data-level="10.2" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#gwas-telomere-length"><i class="fa fa-check"></i><b>10.2</b> gwas-telomere length</a>
 <ul>
-<li class="chapter" data-level="10.2.1" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#aver2_j"><i class="fa fa-check"></i><b>10.2.1</b> aver2_j</a></li>
+<li class="chapter" data-level="10.2.1" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#aver2_j-1"><i class="fa fa-check"></i><b>10.2.1</b> aver2_j</a></li>
 <li class="chapter" data-level="10.2.2" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#organize-data-1"><i class="fa fa-check"></i><b>10.2.2</b> organize data</a></li>
 <li class="chapter" data-level="10.2.3" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#chisq-aver2_j-1"><i class="fa fa-check"></i><b>10.2.3</b> chisq ~ aver2_j</a></li>
 </ul></li>
@@ -302,7 +334,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="11.1" data-path="related-individuals.html"><a href="related-individuals.html#genotyped-snps"><i class="fa fa-check"></i><b>11.1</b> genotyped SNPs</a>
 <ul>
-<li class="chapter" data-level="11.1.1" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-1"><i class="fa fa-check"></i><b>11.1.1</b> aver2_j</a></li>
+<li class="chapter" data-level="11.1.1" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-2"><i class="fa fa-check"></i><b>11.1.1</b> aver2_j</a></li>
 <li class="chapter" data-level="11.1.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-2"><i class="fa fa-check"></i><b>11.1.2</b> gwas</a></li>
 <li class="chapter" data-level="11.1.3" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-2"><i class="fa fa-check"></i><b>11.1.3</b> organize data</a></li>
 <li class="chapter" data-level="11.1.4" data-path="related-individuals.html"><a href="related-individuals.html#summary-9"><i class="fa fa-check"></i><b>11.1.4</b> summary</a></li>
@@ -311,7 +343,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="11.2.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype-data"><i class="fa fa-check"></i><b>11.2.1</b> genotype data</a></li>
 <li class="chapter" data-level="11.2.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-3"><i class="fa fa-check"></i><b>11.2.2</b> gwas</a></li>
-<li class="chapter" data-level="11.2.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-2"><i class="fa fa-check"></i><b>11.2.3</b> aver2_j</a></li>
+<li class="chapter" data-level="11.2.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-3"><i class="fa fa-check"></i><b>11.2.3</b> aver2_j</a></li>
 <li class="chapter" data-level="11.2.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-3"><i class="fa fa-check"></i><b>11.2.4</b> organize data</a></li>
 <li class="chapter" data-level="11.2.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-2"><i class="fa fa-check"></i><b>11.2.5</b> chisq ~ aver2_j</a></li>
 <li class="chapter" data-level="11.2.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j"><i class="fa fa-check"></i><b>11.2.6</b> inflation ~ aver2_j</a></li>
@@ -320,20 +352,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="11.3.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype"><i class="fa fa-check"></i><b>11.3.1</b> genotype</a></li>
 <li class="chapter" data-level="11.3.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-4"><i class="fa fa-check"></i><b>11.3.2</b> gwas</a></li>
-<li class="chapter" data-level="11.3.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-3"><i class="fa fa-check"></i><b>11.3.3</b> aver2_j</a></li>
+<li class="chapter" data-level="11.3.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-4"><i class="fa fa-check"></i><b>11.3.3</b> aver2_j</a></li>
 <li class="chapter" data-level="11.3.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-4"><i class="fa fa-check"></i><b>11.3.4</b> organize data</a></li>
 <li class="chapter" data-level="11.3.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-3"><i class="fa fa-check"></i><b>11.3.5</b> chisq ~ aver2_j</a></li>
 <li class="chapter" data-level="11.3.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j-1"><i class="fa fa-check"></i><b>11.3.6</b> inflation ~ aver2_j</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html"><i class="fa fa-check"></i><b>12</b> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></a>
+<li class="chapter" data-level="12" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html"><i class="fa fa-check"></i><b>12</b> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwas-all-qced-snps"><i class="fa fa-check"></i><b>12.1</b> good GWAS-all qced snps</a></li>
-<li class="chapter" data-level="12.2" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwass--ldak-thin-snps"><i class="fa fa-check"></i><b>12.2</b> good GWASs- ldak-thin snps</a></li>
-<li class="chapter" data-level="12.3" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#bad-gwass-all-qced-snps"><i class="fa fa-check"></i><b>12.3</b> bad GWASs-all qced snps</a></li>
-<li class="chapter" data-level="12.4" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#summary-10"><i class="fa fa-check"></i><b>12.4</b> summary</a></li>
-<li class="chapter" data-level="12.5" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#compute-overliner2_j"><i class="fa fa-check"></i><b>12.5</b> compute <span class="math inline">\(\overline{r^2_j}\)</span></a></li>
-<li class="chapter" data-level="12.6" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#mixed-pop-gwas-with-pc-as-covariates"><i class="fa fa-check"></i><b>12.6</b> mixed pop GWAS with PC as covariates</a></li>
+<li class="chapter" data-level="12.1" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#good-gwas-all-qced-snps"><i class="fa fa-check"></i><b>12.1</b> good GWAS-all qced snps</a></li>
+<li class="chapter" data-level="12.2" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#good-gwass--ldak-thin-snps"><i class="fa fa-check"></i><b>12.2</b> good GWASs- ldak-thin snps</a></li>
+<li class="chapter" data-level="12.3" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#bad-gwass-all-qced-snps"><i class="fa fa-check"></i><b>12.3</b> bad GWASs-all qced snps</a></li>
+<li class="chapter" data-level="12.4" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#summary-10"><i class="fa fa-check"></i><b>12.4</b> summary</a></li>
+<li class="chapter" data-level="12.5" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#compute-overliner2_j"><i class="fa fa-check"></i><b>12.5</b> compute <span class="math inline">\(\overline{r^2_j}\)</span></a></li>
+<li class="chapter" data-level="12.6" data-path="calc_aver2_j.html"><a href="calc_aver2_j.html#mixed-pop-gwas-with-pc-as-covariates"><i class="fa fa-check"></i><b>12.6</b> mixed pop GWAS with PC as covariates</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -364,162 +396,162 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Here we want to test if the test statistics from GWAS conducted in such a way are inflated using the proposed method. We do not have access to telomere length, but we can use the 14 traits as examples instead.</p>
 <div id="qc" class="section level2" number="10.1">
 <h2><span class="header-section-number">10.1</span> QC</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="inclusive-gwas.html#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-2"><a href="inclusive-gwas.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb1-3"><a href="inclusive-gwas.html#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># extract covariates</span></span>
-<span id="cb1-4"><a href="inclusive-gwas.html#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb1-5"><a href="inclusive-gwas.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># This has been done under &#39;Good GWAS&#39; section. Here we just want to extract from the file</span></span>
-<span id="cb1-6"><a href="inclusive-gwas.html#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span></span>
-<span id="cb1-7"><a href="inclusive-gwas.html#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">options</span><span class="er">(</span><span class="va">scipen</span><span class="op">=</span>999<span class="kw">)</span></span>
-<span id="cb1-8"><a href="inclusive-gwas.html#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">require</span><span class="er">(</span><span class="ex">vroom</span><span class="kw">)</span></span>
-<span id="cb1-9"><a href="inclusive-gwas.html#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">dat</span><span class="op">=</span>vroom<span class="kw">(</span><span class="st">&quot;phen/covariates.phen&quot;</span><span class="ex">,</span> col_names=T<span class="kw">)</span></span>
-<span id="cb1-10"><a href="inclusive-gwas.html#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="va">pc</span><span class="op">=</span>paste0<span class="kw">(</span><span class="st">&quot;pc&quot;</span><span class="ex">,1:10</span><span class="kw">)</span></span>
-<span id="cb1-11"><a href="inclusive-gwas.html#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="va">cov</span><span class="op">=</span>c<span class="kw">(</span><span class="st">&quot;eid&quot;</span><span class="ex">,</span><span class="st">&quot;eid&quot;</span><span class="ex">,</span><span class="st">&quot;age&quot;</span><span class="ex">,</span><span class="st">&quot;geno_batch&quot;</span><span class="ex">,pc</span><span class="kw">)</span></span>
-<span id="cb1-12"><a href="inclusive-gwas.html#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>dat[,cov]</span>
-<span id="cb1-13"><a href="inclusive-gwas.html#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="inclusive-gwas.html#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ex">write.table</span><span class="er">(</span><span class="ex">out,</span><span class="st">&quot;phen/covariates-inclusive-gwas.use&quot;</span><span class="ex">,</span> col.names=F,</span>
-<span id="cb1-15"><a href="inclusive-gwas.html#cb1-15" aria-hidden="true" tabindex="-1"></a>            <span class="ex">row.names=F,</span> quote=F<span class="kw">)</span></span>
-<span id="cb1-16"><a href="inclusive-gwas.html#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ex">write.table</span><span class="er">(</span><span class="ex">cov,</span><span class="st">&quot;phen/covariates-inclusive-gwas.use-names&quot;</span><span class="ex">,</span> col.names=F,</span>
-<span id="cb1-17"><a href="inclusive-gwas.html#cb1-17" aria-hidden="true" tabindex="-1"></a>            <span class="ex">row.names=F,</span> quote=F<span class="kw">)</span></span>
-<span id="cb1-18"><a href="inclusive-gwas.html#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="inclusive-gwas.html#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="va">sel</span><span class="op">=</span>out[complete.cases<span class="kw">(</span><span class="ex">out</span><span class="kw">)</span><span class="ex">,]</span> <span class="co"># n = 488,244</span></span>
-<span id="cb1-20"><a href="inclusive-gwas.html#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="ex">write.table</span><span class="er">(</span><span class="va">sel</span><span class="op">[</span>,1:2<span class="op">]</span><span class="ex">,</span> <span class="st">&quot;complete-cases-covariates-inclusive-gwas.id&quot;</span>, col.names=F,</span>
-<span id="cb1-21"><a href="inclusive-gwas.html#cb1-21" aria-hidden="true" tabindex="-1"></a>            <span class="ex">row.names=F,</span> quote=F<span class="kw">)</span></span>
-<span id="cb1-22"><a href="inclusive-gwas.html#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="inclusive-gwas.html#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb1-24"><a href="inclusive-gwas.html#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># id list of complete cases: covariates &amp; phenotypes</span></span>
-<span id="cb1-25"><a href="inclusive-gwas.html#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb1-26"><a href="inclusive-gwas.html#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="inclusive-gwas.html#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># note: to remain as much people as possible, we did not select all 14 traits. but 9.</span></span>
-<span id="cb1-28"><a href="inclusive-gwas.html#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># for these traits, n = 467, 104 have complete data</span></span>
-<span id="cb1-29"><a href="inclusive-gwas.html#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> complete-cases-covariates-inclusive-gwas.id inclusive-gwas.id</span>
-<span id="cb1-30"><a href="inclusive-gwas.html#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="va">dir</span><span class="op">=</span>phen/continuous-traits/</span>
-<span id="cb1-31"><a href="inclusive-gwas.html#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}</span></span>
-<span id="cb1-32"><a href="inclusive-gwas.html#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="kw">in</span> <span class="dt">{awake</span><span class="op">,</span><span class="dt">bmi</span><span class="op">,</span><span class="dt">ever</span><span class="op">,</span><span class="dt">height</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">quals</span><span class="op">,</span><span class="dt">reaction</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">hyper}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb1-33"><a href="inclusive-gwas.html#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> inclusive-gwas.id temp</span>
-<span id="cb1-34"><a href="inclusive-gwas.html#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$1];next}($1 in a){print $1, $2}&#39;</span> temp <span class="va">$dir</span>/<span class="va">$tt</span>.raw.pheno <span class="op">&gt;</span> inclusive-gwas.id</span>
-<span id="cb1-35"><a href="inclusive-gwas.html#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="fu">wc</span> <span class="at">-l</span> inclusive-gwas.id</span>
-<span id="cb1-36"><a href="inclusive-gwas.html#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$tt</span></span>
-<span id="cb1-37"><a href="inclusive-gwas.html#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb1-38"><a href="inclusive-gwas.html#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> temp</span>
-<span id="cb1-39"><a href="inclusive-gwas.html#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-40"><a href="inclusive-gwas.html#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb1-41"><a href="inclusive-gwas.html#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># extract genotypes</span></span>
-<span id="cb1-42"><a href="inclusive-gwas.html#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb1-43"><a href="inclusive-gwas.html#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-44"><a href="inclusive-gwas.html#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="co"># QC SNPs-----------------------------------------------------------------------</span></span>
-<span id="cb1-45"><a href="inclusive-gwas.html#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="co"># stating number of SNPs=</span></span>
-<span id="cb1-46"><a href="inclusive-gwas.html#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb1-47"><a href="inclusive-gwas.html#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
-<span id="cb1-48"><a href="inclusive-gwas.html#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
-<span id="cb1-49"><a href="inclusive-gwas.html#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
-<span id="cb1-50"><a href="inclusive-gwas.html#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
-<span id="cb1-51"><a href="inclusive-gwas.html#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
-<span id="cb1-52"><a href="inclusive-gwas.html#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 10:0:0</span></span>
-<span id="cb1-53"><a href="inclusive-gwas.html#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-54"><a href="inclusive-gwas.html#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb1-55"><a href="inclusive-gwas.html#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="st">         --keep ../inclusive-gwas.id </span><span class="dt">\</span></span>
-<span id="cb1-56"><a href="inclusive-gwas.html#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="st">         --hwe 0.0001 </span><span class="dt">\</span></span>
-<span id="cb1-57"><a href="inclusive-gwas.html#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="st">         --maf 0.001 </span><span class="dt">\</span></span>
-<span id="cb1-58"><a href="inclusive-gwas.html#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="st">         --hard-call-threshold .05 </span><span class="dt">\</span></span>
-<span id="cb1-59"><a href="inclusive-gwas.html#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="st">         --mach-r2-filter 0.3 2 </span><span class="dt">\</span></span>
-<span id="cb1-60"><a href="inclusive-gwas.html#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="st">         --make-bed </span><span class="dt">\</span></span>
-<span id="cb1-61"><a href="inclusive-gwas.html#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
-<span id="cb1-62"><a href="inclusive-gwas.html#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/tmp/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb1-63"><a href="inclusive-gwas.html#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3</span></span>
-<span id="cb1-64"><a href="inclusive-gwas.html#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/chr<span class="va">$j</span>.sh</span>
-<span id="cb1-65"><a href="inclusive-gwas.html#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb1-66"><a href="inclusive-gwas.html#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-67"><a href="inclusive-gwas.html#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="co"># submit jobs-------------------------------------------------------------------</span></span>
-<span id="cb1-68"><a href="inclusive-gwas.html#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb1-69"><a href="inclusive-gwas.html#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/chr<span class="va">$j</span>.sh</span>
-<span id="cb1-70"><a href="inclusive-gwas.html#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/qc-inclusive-gwas</span>
-<span id="cb1-71"><a href="inclusive-gwas.html#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-72"><a href="inclusive-gwas.html#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="co"># check job completion----------------------------------------------------------</span></span>
-<span id="cb1-73"><a href="inclusive-gwas.html#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="va">file</span><span class="op">=</span>job-records/qc-inclusive-gwas</span>
-<span id="cb1-74"><a href="inclusive-gwas.html#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="va">jobs</span><span class="op">=</span><span class="kw">`</span><span class="fu">awk</span> <span class="st">&#39;{print $4}&#39;</span> <span class="va">$file</span><span class="kw">`</span></span>
-<span id="cb1-75"><a href="inclusive-gwas.html#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="va">$file</span>-tmp</span>
-<span id="cb1-76"><a href="inclusive-gwas.html#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="va">$jobs</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb1-77"><a href="inclusive-gwas.html#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="at">-v</span> i=<span class="va">$i</span> <span class="st">&#39;$1~/Name/ {print i, $2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/name.tmp</span>
-<span id="cb1-78"><a href="inclusive-gwas.html#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/State/ {print$2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/state.tmp</span>
-<span id="cb1-79"><a href="inclusive-gwas.html#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Cores/ {print$2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/cores.tmp</span>
-<span id="cb1-80"><a href="inclusive-gwas.html#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Used walltime/ {print $2 &quot;:&quot; $3 &quot;:&quot; $4}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/time.tmp</span>
-<span id="cb1-81"><a href="inclusive-gwas.html#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/mem.tmp</span>
-<span id="cb1-82"><a href="inclusive-gwas.html#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb1-83"><a href="inclusive-gwas.html#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="ex">paste</span> <span class="va">$file</span>-tmp/name.tmp <span class="dt">\</span></span>
-<span id="cb1-84"><a href="inclusive-gwas.html#cb1-84" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/state.tmp <span class="dt">\</span></span>
-<span id="cb1-85"><a href="inclusive-gwas.html#cb1-85" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/cores.tmp <span class="dt">\</span></span>
-<span id="cb1-86"><a href="inclusive-gwas.html#cb1-86" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/time.tmp <span class="dt">\</span></span>
-<span id="cb1-87"><a href="inclusive-gwas.html#cb1-87" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/mem.tmp <span class="dt">\</span></span>
-<span id="cb1-88"><a href="inclusive-gwas.html#cb1-88" aria-hidden="true" tabindex="-1"></a>      <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;BEGIN{print &quot;ID name state cores time mem&quot;}{print $0}&#39;</span> <span class="op">&gt;</span> <span class="va">$file</span>.out</span>
-<span id="cb1-89"><a href="inclusive-gwas.html#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-r</span> <span class="va">$file</span>-tmp</span>
-<span id="cb1-90"><a href="inclusive-gwas.html#cb1-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-91"><a href="inclusive-gwas.html#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="co"># merge files-------------------------------------------------------------------</span></span>
-<span id="cb1-92"><a href="inclusive-gwas.html#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> gen/bfile-inclusive-gwas.list</span>
-<span id="cb1-93"><a href="inclusive-gwas.html#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb1-94"><a href="inclusive-gwas.html#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span>  <span class="st">&quot;../gen/tmp/bhr</span><span class="va">$j</span><span class="st">&quot;</span> <span class="op">&gt;&gt;</span> gen/bfile-inclusive-gwas.list</span>
-<span id="cb1-95"><a href="inclusive-gwas.html#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb1-96"><a href="inclusive-gwas.html#cb1-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-97"><a href="inclusive-gwas.html#cb1-97" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
-<span id="cb1-98"><a href="inclusive-gwas.html#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
-<span id="cb1-99"><a href="inclusive-gwas.html#cb1-99" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
-<span id="cb1-100"><a href="inclusive-gwas.html#cb1-100" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 80G</span></span>
-<span id="cb1-101"><a href="inclusive-gwas.html#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
-<span id="cb1-102"><a href="inclusive-gwas.html#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 10:0:0</span></span>
-<span id="cb1-103"><a href="inclusive-gwas.html#cb1-103" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --make-bed ../gen/geno-inclusive-gwas </span><span class="dt">\</span></span>
-<span id="cb1-104"><a href="inclusive-gwas.html#cb1-104" aria-hidden="true" tabindex="-1"></a><span class="st">          --mbfile ../gen/bfile-inclusive-gwas.list </span><span class="dt">\</span></span>
-<span id="cb1-105"><a href="inclusive-gwas.html#cb1-105" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 10 </span><span class="dt">\</span></span>
-<span id="cb1-106"><a href="inclusive-gwas.html#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="st">          --exclude-dups YES</span></span>
-<span id="cb1-107"><a href="inclusive-gwas.html#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/mbfile-inclusive-gwas.sh</span>
-<span id="cb1-108"><a href="inclusive-gwas.html#cb1-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-109"><a href="inclusive-gwas.html#cb1-109" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the script-------------------------------------------------------------</span></span>
-<span id="cb1-110"><a href="inclusive-gwas.html#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/mbfile-inclusive-gwas.sh <span class="op">&gt;</span>../job-records/mbfile-inclusive-gwas</span>
-<span id="cb1-111"><a href="inclusive-gwas.html#cb1-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-112"><a href="inclusive-gwas.html#cb1-112" aria-hidden="true" tabindex="-1"></a><span class="co"># compute info score------------------------------------------------------------</span></span>
-<span id="cb1-113"><a href="inclusive-gwas.html#cb1-113" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb1-114"><a href="inclusive-gwas.html#cb1-114" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
-<span id="cb1-115"><a href="inclusive-gwas.html#cb1-115" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
-<span id="cb1-116"><a href="inclusive-gwas.html#cb1-116" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
-<span id="cb1-117"><a href="inclusive-gwas.html#cb1-117" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
-<span id="cb1-118"><a href="inclusive-gwas.html#cb1-118" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
-<span id="cb1-119"><a href="inclusive-gwas.html#cb1-119" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 5:0:0</span></span>
-<span id="cb1-120"><a href="inclusive-gwas.html#cb1-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-121"><a href="inclusive-gwas.html#cb1-121" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb1-122"><a href="inclusive-gwas.html#cb1-122" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3 </span><span class="dt">\</span></span>
-<span id="cb1-123"><a href="inclusive-gwas.html#cb1-123" aria-hidden="true" tabindex="-1"></a><span class="st">         --keep ../inclusive-gwas.id </span><span class="dt">\</span></span>
-<span id="cb1-124"><a href="inclusive-gwas.html#cb1-124" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
-<span id="cb1-125"><a href="inclusive-gwas.html#cb1-125" aria-hidden="true" tabindex="-1"></a><span class="st">         --freq cols=chrom,ref,alt,altfreq,machr2 </span><span class="dt">\</span></span>
-<span id="cb1-126"><a href="inclusive-gwas.html#cb1-126" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/info/chr</span><span class="va">$j</span></span>
-<span id="cb1-127"><a href="inclusive-gwas.html#cb1-127" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/info-chr<span class="va">$j</span>.sh</span>
-<span id="cb1-128"><a href="inclusive-gwas.html#cb1-128" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb1-129"><a href="inclusive-gwas.html#cb1-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-130"><a href="inclusive-gwas.html#cb1-130" aria-hidden="true" tabindex="-1"></a><span class="co"># submit file-------------------------------------------------------------------</span></span>
-<span id="cb1-131"><a href="inclusive-gwas.html#cb1-131" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb1-132"><a href="inclusive-gwas.html#cb1-132" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/info-chr<span class="va">$j</span>.sh</span>
-<span id="cb1-133"><a href="inclusive-gwas.html#cb1-133" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/compute-info-score-inclusive-gwas</span>
-<span id="cb1-134"><a href="inclusive-gwas.html#cb1-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-135"><a href="inclusive-gwas.html#cb1-135" aria-hidden="true" tabindex="-1"></a><span class="co"># combine files ----------------------------------------------------------------</span></span>
-<span id="cb1-136"><a href="inclusive-gwas.html#cb1-136" aria-hidden="true" tabindex="-1"></a><span class="va">dir</span><span class="op">=</span>gen/info</span>
-<span id="cb1-137"><a href="inclusive-gwas.html#cb1-137" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="va">$dir</span>/inclusive-gwas-afreq</span>
-<span id="cb1-138"><a href="inclusive-gwas.html#cb1-138" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb1-139"><a href="inclusive-gwas.html#cb1-139" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$i</span> <span class="ot">==</span> 1 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
-<span id="cb1-140"><a href="inclusive-gwas.html#cb1-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;{print $0}&#39;</span> <span class="va">$dir</span>/chr<span class="va">$i</span>.afreq <span class="op">&gt;</span> <span class="va">$dir</span>/inclusive-gwas-afreq</span>
-<span id="cb1-141"><a href="inclusive-gwas.html#cb1-141" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
-<span id="cb1-142"><a href="inclusive-gwas.html#cb1-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;NR&gt;1 {print $0}&#39;</span> <span class="va">$dir</span>/chr<span class="va">$i</span>.afreq <span class="op">&gt;&gt;</span> <span class="va">$dir</span>/inclusive-gwas-afreq</span>
-<span id="cb1-143"><a href="inclusive-gwas.html#cb1-143" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
-<span id="cb1-144"><a href="inclusive-gwas.html#cb1-144" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb1-145"><a href="inclusive-gwas.html#cb1-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-146"><a href="inclusive-gwas.html#cb1-146" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::</span></span>
-<span id="cb1-147"><a href="inclusive-gwas.html#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="co"># SNP list</span></span>
-<span id="cb1-148"><a href="inclusive-gwas.html#cb1-148" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::</span></span>
-<span id="cb1-149"><a href="inclusive-gwas.html#cb1-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-150"><a href="inclusive-gwas.html#cb1-150" aria-hidden="true" tabindex="-1"></a><span class="co"># MAF &amp; call-rate</span></span>
-<span id="cb1-151"><a href="inclusive-gwas.html#cb1-151" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="op">&lt;</span> gen/bfile-inclusive-gwas.stat <span class="st">&#39;($5&gt;.001 &amp;&amp; $6&gt;=0.95 &amp;&amp; NR&gt;1){print $1}&#39;</span> <span class="op">&gt;</span> snps-inclusive-gwas.use</span>
-<span id="cb1-152"><a href="inclusive-gwas.html#cb1-152" aria-hidden="true" tabindex="-1"></a><span class="co"># m = SNPs</span></span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb66-1"><a href="inclusive-gwas.html#cb66-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-2"><a href="inclusive-gwas.html#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb66-3"><a href="inclusive-gwas.html#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="co"># extract covariates</span></span>
+<span id="cb66-4"><a href="inclusive-gwas.html#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb66-5"><a href="inclusive-gwas.html#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="co"># This has been done under &#39;Good GWAS&#39; section. Here we just want to extract from the file</span></span>
+<span id="cb66-6"><a href="inclusive-gwas.html#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span></span>
+<span id="cb66-7"><a href="inclusive-gwas.html#cb66-7" aria-hidden="true" tabindex="-1"></a><span class="ex">options</span><span class="er">(</span><span class="va">scipen</span><span class="op">=</span>999<span class="kw">)</span></span>
+<span id="cb66-8"><a href="inclusive-gwas.html#cb66-8" aria-hidden="true" tabindex="-1"></a><span class="ex">require</span><span class="er">(</span><span class="ex">vroom</span><span class="kw">)</span></span>
+<span id="cb66-9"><a href="inclusive-gwas.html#cb66-9" aria-hidden="true" tabindex="-1"></a><span class="va">dat</span><span class="op">=</span>vroom<span class="kw">(</span><span class="st">&quot;phen/covariates.phen&quot;</span><span class="ex">,</span> col_names=T<span class="kw">)</span></span>
+<span id="cb66-10"><a href="inclusive-gwas.html#cb66-10" aria-hidden="true" tabindex="-1"></a><span class="va">pc</span><span class="op">=</span>paste0<span class="kw">(</span><span class="st">&quot;pc&quot;</span><span class="ex">,1:10</span><span class="kw">)</span></span>
+<span id="cb66-11"><a href="inclusive-gwas.html#cb66-11" aria-hidden="true" tabindex="-1"></a><span class="va">cov</span><span class="op">=</span>c<span class="kw">(</span><span class="st">&quot;eid&quot;</span><span class="ex">,</span><span class="st">&quot;eid&quot;</span><span class="ex">,</span><span class="st">&quot;age&quot;</span><span class="ex">,</span><span class="st">&quot;geno_batch&quot;</span><span class="ex">,pc</span><span class="kw">)</span></span>
+<span id="cb66-12"><a href="inclusive-gwas.html#cb66-12" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>dat[,cov]</span>
+<span id="cb66-13"><a href="inclusive-gwas.html#cb66-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-14"><a href="inclusive-gwas.html#cb66-14" aria-hidden="true" tabindex="-1"></a><span class="ex">write.table</span><span class="er">(</span><span class="ex">out,</span><span class="st">&quot;phen/covariates-inclusive-gwas.use&quot;</span><span class="ex">,</span> col.names=F,</span>
+<span id="cb66-15"><a href="inclusive-gwas.html#cb66-15" aria-hidden="true" tabindex="-1"></a>            <span class="ex">row.names=F,</span> quote=F<span class="kw">)</span></span>
+<span id="cb66-16"><a href="inclusive-gwas.html#cb66-16" aria-hidden="true" tabindex="-1"></a><span class="ex">write.table</span><span class="er">(</span><span class="ex">cov,</span><span class="st">&quot;phen/covariates-inclusive-gwas.use-names&quot;</span><span class="ex">,</span> col.names=F,</span>
+<span id="cb66-17"><a href="inclusive-gwas.html#cb66-17" aria-hidden="true" tabindex="-1"></a>            <span class="ex">row.names=F,</span> quote=F<span class="kw">)</span></span>
+<span id="cb66-18"><a href="inclusive-gwas.html#cb66-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-19"><a href="inclusive-gwas.html#cb66-19" aria-hidden="true" tabindex="-1"></a><span class="va">sel</span><span class="op">=</span>out[complete.cases<span class="kw">(</span><span class="ex">out</span><span class="kw">)</span><span class="ex">,]</span> <span class="co"># n = 488,244</span></span>
+<span id="cb66-20"><a href="inclusive-gwas.html#cb66-20" aria-hidden="true" tabindex="-1"></a><span class="ex">write.table</span><span class="er">(</span><span class="va">sel</span><span class="op">[</span>,1:2<span class="op">]</span><span class="ex">,</span> <span class="st">&quot;complete-cases-covariates-inclusive-gwas.id&quot;</span>, col.names=F,</span>
+<span id="cb66-21"><a href="inclusive-gwas.html#cb66-21" aria-hidden="true" tabindex="-1"></a>            <span class="ex">row.names=F,</span> quote=F<span class="kw">)</span></span>
+<span id="cb66-22"><a href="inclusive-gwas.html#cb66-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-23"><a href="inclusive-gwas.html#cb66-23" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb66-24"><a href="inclusive-gwas.html#cb66-24" aria-hidden="true" tabindex="-1"></a><span class="co"># id list of complete cases: covariates &amp; phenotypes</span></span>
+<span id="cb66-25"><a href="inclusive-gwas.html#cb66-25" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb66-26"><a href="inclusive-gwas.html#cb66-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-27"><a href="inclusive-gwas.html#cb66-27" aria-hidden="true" tabindex="-1"></a><span class="co"># note: to remain as much people as possible, we did not select all 14 traits. but 9.</span></span>
+<span id="cb66-28"><a href="inclusive-gwas.html#cb66-28" aria-hidden="true" tabindex="-1"></a><span class="co"># for these traits, n = 467, 104 have complete data</span></span>
+<span id="cb66-29"><a href="inclusive-gwas.html#cb66-29" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> complete-cases-covariates-inclusive-gwas.id inclusive-gwas.id</span>
+<span id="cb66-30"><a href="inclusive-gwas.html#cb66-30" aria-hidden="true" tabindex="-1"></a><span class="va">dir</span><span class="op">=</span>phen/continuous-traits/</span>
+<span id="cb66-31"><a href="inclusive-gwas.html#cb66-31" aria-hidden="true" tabindex="-1"></a><span class="co"># {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}</span></span>
+<span id="cb66-32"><a href="inclusive-gwas.html#cb66-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="kw">in</span> <span class="dt">{awake</span><span class="op">,</span><span class="dt">bmi</span><span class="op">,</span><span class="dt">ever</span><span class="op">,</span><span class="dt">height</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">quals</span><span class="op">,</span><span class="dt">reaction</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">hyper}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb66-33"><a href="inclusive-gwas.html#cb66-33" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> inclusive-gwas.id temp</span>
+<span id="cb66-34"><a href="inclusive-gwas.html#cb66-34" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$1];next}($1 in a){print $1, $2}&#39;</span> temp <span class="va">$dir</span>/<span class="va">$tt</span>.raw.pheno <span class="op">&gt;</span> inclusive-gwas.id</span>
+<span id="cb66-35"><a href="inclusive-gwas.html#cb66-35" aria-hidden="true" tabindex="-1"></a><span class="fu">wc</span> <span class="at">-l</span> inclusive-gwas.id</span>
+<span id="cb66-36"><a href="inclusive-gwas.html#cb66-36" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$tt</span></span>
+<span id="cb66-37"><a href="inclusive-gwas.html#cb66-37" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb66-38"><a href="inclusive-gwas.html#cb66-38" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> temp</span>
+<span id="cb66-39"><a href="inclusive-gwas.html#cb66-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-40"><a href="inclusive-gwas.html#cb66-40" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb66-41"><a href="inclusive-gwas.html#cb66-41" aria-hidden="true" tabindex="-1"></a><span class="co"># extract genotypes</span></span>
+<span id="cb66-42"><a href="inclusive-gwas.html#cb66-42" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb66-43"><a href="inclusive-gwas.html#cb66-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-44"><a href="inclusive-gwas.html#cb66-44" aria-hidden="true" tabindex="-1"></a><span class="co"># QC SNPs-----------------------------------------------------------------------</span></span>
+<span id="cb66-45"><a href="inclusive-gwas.html#cb66-45" aria-hidden="true" tabindex="-1"></a><span class="co"># stating number of SNPs=</span></span>
+<span id="cb66-46"><a href="inclusive-gwas.html#cb66-46" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb66-47"><a href="inclusive-gwas.html#cb66-47" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb66-48"><a href="inclusive-gwas.html#cb66-48" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb66-49"><a href="inclusive-gwas.html#cb66-49" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb66-50"><a href="inclusive-gwas.html#cb66-50" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb66-51"><a href="inclusive-gwas.html#cb66-51" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb66-52"><a href="inclusive-gwas.html#cb66-52" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 10:0:0</span></span>
+<span id="cb66-53"><a href="inclusive-gwas.html#cb66-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-54"><a href="inclusive-gwas.html#cb66-54" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb66-55"><a href="inclusive-gwas.html#cb66-55" aria-hidden="true" tabindex="-1"></a><span class="st">         --keep ../inclusive-gwas.id </span><span class="dt">\</span></span>
+<span id="cb66-56"><a href="inclusive-gwas.html#cb66-56" aria-hidden="true" tabindex="-1"></a><span class="st">         --hwe 0.0001 </span><span class="dt">\</span></span>
+<span id="cb66-57"><a href="inclusive-gwas.html#cb66-57" aria-hidden="true" tabindex="-1"></a><span class="st">         --maf 0.001 </span><span class="dt">\</span></span>
+<span id="cb66-58"><a href="inclusive-gwas.html#cb66-58" aria-hidden="true" tabindex="-1"></a><span class="st">         --hard-call-threshold .05 </span><span class="dt">\</span></span>
+<span id="cb66-59"><a href="inclusive-gwas.html#cb66-59" aria-hidden="true" tabindex="-1"></a><span class="st">         --mach-r2-filter 0.3 2 </span><span class="dt">\</span></span>
+<span id="cb66-60"><a href="inclusive-gwas.html#cb66-60" aria-hidden="true" tabindex="-1"></a><span class="st">         --make-bed </span><span class="dt">\</span></span>
+<span id="cb66-61"><a href="inclusive-gwas.html#cb66-61" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
+<span id="cb66-62"><a href="inclusive-gwas.html#cb66-62" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/tmp/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb66-63"><a href="inclusive-gwas.html#cb66-63" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3</span></span>
+<span id="cb66-64"><a href="inclusive-gwas.html#cb66-64" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/chr<span class="va">$j</span>.sh</span>
+<span id="cb66-65"><a href="inclusive-gwas.html#cb66-65" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb66-66"><a href="inclusive-gwas.html#cb66-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-67"><a href="inclusive-gwas.html#cb66-67" aria-hidden="true" tabindex="-1"></a><span class="co"># submit jobs-------------------------------------------------------------------</span></span>
+<span id="cb66-68"><a href="inclusive-gwas.html#cb66-68" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb66-69"><a href="inclusive-gwas.html#cb66-69" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/chr<span class="va">$j</span>.sh</span>
+<span id="cb66-70"><a href="inclusive-gwas.html#cb66-70" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/qc-inclusive-gwas</span>
+<span id="cb66-71"><a href="inclusive-gwas.html#cb66-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-72"><a href="inclusive-gwas.html#cb66-72" aria-hidden="true" tabindex="-1"></a><span class="co"># check job completion----------------------------------------------------------</span></span>
+<span id="cb66-73"><a href="inclusive-gwas.html#cb66-73" aria-hidden="true" tabindex="-1"></a><span class="va">file</span><span class="op">=</span>job-records/qc-inclusive-gwas</span>
+<span id="cb66-74"><a href="inclusive-gwas.html#cb66-74" aria-hidden="true" tabindex="-1"></a><span class="va">jobs</span><span class="op">=</span><span class="kw">`</span><span class="fu">awk</span> <span class="st">&#39;{print $4}&#39;</span> <span class="va">$file</span><span class="kw">`</span></span>
+<span id="cb66-75"><a href="inclusive-gwas.html#cb66-75" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="va">$file</span>-tmp</span>
+<span id="cb66-76"><a href="inclusive-gwas.html#cb66-76" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="va">$jobs</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb66-77"><a href="inclusive-gwas.html#cb66-77" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="at">-v</span> i=<span class="va">$i</span> <span class="st">&#39;$1~/Name/ {print i, $2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/name.tmp</span>
+<span id="cb66-78"><a href="inclusive-gwas.html#cb66-78" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/State/ {print$2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/state.tmp</span>
+<span id="cb66-79"><a href="inclusive-gwas.html#cb66-79" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Cores/ {print$2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/cores.tmp</span>
+<span id="cb66-80"><a href="inclusive-gwas.html#cb66-80" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Used walltime/ {print $2 &quot;:&quot; $3 &quot;:&quot; $4}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/time.tmp</span>
+<span id="cb66-81"><a href="inclusive-gwas.html#cb66-81" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/mem.tmp</span>
+<span id="cb66-82"><a href="inclusive-gwas.html#cb66-82" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb66-83"><a href="inclusive-gwas.html#cb66-83" aria-hidden="true" tabindex="-1"></a><span class="ex">paste</span> <span class="va">$file</span>-tmp/name.tmp <span class="dt">\</span></span>
+<span id="cb66-84"><a href="inclusive-gwas.html#cb66-84" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/state.tmp <span class="dt">\</span></span>
+<span id="cb66-85"><a href="inclusive-gwas.html#cb66-85" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/cores.tmp <span class="dt">\</span></span>
+<span id="cb66-86"><a href="inclusive-gwas.html#cb66-86" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/time.tmp <span class="dt">\</span></span>
+<span id="cb66-87"><a href="inclusive-gwas.html#cb66-87" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/mem.tmp <span class="dt">\</span></span>
+<span id="cb66-88"><a href="inclusive-gwas.html#cb66-88" aria-hidden="true" tabindex="-1"></a>      <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;BEGIN{print &quot;ID name state cores time mem&quot;}{print $0}&#39;</span> <span class="op">&gt;</span> <span class="va">$file</span>.out</span>
+<span id="cb66-89"><a href="inclusive-gwas.html#cb66-89" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-r</span> <span class="va">$file</span>-tmp</span>
+<span id="cb66-90"><a href="inclusive-gwas.html#cb66-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-91"><a href="inclusive-gwas.html#cb66-91" aria-hidden="true" tabindex="-1"></a><span class="co"># merge files-------------------------------------------------------------------</span></span>
+<span id="cb66-92"><a href="inclusive-gwas.html#cb66-92" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> gen/bfile-inclusive-gwas.list</span>
+<span id="cb66-93"><a href="inclusive-gwas.html#cb66-93" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb66-94"><a href="inclusive-gwas.html#cb66-94" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span>  <span class="st">&quot;../gen/tmp/bhr</span><span class="va">$j</span><span class="st">&quot;</span> <span class="op">&gt;&gt;</span> gen/bfile-inclusive-gwas.list</span>
+<span id="cb66-95"><a href="inclusive-gwas.html#cb66-95" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb66-96"><a href="inclusive-gwas.html#cb66-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-97"><a href="inclusive-gwas.html#cb66-97" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb66-98"><a href="inclusive-gwas.html#cb66-98" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb66-99"><a href="inclusive-gwas.html#cb66-99" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb66-100"><a href="inclusive-gwas.html#cb66-100" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 80G</span></span>
+<span id="cb66-101"><a href="inclusive-gwas.html#cb66-101" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb66-102"><a href="inclusive-gwas.html#cb66-102" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 10:0:0</span></span>
+<span id="cb66-103"><a href="inclusive-gwas.html#cb66-103" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --make-bed ../gen/geno-inclusive-gwas </span><span class="dt">\</span></span>
+<span id="cb66-104"><a href="inclusive-gwas.html#cb66-104" aria-hidden="true" tabindex="-1"></a><span class="st">          --mbfile ../gen/bfile-inclusive-gwas.list </span><span class="dt">\</span></span>
+<span id="cb66-105"><a href="inclusive-gwas.html#cb66-105" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 10 </span><span class="dt">\</span></span>
+<span id="cb66-106"><a href="inclusive-gwas.html#cb66-106" aria-hidden="true" tabindex="-1"></a><span class="st">          --exclude-dups YES</span></span>
+<span id="cb66-107"><a href="inclusive-gwas.html#cb66-107" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/mbfile-inclusive-gwas.sh</span>
+<span id="cb66-108"><a href="inclusive-gwas.html#cb66-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-109"><a href="inclusive-gwas.html#cb66-109" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the script-------------------------------------------------------------</span></span>
+<span id="cb66-110"><a href="inclusive-gwas.html#cb66-110" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/mbfile-inclusive-gwas.sh <span class="op">&gt;</span>../job-records/mbfile-inclusive-gwas</span>
+<span id="cb66-111"><a href="inclusive-gwas.html#cb66-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-112"><a href="inclusive-gwas.html#cb66-112" aria-hidden="true" tabindex="-1"></a><span class="co"># compute info score------------------------------------------------------------</span></span>
+<span id="cb66-113"><a href="inclusive-gwas.html#cb66-113" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb66-114"><a href="inclusive-gwas.html#cb66-114" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb66-115"><a href="inclusive-gwas.html#cb66-115" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb66-116"><a href="inclusive-gwas.html#cb66-116" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb66-117"><a href="inclusive-gwas.html#cb66-117" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb66-118"><a href="inclusive-gwas.html#cb66-118" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb66-119"><a href="inclusive-gwas.html#cb66-119" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 5:0:0</span></span>
+<span id="cb66-120"><a href="inclusive-gwas.html#cb66-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-121"><a href="inclusive-gwas.html#cb66-121" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb66-122"><a href="inclusive-gwas.html#cb66-122" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3 </span><span class="dt">\</span></span>
+<span id="cb66-123"><a href="inclusive-gwas.html#cb66-123" aria-hidden="true" tabindex="-1"></a><span class="st">         --keep ../inclusive-gwas.id </span><span class="dt">\</span></span>
+<span id="cb66-124"><a href="inclusive-gwas.html#cb66-124" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
+<span id="cb66-125"><a href="inclusive-gwas.html#cb66-125" aria-hidden="true" tabindex="-1"></a><span class="st">         --freq cols=chrom,ref,alt,altfreq,machr2 </span><span class="dt">\</span></span>
+<span id="cb66-126"><a href="inclusive-gwas.html#cb66-126" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/info/chr</span><span class="va">$j</span></span>
+<span id="cb66-127"><a href="inclusive-gwas.html#cb66-127" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/info-chr<span class="va">$j</span>.sh</span>
+<span id="cb66-128"><a href="inclusive-gwas.html#cb66-128" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb66-129"><a href="inclusive-gwas.html#cb66-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-130"><a href="inclusive-gwas.html#cb66-130" aria-hidden="true" tabindex="-1"></a><span class="co"># submit file-------------------------------------------------------------------</span></span>
+<span id="cb66-131"><a href="inclusive-gwas.html#cb66-131" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb66-132"><a href="inclusive-gwas.html#cb66-132" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/info-chr<span class="va">$j</span>.sh</span>
+<span id="cb66-133"><a href="inclusive-gwas.html#cb66-133" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/compute-info-score-inclusive-gwas</span>
+<span id="cb66-134"><a href="inclusive-gwas.html#cb66-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-135"><a href="inclusive-gwas.html#cb66-135" aria-hidden="true" tabindex="-1"></a><span class="co"># combine files ----------------------------------------------------------------</span></span>
+<span id="cb66-136"><a href="inclusive-gwas.html#cb66-136" aria-hidden="true" tabindex="-1"></a><span class="va">dir</span><span class="op">=</span>gen/info</span>
+<span id="cb66-137"><a href="inclusive-gwas.html#cb66-137" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="va">$dir</span>/inclusive-gwas-afreq</span>
+<span id="cb66-138"><a href="inclusive-gwas.html#cb66-138" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb66-139"><a href="inclusive-gwas.html#cb66-139" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$i</span> <span class="ot">==</span> 1 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb66-140"><a href="inclusive-gwas.html#cb66-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;{print $0}&#39;</span> <span class="va">$dir</span>/chr<span class="va">$i</span>.afreq <span class="op">&gt;</span> <span class="va">$dir</span>/inclusive-gwas-afreq</span>
+<span id="cb66-141"><a href="inclusive-gwas.html#cb66-141" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb66-142"><a href="inclusive-gwas.html#cb66-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;NR&gt;1 {print $0}&#39;</span> <span class="va">$dir</span>/chr<span class="va">$i</span>.afreq <span class="op">&gt;&gt;</span> <span class="va">$dir</span>/inclusive-gwas-afreq</span>
+<span id="cb66-143"><a href="inclusive-gwas.html#cb66-143" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb66-144"><a href="inclusive-gwas.html#cb66-144" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb66-145"><a href="inclusive-gwas.html#cb66-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-146"><a href="inclusive-gwas.html#cb66-146" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::</span></span>
+<span id="cb66-147"><a href="inclusive-gwas.html#cb66-147" aria-hidden="true" tabindex="-1"></a><span class="co"># SNP list</span></span>
+<span id="cb66-148"><a href="inclusive-gwas.html#cb66-148" aria-hidden="true" tabindex="-1"></a><span class="co">#::::::::::::::::::</span></span>
+<span id="cb66-149"><a href="inclusive-gwas.html#cb66-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-150"><a href="inclusive-gwas.html#cb66-150" aria-hidden="true" tabindex="-1"></a><span class="co"># MAF &amp; call-rate</span></span>
+<span id="cb66-151"><a href="inclusive-gwas.html#cb66-151" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="op">&lt;</span> gen/bfile-inclusive-gwas.stat <span class="st">&#39;($5&gt;.001 &amp;&amp; $6&gt;=0.95 &amp;&amp; NR&gt;1){print $1}&#39;</span> <span class="op">&gt;</span> snps-inclusive-gwas.use</span>
+<span id="cb66-152"><a href="inclusive-gwas.html#cb66-152" aria-hidden="true" tabindex="-1"></a><span class="co"># m = SNPs</span></span></code></pre></div>
 </div>
 <div id="gwas-telomere-length" class="section level2" number="10.2">
 <h2><span class="header-section-number">10.2</span> gwas-telomere length</h2>
-<div id="aver2_j" class="section level3" number="10.2.1">
+<div id="aver2_j-1" class="section level3" number="10.2.1">
 <h3><span class="header-section-number">10.2.1</span> aver2_j</h3>
 <p>Here we want to check if there is evidence of inflation in GWAS statistics due to confouding.
 Here are the steps:</p>
@@ -529,294 +561,294 @@ Here are the steps:</p>
 <li>compute aver2_j</li>
 <li>check if chi square test stats vary with respect to aver2_j</li>
 </ol>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="inclusive-gwas.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb2-2"><a href="inclusive-gwas.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># select SNPs &amp; organize data</span></span>
-<span id="cb2-3"><a href="inclusive-gwas.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb2-4"><a href="inclusive-gwas.html#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="inclusive-gwas.html#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># download gwas stats-----------------------------------------------------------</span></span>
-<span id="cb2-6"><a href="inclusive-gwas.html#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> gwas-telomere</span>
-<span id="cb2-7"><a href="inclusive-gwas.html#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://figshare.com/ndownloader/files/28414941<span class="pp">?</span>private_link=caa99dc0f76d62990195</span>
-<span id="cb2-8"><a href="inclusive-gwas.html#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># m = 20,134,422 SNPs</span></span>
-<span id="cb2-9"><a href="inclusive-gwas.html#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="inclusive-gwas.html#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># organize data: snp name &amp; chisq ----------------------------------------------</span></span>
-<span id="cb2-11"><a href="inclusive-gwas.html#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="va">infile</span><span class="op">=</span>gwas-telomere/UKB_telomere_gwas_summarystats.tsv.gz</span>
-<span id="cb2-12"><a href="inclusive-gwas.html#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="va">outfile</span><span class="op">=</span>gwas-telomere/telemere-gwas-organized</span>
-<span id="cb2-13"><a href="inclusive-gwas.html#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">zcat</span> <span class="va">$infile</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&#39;\t&#39;</span> <span class="st">&#39;BEGIN {print &quot;chr base_pair_location chr_base rs chisq&quot;} </span></span>
-<span id="cb2-14"><a href="inclusive-gwas.html#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="st">                            NR &gt;1 {print $3, $4,$3&quot;:&quot;$4, $1, ($8/$9)^2}&#39;</span> <span class="op">&gt;</span> <span class="va">$outfile</span></span>
-<span id="cb2-15"><a href="inclusive-gwas.html#cb2-15" aria-hidden="true" tabindex="-1"></a>                            </span>
-<span id="cb2-16"><a href="inclusive-gwas.html#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># hapmap3 SNPs------------------------------------------------------------------</span></span>
-<span id="cb2-17"><a href="inclusive-gwas.html#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="va">infile1</span><span class="op">=</span>doug/ukbb.ldsc</span>
-<span id="cb2-18"><a href="inclusive-gwas.html#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="va">infile2</span><span class="op">=</span>gwas-telomere/telemere-gwas-organized</span>
-<span id="cb2-19"><a href="inclusive-gwas.html#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="va">outfile</span><span class="op">=</span>gwas-telomere/telemere-gwas-organized-hm3</span>
-<span id="cb2-20"><a href="inclusive-gwas.html#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR==FNR{a[$3];next} </span></span>
-<span id="cb2-21"><a href="inclusive-gwas.html#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="st">     ($3 in a || FNR==1 ){print $0}&#39;</span> <span class="va">$infile1</span> <span class="va">$infile2</span> <span class="op">&gt;</span> <span class="va">$outfile</span></span>
-<span id="cb2-22"><a href="inclusive-gwas.html#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="inclusive-gwas.html#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co"># choose snp lists--------------------------------------------------------------</span></span>
-<span id="cb2-24"><a href="inclusive-gwas.html#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co"># choose 40k for each side as the pool for selection</span></span>
-<span id="cb2-25"><a href="inclusive-gwas.html#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="va">m</span><span class="op">=</span>40000</span>
-<span id="cb2-26"><a href="inclusive-gwas.html#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="va">infile</span><span class="op">=</span>gwas-telomere/telemere-gwas-organized-hm3</span>
-<span id="cb2-27"><a href="inclusive-gwas.html#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="va">left</span><span class="op">=</span>inflation/gwas-telomere/left-snps-pool</span>
-<span id="cb2-28"><a href="inclusive-gwas.html#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="va">right</span><span class="op">=</span>inflation/gwas-telomere/right-snps-pool</span>
-<span id="cb2-29"><a href="inclusive-gwas.html#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;$1&lt;8 &amp;&amp; NR &gt; 1 {print $1, $2, $3}&#39;</span> <span class="va">$infile</span> <span class="kw">|</span> <span class="ex">shuf</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> <span class="va">$m</span> <span class="op">&gt;</span><span class="va">$left</span></span>
-<span id="cb2-30"><a href="inclusive-gwas.html#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;$1&gt;=8 &amp;&amp; NR &gt; 1 {print $1, $2, $3}&#39;</span> <span class="va">$infile</span> <span class="kw">|</span> <span class="ex">shuf</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> <span class="va">$m</span> <span class="op">&gt;</span><span class="va">$right</span></span>
-<span id="cb2-31"><a href="inclusive-gwas.html#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-32"><a href="inclusive-gwas.html#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co"># entire snp list of ukbb</span></span>
-<span id="cb2-33"><a href="inclusive-gwas.html#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>inflation/gwas-telomere/ukbb-bhr-all-snps</span>
-<span id="cb2-34"><a href="inclusive-gwas.html#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="va">$out</span></span>
-<span id="cb2-35"><a href="inclusive-gwas.html#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span><span class="cf">do</span></span>
-<span id="cb2-36"><a href="inclusive-gwas.html#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="va">gen</span><span class="op">=</span>gen/geno_plink/bhr<span class="va">$i</span>.pvar</span>
-<span id="cb2-37"><a href="inclusive-gwas.html#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{print $1, $2, $1&quot;:&quot;$2, $3}&#39;</span> <span class="va">$gen</span> <span class="op">&gt;&gt;</span> <span class="va">$out</span></span>
-<span id="cb2-38"><a href="inclusive-gwas.html#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb2-39"><a href="inclusive-gwas.html#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co"># wc -l gen/geno_plink/bhr{1..22}.pvar</span></span>
-<span id="cb2-40"><a href="inclusive-gwas.html#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-41"><a href="inclusive-gwas.html#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co"># put the chosen 40k snps in the right format</span></span>
-<span id="cb2-42"><a href="inclusive-gwas.html#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="va">snp</span><span class="op">=</span>inflation/gwas-telomere/ukbb-bhr-all-snps</span>
-<span id="cb2-43"><a href="inclusive-gwas.html#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="va">leftin</span><span class="op">=</span>inflation/gwas-telomere/left-snps-pool</span>
-<span id="cb2-44"><a href="inclusive-gwas.html#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="va">rightin</span><span class="op">=</span>inflation/gwas-telomere/right-snps-pool</span>
-<span id="cb2-45"><a href="inclusive-gwas.html#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="va">leftout</span><span class="op">=</span>inflation/gwas-telomere/left-snps-tmp</span>
-<span id="cb2-46"><a href="inclusive-gwas.html#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="va">rightout</span><span class="op">=</span>inflation/gwas-telomere/right-snps-tmp</span>
-<span id="cb2-47"><a href="inclusive-gwas.html#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-48"><a href="inclusive-gwas.html#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$3];next}</span></span>
-<span id="cb2-49"><a href="inclusive-gwas.html#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="st">     ($3 in a){print $4}&#39;</span> <span class="va">$leftin</span> <span class="va">$snp</span> <span class="op">&gt;</span> <span class="va">$leftout</span></span>
-<span id="cb2-50"><a href="inclusive-gwas.html#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-51"><a href="inclusive-gwas.html#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$3];next}</span></span>
-<span id="cb2-52"><a href="inclusive-gwas.html#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="st">     ($3 in a){print $4}&#39;</span> <span class="va">$rightin</span> <span class="va">$snp</span> <span class="op">&gt;</span> <span class="va">$rightout</span></span>
-<span id="cb2-53"><a href="inclusive-gwas.html#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="co"># note:  &gt; 40k are in the list of each side because some snps have the same basepair...    </span></span>
-<span id="cb2-54"><a href="inclusive-gwas.html#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-55"><a href="inclusive-gwas.html#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb2-56"><a href="inclusive-gwas.html#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="co">#  extract genotypes of the bfiles</span></span>
-<span id="cb2-57"><a href="inclusive-gwas.html#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb2-58"><a href="inclusive-gwas.html#cb2-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-59"><a href="inclusive-gwas.html#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="va">left</span><span class="op">=</span>inflation/gwas-telomere/left-snps-tmp</span>
-<span id="cb2-60"><a href="inclusive-gwas.html#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="va">right</span><span class="op">=</span>inflation/gwas-telomere/right-snps-tmp</span>
-<span id="cb2-61"><a href="inclusive-gwas.html#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>inflation/gwas-telomere/snp-all</span>
-<span id="cb2-62"><a href="inclusive-gwas.html#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{print $0}&#39;</span> <span class="va">$left</span> <span class="va">$right</span> <span class="op">&gt;</span> <span class="va">$out</span></span>
-<span id="cb2-63"><a href="inclusive-gwas.html#cb2-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-64"><a href="inclusive-gwas.html#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="co"># extract data -----------------------------------------------------------------</span></span>
-<span id="cb2-65"><a href="inclusive-gwas.html#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb2-66"><a href="inclusive-gwas.html#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
-<span id="cb2-67"><a href="inclusive-gwas.html#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
-<span id="cb2-68"><a href="inclusive-gwas.html#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
-<span id="cb2-69"><a href="inclusive-gwas.html#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 4G</span></span>
-<span id="cb2-70"><a href="inclusive-gwas.html#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
-<span id="cb2-71"><a href="inclusive-gwas.html#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 00:30:0</span></span>
-<span id="cb2-72"><a href="inclusive-gwas.html#cb2-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-73"><a href="inclusive-gwas.html#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb2-74"><a href="inclusive-gwas.html#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="st">         --extract ../inflation/gwas-telomere/snp-all </span><span class="dt">\</span></span>
-<span id="cb2-75"><a href="inclusive-gwas.html#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="st">         --make-bed </span><span class="dt">\</span></span>
-<span id="cb2-76"><a href="inclusive-gwas.html#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/tmp/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb2-77"><a href="inclusive-gwas.html#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
-<span id="cb2-78"><a href="inclusive-gwas.html#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3</span></span>
-<span id="cb2-79"><a href="inclusive-gwas.html#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/chr<span class="va">$j</span>.sh</span>
-<span id="cb2-80"><a href="inclusive-gwas.html#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb2-81"><a href="inclusive-gwas.html#cb2-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-82"><a href="inclusive-gwas.html#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="co"># submit jobs-------------------------------------------------------------------</span></span>
-<span id="cb2-83"><a href="inclusive-gwas.html#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb2-84"><a href="inclusive-gwas.html#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/chr<span class="va">$j</span>.sh</span>
-<span id="cb2-85"><a href="inclusive-gwas.html#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/bfile-telomere</span>
-<span id="cb2-86"><a href="inclusive-gwas.html#cb2-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-87"><a href="inclusive-gwas.html#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="co"># check job completion----------------------------------------------------------</span></span>
-<span id="cb2-88"><a href="inclusive-gwas.html#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="va">file</span><span class="op">=</span>job-records/bfile-telomere</span>
-<span id="cb2-89"><a href="inclusive-gwas.html#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="va">jobs</span><span class="op">=</span><span class="kw">`</span><span class="fu">awk</span> <span class="st">&#39;{print $4}&#39;</span> <span class="va">$file</span><span class="kw">`</span></span>
-<span id="cb2-90"><a href="inclusive-gwas.html#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="va">$file</span>-tmp</span>
-<span id="cb2-91"><a href="inclusive-gwas.html#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="va">$jobs</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb2-92"><a href="inclusive-gwas.html#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="at">-v</span> i=<span class="va">$i</span> <span class="st">&#39;$1~/Name/ {print i, $2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/name.tmp </span>
-<span id="cb2-93"><a href="inclusive-gwas.html#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/State/ {print$2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/state.tmp</span>
-<span id="cb2-94"><a href="inclusive-gwas.html#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Cores/ {print$2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/cores.tmp</span>
-<span id="cb2-95"><a href="inclusive-gwas.html#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Used walltime/ {print $2 &quot;:&quot; $3 &quot;:&quot; $4}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/time.tmp</span>
-<span id="cb2-96"><a href="inclusive-gwas.html#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/mem.tmp</span>
-<span id="cb2-97"><a href="inclusive-gwas.html#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb2-98"><a href="inclusive-gwas.html#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="ex">paste</span> <span class="va">$file</span>-tmp/name.tmp <span class="dt">\</span></span>
-<span id="cb2-99"><a href="inclusive-gwas.html#cb2-99" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/state.tmp <span class="dt">\</span></span>
-<span id="cb2-100"><a href="inclusive-gwas.html#cb2-100" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/cores.tmp <span class="dt">\</span></span>
-<span id="cb2-101"><a href="inclusive-gwas.html#cb2-101" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/time.tmp <span class="dt">\</span></span>
-<span id="cb2-102"><a href="inclusive-gwas.html#cb2-102" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/mem.tmp <span class="dt">\</span></span>
-<span id="cb2-103"><a href="inclusive-gwas.html#cb2-103" aria-hidden="true" tabindex="-1"></a>      <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;BEGIN{print &quot;ID name state cores time mem&quot;}{print $0}&#39;</span> <span class="op">&gt;</span> <span class="va">$file</span>.out</span>
-<span id="cb2-104"><a href="inclusive-gwas.html#cb2-104" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-r</span> <span class="va">$file</span>-tmp</span>
-<span id="cb2-105"><a href="inclusive-gwas.html#cb2-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-106"><a href="inclusive-gwas.html#cb2-106" aria-hidden="true" tabindex="-1"></a><span class="co"># merge files-------------------------------------------------------------------</span></span>
-<span id="cb2-107"><a href="inclusive-gwas.html#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> gen/bfile.list</span>
-<span id="cb2-108"><a href="inclusive-gwas.html#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb2-109"><a href="inclusive-gwas.html#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span>  <span class="st">&quot;../gen/tmp/bhr</span><span class="va">$j</span><span class="st">&quot;</span> <span class="op">&gt;&gt;</span> gen/bfile.list</span>
-<span id="cb2-110"><a href="inclusive-gwas.html#cb2-110" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb2-111"><a href="inclusive-gwas.html#cb2-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-112"><a href="inclusive-gwas.html#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
-<span id="cb2-113"><a href="inclusive-gwas.html#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
-<span id="cb2-114"><a href="inclusive-gwas.html#cb2-114" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
-<span id="cb2-115"><a href="inclusive-gwas.html#cb2-115" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
-<span id="cb2-116"><a href="inclusive-gwas.html#cb2-116" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
-<span id="cb2-117"><a href="inclusive-gwas.html#cb2-117" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 01:00:0</span></span>
-<span id="cb2-118"><a href="inclusive-gwas.html#cb2-118" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --make-bed ../gen/geno-telomere </span><span class="dt">\</span></span>
-<span id="cb2-119"><a href="inclusive-gwas.html#cb2-119" aria-hidden="true" tabindex="-1"></a><span class="st">          --mbfile ../gen/bfile.list </span><span class="dt">\</span></span>
-<span id="cb2-120"><a href="inclusive-gwas.html#cb2-120" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 3 </span><span class="dt">\</span></span>
-<span id="cb2-121"><a href="inclusive-gwas.html#cb2-121" aria-hidden="true" tabindex="-1"></a><span class="st">          --exclude-dups YES</span></span>
-<span id="cb2-122"><a href="inclusive-gwas.html#cb2-122" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/mbfile-telomere.sh</span>
-<span id="cb2-123"><a href="inclusive-gwas.html#cb2-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-124"><a href="inclusive-gwas.html#cb2-124" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the script-------------------------------------------------------------</span></span>
-<span id="cb2-125"><a href="inclusive-gwas.html#cb2-125" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/mbfile-telomere.sh <span class="op">&gt;</span>../job-records/mbfile-telomere</span>
-<span id="cb2-126"><a href="inclusive-gwas.html#cb2-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-127"><a href="inclusive-gwas.html#cb2-127" aria-hidden="true" tabindex="-1"></a><span class="co"># compute info score------------------------------------------------------------</span></span>
-<span id="cb2-128"><a href="inclusive-gwas.html#cb2-128" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb2-129"><a href="inclusive-gwas.html#cb2-129" aria-hidden="true" tabindex="-1"></a><span class="va">snp</span><span class="op">=</span>../inflation/gwas-telomere/snp-all</span>
-<span id="cb2-130"><a href="inclusive-gwas.html#cb2-130" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>../gen/info/chr<span class="va">$j</span>-telomere</span>
-<span id="cb2-131"><a href="inclusive-gwas.html#cb2-131" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
-<span id="cb2-132"><a href="inclusive-gwas.html#cb2-132" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
-<span id="cb2-133"><a href="inclusive-gwas.html#cb2-133" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
-<span id="cb2-134"><a href="inclusive-gwas.html#cb2-134" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 5G</span></span>
-<span id="cb2-135"><a href="inclusive-gwas.html#cb2-135" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
-<span id="cb2-136"><a href="inclusive-gwas.html#cb2-136" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 00:20:0</span></span>
-<span id="cb2-137"><a href="inclusive-gwas.html#cb2-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-138"><a href="inclusive-gwas.html#cb2-138" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb2-139"><a href="inclusive-gwas.html#cb2-139" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3 </span><span class="dt">\</span></span>
-<span id="cb2-140"><a href="inclusive-gwas.html#cb2-140" aria-hidden="true" tabindex="-1"></a><span class="st">         --extract </span><span class="va">$snp</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb2-141"><a href="inclusive-gwas.html#cb2-141" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
-<span id="cb2-142"><a href="inclusive-gwas.html#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="st">         --freq cols=chrom,ref,alt,altfreq,machr2 </span><span class="dt">\</span></span>
-<span id="cb2-143"><a href="inclusive-gwas.html#cb2-143" aria-hidden="true" tabindex="-1"></a><span class="st">         --out </span><span class="va">$out</span></span>
-<span id="cb2-144"><a href="inclusive-gwas.html#cb2-144" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/info-chr<span class="va">$j</span>.sh</span>
-<span id="cb2-145"><a href="inclusive-gwas.html#cb2-145" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb2-146"><a href="inclusive-gwas.html#cb2-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-147"><a href="inclusive-gwas.html#cb2-147" aria-hidden="true" tabindex="-1"></a><span class="co"># submit file-------------------------------------------------------------------</span></span>
-<span id="cb2-148"><a href="inclusive-gwas.html#cb2-148" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb2-149"><a href="inclusive-gwas.html#cb2-149" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/info-chr<span class="va">$j</span>.sh</span>
-<span id="cb2-150"><a href="inclusive-gwas.html#cb2-150" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/compute-info-telomere</span>
-<span id="cb2-151"><a href="inclusive-gwas.html#cb2-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-152"><a href="inclusive-gwas.html#cb2-152" aria-hidden="true" tabindex="-1"></a><span class="co"># combine files ----------------------------------------------------------------</span></span>
-<span id="cb2-153"><a href="inclusive-gwas.html#cb2-153" aria-hidden="true" tabindex="-1"></a><span class="va">dir</span><span class="op">=</span>gen/info</span>
-<span id="cb2-154"><a href="inclusive-gwas.html#cb2-154" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="va">$dir</span>/telomere-afreq</span>
-<span id="cb2-155"><a href="inclusive-gwas.html#cb2-155" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb2-156"><a href="inclusive-gwas.html#cb2-156" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$i</span> <span class="ot">==</span> 1 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
-<span id="cb2-157"><a href="inclusive-gwas.html#cb2-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;{print $0}&#39;</span> <span class="va">$dir</span>/chr<span class="va">$i</span>-telomere.afreq <span class="op">&gt;</span> <span class="va">$dir</span>/telomere-afreq</span>
-<span id="cb2-158"><a href="inclusive-gwas.html#cb2-158" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
-<span id="cb2-159"><a href="inclusive-gwas.html#cb2-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;NR&gt;1 {print $0}&#39;</span> <span class="va">$dir</span>/chr<span class="va">$i</span>-telomere.afreq <span class="op">&gt;&gt;</span> <span class="va">$dir</span>/telomere-afreq</span>
-<span id="cb2-160"><a href="inclusive-gwas.html#cb2-160" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
-<span id="cb2-161"><a href="inclusive-gwas.html#cb2-161" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
-<span id="cb2-162"><a href="inclusive-gwas.html#cb2-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-163"><a href="inclusive-gwas.html#cb2-163" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb2-164"><a href="inclusive-gwas.html#cb2-164" aria-hidden="true" tabindex="-1"></a><span class="co">#  Finalize the 10k SNP list of each side</span></span>
-<span id="cb2-165"><a href="inclusive-gwas.html#cb2-165" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb2-166"><a href="inclusive-gwas.html#cb2-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-167"><a href="inclusive-gwas.html#cb2-167" aria-hidden="true" tabindex="-1"></a><span class="va">m</span><span class="op">=</span>10000</span>
-<span id="cb2-168"><a href="inclusive-gwas.html#cb2-168" aria-hidden="true" tabindex="-1"></a><span class="va">snp</span><span class="op">=</span>gen/geno-telomere.bim</span>
-<span id="cb2-169"><a href="inclusive-gwas.html#cb2-169" aria-hidden="true" tabindex="-1"></a><span class="va">leftin</span><span class="op">=</span>inflation/gwas-telomere/left-snps-tmp</span>
-<span id="cb2-170"><a href="inclusive-gwas.html#cb2-170" aria-hidden="true" tabindex="-1"></a><span class="va">rightin</span><span class="op">=</span>inflation/gwas-telomere/right-snps-tmp</span>
-<span id="cb2-171"><a href="inclusive-gwas.html#cb2-171" aria-hidden="true" tabindex="-1"></a><span class="va">leftout</span><span class="op">=</span>inflation/gwas-telomere/left-snps</span>
-<span id="cb2-172"><a href="inclusive-gwas.html#cb2-172" aria-hidden="true" tabindex="-1"></a><span class="va">rightout</span><span class="op">=</span>inflation/gwas-telomere/right-snps</span>
-<span id="cb2-173"><a href="inclusive-gwas.html#cb2-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-174"><a href="inclusive-gwas.html#cb2-174" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$1];next}</span></span>
-<span id="cb2-175"><a href="inclusive-gwas.html#cb2-175" aria-hidden="true" tabindex="-1"></a><span class="st">     ($2 in a){print $2}&#39;</span> <span class="va">$leftin</span> <span class="va">$snp</span> <span class="kw">|</span> <span class="ex">shuf</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-</span><span class="va">$m</span>  <span class="op">&gt;</span> <span class="va">$leftout</span></span>
-<span id="cb2-176"><a href="inclusive-gwas.html#cb2-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-177"><a href="inclusive-gwas.html#cb2-177" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$1];next}</span></span>
-<span id="cb2-178"><a href="inclusive-gwas.html#cb2-178" aria-hidden="true" tabindex="-1"></a><span class="st">     ($2 in a){print $2}&#39;</span> <span class="va">$rightin</span> <span class="va">$snp</span> <span class="kw">|</span> <span class="ex">shuf</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-</span><span class="va">$m</span>  <span class="op">&gt;</span> <span class="va">$rightout</span></span>
-<span id="cb2-179"><a href="inclusive-gwas.html#cb2-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-180"><a href="inclusive-gwas.html#cb2-180" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb2-181"><a href="inclusive-gwas.html#cb2-181" aria-hidden="true" tabindex="-1"></a><span class="co">#  compute ave r^2_j</span></span>
-<span id="cb2-182"><a href="inclusive-gwas.html#cb2-182" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
-<span id="cb2-183"><a href="inclusive-gwas.html#cb2-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-184"><a href="inclusive-gwas.html#cb2-184" aria-hidden="true" tabindex="-1"></a><span class="va">lista</span><span class="op">=</span>../inflation/gwas-telomere/right-snps</span>
-<span id="cb2-185"><a href="inclusive-gwas.html#cb2-185" aria-hidden="true" tabindex="-1"></a><span class="va">listb</span><span class="op">=</span>../inflation/gwas-telomere/left-snps</span>
-<span id="cb2-186"><a href="inclusive-gwas.html#cb2-186" aria-hidden="true" tabindex="-1"></a><span class="va">bfile</span><span class="op">=</span>../gen/geno-telomere</span>
-<span id="cb2-187"><a href="inclusive-gwas.html#cb2-187" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>../inflation/gwas-telomere/out/10k-snps</span>
-<span id="cb2-188"><a href="inclusive-gwas.html#cb2-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-189"><a href="inclusive-gwas.html#cb2-189" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
-<span id="cb2-190"><a href="inclusive-gwas.html#cb2-190" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
-<span id="cb2-191"><a href="inclusive-gwas.html#cb2-191" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
-<span id="cb2-192"><a href="inclusive-gwas.html#cb2-192" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 80G</span></span>
-<span id="cb2-193"><a href="inclusive-gwas.html#cb2-193" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 7</span></span>
-<span id="cb2-194"><a href="inclusive-gwas.html#cb2-194" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 00:30:0</span></span>
-<span id="cb2-195"><a href="inclusive-gwas.html#cb2-195" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.2 --max-threads 7 </span><span class="dt">\</span></span>
-<span id="cb2-196"><a href="inclusive-gwas.html#cb2-196" aria-hidden="true" tabindex="-1"></a><span class="st">          --calc-inflation </span><span class="va">$out</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb2-197"><a href="inclusive-gwas.html#cb2-197" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile </span><span class="va">$bfile</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb2-198"><a href="inclusive-gwas.html#cb2-198" aria-hidden="true" tabindex="-1"></a><span class="st">          --lista </span><span class="va">$lista</span><span class="st"> </span><span class="dt">\</span></span>
-<span id="cb2-199"><a href="inclusive-gwas.html#cb2-199" aria-hidden="true" tabindex="-1"></a><span class="st">          --listb </span><span class="va">$listb</span></span>
-<span id="cb2-200"><a href="inclusive-gwas.html#cb2-200" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-r-10k-snps</span>
-<span id="cb2-201"><a href="inclusive-gwas.html#cb2-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-202"><a href="inclusive-gwas.html#cb2-202" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
-<span id="cb2-203"><a href="inclusive-gwas.html#cb2-203" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-r-10k-snps <span class="op">&gt;</span>../job-records/calc-r-telomere</span>
-<span id="cb2-204"><a href="inclusive-gwas.html#cb2-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-205"><a href="inclusive-gwas.html#cb2-205" aria-hidden="true" tabindex="-1"></a><span class="co">#  compute ave r_j^2 for each i-------------------------------------------------</span></span>
-<span id="cb2-206"><a href="inclusive-gwas.html#cb2-206" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span></span>
-<span id="cb2-207"><a href="inclusive-gwas.html#cb2-207" aria-hidden="true" tabindex="-1"></a><span class="ex">require</span><span class="er">(</span><span class="ex">vroom</span><span class="kw">)</span></span>
-<span id="cb2-208"><a href="inclusive-gwas.html#cb2-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-209"><a href="inclusive-gwas.html#cb2-209" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span><span class="st">&quot;10k-snps&quot;</span></span>
-<span id="cb2-210"><a href="inclusive-gwas.html#cb2-210" aria-hidden="true" tabindex="-1"></a><span class="va">dat</span><span class="op">=</span>vroom<span class="kw">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">&quot;inflation/gwas-telomere/out/&quot;</span><span class="ex">,nm,</span><span class="st">&quot;.pairwise&quot;</span><span class="kw">)</span><span class="ex">,</span> col_names=F<span class="kw">)</span></span>
-<span id="cb2-211"><a href="inclusive-gwas.html#cb2-211" aria-hidden="true" tabindex="-1"></a><span class="va">lista</span><span class="op">=</span>read.table<span class="kw">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">&quot;inflation/gwas-telomere/out/&quot;</span><span class="ex">,nm,</span><span class="st">&quot;.predictorsa&quot;</span><span class="kw">)</span><span class="ex">,</span> </span>
-<span id="cb2-212"><a href="inclusive-gwas.html#cb2-212" aria-hidden="true" tabindex="-1"></a>                <span class="ex">stringsAsFactors</span> = F<span class="kw">)</span></span>
-<span id="cb2-213"><a href="inclusive-gwas.html#cb2-213" aria-hidden="true" tabindex="-1"></a><span class="va">listb</span><span class="op">=</span>read.table<span class="kw">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">&quot;inflation/gwas-telomere/out/&quot;</span><span class="ex">,nm,</span><span class="st">&quot;.predictorsb&quot;</span><span class="kw">)</span><span class="ex">,</span> </span>
-<span id="cb2-214"><a href="inclusive-gwas.html#cb2-214" aria-hidden="true" tabindex="-1"></a>                <span class="ex">stringsAsFactors</span> = F<span class="kw">)</span></span>
-<span id="cb2-215"><a href="inclusive-gwas.html#cb2-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-216"><a href="inclusive-gwas.html#cb2-216" aria-hidden="true" tabindex="-1"></a><span class="va">dat</span><span class="op">=</span>dat[,-c<span class="kw">(</span><span class="ex">10001</span><span class="kw">)</span><span class="ex">]^2</span></span>
-<span id="cb2-217"><a href="inclusive-gwas.html#cb2-217" aria-hidden="true" tabindex="-1"></a><span class="va">outb</span><span class="op">=</span>data.frame<span class="kw">(</span><span class="va">predictor</span><span class="op">=</span>listb<span class="va">$V1</span>, <span class="va">ave_r2</span><span class="op">=</span>apply<span class="kw">(</span><span class="ex">dat,2,</span> mean<span class="kw">))</span></span>
-<span id="cb2-218"><a href="inclusive-gwas.html#cb2-218" aria-hidden="true" tabindex="-1"></a><span class="va">outa</span><span class="op">=</span>data.frame<span class="kw">(</span><span class="va">predictor</span><span class="op">=</span>lista<span class="va">$V1</span>, <span class="va">ave_r2</span><span class="op">=</span>apply<span class="kw">(</span><span class="ex">dat,1,</span> mean<span class="kw">))</span></span>
-<span id="cb2-219"><a href="inclusive-gwas.html#cb2-219" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>rbind<span class="kw">(</span><span class="ex">outa,outb</span><span class="kw">)</span></span>
-<span id="cb2-220"><a href="inclusive-gwas.html#cb2-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-221"><a href="inclusive-gwas.html#cb2-221" aria-hidden="true" tabindex="-1"></a><span class="ex">write.table</span><span class="er">(</span><span class="ex">out,paste0</span><span class="er">(</span><span class="st">&quot;summary/ave-r2-&quot;</span><span class="ex">,nm,</span> <span class="st">&quot;-ukbb-telomere&quot;</span><span class="kw">)</span><span class="ex">,</span> col.names=F, row.names=F, quote=F<span class="kw">)</span>  </span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb67-1"><a href="inclusive-gwas.html#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb67-2"><a href="inclusive-gwas.html#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="co"># select SNPs &amp; organize data</span></span>
+<span id="cb67-3"><a href="inclusive-gwas.html#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb67-4"><a href="inclusive-gwas.html#cb67-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-5"><a href="inclusive-gwas.html#cb67-5" aria-hidden="true" tabindex="-1"></a><span class="co"># download gwas stats-----------------------------------------------------------</span></span>
+<span id="cb67-6"><a href="inclusive-gwas.html#cb67-6" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> gwas-telomere</span>
+<span id="cb67-7"><a href="inclusive-gwas.html#cb67-7" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://figshare.com/ndownloader/files/28414941<span class="pp">?</span>private_link=caa99dc0f76d62990195</span>
+<span id="cb67-8"><a href="inclusive-gwas.html#cb67-8" aria-hidden="true" tabindex="-1"></a><span class="co"># m = 20,134,422 SNPs</span></span>
+<span id="cb67-9"><a href="inclusive-gwas.html#cb67-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-10"><a href="inclusive-gwas.html#cb67-10" aria-hidden="true" tabindex="-1"></a><span class="co"># organize data: snp name &amp; chisq ----------------------------------------------</span></span>
+<span id="cb67-11"><a href="inclusive-gwas.html#cb67-11" aria-hidden="true" tabindex="-1"></a><span class="va">infile</span><span class="op">=</span>gwas-telomere/UKB_telomere_gwas_summarystats.tsv.gz</span>
+<span id="cb67-12"><a href="inclusive-gwas.html#cb67-12" aria-hidden="true" tabindex="-1"></a><span class="va">outfile</span><span class="op">=</span>gwas-telomere/telemere-gwas-organized</span>
+<span id="cb67-13"><a href="inclusive-gwas.html#cb67-13" aria-hidden="true" tabindex="-1"></a><span class="fu">zcat</span> <span class="va">$infile</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&#39;\t&#39;</span> <span class="st">&#39;BEGIN {print &quot;chr base_pair_location chr_base rs chisq&quot;} </span></span>
+<span id="cb67-14"><a href="inclusive-gwas.html#cb67-14" aria-hidden="true" tabindex="-1"></a><span class="st">                            NR &gt;1 {print $3, $4,$3&quot;:&quot;$4, $1, ($8/$9)^2}&#39;</span> <span class="op">&gt;</span> <span class="va">$outfile</span></span>
+<span id="cb67-15"><a href="inclusive-gwas.html#cb67-15" aria-hidden="true" tabindex="-1"></a>                            </span>
+<span id="cb67-16"><a href="inclusive-gwas.html#cb67-16" aria-hidden="true" tabindex="-1"></a><span class="co"># hapmap3 SNPs------------------------------------------------------------------</span></span>
+<span id="cb67-17"><a href="inclusive-gwas.html#cb67-17" aria-hidden="true" tabindex="-1"></a><span class="va">infile1</span><span class="op">=</span>doug/ukbb.ldsc</span>
+<span id="cb67-18"><a href="inclusive-gwas.html#cb67-18" aria-hidden="true" tabindex="-1"></a><span class="va">infile2</span><span class="op">=</span>gwas-telomere/telemere-gwas-organized</span>
+<span id="cb67-19"><a href="inclusive-gwas.html#cb67-19" aria-hidden="true" tabindex="-1"></a><span class="va">outfile</span><span class="op">=</span>gwas-telomere/telemere-gwas-organized-hm3</span>
+<span id="cb67-20"><a href="inclusive-gwas.html#cb67-20" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR==FNR{a[$3];next} </span></span>
+<span id="cb67-21"><a href="inclusive-gwas.html#cb67-21" aria-hidden="true" tabindex="-1"></a><span class="st">     ($3 in a || FNR==1 ){print $0}&#39;</span> <span class="va">$infile1</span> <span class="va">$infile2</span> <span class="op">&gt;</span> <span class="va">$outfile</span></span>
+<span id="cb67-22"><a href="inclusive-gwas.html#cb67-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-23"><a href="inclusive-gwas.html#cb67-23" aria-hidden="true" tabindex="-1"></a><span class="co"># choose snp lists--------------------------------------------------------------</span></span>
+<span id="cb67-24"><a href="inclusive-gwas.html#cb67-24" aria-hidden="true" tabindex="-1"></a><span class="co"># choose 40k for each side as the pool for selection</span></span>
+<span id="cb67-25"><a href="inclusive-gwas.html#cb67-25" aria-hidden="true" tabindex="-1"></a><span class="va">m</span><span class="op">=</span>40000</span>
+<span id="cb67-26"><a href="inclusive-gwas.html#cb67-26" aria-hidden="true" tabindex="-1"></a><span class="va">infile</span><span class="op">=</span>gwas-telomere/telemere-gwas-organized-hm3</span>
+<span id="cb67-27"><a href="inclusive-gwas.html#cb67-27" aria-hidden="true" tabindex="-1"></a><span class="va">left</span><span class="op">=</span>inflation/gwas-telomere/left-snps-pool</span>
+<span id="cb67-28"><a href="inclusive-gwas.html#cb67-28" aria-hidden="true" tabindex="-1"></a><span class="va">right</span><span class="op">=</span>inflation/gwas-telomere/right-snps-pool</span>
+<span id="cb67-29"><a href="inclusive-gwas.html#cb67-29" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;$1&lt;8 &amp;&amp; NR &gt; 1 {print $1, $2, $3}&#39;</span> <span class="va">$infile</span> <span class="kw">|</span> <span class="ex">shuf</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> <span class="va">$m</span> <span class="op">&gt;</span><span class="va">$left</span></span>
+<span id="cb67-30"><a href="inclusive-gwas.html#cb67-30" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;$1&gt;=8 &amp;&amp; NR &gt; 1 {print $1, $2, $3}&#39;</span> <span class="va">$infile</span> <span class="kw">|</span> <span class="ex">shuf</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> <span class="va">$m</span> <span class="op">&gt;</span><span class="va">$right</span></span>
+<span id="cb67-31"><a href="inclusive-gwas.html#cb67-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-32"><a href="inclusive-gwas.html#cb67-32" aria-hidden="true" tabindex="-1"></a><span class="co"># entire snp list of ukbb</span></span>
+<span id="cb67-33"><a href="inclusive-gwas.html#cb67-33" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>inflation/gwas-telomere/ukbb-bhr-all-snps</span>
+<span id="cb67-34"><a href="inclusive-gwas.html#cb67-34" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="va">$out</span></span>
+<span id="cb67-35"><a href="inclusive-gwas.html#cb67-35" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span><span class="cf">do</span></span>
+<span id="cb67-36"><a href="inclusive-gwas.html#cb67-36" aria-hidden="true" tabindex="-1"></a><span class="va">gen</span><span class="op">=</span>gen/geno_plink/bhr<span class="va">$i</span>.pvar</span>
+<span id="cb67-37"><a href="inclusive-gwas.html#cb67-37" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{print $1, $2, $1&quot;:&quot;$2, $3}&#39;</span> <span class="va">$gen</span> <span class="op">&gt;&gt;</span> <span class="va">$out</span></span>
+<span id="cb67-38"><a href="inclusive-gwas.html#cb67-38" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb67-39"><a href="inclusive-gwas.html#cb67-39" aria-hidden="true" tabindex="-1"></a><span class="co"># wc -l gen/geno_plink/bhr{1..22}.pvar</span></span>
+<span id="cb67-40"><a href="inclusive-gwas.html#cb67-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-41"><a href="inclusive-gwas.html#cb67-41" aria-hidden="true" tabindex="-1"></a><span class="co"># put the chosen 40k snps in the right format</span></span>
+<span id="cb67-42"><a href="inclusive-gwas.html#cb67-42" aria-hidden="true" tabindex="-1"></a><span class="va">snp</span><span class="op">=</span>inflation/gwas-telomere/ukbb-bhr-all-snps</span>
+<span id="cb67-43"><a href="inclusive-gwas.html#cb67-43" aria-hidden="true" tabindex="-1"></a><span class="va">leftin</span><span class="op">=</span>inflation/gwas-telomere/left-snps-pool</span>
+<span id="cb67-44"><a href="inclusive-gwas.html#cb67-44" aria-hidden="true" tabindex="-1"></a><span class="va">rightin</span><span class="op">=</span>inflation/gwas-telomere/right-snps-pool</span>
+<span id="cb67-45"><a href="inclusive-gwas.html#cb67-45" aria-hidden="true" tabindex="-1"></a><span class="va">leftout</span><span class="op">=</span>inflation/gwas-telomere/left-snps-tmp</span>
+<span id="cb67-46"><a href="inclusive-gwas.html#cb67-46" aria-hidden="true" tabindex="-1"></a><span class="va">rightout</span><span class="op">=</span>inflation/gwas-telomere/right-snps-tmp</span>
+<span id="cb67-47"><a href="inclusive-gwas.html#cb67-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-48"><a href="inclusive-gwas.html#cb67-48" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$3];next}</span></span>
+<span id="cb67-49"><a href="inclusive-gwas.html#cb67-49" aria-hidden="true" tabindex="-1"></a><span class="st">     ($3 in a){print $4}&#39;</span> <span class="va">$leftin</span> <span class="va">$snp</span> <span class="op">&gt;</span> <span class="va">$leftout</span></span>
+<span id="cb67-50"><a href="inclusive-gwas.html#cb67-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-51"><a href="inclusive-gwas.html#cb67-51" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$3];next}</span></span>
+<span id="cb67-52"><a href="inclusive-gwas.html#cb67-52" aria-hidden="true" tabindex="-1"></a><span class="st">     ($3 in a){print $4}&#39;</span> <span class="va">$rightin</span> <span class="va">$snp</span> <span class="op">&gt;</span> <span class="va">$rightout</span></span>
+<span id="cb67-53"><a href="inclusive-gwas.html#cb67-53" aria-hidden="true" tabindex="-1"></a><span class="co"># note:  &gt; 40k are in the list of each side because some snps have the same basepair...    </span></span>
+<span id="cb67-54"><a href="inclusive-gwas.html#cb67-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-55"><a href="inclusive-gwas.html#cb67-55" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb67-56"><a href="inclusive-gwas.html#cb67-56" aria-hidden="true" tabindex="-1"></a><span class="co">#  extract genotypes of the bfiles</span></span>
+<span id="cb67-57"><a href="inclusive-gwas.html#cb67-57" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb67-58"><a href="inclusive-gwas.html#cb67-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-59"><a href="inclusive-gwas.html#cb67-59" aria-hidden="true" tabindex="-1"></a><span class="va">left</span><span class="op">=</span>inflation/gwas-telomere/left-snps-tmp</span>
+<span id="cb67-60"><a href="inclusive-gwas.html#cb67-60" aria-hidden="true" tabindex="-1"></a><span class="va">right</span><span class="op">=</span>inflation/gwas-telomere/right-snps-tmp</span>
+<span id="cb67-61"><a href="inclusive-gwas.html#cb67-61" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>inflation/gwas-telomere/snp-all</span>
+<span id="cb67-62"><a href="inclusive-gwas.html#cb67-62" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{print $0}&#39;</span> <span class="va">$left</span> <span class="va">$right</span> <span class="op">&gt;</span> <span class="va">$out</span></span>
+<span id="cb67-63"><a href="inclusive-gwas.html#cb67-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-64"><a href="inclusive-gwas.html#cb67-64" aria-hidden="true" tabindex="-1"></a><span class="co"># extract data -----------------------------------------------------------------</span></span>
+<span id="cb67-65"><a href="inclusive-gwas.html#cb67-65" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb67-66"><a href="inclusive-gwas.html#cb67-66" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb67-67"><a href="inclusive-gwas.html#cb67-67" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb67-68"><a href="inclusive-gwas.html#cb67-68" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb67-69"><a href="inclusive-gwas.html#cb67-69" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 4G</span></span>
+<span id="cb67-70"><a href="inclusive-gwas.html#cb67-70" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb67-71"><a href="inclusive-gwas.html#cb67-71" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 00:30:0</span></span>
+<span id="cb67-72"><a href="inclusive-gwas.html#cb67-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-73"><a href="inclusive-gwas.html#cb67-73" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb67-74"><a href="inclusive-gwas.html#cb67-74" aria-hidden="true" tabindex="-1"></a><span class="st">         --extract ../inflation/gwas-telomere/snp-all </span><span class="dt">\</span></span>
+<span id="cb67-75"><a href="inclusive-gwas.html#cb67-75" aria-hidden="true" tabindex="-1"></a><span class="st">         --make-bed </span><span class="dt">\</span></span>
+<span id="cb67-76"><a href="inclusive-gwas.html#cb67-76" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/tmp/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb67-77"><a href="inclusive-gwas.html#cb67-77" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
+<span id="cb67-78"><a href="inclusive-gwas.html#cb67-78" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3</span></span>
+<span id="cb67-79"><a href="inclusive-gwas.html#cb67-79" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/chr<span class="va">$j</span>.sh</span>
+<span id="cb67-80"><a href="inclusive-gwas.html#cb67-80" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb67-81"><a href="inclusive-gwas.html#cb67-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-82"><a href="inclusive-gwas.html#cb67-82" aria-hidden="true" tabindex="-1"></a><span class="co"># submit jobs-------------------------------------------------------------------</span></span>
+<span id="cb67-83"><a href="inclusive-gwas.html#cb67-83" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb67-84"><a href="inclusive-gwas.html#cb67-84" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/chr<span class="va">$j</span>.sh</span>
+<span id="cb67-85"><a href="inclusive-gwas.html#cb67-85" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/bfile-telomere</span>
+<span id="cb67-86"><a href="inclusive-gwas.html#cb67-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-87"><a href="inclusive-gwas.html#cb67-87" aria-hidden="true" tabindex="-1"></a><span class="co"># check job completion----------------------------------------------------------</span></span>
+<span id="cb67-88"><a href="inclusive-gwas.html#cb67-88" aria-hidden="true" tabindex="-1"></a><span class="va">file</span><span class="op">=</span>job-records/bfile-telomere</span>
+<span id="cb67-89"><a href="inclusive-gwas.html#cb67-89" aria-hidden="true" tabindex="-1"></a><span class="va">jobs</span><span class="op">=</span><span class="kw">`</span><span class="fu">awk</span> <span class="st">&#39;{print $4}&#39;</span> <span class="va">$file</span><span class="kw">`</span></span>
+<span id="cb67-90"><a href="inclusive-gwas.html#cb67-90" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="va">$file</span>-tmp</span>
+<span id="cb67-91"><a href="inclusive-gwas.html#cb67-91" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="va">$jobs</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb67-92"><a href="inclusive-gwas.html#cb67-92" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="at">-v</span> i=<span class="va">$i</span> <span class="st">&#39;$1~/Name/ {print i, $2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/name.tmp </span>
+<span id="cb67-93"><a href="inclusive-gwas.html#cb67-93" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/State/ {print$2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/state.tmp</span>
+<span id="cb67-94"><a href="inclusive-gwas.html#cb67-94" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Cores/ {print$2}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/cores.tmp</span>
+<span id="cb67-95"><a href="inclusive-gwas.html#cb67-95" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Used walltime/ {print $2 &quot;:&quot; $3 &quot;:&quot; $4}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/time.tmp</span>
+<span id="cb67-96"><a href="inclusive-gwas.html#cb67-96" aria-hidden="true" tabindex="-1"></a><span class="ex">jobinfo</span> <span class="va">$i</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-F</span> <span class="st">&quot;:&quot;</span> <span class="st">&#39;$1~/Max Mem/ {split($2,a,/[(]/ ); print a[1]}&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$file</span>-tmp/mem.tmp</span>
+<span id="cb67-97"><a href="inclusive-gwas.html#cb67-97" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb67-98"><a href="inclusive-gwas.html#cb67-98" aria-hidden="true" tabindex="-1"></a><span class="ex">paste</span> <span class="va">$file</span>-tmp/name.tmp <span class="dt">\</span></span>
+<span id="cb67-99"><a href="inclusive-gwas.html#cb67-99" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/state.tmp <span class="dt">\</span></span>
+<span id="cb67-100"><a href="inclusive-gwas.html#cb67-100" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/cores.tmp <span class="dt">\</span></span>
+<span id="cb67-101"><a href="inclusive-gwas.html#cb67-101" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/time.tmp <span class="dt">\</span></span>
+<span id="cb67-102"><a href="inclusive-gwas.html#cb67-102" aria-hidden="true" tabindex="-1"></a>      <span class="va">$file</span>-tmp/mem.tmp <span class="dt">\</span></span>
+<span id="cb67-103"><a href="inclusive-gwas.html#cb67-103" aria-hidden="true" tabindex="-1"></a>      <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;BEGIN{print &quot;ID name state cores time mem&quot;}{print $0}&#39;</span> <span class="op">&gt;</span> <span class="va">$file</span>.out</span>
+<span id="cb67-104"><a href="inclusive-gwas.html#cb67-104" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-r</span> <span class="va">$file</span>-tmp</span>
+<span id="cb67-105"><a href="inclusive-gwas.html#cb67-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-106"><a href="inclusive-gwas.html#cb67-106" aria-hidden="true" tabindex="-1"></a><span class="co"># merge files-------------------------------------------------------------------</span></span>
+<span id="cb67-107"><a href="inclusive-gwas.html#cb67-107" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> gen/bfile.list</span>
+<span id="cb67-108"><a href="inclusive-gwas.html#cb67-108" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb67-109"><a href="inclusive-gwas.html#cb67-109" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span>  <span class="st">&quot;../gen/tmp/bhr</span><span class="va">$j</span><span class="st">&quot;</span> <span class="op">&gt;&gt;</span> gen/bfile.list</span>
+<span id="cb67-110"><a href="inclusive-gwas.html#cb67-110" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb67-111"><a href="inclusive-gwas.html#cb67-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-112"><a href="inclusive-gwas.html#cb67-112" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb67-113"><a href="inclusive-gwas.html#cb67-113" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb67-114"><a href="inclusive-gwas.html#cb67-114" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb67-115"><a href="inclusive-gwas.html#cb67-115" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb67-116"><a href="inclusive-gwas.html#cb67-116" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb67-117"><a href="inclusive-gwas.html#cb67-117" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 01:00:0</span></span>
+<span id="cb67-118"><a href="inclusive-gwas.html#cb67-118" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --make-bed ../gen/geno-telomere </span><span class="dt">\</span></span>
+<span id="cb67-119"><a href="inclusive-gwas.html#cb67-119" aria-hidden="true" tabindex="-1"></a><span class="st">          --mbfile ../gen/bfile.list </span><span class="dt">\</span></span>
+<span id="cb67-120"><a href="inclusive-gwas.html#cb67-120" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 3 </span><span class="dt">\</span></span>
+<span id="cb67-121"><a href="inclusive-gwas.html#cb67-121" aria-hidden="true" tabindex="-1"></a><span class="st">          --exclude-dups YES</span></span>
+<span id="cb67-122"><a href="inclusive-gwas.html#cb67-122" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/mbfile-telomere.sh</span>
+<span id="cb67-123"><a href="inclusive-gwas.html#cb67-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-124"><a href="inclusive-gwas.html#cb67-124" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the script-------------------------------------------------------------</span></span>
+<span id="cb67-125"><a href="inclusive-gwas.html#cb67-125" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/mbfile-telomere.sh <span class="op">&gt;</span>../job-records/mbfile-telomere</span>
+<span id="cb67-126"><a href="inclusive-gwas.html#cb67-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-127"><a href="inclusive-gwas.html#cb67-127" aria-hidden="true" tabindex="-1"></a><span class="co"># compute info score------------------------------------------------------------</span></span>
+<span id="cb67-128"><a href="inclusive-gwas.html#cb67-128" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb67-129"><a href="inclusive-gwas.html#cb67-129" aria-hidden="true" tabindex="-1"></a><span class="va">snp</span><span class="op">=</span>../inflation/gwas-telomere/snp-all</span>
+<span id="cb67-130"><a href="inclusive-gwas.html#cb67-130" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>../gen/info/chr<span class="va">$j</span>-telomere</span>
+<span id="cb67-131"><a href="inclusive-gwas.html#cb67-131" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb67-132"><a href="inclusive-gwas.html#cb67-132" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb67-133"><a href="inclusive-gwas.html#cb67-133" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb67-134"><a href="inclusive-gwas.html#cb67-134" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 5G</span></span>
+<span id="cb67-135"><a href="inclusive-gwas.html#cb67-135" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb67-136"><a href="inclusive-gwas.html#cb67-136" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 00:20:0</span></span>
+<span id="cb67-137"><a href="inclusive-gwas.html#cb67-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-138"><a href="inclusive-gwas.html#cb67-138" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb67-139"><a href="inclusive-gwas.html#cb67-139" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3 </span><span class="dt">\</span></span>
+<span id="cb67-140"><a href="inclusive-gwas.html#cb67-140" aria-hidden="true" tabindex="-1"></a><span class="st">         --extract </span><span class="va">$snp</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb67-141"><a href="inclusive-gwas.html#cb67-141" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
+<span id="cb67-142"><a href="inclusive-gwas.html#cb67-142" aria-hidden="true" tabindex="-1"></a><span class="st">         --freq cols=chrom,ref,alt,altfreq,machr2 </span><span class="dt">\</span></span>
+<span id="cb67-143"><a href="inclusive-gwas.html#cb67-143" aria-hidden="true" tabindex="-1"></a><span class="st">         --out </span><span class="va">$out</span></span>
+<span id="cb67-144"><a href="inclusive-gwas.html#cb67-144" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/info-chr<span class="va">$j</span>.sh</span>
+<span id="cb67-145"><a href="inclusive-gwas.html#cb67-145" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb67-146"><a href="inclusive-gwas.html#cb67-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-147"><a href="inclusive-gwas.html#cb67-147" aria-hidden="true" tabindex="-1"></a><span class="co"># submit file-------------------------------------------------------------------</span></span>
+<span id="cb67-148"><a href="inclusive-gwas.html#cb67-148" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb67-149"><a href="inclusive-gwas.html#cb67-149" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/info-chr<span class="va">$j</span>.sh</span>
+<span id="cb67-150"><a href="inclusive-gwas.html#cb67-150" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/compute-info-telomere</span>
+<span id="cb67-151"><a href="inclusive-gwas.html#cb67-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-152"><a href="inclusive-gwas.html#cb67-152" aria-hidden="true" tabindex="-1"></a><span class="co"># combine files ----------------------------------------------------------------</span></span>
+<span id="cb67-153"><a href="inclusive-gwas.html#cb67-153" aria-hidden="true" tabindex="-1"></a><span class="va">dir</span><span class="op">=</span>gen/info</span>
+<span id="cb67-154"><a href="inclusive-gwas.html#cb67-154" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="va">$dir</span>/telomere-afreq</span>
+<span id="cb67-155"><a href="inclusive-gwas.html#cb67-155" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb67-156"><a href="inclusive-gwas.html#cb67-156" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$i</span> <span class="ot">==</span> 1 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb67-157"><a href="inclusive-gwas.html#cb67-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;{print $0}&#39;</span> <span class="va">$dir</span>/chr<span class="va">$i</span>-telomere.afreq <span class="op">&gt;</span> <span class="va">$dir</span>/telomere-afreq</span>
+<span id="cb67-158"><a href="inclusive-gwas.html#cb67-158" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb67-159"><a href="inclusive-gwas.html#cb67-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">awk</span> <span class="st">&#39;NR&gt;1 {print $0}&#39;</span> <span class="va">$dir</span>/chr<span class="va">$i</span>-telomere.afreq <span class="op">&gt;&gt;</span> <span class="va">$dir</span>/telomere-afreq</span>
+<span id="cb67-160"><a href="inclusive-gwas.html#cb67-160" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb67-161"><a href="inclusive-gwas.html#cb67-161" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb67-162"><a href="inclusive-gwas.html#cb67-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-163"><a href="inclusive-gwas.html#cb67-163" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb67-164"><a href="inclusive-gwas.html#cb67-164" aria-hidden="true" tabindex="-1"></a><span class="co">#  Finalize the 10k SNP list of each side</span></span>
+<span id="cb67-165"><a href="inclusive-gwas.html#cb67-165" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb67-166"><a href="inclusive-gwas.html#cb67-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-167"><a href="inclusive-gwas.html#cb67-167" aria-hidden="true" tabindex="-1"></a><span class="va">m</span><span class="op">=</span>10000</span>
+<span id="cb67-168"><a href="inclusive-gwas.html#cb67-168" aria-hidden="true" tabindex="-1"></a><span class="va">snp</span><span class="op">=</span>gen/geno-telomere.bim</span>
+<span id="cb67-169"><a href="inclusive-gwas.html#cb67-169" aria-hidden="true" tabindex="-1"></a><span class="va">leftin</span><span class="op">=</span>inflation/gwas-telomere/left-snps-tmp</span>
+<span id="cb67-170"><a href="inclusive-gwas.html#cb67-170" aria-hidden="true" tabindex="-1"></a><span class="va">rightin</span><span class="op">=</span>inflation/gwas-telomere/right-snps-tmp</span>
+<span id="cb67-171"><a href="inclusive-gwas.html#cb67-171" aria-hidden="true" tabindex="-1"></a><span class="va">leftout</span><span class="op">=</span>inflation/gwas-telomere/left-snps</span>
+<span id="cb67-172"><a href="inclusive-gwas.html#cb67-172" aria-hidden="true" tabindex="-1"></a><span class="va">rightout</span><span class="op">=</span>inflation/gwas-telomere/right-snps</span>
+<span id="cb67-173"><a href="inclusive-gwas.html#cb67-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-174"><a href="inclusive-gwas.html#cb67-174" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$1];next}</span></span>
+<span id="cb67-175"><a href="inclusive-gwas.html#cb67-175" aria-hidden="true" tabindex="-1"></a><span class="st">     ($2 in a){print $2}&#39;</span> <span class="va">$leftin</span> <span class="va">$snp</span> <span class="kw">|</span> <span class="ex">shuf</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-</span><span class="va">$m</span>  <span class="op">&gt;</span> <span class="va">$leftout</span></span>
+<span id="cb67-176"><a href="inclusive-gwas.html#cb67-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-177"><a href="inclusive-gwas.html#cb67-177" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$1];next}</span></span>
+<span id="cb67-178"><a href="inclusive-gwas.html#cb67-178" aria-hidden="true" tabindex="-1"></a><span class="st">     ($2 in a){print $2}&#39;</span> <span class="va">$rightin</span> <span class="va">$snp</span> <span class="kw">|</span> <span class="ex">shuf</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-</span><span class="va">$m</span>  <span class="op">&gt;</span> <span class="va">$rightout</span></span>
+<span id="cb67-179"><a href="inclusive-gwas.html#cb67-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-180"><a href="inclusive-gwas.html#cb67-180" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb67-181"><a href="inclusive-gwas.html#cb67-181" aria-hidden="true" tabindex="-1"></a><span class="co">#  compute ave r^2_j</span></span>
+<span id="cb67-182"><a href="inclusive-gwas.html#cb67-182" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::</span></span>
+<span id="cb67-183"><a href="inclusive-gwas.html#cb67-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-184"><a href="inclusive-gwas.html#cb67-184" aria-hidden="true" tabindex="-1"></a><span class="va">lista</span><span class="op">=</span>../inflation/gwas-telomere/right-snps</span>
+<span id="cb67-185"><a href="inclusive-gwas.html#cb67-185" aria-hidden="true" tabindex="-1"></a><span class="va">listb</span><span class="op">=</span>../inflation/gwas-telomere/left-snps</span>
+<span id="cb67-186"><a href="inclusive-gwas.html#cb67-186" aria-hidden="true" tabindex="-1"></a><span class="va">bfile</span><span class="op">=</span>../gen/geno-telomere</span>
+<span id="cb67-187"><a href="inclusive-gwas.html#cb67-187" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>../inflation/gwas-telomere/out/10k-snps</span>
+<span id="cb67-188"><a href="inclusive-gwas.html#cb67-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-189"><a href="inclusive-gwas.html#cb67-189" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb67-190"><a href="inclusive-gwas.html#cb67-190" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb67-191"><a href="inclusive-gwas.html#cb67-191" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb67-192"><a href="inclusive-gwas.html#cb67-192" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 80G</span></span>
+<span id="cb67-193"><a href="inclusive-gwas.html#cb67-193" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 7</span></span>
+<span id="cb67-194"><a href="inclusive-gwas.html#cb67-194" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 00:30:0</span></span>
+<span id="cb67-195"><a href="inclusive-gwas.html#cb67-195" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.2 --max-threads 7 </span><span class="dt">\</span></span>
+<span id="cb67-196"><a href="inclusive-gwas.html#cb67-196" aria-hidden="true" tabindex="-1"></a><span class="st">          --calc-inflation </span><span class="va">$out</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb67-197"><a href="inclusive-gwas.html#cb67-197" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile </span><span class="va">$bfile</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb67-198"><a href="inclusive-gwas.html#cb67-198" aria-hidden="true" tabindex="-1"></a><span class="st">          --lista </span><span class="va">$lista</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb67-199"><a href="inclusive-gwas.html#cb67-199" aria-hidden="true" tabindex="-1"></a><span class="st">          --listb </span><span class="va">$listb</span></span>
+<span id="cb67-200"><a href="inclusive-gwas.html#cb67-200" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span>sh_script/calc-r-10k-snps</span>
+<span id="cb67-201"><a href="inclusive-gwas.html#cb67-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-202"><a href="inclusive-gwas.html#cb67-202" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the job</span></span>
+<span id="cb67-203"><a href="inclusive-gwas.html#cb67-203" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/calc-r-10k-snps <span class="op">&gt;</span>../job-records/calc-r-telomere</span>
+<span id="cb67-204"><a href="inclusive-gwas.html#cb67-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-205"><a href="inclusive-gwas.html#cb67-205" aria-hidden="true" tabindex="-1"></a><span class="co">#  compute ave r_j^2 for each i-------------------------------------------------</span></span>
+<span id="cb67-206"><a href="inclusive-gwas.html#cb67-206" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span></span>
+<span id="cb67-207"><a href="inclusive-gwas.html#cb67-207" aria-hidden="true" tabindex="-1"></a><span class="ex">require</span><span class="er">(</span><span class="ex">vroom</span><span class="kw">)</span></span>
+<span id="cb67-208"><a href="inclusive-gwas.html#cb67-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-209"><a href="inclusive-gwas.html#cb67-209" aria-hidden="true" tabindex="-1"></a><span class="va">nm</span><span class="op">=</span><span class="st">&quot;10k-snps&quot;</span></span>
+<span id="cb67-210"><a href="inclusive-gwas.html#cb67-210" aria-hidden="true" tabindex="-1"></a><span class="va">dat</span><span class="op">=</span>vroom<span class="kw">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">&quot;inflation/gwas-telomere/out/&quot;</span><span class="ex">,nm,</span><span class="st">&quot;.pairwise&quot;</span><span class="kw">)</span><span class="ex">,</span> col_names=F<span class="kw">)</span></span>
+<span id="cb67-211"><a href="inclusive-gwas.html#cb67-211" aria-hidden="true" tabindex="-1"></a><span class="va">lista</span><span class="op">=</span>read.table<span class="kw">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">&quot;inflation/gwas-telomere/out/&quot;</span><span class="ex">,nm,</span><span class="st">&quot;.predictorsa&quot;</span><span class="kw">)</span><span class="ex">,</span> </span>
+<span id="cb67-212"><a href="inclusive-gwas.html#cb67-212" aria-hidden="true" tabindex="-1"></a>                <span class="ex">stringsAsFactors</span> = F<span class="kw">)</span></span>
+<span id="cb67-213"><a href="inclusive-gwas.html#cb67-213" aria-hidden="true" tabindex="-1"></a><span class="va">listb</span><span class="op">=</span>read.table<span class="kw">(</span><span class="ex">paste0</span><span class="er">(</span><span class="st">&quot;inflation/gwas-telomere/out/&quot;</span><span class="ex">,nm,</span><span class="st">&quot;.predictorsb&quot;</span><span class="kw">)</span><span class="ex">,</span> </span>
+<span id="cb67-214"><a href="inclusive-gwas.html#cb67-214" aria-hidden="true" tabindex="-1"></a>                <span class="ex">stringsAsFactors</span> = F<span class="kw">)</span></span>
+<span id="cb67-215"><a href="inclusive-gwas.html#cb67-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-216"><a href="inclusive-gwas.html#cb67-216" aria-hidden="true" tabindex="-1"></a><span class="va">dat</span><span class="op">=</span>dat[,-c<span class="kw">(</span><span class="ex">10001</span><span class="kw">)</span><span class="ex">]^2</span></span>
+<span id="cb67-217"><a href="inclusive-gwas.html#cb67-217" aria-hidden="true" tabindex="-1"></a><span class="va">outb</span><span class="op">=</span>data.frame<span class="kw">(</span><span class="va">predictor</span><span class="op">=</span>listb<span class="va">$V1</span>, <span class="va">ave_r2</span><span class="op">=</span>apply<span class="kw">(</span><span class="ex">dat,2,</span> mean<span class="kw">))</span></span>
+<span id="cb67-218"><a href="inclusive-gwas.html#cb67-218" aria-hidden="true" tabindex="-1"></a><span class="va">outa</span><span class="op">=</span>data.frame<span class="kw">(</span><span class="va">predictor</span><span class="op">=</span>lista<span class="va">$V1</span>, <span class="va">ave_r2</span><span class="op">=</span>apply<span class="kw">(</span><span class="ex">dat,1,</span> mean<span class="kw">))</span></span>
+<span id="cb67-219"><a href="inclusive-gwas.html#cb67-219" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>rbind<span class="kw">(</span><span class="ex">outa,outb</span><span class="kw">)</span></span>
+<span id="cb67-220"><a href="inclusive-gwas.html#cb67-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-221"><a href="inclusive-gwas.html#cb67-221" aria-hidden="true" tabindex="-1"></a><span class="ex">write.table</span><span class="er">(</span><span class="ex">out,paste0</span><span class="er">(</span><span class="st">&quot;summary/ave-r2-&quot;</span><span class="ex">,nm,</span> <span class="st">&quot;-ukbb-telomere&quot;</span><span class="kw">)</span><span class="ex">,</span> col.names=F, row.names=F, quote=F<span class="kw">)</span>  </span></code></pre></div>
 </div>
 <div id="organize-data-1" class="section level3" number="10.2.2">
 <h3><span class="header-section-number">10.2.2</span> organize data</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="inclusive-gwas.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># NEED TO CHECK THE FOLLOWING CODE</span></span>
-<span id="cb3-2"><a href="inclusive-gwas.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">aver2</span><span class="op">=</span>summary/ave-r2-10k-snps-ukbb-telomere</span>
-<span id="cb3-3"><a href="inclusive-gwas.html#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">rs</span><span class="op">=</span>doug/ukbb.ldsc</span>
-<span id="cb3-4"><a href="inclusive-gwas.html#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="va">gwas</span><span class="op">=</span>gwas-telomere/telomere-gwas-organized-hm3</span>
-<span id="cb3-5"><a href="inclusive-gwas.html#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>gwas-telomere/telomere.out</span>
-<span id="cb3-6"><a href="inclusive-gwas.html#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="inclusive-gwas.html#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR==FNR {a[$1]; b[$1]=$2; next}</span></span>
-<span id="cb3-8"><a href="inclusive-gwas.html#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="st">      ($1 in a) {print $1, b[$1], $2}&#39;</span> <span class="va">$rs</span> <span class="va">$aver2</span> <span class="op">&gt;</span> tmp/aver2.tmp</span>
-<span id="cb3-9"><a href="inclusive-gwas.html#cb3-9" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb3-10"><a href="inclusive-gwas.html#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;BEGIN{print &quot;snp rs chisq aver2&quot;} </span></span>
-<span id="cb3-11"><a href="inclusive-gwas.html#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="st">     NR==FNR {a[$2]; b[$2]=$1; c[$2]=$3; next}</span></span>
-<span id="cb3-12"><a href="inclusive-gwas.html#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="st">     ($4 in a) {print b[$4], $4, $5, c[$4] }&#39;</span> tmp/aver2.tmp <span class="va">$gwas</span>  <span class="op">&gt;</span> <span class="va">$out</span>  </span></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb68-1"><a href="inclusive-gwas.html#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># NEED TO CHECK THE FOLLOWING CODE</span></span>
+<span id="cb68-2"><a href="inclusive-gwas.html#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="va">aver2</span><span class="op">=</span>summary/ave-r2-10k-snps-ukbb-telomere</span>
+<span id="cb68-3"><a href="inclusive-gwas.html#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="va">rs</span><span class="op">=</span>doug/ukbb.ldsc</span>
+<span id="cb68-4"><a href="inclusive-gwas.html#cb68-4" aria-hidden="true" tabindex="-1"></a><span class="va">gwas</span><span class="op">=</span>gwas-telomere/telomere-gwas-organized-hm3</span>
+<span id="cb68-5"><a href="inclusive-gwas.html#cb68-5" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>gwas-telomere/telomere.out</span>
+<span id="cb68-6"><a href="inclusive-gwas.html#cb68-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-7"><a href="inclusive-gwas.html#cb68-7" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR==FNR {a[$1]; b[$1]=$2; next}</span></span>
+<span id="cb68-8"><a href="inclusive-gwas.html#cb68-8" aria-hidden="true" tabindex="-1"></a><span class="st">      ($1 in a) {print $1, b[$1], $2}&#39;</span> <span class="va">$rs</span> <span class="va">$aver2</span> <span class="op">&gt;</span> tmp/aver2.tmp</span>
+<span id="cb68-9"><a href="inclusive-gwas.html#cb68-9" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb68-10"><a href="inclusive-gwas.html#cb68-10" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;BEGIN{print &quot;snp rs chisq aver2&quot;} </span></span>
+<span id="cb68-11"><a href="inclusive-gwas.html#cb68-11" aria-hidden="true" tabindex="-1"></a><span class="st">     NR==FNR {a[$2]; b[$2]=$1; c[$2]=$3; next}</span></span>
+<span id="cb68-12"><a href="inclusive-gwas.html#cb68-12" aria-hidden="true" tabindex="-1"></a><span class="st">     ($4 in a) {print b[$4], $4, $5, c[$4] }&#39;</span> tmp/aver2.tmp <span class="va">$gwas</span>  <span class="op">&gt;</span> <span class="va">$out</span>  </span></code></pre></div>
 </div>
 <div id="chisq-aver2_j-1" class="section level3" number="10.2.3">
 <h3><span class="header-section-number">10.2.3</span> chisq ~ aver2_j</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="inclusive-gwas.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
-<span id="cb4-2"><a href="inclusive-gwas.html#cb4-2" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="st">&quot;gwas-telomere/telomere.out&quot;</span>, <span class="at">col_names=</span>T)</span>
-<span id="cb4-3"><a href="inclusive-gwas.html#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="inclusive-gwas.html#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate slope: chisq ~ aver2_j-----------------------------------------------</span></span>
-<span id="cb4-5"><a href="inclusive-gwas.html#cb4-5" aria-hidden="true" tabindex="-1"></a>mod<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> aver2,<span class="at">data=</span>dat)</span>
-<span id="cb4-6"><a href="inclusive-gwas.html#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span>
-<span id="cb4-7"><a href="inclusive-gwas.html#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="inclusive-gwas.html#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># make the plot---------------------------------------------------------------</span></span>
-<span id="cb4-9"><a href="inclusive-gwas.html#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># bin a variable by quantile</span></span>
-<span id="cb4-10"><a href="inclusive-gwas.html#cb4-10" aria-hidden="true" tabindex="-1"></a>cutoff<span class="ot">=</span><span class="fu">quantile</span>(dat<span class="sc">$</span>aver2, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.005</span>), <span class="at">na.rm=</span>T)</span>
-<span id="cb4-11"><a href="inclusive-gwas.html#cb4-11" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>bin<span class="ot">=</span><span class="fu">cut</span>(dat<span class="sc">$</span>aver2, <span class="at">breaks=</span>cutoff, <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff)<span class="sc">-</span><span class="dv">1</span>))</span>
-<span id="cb4-12"><a href="inclusive-gwas.html#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># average chisq by bin values</span></span>
-<span id="cb4-13"><a href="inclusive-gwas.html#cb4-13" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">chisq_ave=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>chisq,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean))</span>
-<span id="cb4-14"><a href="inclusive-gwas.html#cb4-14" aria-hidden="true" tabindex="-1"></a>out<span class="sc">$</span>bin_val<span class="ot">=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>aver2,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean)</span>
-<span id="cb4-15"><a href="inclusive-gwas.html#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="inclusive-gwas.html#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="st">&quot;fig/chisq-by-aver2-bin-telomere.png&quot;</span>,</span>
-<span id="cb4-17"><a href="inclusive-gwas.html#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">10</span>, <span class="at">height =</span> <span class="dv">10</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
-<span id="cb4-18"><a href="inclusive-gwas.html#cb4-18" aria-hidden="true" tabindex="-1"></a>start<span class="ot">=</span><span class="dv">0</span></span>
-<span id="cb4-19"><a href="inclusive-gwas.html#cb4-19" aria-hidden="true" tabindex="-1"></a>end<span class="ot">=</span><span class="fu">max</span>(out<span class="sc">$</span>chisq_ave)</span>
-<span id="cb4-20"><a href="inclusive-gwas.html#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out<span class="sc">$</span>bin_val, out<span class="sc">$</span>chisq_ave,</span>
-<span id="cb4-21"><a href="inclusive-gwas.html#cb4-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;ave r2&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;ave chisq&quot;</span>,</span>
-<span id="cb4-22"><a href="inclusive-gwas.html#cb4-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">ylim=</span><span class="fu">c</span>(start,end),</span>
-<span id="cb4-23"><a href="inclusive-gwas.html#cb4-23" aria-hidden="true" tabindex="-1"></a>         <span class="at">main=</span><span class="st">&quot;&quot;</span>, <span class="at">las=</span><span class="dv">1</span>,</span>
-<span id="cb4-24"><a href="inclusive-gwas.html#cb4-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span><span class="st">&quot;orange&quot;</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
-<span id="cb4-25"><a href="inclusive-gwas.html#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
-<span id="cb4-26"><a href="inclusive-gwas.html#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-27"><a href="inclusive-gwas.html#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># make a plot ------------------------------------------------------------------</span></span>
-<span id="cb4-28"><a href="inclusive-gwas.html#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-29"><a href="inclusive-gwas.html#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
-<span id="cb4-30"><a href="inclusive-gwas.html#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co">#cuts=c(&quot;cut.125&quot;,&quot;cut.25&quot;,&quot;cut.5&quot;)</span></span>
-<span id="cb4-31"><a href="inclusive-gwas.html#cb4-31" aria-hidden="true" tabindex="-1"></a>cuts<span class="ot">=</span><span class="st">&quot;cut.125&quot;</span></span>
-<span id="cb4-32"><a href="inclusive-gwas.html#cb4-32" aria-hidden="true" tabindex="-1"></a>related<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;rel&quot;</span>,<span class="st">&quot;unrel&quot;</span>)</span>
-<span id="cb4-33"><a href="inclusive-gwas.html#cb4-33" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
-<span id="cb4-34"><a href="inclusive-gwas.html#cb4-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
-<span id="cb4-35"><a href="inclusive-gwas.html#cb4-35" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
-<span id="cb4-36"><a href="inclusive-gwas.html#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-37"><a href="inclusive-gwas.html#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(cuts)){</span>
-<span id="cb4-38"><a href="inclusive-gwas.html#cb4-38" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-39"><a href="inclusive-gwas.html#cb4-39" aria-hidden="true" tabindex="-1"></a>  cut<span class="ot">=</span>cuts[j]</span>
-<span id="cb4-40"><a href="inclusive-gwas.html#cb4-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot chisq ~ aver2 by rel for a given cutoff for relatedness</span></span>
-<span id="cb4-41"><a href="inclusive-gwas.html#cb4-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/chisq-by-aver2-bin-related-gwas-&quot;</span>,cut,<span class="st">&quot;.png&quot;</span>),</span>
-<span id="cb4-42"><a href="inclusive-gwas.html#cb4-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">width =</span> <span class="dv">50</span>, <span class="at">height =</span> <span class="dv">30</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
-<span id="cb4-43"><a href="inclusive-gwas.html#cb4-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">5</span>))</span>
-<span id="cb4-44"><a href="inclusive-gwas.html#cb4-44" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
-<span id="cb4-45"><a href="inclusive-gwas.html#cb4-45" aria-hidden="true" tabindex="-1"></a>        trait<span class="ot">=</span>traits[i]</span>
-<span id="cb4-46"><a href="inclusive-gwas.html#cb4-46" aria-hidden="true" tabindex="-1"></a>        <span class="fu">make_plot</span>(trait, cut)</span>
-<span id="cb4-47"><a href="inclusive-gwas.html#cb4-47" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb4-48"><a href="inclusive-gwas.html#cb4-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dev.off</span>()</span>
-<span id="cb4-49"><a href="inclusive-gwas.html#cb4-49" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="inclusive-gwas.html#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb69-2"><a href="inclusive-gwas.html#cb69-2" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="st">&quot;gwas-telomere/telomere.out&quot;</span>, <span class="at">col_names=</span>T)</span>
+<span id="cb69-3"><a href="inclusive-gwas.html#cb69-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-4"><a href="inclusive-gwas.html#cb69-4" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate slope: chisq ~ aver2_j-----------------------------------------------</span></span>
+<span id="cb69-5"><a href="inclusive-gwas.html#cb69-5" aria-hidden="true" tabindex="-1"></a>mod<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> aver2,<span class="at">data=</span>dat)</span>
+<span id="cb69-6"><a href="inclusive-gwas.html#cb69-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span>
+<span id="cb69-7"><a href="inclusive-gwas.html#cb69-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-8"><a href="inclusive-gwas.html#cb69-8" aria-hidden="true" tabindex="-1"></a><span class="co"># make the plot---------------------------------------------------------------</span></span>
+<span id="cb69-9"><a href="inclusive-gwas.html#cb69-9" aria-hidden="true" tabindex="-1"></a><span class="co"># bin a variable by quantile</span></span>
+<span id="cb69-10"><a href="inclusive-gwas.html#cb69-10" aria-hidden="true" tabindex="-1"></a>cutoff<span class="ot">=</span><span class="fu">quantile</span>(dat<span class="sc">$</span>aver2, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.005</span>), <span class="at">na.rm=</span>T)</span>
+<span id="cb69-11"><a href="inclusive-gwas.html#cb69-11" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>bin<span class="ot">=</span><span class="fu">cut</span>(dat<span class="sc">$</span>aver2, <span class="at">breaks=</span>cutoff, <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb69-12"><a href="inclusive-gwas.html#cb69-12" aria-hidden="true" tabindex="-1"></a><span class="co"># average chisq by bin values</span></span>
+<span id="cb69-13"><a href="inclusive-gwas.html#cb69-13" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">chisq_ave=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>chisq,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean))</span>
+<span id="cb69-14"><a href="inclusive-gwas.html#cb69-14" aria-hidden="true" tabindex="-1"></a>out<span class="sc">$</span>bin_val<span class="ot">=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>aver2,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean)</span>
+<span id="cb69-15"><a href="inclusive-gwas.html#cb69-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-16"><a href="inclusive-gwas.html#cb69-16" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="st">&quot;fig/chisq-by-aver2-bin-telomere.png&quot;</span>,</span>
+<span id="cb69-17"><a href="inclusive-gwas.html#cb69-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">10</span>, <span class="at">height =</span> <span class="dv">10</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb69-18"><a href="inclusive-gwas.html#cb69-18" aria-hidden="true" tabindex="-1"></a>start<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb69-19"><a href="inclusive-gwas.html#cb69-19" aria-hidden="true" tabindex="-1"></a>end<span class="ot">=</span><span class="fu">max</span>(out<span class="sc">$</span>chisq_ave)</span>
+<span id="cb69-20"><a href="inclusive-gwas.html#cb69-20" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out<span class="sc">$</span>bin_val, out<span class="sc">$</span>chisq_ave,</span>
+<span id="cb69-21"><a href="inclusive-gwas.html#cb69-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;ave r2&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;ave chisq&quot;</span>,</span>
+<span id="cb69-22"><a href="inclusive-gwas.html#cb69-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">ylim=</span><span class="fu">c</span>(start,end),</span>
+<span id="cb69-23"><a href="inclusive-gwas.html#cb69-23" aria-hidden="true" tabindex="-1"></a>         <span class="at">main=</span><span class="st">&quot;&quot;</span>, <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb69-24"><a href="inclusive-gwas.html#cb69-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span><span class="st">&quot;orange&quot;</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb69-25"><a href="inclusive-gwas.html#cb69-25" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb69-26"><a href="inclusive-gwas.html#cb69-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-27"><a href="inclusive-gwas.html#cb69-27" aria-hidden="true" tabindex="-1"></a><span class="co"># make a plot ------------------------------------------------------------------</span></span>
+<span id="cb69-28"><a href="inclusive-gwas.html#cb69-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-29"><a href="inclusive-gwas.html#cb69-29" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb69-30"><a href="inclusive-gwas.html#cb69-30" aria-hidden="true" tabindex="-1"></a><span class="co">#cuts=c(&quot;cut.125&quot;,&quot;cut.25&quot;,&quot;cut.5&quot;)</span></span>
+<span id="cb69-31"><a href="inclusive-gwas.html#cb69-31" aria-hidden="true" tabindex="-1"></a>cuts<span class="ot">=</span><span class="st">&quot;cut.125&quot;</span></span>
+<span id="cb69-32"><a href="inclusive-gwas.html#cb69-32" aria-hidden="true" tabindex="-1"></a>related<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;rel&quot;</span>,<span class="st">&quot;unrel&quot;</span>)</span>
+<span id="cb69-33"><a href="inclusive-gwas.html#cb69-33" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb69-34"><a href="inclusive-gwas.html#cb69-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb69-35"><a href="inclusive-gwas.html#cb69-35" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb69-36"><a href="inclusive-gwas.html#cb69-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-37"><a href="inclusive-gwas.html#cb69-37" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(cuts)){</span>
+<span id="cb69-38"><a href="inclusive-gwas.html#cb69-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb69-39"><a href="inclusive-gwas.html#cb69-39" aria-hidden="true" tabindex="-1"></a>  cut<span class="ot">=</span>cuts[j]</span>
+<span id="cb69-40"><a href="inclusive-gwas.html#cb69-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot chisq ~ aver2 by rel for a given cutoff for relatedness</span></span>
+<span id="cb69-41"><a href="inclusive-gwas.html#cb69-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/chisq-by-aver2-bin-related-gwas-&quot;</span>,cut,<span class="st">&quot;.png&quot;</span>),</span>
+<span id="cb69-42"><a href="inclusive-gwas.html#cb69-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">width =</span> <span class="dv">50</span>, <span class="at">height =</span> <span class="dv">30</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb69-43"><a href="inclusive-gwas.html#cb69-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">5</span>))</span>
+<span id="cb69-44"><a href="inclusive-gwas.html#cb69-44" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(traits)){</span>
+<span id="cb69-45"><a href="inclusive-gwas.html#cb69-45" aria-hidden="true" tabindex="-1"></a>        trait<span class="ot">=</span>traits[i]</span>
+<span id="cb69-46"><a href="inclusive-gwas.html#cb69-46" aria-hidden="true" tabindex="-1"></a>        <span class="fu">make_plot</span>(trait, cut)</span>
+<span id="cb69-47"><a href="inclusive-gwas.html#cb69-47" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb69-48"><a href="inclusive-gwas.html#cb69-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dev.off</span>()</span>
+<span id="cb69-49"><a href="inclusive-gwas.html#cb69-49" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 </div>
 <div id="notesconcerns" class="section level2" number="10.3">
