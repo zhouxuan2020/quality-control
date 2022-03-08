@@ -151,7 +151,6 @@ write.table(names(use),"phen/covariates.use-names",
 write.table(use,"phen/covariates.use", col.names=F, row.names=F, quote=F)
 ```
 
-
 ## GWAS
 
 ```{bash eval=F}
@@ -265,6 +264,149 @@ done
 #done
 
 ```
+
+## chisq ~ aver2_j
+
+Note we computed aver2_j based using `geno-unrel` data. see \@ref(aver2j).
+Results are stored in `summary/ave-r2-by-snp-goodgwas`
+
+```{bash eval=F}
+
+mkdir unrelated/gwas-good-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+gwas=unrelated/gwas-good/$trait-linear.summaries
+aver2=summary/ave-r2-by-snp-goodgwas
+out=unrelated/gwas-good-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2"}
+             {$1=$1}1' > $out
+done
+
+```
+
+```{r eval=F}
+#::::::::::::::::::::::::::::::::::::::::::::::
+# estimate slope: chisq ~ aver2_j
+#::::::::::::::::::::::::::::::::::::::::::::::
+
+require(vroom)
+
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+
+    trait=traits[i]
+    
+    file=paste0("unrelated/gwas-good-out/",trait,".out")
+    
+    dat=vroom(file, col_names=T, delim=";")
+    mod=lm(chisq ~ aver2,data=dat)
+    
+    slope0=data.frame(trait=trait,
+                      slope_aver2=coef(mod)[2],
+                      p_aver2=summary(mod)$coefficients[,4][2],
+                      stringsAsFactors = F)
+    
+    if(i==1){slope=slope0} else {slope=rbind(slope,slope0)}
+    }
+
+#::::::::::::::::::::::::::::::::::::::::::::::
+# plot chisq ~ aver2_j  
+#::::::::::::::::::::::::::::::::::::::::::::::
+
+# aver2_j bin-------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+        
+png(paste0("fig/chisq-by-aver2-gwas-good-binned.png"),
+      width = 50, height = 30, units = "cm", res=600)
+  par(mfrow=c(3,5))
+
+for (i in 1:length(traits)){
+    trait=traits[i]
+    file=paste0("unrelated/gwas-good-out/",trait,".out")
+    dat=vroom(file, col_names=T, delim=";")
+    # bin a variable by quantile
+    cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+    dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+    # average chisq by bin values
+    out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+    out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+
+plot(out$bin_val, out$chisq_ave,
+         xlab="ave r2", ylab="ave chisq",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
+ }
+dev.off()
+
+# raw aver2_j & chisq-------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+        
+png(paste0("fig/chisq-by-aver2-gwas-good-raw.png"),
+      width = 50, height = 30, units = "cm", res=600)
+  par(mfrow=c(3,5))
+
+for (i in 1:length(traits)){
+    trait=traits[i]
+    file=paste0("unrelated/gwas-good-out/",trait,".out")
+    dat=vroom(file, col_names=T, delim=";")
+    out=dat[complete.cases(dat),]
+    
+plot(out$aver2, out$chisq,
+         xlab="r2", ylab="chisq",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="gray", col="white", lwd=0.5)
+ }
+dev.off()
+
+# plot chisq from good gwas without correcting for PC --------------------------
+# based on gwas-mix-0k-noneuro, maf = 0.01
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+        
+png(paste0("fig/chisq-by-aver2-gwas-mix-0k-noneuro-raw.png"),
+      width = 50, height = 30, units = "cm", res=600)
+  par(mfrow=c(3,5))
+
+for (i in 1:length(traits)){
+    trait=traits[i]
+    file=paste0("gwas-mix-all-out/",trait,"-mix-pop-gwas-0k-noneuro-maf.01.out")
+    dat=vroom(file, col_names=T, delim=";")
+    out=dat[complete.cases(dat),]
+
+plot(out$aver2, out$chisq,
+         xlab="r2", ylab="chisq",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="gray", col="white", lwd=0.5)
+ }
+dev.off()
+
+```
+
+## ldsc interce
 
 ## ldsc intercept
 

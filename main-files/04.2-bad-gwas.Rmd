@@ -406,10 +406,13 @@ paste $file-tmp/name.tmp \
       | awk 'BEGIN{print "ID name state cores time mem"}{print $0}' > $file.out
 rm -r $file-tmp
 
-
 ```
 
 ## GWAS-bolt-lmm
+
+Here we used linear mixed-effects models to test the association between genetic variants and phenotypes. The argument for the use of linear mixed-effects models is that it can account for the confounding effects from population stratification (check the rationale behind BLOT-LMM). Here we check if there is evidence of inflation in the chi-square test statistics from BOLT-LMM.
+
+As shown below, the slopes are sig. different from zero, but they are negative, indicating that chi-square test statistics decreases as aver2_j increases. Based on the plots (chisq ~ aver2_j), it seems that most large signals (i.e., large chisq test statistics) have an aver2_j close to zero, indicating that aver2_j (or fake tagging) does not drive the GWAS signals. However, how aver2_j relates to chisq of bolt-lmm seems different from how aver2_j relates to chisq of good gwas.
 
 ```{bash eval=F}
 
@@ -549,7 +552,7 @@ done
 
 ```
 
-## aver2_j
+## chisq ~ aver2_j
 
 ### calc aver2_j
 
@@ -560,6 +563,7 @@ Results are stored in `summary/ave-r2-by-snp-badgwas`
 
 ```{bash eval=F}
 
+# organize data ----------------------------------------------------------------
 mkdir gwas-bolt-lmm-out
 
 for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
@@ -581,6 +585,92 @@ paste tmp/gwas.tmp \
                   print "snp;chisq;aver2"}
              {$1=$1}1' > $out
 done
+```
+
+```{r eval=F}
+
+#::::::::::::::::::::::::::::::::::::::::::::::
+# estimate slope: chisq ~ aver2_j
+#::::::::::::::::::::::::::::::::::::::::::::::
+require(vroom)
+
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+
+    trait=traits[i]
+    
+    file=paste0("gwas-bolt-lmm-out/",trait,".out")
+    
+    dat=vroom(file, col_names=T, delim=";")
+    mod=lm(chisq ~ aver2,data=dat)
+    
+    slope0=data.frame(trait=trait,
+                      slope_aver2=coef(mod)[2],
+                      p_aver2=summary(mod)$coefficients[,4][2],
+                      stringsAsFactors = F)
+    
+    if(i==1){slope=slope0} else {slope=rbind(slope,slope0)}
+    
+}
+
+#::::::::::::::::::::::::::::::::::::::::::::::
+# plot chisq ~ aver2_j  
+#::::::::::::::::::::::::::::::::::::::::::::::
+
+# aver2_j bin-------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+        
+png(paste0("fig/chisq-by-aver2-bin-gwas-mix-bold-lmm.png"),
+      width = 50, height = 30, units = "cm", res=600)
+  par(mfrow=c(3,5))
+
+for (i in 1:length(traits)){
+    trait=traits[i]
+    file=paste0("gwas-bolt-lmm-out/",trait,".out")
+    dat=vroom(file, col_names=T, delim=";")
+    # bin a variable by quantile
+    cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+    dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+    # average chisq by bin values
+    out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+    out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+
+plot(out$bin_val, out$chisq_ave,
+         xlab="ave r2", ylab="ave chisq",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
+ }
+dev.off()
+
+# raw aver2_j & chisq-------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+        
+png(paste0("fig/chisq-by-aver2-bin-gwas-mix-bold-lmm-raw.png"),
+      width = 50, height = 30, units = "cm", res=600)
+  par(mfrow=c(3,5))
+
+for (i in 1:length(traits)){
+    trait=traits[i]
+    file=paste0("gwas-bolt-lmm-out/",trait,".out")
+    dat=vroom(file, col_names=T, delim=";")
+    out=dat[complete.cases(dat),]
+    
+plot(out$aver2, out$chisq,
+         xlab="r2", ylab="chisq",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="gray", col="white", lwd=0.5)
+ }
+dev.off()
 
 ```
 
@@ -614,6 +704,102 @@ done
 
 ```
 
+```{r eval=F}
+#::::::::::::::::::::::::::::::::::::::::::::::
+# estimate slope: chisq ~ aver2_j
+#::::::::::::::::::::::::::::::::::::::::::::::
+
+require(vroom)
+
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(j in 1:10){
+  
+for(i in 1:length(traits)){
+
+    trait=traits[i]
+    
+    file=paste0("gwas-mix-pc-out/",trait,"-",j,"PC.out")
+    
+    dat=vroom(file, col_names=T, delim=";")
+    mod=lm(chisq ~ aver2,data=dat)
+    
+    slope0=data.frame(trait=trait,
+                      pc_up_to=j,
+                      slope_aver2=coef(mod)[2],
+                      p_aver2=summary(mod)$coefficients[,4][2],
+                      stringsAsFactors = F)
+    
+    if(i==1 & j==1){slope=slope0} else {slope=rbind(slope,slope0)}
+    }
+}
+
+#::::::::::::::::::::::::::::::::::::::::::::::
+# plot chisq ~ aver2_j  
+#::::::::::::::::::::::::::::::::::::::::::::::
+
+# binned data-------------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(j in 1:10){
+  
+png(paste0("fig/chisq-by-aver2-bin-gwas-mix-",j,"PC.png"),
+      width = 50, height = 30, units = "cm", res=600)
+  par(mfrow=c(3,5))
+
+for (i in 1:length(traits)){
+    trait=traits[i]
+    file=paste0("gwas-mix-pc-out/",trait,"-",j,"PC.out")
+    dat=vroom(file, col_names=T, delim=";")
+    # bin a variable by quantile
+    cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+    dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+    # average chisq by bin values
+    out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+    out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+
+plot(out$bin_val, out$chisq_ave,
+         xlab="ave r2", ylab="ave chisq",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
+ }
+dev.off()
+}
+
+# raw data-------------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(j in 1:10){
+  
+png(paste0("fig/chisq-by-aver2-gwas-mix-",j,"PC-raw.png"),
+      width = 50, height = 30, units = "cm", res=600)
+  par(mfrow=c(3,5))
+
+for (i in 1:length(traits)){
+    trait=traits[i]
+    file=paste0("gwas-mix-pc-out/",trait,"-",j,"PC.out")
+    dat=vroom(file, col_names=T, delim=";")
+    out=dat[complete.cases(dat),]
+
+plot(out$aver2, out$chisq,
+         xlab="ave r2", ylab="ave chisq",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
+ }
+dev.off()
+}
+
+```
 
 ## ldsc intercept
 

@@ -167,13 +167,16 @@ awk < gen/bfile-inclusive-gwas.stat '($5>.001 && $6>=0.95 && NR>1){print $1}' > 
 ## gwas-telomere length
 
 ### aver2_j
-Here we want to check if there is evidence of inflation in GWAS statistics due to confouding.
+Here we want to check for evidence of inflation in the telomere GWAS statistics (Codd et al. 2021) due to confouding from population stratification.
+
 Here are the steps:
 
   1. download the GWAS stats (https://figshare.com/s/caa99dc0f76d62990195)
   2. randomly chose 10k SNPs from each side of the genome
-  3. compute aver2_j
-  4. check if chi square test stats vary with respect to aver2_j
+  3. compute aver2_j for the 20k SNPs
+  4. check if the chi square test stats vary with respect to aver2_j.
+
+We show below that the slope of the regression line is not sig. different from zero. Hence, there is no evidence of confounding by the proposed method. It should be noted though that we used the genotype data of n = 487,409 individuals to compute aver2_j, and the original GWAS was based on n = 472,174.
   
 ```{bash eval=F}
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -419,6 +422,7 @@ awk 'BEGIN{print "snp rs chisq aver2"}
 ```
 
 ### chisq ~ aver2_j
+
 ```{r eval=F}
 require(vroom)
 dat=vroom("gwas-telomere/telomere.out", col_names=T)
@@ -427,7 +431,13 @@ dat=vroom("gwas-telomere/telomere.out", col_names=T)
 mod=lm(chisq ~ aver2,data=dat)
 summary(mod)
 
-# make the plot---------------------------------------------------------------
+#Coefficients:
+#              Estimate Std. Error t value Pr(>|t|)    
+#(Intercept)    1.65142    0.09146  18.057   <2e-16 ***
+#aver2       -196.61028  248.64693  -0.791    0.429    
+
+# make the plot: binned aver2_j-------------------------------------------------
+
 # bin a variable by quantile
 cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
 dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
@@ -441,35 +451,24 @@ start=0
 end=max(out$chisq_ave)
 plot(out$bin_val, out$chisq_ave,
          xlab="ave r2", ylab="ave chisq",
-         ylim=c(start,end),
+         ylim=c(start,8),
          main="", las=1,
          cex = 0.8, pch=21,  bg="orange", col="white", lwd=0.5)
 dev.off()
 
-# make a plot ------------------------------------------------------------------
 
-require(vroom)
-#cuts=c("cut.125","cut.25","cut.5")
-cuts="cut.125"
-related=c("rel","unrel")
-traits=c("awake","bmi","chron","ever",
-        "neur","pulse","quals", "fvc", "height","imp", 
-        "reaction","sbp","snoring","hyper")
+# make the plot: raw aver2_j & chisq--------------------------------------------
 
-for(j in 1:length(cuts)){
-  
-  cut=cuts[j]
-  # plot chisq ~ aver2 by rel for a given cutoff for relatedness
-  png(paste0("fig/chisq-by-aver2-bin-related-gwas-",cut,".png"),
-      width = 50, height = 30, units = "cm", res=600)
-  par(mfrow=c(3,5))
-      for(i in 1:length(traits)){
-        trait=traits[i]
-        make_plot(trait, cut)
-      }
-  dev.off()
-}
-
+png("fig/chisq-by-aver2-bin-telomere-raw.png",
+    width = 10, height = 10, units = "cm", res=600)
+start=0
+end=max(dat$chisq)
+plot(dat$aver2, dat$chisq,
+         xlab="ave r2", ylab="chisq",
+         ylim=c(start,400),
+         main="", las=1,
+         cex = 0.8, pch=21,  bg="orange", col="white", lwd=0.5)
+dev.off()
 
 ```
 

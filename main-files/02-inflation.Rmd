@@ -657,6 +657,132 @@ dev.off()
 
 ## regress bad chisq ~ mean r^2_j
 
+THIS IS NEW
+
+```{bash eval=F}
+
+#::::::::::::::::::::::
+# organize data
+#::::::::::::::::::::::
+
+# bad gwas-----------------------------------------------------------------------
+mkdir gwas-mix-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+gwas=gwas-mix/$trait-linear.summaries
+aver2=summary/ave-r2-by-snp-badgwas
+out=gwas-mix-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2"}
+             {$1=$1}1' > $out
+done
+
+# good gwas-----------------------------------------------------------------------
+mkdir unrelated/gwas-good-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+gwas=unrelated/gwas-good/$trait-linear.summaries
+aver2=summary/ave-r2-by-snp-goodgwas
+out=unrelated/gwas-good-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2"}
+             {$1=$1}1' > $out
+done
+
+# ::::::::::::::::::::::::::::::::::::::::::::::
+# estimate slope: bad chisq ~ aver2_j & correct the test statistics
+#::::::::::::::::::::::::::::::::::::::::::::::
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+
+trait=traits[i]
+
+file=paste0("gwas-mix-out/",trait,".out")
+
+dat=vroom(file, col_names=T, delim=";")
+dat=dat[complete.cases(dat),]
+mod=lm(chisq ~ aver2,data=dat)
+
+# correct inflation
+cor=dat$chisq-dat$aver2*coef(mod)[2]
+out=cbind(dat,cor)
+write.table(out,paste0("gwas-mix-out/",trait,"-corrected.out"), col.names=T,
+            row.names=F, quote=F)
+
+# collect slope
+slope0=data.frame(trait=trait,
+                  slope_aver2=coef(mod)[2],
+                  p_aver2=summary(mod)$coefficients[,4][2],
+                  stringsAsFactors = F)
+
+if(i==1){slope=slope0} else {slope=rbind(slope,slope0)}
+
+}
+
+# ::::::::::::::::::::::::::::::::::::::::::::::
+# corrected chisq VS good chisq vs. control chisq
+#::::::::::::::::::::::::::::::::::::::::::::::
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/good-vs-corrected-chisq.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), pty="s")
+for(i in 1:length(traits)){
+trait=traits[i]
+good=vroom(paste0("unrelated/gwas-good-out/",trait,".out"), col_names=T)
+good=good[complete.cases(good),]
+cor=vroom(paste0("gwas-mix-out/",trait,"-corrected.out"), col_names=T)
+m=match(good$snp, cor$snp)
+dat=data.frame(snp=good$snp,
+               good=good$chisq,
+               cor=cor$cor[m])
+               
+start=min(dat$good,dat$cor)
+end=max(dat$good,dat$cor)
+
+plot(dat$good, dat$cor,
+     xlim=c(start,end), ylim=c(start, end),
+     xlab="good chisq", ylab="corrected chisq", 
+     main=trait, las=1,
+     cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(0, 1, col="darkgray", lwd=1.5, lty=1)
+
+}
+dev.off()
+
+
+```
+
+
+Below is the OLD cod.
 ```{r eval=F}
 
 #::::::::

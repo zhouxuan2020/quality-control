@@ -295,7 +295,8 @@ dev.off()
 
 ## compute aver2_j {#aver2j}
 
-1. compute average r2 for each i.
+1. compute aver2_j.
+
 ```{r eval=F}
 
 #:::

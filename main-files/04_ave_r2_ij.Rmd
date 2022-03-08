@@ -1661,7 +1661,6 @@ for(j in 1:length(n_noneuro)){
 
 
 
-
 We can now report average inflation of test statistics (mean(r2j) x n x h2, which is upper bounded by mean(r2j) x n), AND we can report estimated per-SNP inflation of test statistics (r2j x n x j2)
 
 Eg., we can say that if you use UKBB recommended samples, with MAF>.01, the average inflation will be less than 0.5 units, while the maximum inflation will be less than 1 unit.
