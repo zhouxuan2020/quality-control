@@ -51,10 +51,6 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
-<script src="libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
-<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
-<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
@@ -196,7 +192,24 @@ div.csl-indent {
 <li class="chapter" data-level="3.3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#ld-scores-based-on-individual-level-data"><i class="fa fa-check"></i><b>3.3</b> LD scores based on individual level data</a></li>
 <li class="chapter" data-level="3.4" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-the-new-model"><i class="fa fa-check"></i><b>3.4</b> Test the new model</a></li>
 <li class="chapter" data-level="3.5" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#predictors-of-inflation"><i class="fa fa-check"></i><b>3.5</b> predictors of inflation?</a></li>
-<li class="chapter" data-level="3.6" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#regress-bad-chisq-mean-r2_j"><i class="fa fa-check"></i><b>3.6</b> regress bad chisq ~ mean r^2_j</a></li>
+<li class="chapter" data-level="3.6" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#regress-chisq-mean-r2_j"><i class="fa fa-check"></i><b>3.6</b> regress chisq ~ mean r^2_j</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#plots"><i class="fa fa-check"></i><b>3.6.1</b> plots</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#predict-inflation-aver2_j"><i class="fa fa-check"></i><b>3.7</b> predict inflation | aver2_j ?</a>
+<ul>
+<li class="chapter" data-level="3.7.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#good_chisq-vs.-adj_chisq"><i class="fa fa-check"></i><b>3.7.1</b> good_chisq vs. adj_chisq</a></li>
+<li class="chapter" data-level="3.7.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#bad-gwas-inf.-vs.-inf._hat-raw"><i class="fa fa-check"></i><b>3.7.2</b> bad gwas: inf. vs. inf._hat: raw</a></li>
+<li class="chapter" data-level="3.7.3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#bad-gwas-inf.-vs.-inf._hat-ave"><i class="fa fa-check"></i><b>3.7.3</b> bad gwas: inf. vs. inf._hat: ave</a></li>
+<li class="chapter" data-level="3.7.4" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#bad-gwas-inf.-from-full-model"><i class="fa fa-check"></i><b>3.7.4</b> bad gwas: inf. from full model</a></li>
+<li class="chapter" data-level="3.7.5" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#good-gwas-inf.-vs.-inf._hat-raw"><i class="fa fa-check"></i><b>3.7.5</b> good gwas: inf. vs. inf._hat: raw</a></li>
+<li class="chapter" data-level="3.7.6" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#good-gwas-inf.-vs.-inf._hat-ave"><i class="fa fa-check"></i><b>3.7.6</b> good gwas: inf. vs. inf._hat: ave</a></li>
+</ul></li>
+<li class="chapter" data-level="3.8" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#ukbb_337k_inflation"><i class="fa fa-check"></i><b>3.8</b> UKBB N = 337k</a>
+<ul>
+<li class="chapter" data-level="3.8.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#organize-data"><i class="fa fa-check"></i><b>3.8.1</b> organize data</a></li>
+<li class="chapter" data-level="3.8.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#plot"><i class="fa fa-check"></i><b>3.8.2</b> plot</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="mathematical-details.html"><a href="mathematical-details.html"><i class="fa fa-check"></i><b>4</b> Mathematical Details</a>
 <ul>
@@ -210,6 +223,7 @@ div.csl-indent {
 <li class="chapter" data-level="5.1.1" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#number-of-snps"><i class="fa fa-check"></i><b>5.1.1</b> number of SNPs</a></li>
 <li class="chapter" data-level="5.1.2" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#maf"><i class="fa fa-check"></i><b>5.1.2</b> maf</a></li>
 <li class="chapter" data-level="5.1.3" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#summary"><i class="fa fa-check"></i><b>5.1.3</b> summary</a></li>
+<li class="chapter" data-level="5.1.4" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#final-plots"><i class="fa fa-check"></i><b>5.1.4</b> Final plots</a></li>
 </ul></li>
 <li class="chapter" data-level="5.2" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#varying-levels-of-confouding"><i class="fa fa-check"></i><b>5.2</b> varying levels of confouding</a></li>
 <li class="chapter" data-level="5.3" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#results-summary"><i class="fa fa-check"></i><b>5.3</b> results summary</a></li>
@@ -293,7 +307,7 @@ div.csl-indent {
 <li class="chapter" data-level="8.7" data-path="ukbb.html"><a href="ukbb.html#aver2_j-337k"><i class="fa fa-check"></i><b>8.7</b> aver2_j-337k</a>
 <ul>
 <li class="chapter" data-level="8.7.1" data-path="ukbb.html"><a href="ukbb.html#calc"><i class="fa fa-check"></i><b>8.7.1</b> calc</a></li>
-<li class="chapter" data-level="8.7.2" data-path="ukbb.html"><a href="ukbb.html#organize-data"><i class="fa fa-check"></i><b>8.7.2</b> organize data</a></li>
+<li class="chapter" data-level="8.7.2" data-path="ukbb.html"><a href="ukbb.html#organize-data-1"><i class="fa fa-check"></i><b>8.7.2</b> organize data</a></li>
 <li class="chapter" data-level="8.7.3" data-path="ukbb.html"><a href="ukbb.html#chisq-aver2_j-2"><i class="fa fa-check"></i><b>8.7.3</b> chisq ~ aver2_j</a></li>
 </ul></li>
 <li class="chapter" data-level="8.8" data-path="ukbb.html"><a href="ukbb.html#he-2"><i class="fa fa-check"></i><b>8.8</b> HE</a>
@@ -327,47 +341,80 @@ div.csl-indent {
 <li class="chapter" data-level="10.2" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#gwas-telomere-length"><i class="fa fa-check"></i><b>10.2</b> gwas-telomere length</a>
 <ul>
 <li class="chapter" data-level="10.2.1" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#aver2_j"><i class="fa fa-check"></i><b>10.2.1</b> aver2_j</a></li>
-<li class="chapter" data-level="10.2.2" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#organize-data-1"><i class="fa fa-check"></i><b>10.2.2</b> organize data</a></li>
+<li class="chapter" data-level="10.2.2" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#organize-data-2"><i class="fa fa-check"></i><b>10.2.2</b> organize data</a></li>
 <li class="chapter" data-level="10.2.3" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#chisq-aver2_j-3"><i class="fa fa-check"></i><b>10.2.3</b> chisq ~ aver2_j</a></li>
 </ul></li>
 <li class="chapter" data-level="10.3" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#notesconcerns"><i class="fa fa-check"></i><b>10.3</b> notes/concerns</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="related-individuals.html"><a href="related-individuals.html"><i class="fa fa-check"></i><b>11</b> related individuals</a>
+<li class="chapter" data-level="11" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html"><i class="fa fa-check"></i><b>11</b> GWAS: White British + Irish</a>
 <ul>
-<li class="chapter" data-level="11.1" data-path="related-individuals.html"><a href="related-individuals.html#genotyped-snps"><i class="fa fa-check"></i><b>11.1</b> genotyped SNPs</a>
+<li class="chapter" data-level="11.1" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#id-list-1"><i class="fa fa-check"></i><b>11.1</b> ID list</a>
 <ul>
-<li class="chapter" data-level="11.1.1" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-1"><i class="fa fa-check"></i><b>11.1.1</b> aver2_j</a></li>
-<li class="chapter" data-level="11.1.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-2"><i class="fa fa-check"></i><b>11.1.2</b> gwas</a></li>
-<li class="chapter" data-level="11.1.3" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-2"><i class="fa fa-check"></i><b>11.1.3</b> organize data</a></li>
-<li class="chapter" data-level="11.1.4" data-path="related-individuals.html"><a href="related-individuals.html#summary-9"><i class="fa fa-check"></i><b>11.1.4</b> summary</a></li>
+<li class="chapter" data-level="11.1.1" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#ids-who-have-no-missing-data"><i class="fa fa-check"></i><b>11.1.1</b> Ids who have no missing data</a></li>
+<li class="chapter" data-level="11.1.2" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#relatedness-filtering-1"><i class="fa fa-check"></i><b>11.1.2</b> relatedness filtering</a></li>
 </ul></li>
-<li class="chapter" data-level="11.2" data-path="related-individuals.html"><a href="related-individuals.html#hapmap3-snps"><i class="fa fa-check"></i><b>11.2</b> hapmap3 SNPs</a>
-<ul>
-<li class="chapter" data-level="11.2.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype-data"><i class="fa fa-check"></i><b>11.2.1</b> genotype data</a></li>
-<li class="chapter" data-level="11.2.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-3"><i class="fa fa-check"></i><b>11.2.2</b> gwas</a></li>
-<li class="chapter" data-level="11.2.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-2"><i class="fa fa-check"></i><b>11.2.3</b> aver2_j</a></li>
-<li class="chapter" data-level="11.2.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-3"><i class="fa fa-check"></i><b>11.2.4</b> organize data</a></li>
-<li class="chapter" data-level="11.2.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-4"><i class="fa fa-check"></i><b>11.2.5</b> chisq ~ aver2_j</a></li>
-<li class="chapter" data-level="11.2.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j"><i class="fa fa-check"></i><b>11.2.6</b> inflation ~ aver2_j</a></li>
+<li class="chapter" data-level="11.2" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#ideas-to-explore"><i class="fa fa-check"></i><b>11.2</b> Ideas to explore:</a></li>
 </ul></li>
-<li class="chapter" data-level="11.3" data-path="related-individuals.html"><a href="related-individuals.html#mix-unrel-rel"><i class="fa fa-check"></i><b>11.3</b> mix unrel &amp; rel</a>
+<li class="chapter" data-level="12" data-path="related-individuals.html"><a href="related-individuals.html"><i class="fa fa-check"></i><b>12</b> related individuals</a>
 <ul>
-<li class="chapter" data-level="11.3.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype"><i class="fa fa-check"></i><b>11.3.1</b> genotype</a></li>
-<li class="chapter" data-level="11.3.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-4"><i class="fa fa-check"></i><b>11.3.2</b> gwas</a></li>
-<li class="chapter" data-level="11.3.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-3"><i class="fa fa-check"></i><b>11.3.3</b> aver2_j</a></li>
-<li class="chapter" data-level="11.3.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-4"><i class="fa fa-check"></i><b>11.3.4</b> organize data</a></li>
-<li class="chapter" data-level="11.3.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-5"><i class="fa fa-check"></i><b>11.3.5</b> chisq ~ aver2_j</a></li>
-<li class="chapter" data-level="11.3.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j-1"><i class="fa fa-check"></i><b>11.3.6</b> inflation ~ aver2_j</a></li>
+<li class="chapter" data-level="12.1" data-path="related-individuals.html"><a href="related-individuals.html#genotyped-snps"><i class="fa fa-check"></i><b>12.1</b> genotyped SNPs</a>
+<ul>
+<li class="chapter" data-level="12.1.1" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-1"><i class="fa fa-check"></i><b>12.1.1</b> aver2_j</a></li>
+<li class="chapter" data-level="12.1.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-2"><i class="fa fa-check"></i><b>12.1.2</b> gwas</a></li>
+<li class="chapter" data-level="12.1.3" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-3"><i class="fa fa-check"></i><b>12.1.3</b> organize data</a></li>
+<li class="chapter" data-level="12.1.4" data-path="related-individuals.html"><a href="related-individuals.html#summary-9"><i class="fa fa-check"></i><b>12.1.4</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="related-individuals.html"><a href="related-individuals.html#hapmap3-snps"><i class="fa fa-check"></i><b>12.2</b> hapmap3 SNPs</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype-data"><i class="fa fa-check"></i><b>12.2.1</b> genotype data</a></li>
+<li class="chapter" data-level="12.2.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-3"><i class="fa fa-check"></i><b>12.2.2</b> gwas</a></li>
+<li class="chapter" data-level="12.2.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-2"><i class="fa fa-check"></i><b>12.2.3</b> aver2_j</a></li>
+<li class="chapter" data-level="12.2.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-4"><i class="fa fa-check"></i><b>12.2.4</b> organize data</a></li>
+<li class="chapter" data-level="12.2.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-4"><i class="fa fa-check"></i><b>12.2.5</b> chisq ~ aver2_j</a></li>
+<li class="chapter" data-level="12.2.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j"><i class="fa fa-check"></i><b>12.2.6</b> inflation ~ aver2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="related-individuals.html"><a href="related-individuals.html#mix-unrel-rel"><i class="fa fa-check"></i><b>12.3</b> mix unrel &amp; rel</a>
+<ul>
+<li class="chapter" data-level="12.3.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype"><i class="fa fa-check"></i><b>12.3.1</b> genotype</a></li>
+<li class="chapter" data-level="12.3.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-4"><i class="fa fa-check"></i><b>12.3.2</b> gwas</a></li>
+<li class="chapter" data-level="12.3.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-3"><i class="fa fa-check"></i><b>12.3.3</b> aver2_j</a></li>
+<li class="chapter" data-level="12.3.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-5"><i class="fa fa-check"></i><b>12.3.4</b> organize data</a></li>
+<li class="chapter" data-level="12.3.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-5"><i class="fa fa-check"></i><b>12.3.5</b> chisq ~ aver2_j</a></li>
+<li class="chapter" data-level="12.3.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j-1"><i class="fa fa-check"></i><b>12.3.6</b> inflation ~ aver2_j</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html"><i class="fa fa-check"></i><b>12</b> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></a>
+<li class="chapter" data-level="13" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html"><i class="fa fa-check"></i><b>13</b> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwas-all-qced-snps"><i class="fa fa-check"></i><b>12.1</b> good GWAS-all qced snps</a></li>
-<li class="chapter" data-level="12.2" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwass--ldak-thin-snps"><i class="fa fa-check"></i><b>12.2</b> good GWASs- ldak-thin snps</a></li>
-<li class="chapter" data-level="12.3" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#bad-gwass-all-qced-snps"><i class="fa fa-check"></i><b>12.3</b> bad GWASs-all qced snps</a></li>
-<li class="chapter" data-level="12.4" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#summary-10"><i class="fa fa-check"></i><b>12.4</b> summary</a></li>
-<li class="chapter" data-level="12.5" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#aver2j"><i class="fa fa-check"></i><b>12.5</b> compute aver2_j</a></li>
-<li class="chapter" data-level="12.6" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#mixed-pop-gwas-with-pc-as-covariates"><i class="fa fa-check"></i><b>12.6</b> mixed pop GWAS with PC as covariates</a></li>
+<li class="chapter" data-level="13.1" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwas-all-qced-snps"><i class="fa fa-check"></i><b>13.1</b> good GWAS-all qced snps</a></li>
+<li class="chapter" data-level="13.2" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwass--ldak-thin-snps"><i class="fa fa-check"></i><b>13.2</b> good GWASs- ldak-thin snps</a></li>
+<li class="chapter" data-level="13.3" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#bad-gwass-all-qced-snps"><i class="fa fa-check"></i><b>13.3</b> bad GWASs-all qced snps</a></li>
+<li class="chapter" data-level="13.4" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#summary-10"><i class="fa fa-check"></i><b>13.4</b> summary</a></li>
+<li class="chapter" data-level="13.5" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#aver2j"><i class="fa fa-check"></i><b>13.5</b> compute aver2_j</a></li>
+<li class="chapter" data-level="13.6" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#mixed-pop-gwas-with-pc-as-covariates"><i class="fa fa-check"></i><b>13.6</b> mixed pop GWAS with PC as covariates</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="assortative-mating.html"><a href="assortative-mating.html"><i class="fa fa-check"></i><b>14</b> Assortative mating</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="assortative-mating.html"><a href="assortative-mating.html#test-the-idea"><i class="fa fa-check"></i><b>14.1</b> Test the idea</a>
+<ul>
+<li class="chapter" data-level="14.1.1" data-path="assortative-mating.html"><a href="assortative-mating.html#st-try"><i class="fa fa-check"></i><b>14.1.1</b> 1st try</a></li>
+<li class="chapter" data-level="14.1.2" data-path="assortative-mating.html"><a href="assortative-mating.html#nd-try"><i class="fa fa-check"></i><b>14.1.2</b> 2nd try</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html"><i class="fa fa-check"></i><b>15</b> Reference Panel: 1k Genome</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#common-snplist"><i class="fa fa-check"></i><b>15.1</b> common snplist</a></li>
+<li class="chapter" data-level="15.2" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#compute-aver2"><i class="fa fa-check"></i><b>15.2</b> compute aver2</a>
+<ul>
+<li class="chapter" data-level="15.2.1" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#bad-gwas-1"><i class="fa fa-check"></i><b>15.2.1</b> bad gwas</a></li>
+<li class="chapter" data-level="15.2.2" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#varying-levels-of-confounding"><i class="fa fa-check"></i><b>15.2.2</b> varying levels of confounding</a></li>
+<li class="chapter" data-level="15.2.3" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#good-gwas-1"><i class="fa fa-check"></i><b>15.2.3</b> good gwas</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#results"><i class="fa fa-check"></i><b>15.3</b> results</a>
+<ul>
+<li class="chapter" data-level="15.3.1" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#bad-gwas-2"><i class="fa fa-check"></i><b>15.3.1</b> bad gwas</a></li>
+<li class="chapter" data-level="15.3.2" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#varying-levels-of-confounding-1"><i class="fa fa-check"></i><b>15.3.2</b> varying levels of confounding</a></li>
+<li class="chapter" data-level="15.3.3" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#good-gwas-2"><i class="fa fa-check"></i><b>15.3.3</b> good gwas</a></li>
+</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -392,21 +439,21 @@ div.csl-indent {
 <div id="header">
 <h1 class="title">GWAS Quality Control</h1>
 <p class="author"><em></em></p>
-<p class="date"><em>updated on 2022-03-08</em></p>
+<p class="date"><em>updated on 2022-04-09</em></p>
 </div>
 <div id="general-info" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> General Info</h1>
 <div id="topic" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Topic</h2>
-<p>We propose a new method to detect the inflation of GWAS test statistics caused by population stratification (&amp; cryptic relatedness). Here we document all analyses and results.</p>
-<p><strong>Background</strong>:</p>
+<p>We propose a new method to detect the inflation of GWAS test statistics caused by population stratification. Here we document all analyses and results.</p>
+<p><strong>Rationale</strong>:</p>
 <ol style="list-style-type: decimal">
-<li>Existing methods: use summary statistics to detect and correct inflation in GWAS test statistics.</li>
+<li>Existing methods: use summary statistics to detect and estimate inflation in GWAS test statistics.</li>
 </ol>
 <ul>
 <li>genomic inflation factor:
 <ul>
-<li><span class="math inline">\(S_{median}\)</span>/<span class="math inline">\(\chi^2 (1)_{median}\)</span> &gt; 1 ?</li>
+<li><span class="math inline">\(\lambda = S_{median}\)</span>/<span class="math inline">\(\chi^2 (1)_{median}\)</span> &gt; 1 ?</li>
 <li>does not account for inflation due to polygenicity</li>
 </ul></li>
 <li>LD score regression <span class="citation">(<a href="#ref-bulik2015ld" role="doc-biblioref">Bulik-Sullivan et al., 2015</a>)</span> (LDSC):
@@ -421,22 +468,242 @@ div.csl-indent {
 </ul></li>
 </ul>
 <ol start="2" style="list-style-type: decimal">
-<li>Proposed method: use individual level data to detect inflation and maybe extended to summary statistics (?).</li>
+<li>limitations: LDSC as a means of detecting confounding influence from population stratification has three major limitations [the usefulness of LDSC is compromised by a number of factors; the usefulness of the LDSC intercept is limited in a number of ways].</li>
 </ol>
 <ul>
-<li><span class="math inline">\(T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} &gt; 0\)</span> ?</li>
-<li>Confounding causes cross-chromosome correlations, such that each part of the genome tags each other. Hence, for confounded GWASs, <span class="math inline">\(T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} &gt; 0\)</span>.</li>
-<li>when <span class="math inline">\(h_{right}^2, h_{left}^2, h_{whole}^2\)</span> are estimated using Haseman Elston regression, this test amounts to testing <span class="math inline">\(tr(K_{left}K_{right}) = 0\)</span> or average SNP correlation^2 (between left and right) = 0.</li>
-<li>Challenge: We do not know the distribution of <span class="math inline">\(T\)</span> under the null (i.e., no confounding). Consequently, the test is an approximate test. We hope to get an exact test. Also we want to simplify the test by directly testing if <span class="math inline">\(tr(K_{left}K_{right}) = 0\)</span> or average SNP correlation^2 (between left and right) = 0. Still we need to work out the distribution of average SNP correlation^2 (between left and right) under the null (i.e., no association).</li>
+<li>[inflation estimates vary depending on heritability model, and it is hard to know which heritability model is true] The model varies depending on the choice of heritability model. ldak vs. gcta [tagging depends on heritability model]. gcta vs. ldak-thin: inflation is reduced under ldak-thin.</li>
+</ul>
+<p>When ldsc <strong>fails</strong>:
+* Hard to interpret in practice: An inflation indicated by ldsc can be evident in the absence of confounding, when the sample size and/or heritability of the trait is sufficiently large. For example, for height (h2=x), with a sample size of xx, the inflation is xx (Loh et al., 2018). To facilitate the interpretation, how much the ldsc intercept deviates from 1 has been expressed relative to the overall deviation of chi-square from 1, with this ratio close to 0 being interpreted as being less subjective to the confounding (see xx for more examples). As such, whether a GWAS is confounded has became a matter of the judgement by the investigators [subject to the judgement of the investigators]. An objective measure of confounding [well calibrated measure] is much needed.</p>
+<ul>
+<li>ldsc assumes the inflation due to confounding is constant across SNPs. However, there are reasons to believe the otherwise.</li>
+</ul>
+<p>Populations of different ancestries differ in minor allele frequency. Mixing their genotype data can generate spurious correlations between SNPs. This creates a spurious LD structure that enables otherwise independent SNPs tag each other, causing inflation in test statistics. The stronger the fake tagging, the larger the inflation. Thus, how much a test statistics inflates would depend on how much the SNP tags confounding SNPs. [This is exactly what we observed. <strong>show a plot of aver_2 ~ average chisq</strong> ]. We exploit this relationship [the relationship between fake tagging &amp; chisq] to detect population stratification.</p>
+<ul>
+<li>New test: regress chisq on aver2_j
+chisq = b0 + aver2_j * b1 + e</li>
+</ul>
+<p>Under H0 (i.e., no inflation due to confounding), beta1 = 0 -&gt; evidence of no confounding
+Under H1 (i.e., ), beta1 &gt; 0 -&gt; evidence of confounding.</p>
+<p>Here we use aver2_j to index/measure the extent of fake tagging of a snp [created by mixing populations of different ancestries];</p>
+<p>[Talk about results:
+bad gwas: can detect confounding when there is;
+good gwas, PC corrected gwas &amp; bolt-lmm gwas: can declare no confounding there is no.
+However, although conceptually better than ldsc; it does not seem to add much to ldsc.
+ukbb recommended gwas (330k; even when the sample size is high): inflation does not depend on sample size as ldsc [This is where the ldsc fails: it declares inflation when there is no].</p>
+<p>Once we [Upon] establish the test as a valid test for confounding, we conducted sensitivity analyses: aver2_j is not fixed; but a random variable, vary depending on the snp list used for calculation. Do aver2_j align based on different snp lists? Does it depend on the number of SNPs? Does it depend on minor allele frequency.<br />
+[Benchmark against ldsc]
+Compared to LDSC intercept. our method 1) makes no assumption about heritability model. 2) does not assume constant inflation due to confounding. We show that the proposed test can do what ldsc does and also well when ldsc fails. However, to compute aver2_j, individual level genotype data are required. But ldsc only needs reference data to compute LD scores.</p>
+<p>** mixing populations –?–&gt; generates spurious correlations between distant SNPs (cross ) -&gt; SNPs not only tag neighbouring SNPs but also SNPs in other chromosomes. That is, a new LD structure or ‘fake tagging’ arises -&gt; inflation in test statistics. Thus, inflation depends on the extent of the tagging &amp; may vary across SNPs. Therefore, inflation may not be a constant as assumed by LDSC.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>){</span>
+<span id="cb1-2"><a href="index.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pop1</span></span>
+<span id="cb1-3"><a href="index.html#cb1-3" aria-hidden="true" tabindex="-1"></a>x1<span class="ot">=</span><span class="fu">rbinom</span>(<span class="dv">1000</span>,<span class="dv">2</span>,<span class="fl">0.1</span>)</span>
+<span id="cb1-4"><a href="index.html#cb1-4" aria-hidden="true" tabindex="-1"></a>y1<span class="ot">=</span><span class="fu">rbinom</span>(<span class="dv">1000</span>,<span class="dv">2</span>,<span class="fl">0.1</span>)</span>
+<span id="cb1-5"><a href="index.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># pop2</span></span>
+<span id="cb1-6"><a href="index.html#cb1-6" aria-hidden="true" tabindex="-1"></a>x2<span class="ot">=</span><span class="fu">rbinom</span>(<span class="dv">500</span>,<span class="dv">2</span>,<span class="fl">0.3</span>)</span>
+<span id="cb1-7"><a href="index.html#cb1-7" aria-hidden="true" tabindex="-1"></a>y2<span class="ot">=</span><span class="fu">rbinom</span>(<span class="dv">500</span>,<span class="dv">2</span>,<span class="fl">0.3</span>)</span>
+<span id="cb1-8"><a href="index.html#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># mix pop1 &amp; pop2</span></span>
+<span id="cb1-9"><a href="index.html#cb1-9" aria-hidden="true" tabindex="-1"></a>x<span class="ot">=</span><span class="fu">c</span>(x1,x2)</span>
+<span id="cb1-10"><a href="index.html#cb1-10" aria-hidden="true" tabindex="-1"></a>y<span class="ot">=</span><span class="fu">c</span>(y1,y2)</span>
+<span id="cb1-11"><a href="index.html#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># correlations</span></span>
+<span id="cb1-12"><a href="index.html#cb1-12" aria-hidden="true" tabindex="-1"></a>out0<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">cor1=</span><span class="fu">cor</span>(x1,y1), <span class="at">cor2=</span><span class="fu">cor</span>(x2,y2), <span class="at">cor3=</span><span class="fu">cor</span>(x,y))</span>
+<span id="cb1-13"><a href="index.html#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(i<span class="sc">==</span><span class="dv">1</span>){out1<span class="ot">=</span>out0} <span class="cf">else</span>{out1<span class="ot">=</span><span class="fu">rbind</span>(out1,out0)}</span>
+<span id="cb1-14"><a href="index.html#cb1-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-15"><a href="index.html#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="index.html#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># plot histgram </span></span>
+<span id="cb1-17"><a href="index.html#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="fu">paste0</span>(<span class="st">&quot;fig/mix-pop-generates-suprious-cor.png&quot;</span>),</span>
+<span id="cb1-18"><a href="index.html#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">30</span>, <span class="at">height =</span> <span class="dv">10</span>, <span class="at">units =</span> <span class="st">&quot;cm&quot;</span>, <span class="at">res=</span><span class="dv">600</span>)</span>
+<span id="cb1-19"><a href="index.html#cb1-19" aria-hidden="true" tabindex="-1"></a>nm<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;pop1&quot;</span>, <span class="st">&quot;pop2&quot;</span>, <span class="st">&quot;pop1+pop2&quot;</span>)</span>
+<span id="cb1-20"><a href="index.html#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>), <span class="at">pty=</span><span class="st">&quot;s&quot;</span>)</span>
+<span id="cb1-21"><a href="index.html#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="index.html#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>){</span>
+<span id="cb1-23"><a href="index.html#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(i<span class="sc">&lt;</span><span class="dv">3</span>){</span>
+<span id="cb1-24"><a href="index.html#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hist</span>(out1[,i], <span class="at">breaks=</span><span class="dv">20</span>,</span>
+<span id="cb1-25"><a href="index.html#cb1-25" aria-hidden="true" tabindex="-1"></a>     <span class="at">border=</span>F, <span class="at">col=</span><span class="st">&quot;lightgray&quot;</span>,</span>
+<span id="cb1-26"><a href="index.html#cb1-26" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span>nm[i], <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb1-27"><a href="index.html#cb1-27" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;cor(x,y)&quot;</span>)}</span>
+<span id="cb1-28"><a href="index.html#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="index.html#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(i<span class="sc">==</span><span class="dv">3</span>){</span>
+<span id="cb1-30"><a href="index.html#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hist</span>(out1[,i], <span class="at">breaks=</span><span class="dv">20</span>,</span>
+<span id="cb1-31"><a href="index.html#cb1-31" aria-hidden="true" tabindex="-1"></a>     <span class="at">border=</span>F, <span class="at">col=</span><span class="st">&quot;lightgray&quot;</span>,</span>
+<span id="cb1-32"><a href="index.html#cb1-32" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span>nm[i], <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb1-33"><a href="index.html#cb1-33" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;cor(x,y)&quot;</span>, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.05</span>, <span class="fl">0.2</span>))</span>
+<span id="cb1-34"><a href="index.html#cb1-34" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-35"><a href="index.html#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">0</span>, <span class="at">col=</span><span class="st">&quot;orange&quot;</span>, <span class="at">lwd=</span><span class="fl">1.5</span>, <span class="at">lty=</span><span class="dv">3</span>)</span>
+<span id="cb1-36"><a href="index.html#cb1-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-37"><a href="index.html#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<p>OTHER THOUGHTS: The new LD structure could tag genuine (distant) SNP effects on the phenotypes or could tag spurious SNP effects on phenotypes. We show that after removing the effects of population stratification (i.e., including PCs as covariates), despite the presence of the LD structure (since the genetic data were not changed at all), aver2_j no longer explains variation in GWAS test statistics. Hence, the LD structure induced by population stratification largely tags the spurious SNP effects on phenotypes, not genuine SNP effects on phenotypes.</p>
+<p>WHAT HAPPENS if we use this GWAS model: y ~ snp_j + aver2_j ?? We observed that aver2_j tags the effects of population stratification and some other unknown latent structures of genetic data. If two SNPs are completely random, then it would be zero. MAY be read this paper in detail: Apparent latent structure within the UK Biobank sample has implications for epidemiological analysis.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Proposed method: use individual level data to detect inflation and maybe extended to summary statistics (?)</li>
+</ol>
+<ul>
+<li><p>we want a method 1) that is independent of heritability model; 2) does not assume a constant inflation.</p></li>
+<li><p><span class="math inline">\(T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} &gt; 0\)</span> ?</p></li>
+<li><p>Confounding causes cross-chromosome correlations, such that each part of the genome tags each other. Hence, for confounded GWASs, <span class="math inline">\(T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} &gt; 0\)</span>.</p></li>
+<li><p>when <span class="math inline">\(h_{right}^2, h_{left}^2, h_{whole}^2\)</span> are estimated using Haseman Elston regression, this test amounts to testing <span class="math inline">\(tr(K_{left}K_{right}) = 0\)</span> or average SNP correlation^2 (between left and right) = 0.</p></li>
+<li><p>Challenge: We do not know the distribution of <span class="math inline">\(T\)</span> under the null (i.e., no confounding). Consequently, the test is an approximate test. We hope to get an exact test. Also we want to simplify the test by directly testing if <span class="math inline">\(tr(K_{left}K_{right}) = 0\)</span> or average SNP correlation^2 (between left and right) = 0. Still we need to work out the distribution of average SNP correlation^2 (between left and right) under the null (i.e., no association).</p></li>
 </ul>
 <p><strong>Design</strong>:</p>
 <ul>
-<li>good GWASs: 100k unrelated white British</li>
-<li>bad or confounded GWASs: 93k unrelated white British + 7k blacks &amp; Asians</li>
-<li>control GWASs: 93k unrelated white British + 7k unrelated white British (who are not included in the good GWASs)</li>
-<li>We also checked if confouding is evident for the UKBB recommended white British (a randomly selection of 100k out of 337k), on which most UKBB GWASs are based.</li>
+<li><p>good GWASs: 100k unrelated white British.</p></li>
+<li><p>bad or confounded GWASs: 93k unrelated white British + 7k blacks &amp; Asians</p></li>
+<li><p>varying levels of confounding: 0 - 6k blacks and Asians.</p></li>
+<li><p>control GWASs: 93k unrelated white British + 7k unrelated white British (who are not included in the good GWASs)</p></li>
+<li><p>We also checked if confounding due to population stratification is evident for the UKBB recommended white British (a randomly selection of 100k out of 337k), on which most UKBB GWASs are based.</p></li>
+<li><p>we also checked: 1. how well the current methods handle the inflation: bolt-lmm &amp; including pc as covariates; 2. Is it OK to use the recommended 337k ukbb individuals for GWAS? Is there any evidence of inflation in GWAS stats?</p></li>
 </ul>
 <p><strong>Results</strong>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="index.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># using BMI for illustration: badgwas chisq; goodgwas chisq ~ aver^2</span></span>
+<span id="cb2-2"><a href="index.html#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="index.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb2-4"><a href="index.html#cb2-4" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb2-5"><a href="index.html#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb2-6"><a href="index.html#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb2-7"><a href="index.html#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="index.html#cb2-8" aria-hidden="true" tabindex="-1"></a>trait<span class="ot">=</span>traits[<span class="dv">2</span>]</span>
+<span id="cb2-9"><a href="index.html#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="index.html#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># bad gwas without binning aver2 -----------------------------------------------</span></span>
+<span id="cb2-11"><a href="index.html#cb2-11" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;gwas-mix-out/&quot;</span>,trait,<span class="st">&quot;.out&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb2-12"><a href="index.html#cb2-12" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span>dat[<span class="fu">complete.cases</span>(dat),]</span>
+<span id="cb2-13"><a href="index.html#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="index.html#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># linear model</span></span>
+<span id="cb2-15"><a href="index.html#cb2-15" aria-hidden="true" tabindex="-1"></a>mod<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> aver2,<span class="at">data=</span>dat)</span>
+<span id="cb2-16"><a href="index.html#cb2-16" aria-hidden="true" tabindex="-1"></a>p<span class="ot">=</span><span class="fu">summary</span>(mod)<span class="sc">$</span>coefficients[,<span class="dv">4</span>][<span class="dv">2</span>]</span>
+<span id="cb2-17"><a href="index.html#cb2-17" aria-hidden="true" tabindex="-1"></a>p_sci<span class="ot">=</span><span class="fu">formatC</span>(p, <span class="at">format=</span><span class="st">&quot;e&quot;</span>, <span class="at">digit=</span><span class="dv">2</span>)</span>
+<span id="cb2-18"><a href="index.html#cb2-18" aria-hidden="true" tabindex="-1"></a>px<span class="ot">=</span><span class="fu">min</span>(dat<span class="sc">$</span>aver2)</span>
+<span id="cb2-19"><a href="index.html#cb2-19" aria-hidden="true" tabindex="-1"></a>py<span class="ot">=</span><span class="fu">max</span>(dat<span class="sc">$</span>chisq)</span>
+<span id="cb2-20"><a href="index.html#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="index.html#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb2-22"><a href="index.html#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="st">&quot;fig/chisq-aver2-bmi.png&quot;</span>, <span class="at">res=</span><span class="dv">600</span>, <span class="at">width=</span><span class="dv">30</span>, <span class="at">height=</span><span class="dv">20</span>, <span class="at">units=</span><span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb2-23"><a href="index.html#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">cex.lab=</span><span class="fl">1.2</span>, <span class="at">font.lab=</span><span class="dv">2</span>, <span class="at">cex.main=</span><span class="fl">1.5</span>, <span class="at">pty=</span><span class="st">&quot;s&quot;</span>)</span>
+<span id="cb2-24"><a href="index.html#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dat<span class="sc">$</span>aver2, dat<span class="sc">$</span>chisq,</span>
+<span id="cb2-25"><a href="index.html#cb2-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;ave r2&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;chisq&quot;</span>,</span>
+<span id="cb2-26"><a href="index.html#cb2-26" aria-hidden="true" tabindex="-1"></a>         <span class="at">main=</span>trait, <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb2-27"><a href="index.html#cb2-27" aria-hidden="true" tabindex="-1"></a>         <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span><span class="st">&quot;darkgray&quot;</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb2-28"><a href="index.html#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(mod,<span class="at">col=</span><span class="st">&quot;orange&quot;</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb2-29"><a href="index.html#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(p<span class="sc">&lt;</span><span class="fl">0.01</span>){<span class="fu">text</span>(px, py, <span class="fu">paste0</span>(<span class="st">&quot;p = &quot;</span>, p_sci),</span>
+<span id="cb2-30"><a href="index.html#cb2-30" aria-hidden="true" tabindex="-1"></a>                <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">cex=</span><span class="dv">2</span>)</span>
+<span id="cb2-31"><a href="index.html#cb2-31" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {<span class="fu">text</span>(px, py, <span class="fu">paste0</span>(<span class="st">&quot;p = &quot;</span>, p_sci), </span>
+<span id="cb2-32"><a href="index.html#cb2-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">cex=</span><span class="fl">1.2</span>, <span class="at">font=</span><span class="dv">2</span>)}</span>
+<span id="cb2-33"><a href="index.html#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb2-34"><a href="index.html#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="index.html#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># bad gwas using binned aver2 --------------------------------------------------</span></span>
+<span id="cb2-36"><a href="index.html#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="index.html#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb2-38"><a href="index.html#cb2-38" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb2-39"><a href="index.html#cb2-39" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb2-40"><a href="index.html#cb2-40" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb2-41"><a href="index.html#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="index.html#cb2-42" aria-hidden="true" tabindex="-1"></a>trait<span class="ot">=</span>traits[<span class="dv">2</span>]</span>
+<span id="cb2-43"><a href="index.html#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="index.html#cb2-44" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;gwas-mix-out/&quot;</span>,trait,<span class="st">&quot;.out&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb2-45"><a href="index.html#cb2-45" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span>dat[<span class="fu">complete.cases</span>(dat),]</span>
+<span id="cb2-46"><a href="index.html#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-47"><a href="index.html#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co"># linear model</span></span>
+<span id="cb2-48"><a href="index.html#cb2-48" aria-hidden="true" tabindex="-1"></a>mod<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> aver2,<span class="at">data=</span>dat)</span>
+<span id="cb2-49"><a href="index.html#cb2-49" aria-hidden="true" tabindex="-1"></a>p<span class="ot">=</span><span class="fu">summary</span>(mod)<span class="sc">$</span>coefficients[,<span class="dv">4</span>][<span class="dv">2</span>]</span>
+<span id="cb2-50"><a href="index.html#cb2-50" aria-hidden="true" tabindex="-1"></a>p_sci<span class="ot">=</span><span class="fu">formatC</span>(p, <span class="at">format=</span><span class="st">&quot;e&quot;</span>, <span class="at">digit=</span><span class="dv">2</span>)</span>
+<span id="cb2-51"><a href="index.html#cb2-51" aria-hidden="true" tabindex="-1"></a>px<span class="ot">=</span><span class="fu">min</span>(dat<span class="sc">$</span>aver2)</span>
+<span id="cb2-52"><a href="index.html#cb2-52" aria-hidden="true" tabindex="-1"></a>py<span class="ot">=</span><span class="fu">max</span>(dat<span class="sc">$</span>chisq)</span>
+<span id="cb2-53"><a href="index.html#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="index.html#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="co"># bin a variable by quantile</span></span>
+<span id="cb2-55"><a href="index.html#cb2-55" aria-hidden="true" tabindex="-1"></a>cutoff<span class="ot">=</span><span class="fu">quantile</span>(dat<span class="sc">$</span>aver2, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.005</span>), <span class="at">na.rm=</span>T)</span>
+<span id="cb2-56"><a href="index.html#cb2-56" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>bin<span class="ot">=</span><span class="fu">cut</span>(dat<span class="sc">$</span>aver2, <span class="at">breaks=</span>cutoff, <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb2-57"><a href="index.html#cb2-57" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-58"><a href="index.html#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="co"># average chisq by bin values</span></span>
+<span id="cb2-59"><a href="index.html#cb2-59" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">chisq_ave=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>chisq,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean))</span>
+<span id="cb2-60"><a href="index.html#cb2-60" aria-hidden="true" tabindex="-1"></a>out<span class="sc">$</span>bin_val<span class="ot">=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>aver2,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean)</span>
+<span id="cb2-61"><a href="index.html#cb2-61" aria-hidden="true" tabindex="-1"></a>px<span class="ot">=</span><span class="fu">min</span>(out<span class="sc">$</span>bin_val)</span>
+<span id="cb2-62"><a href="index.html#cb2-62" aria-hidden="true" tabindex="-1"></a>py<span class="ot">=</span><span class="fu">max</span>(out<span class="sc">$</span>chisq_ave)</span>
+<span id="cb2-63"><a href="index.html#cb2-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-64"><a href="index.html#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb2-65"><a href="index.html#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="st">&quot;fig/chisq-aver2-bin-badgwas-bmi.png&quot;</span>, <span class="at">res=</span><span class="dv">600</span>, <span class="at">width=</span><span class="dv">30</span>, <span class="at">height=</span><span class="dv">20</span>, <span class="at">units=</span><span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb2-66"><a href="index.html#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">cex.lab=</span><span class="fl">1.2</span>, <span class="at">font.lab=</span><span class="dv">2</span>, <span class="at">cex.main=</span><span class="fl">1.5</span>, <span class="at">pty=</span><span class="st">&quot;s&quot;</span>)</span>
+<span id="cb2-67"><a href="index.html#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out<span class="sc">$</span>bin_val, out<span class="sc">$</span>chisq_ave,</span>
+<span id="cb2-68"><a href="index.html#cb2-68" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;ave r2 bin&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;mean chisq&quot;</span>,</span>
+<span id="cb2-69"><a href="index.html#cb2-69" aria-hidden="true" tabindex="-1"></a>         <span class="at">main=</span>trait, <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb2-70"><a href="index.html#cb2-70" aria-hidden="true" tabindex="-1"></a>         <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span><span class="st">&quot;darkgray&quot;</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb2-71"><a href="index.html#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(mod,<span class="at">col=</span><span class="st">&quot;orange&quot;</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb2-72"><a href="index.html#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(p<span class="sc">&lt;</span><span class="fl">0.01</span>){<span class="fu">text</span>(px, py, <span class="fu">paste0</span>(<span class="st">&quot;p = &quot;</span>, p_sci),</span>
+<span id="cb2-73"><a href="index.html#cb2-73" aria-hidden="true" tabindex="-1"></a>                <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">cex=</span><span class="dv">2</span>)</span>
+<span id="cb2-74"><a href="index.html#cb2-74" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {<span class="fu">text</span>(px, py, <span class="fu">paste0</span>(<span class="st">&quot;p = &quot;</span>, p_sci), </span>
+<span id="cb2-75"><a href="index.html#cb2-75" aria-hidden="true" tabindex="-1"></a>        <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">cex=</span><span class="fl">1.2</span>, <span class="at">font=</span><span class="dv">2</span>)}</span>
+<span id="cb2-76"><a href="index.html#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb2-77"><a href="index.html#cb2-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-78"><a href="index.html#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="co"># good gwas using binned aver2 -------------------------------------------------</span></span>
+<span id="cb2-79"><a href="index.html#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb2-80"><a href="index.html#cb2-80" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb2-81"><a href="index.html#cb2-81" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb2-82"><a href="index.html#cb2-82" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb2-83"><a href="index.html#cb2-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-84"><a href="index.html#cb2-84" aria-hidden="true" tabindex="-1"></a>trait<span class="ot">=</span>traits[<span class="dv">2</span>]</span>
+<span id="cb2-85"><a href="index.html#cb2-85" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;unrelated/gwas-good-out/&quot;</span>,trait,<span class="st">&quot;.out&quot;</span>), <span class="at">col_names=</span>T)</span>
+<span id="cb2-86"><a href="index.html#cb2-86" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span>dat[<span class="fu">complete.cases</span>(dat),]</span>
+<span id="cb2-87"><a href="index.html#cb2-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-88"><a href="index.html#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="co"># linear model</span></span>
+<span id="cb2-89"><a href="index.html#cb2-89" aria-hidden="true" tabindex="-1"></a>mod<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> aver2,<span class="at">data=</span>dat)</span>
+<span id="cb2-90"><a href="index.html#cb2-90" aria-hidden="true" tabindex="-1"></a>p<span class="ot">=</span><span class="fu">summary</span>(mod)<span class="sc">$</span>coefficients[,<span class="dv">4</span>][<span class="dv">2</span>]</span>
+<span id="cb2-91"><a href="index.html#cb2-91" aria-hidden="true" tabindex="-1"></a>p_sci<span class="ot">=</span><span class="fu">formatC</span>(p, <span class="at">format=</span><span class="st">&quot;e&quot;</span>, <span class="at">digit=</span><span class="dv">2</span>)</span>
+<span id="cb2-92"><a href="index.html#cb2-92" aria-hidden="true" tabindex="-1"></a>px<span class="ot">=</span><span class="fu">min</span>(dat<span class="sc">$</span>aver2)</span>
+<span id="cb2-93"><a href="index.html#cb2-93" aria-hidden="true" tabindex="-1"></a>py<span class="ot">=</span><span class="fu">max</span>(dat<span class="sc">$</span>chisq)</span>
+<span id="cb2-94"><a href="index.html#cb2-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-95"><a href="index.html#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="co"># bin a variable by quantile</span></span>
+<span id="cb2-96"><a href="index.html#cb2-96" aria-hidden="true" tabindex="-1"></a>cutoff<span class="ot">=</span><span class="fu">quantile</span>(dat<span class="sc">$</span>aver2, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.005</span>), <span class="at">na.rm=</span>T)</span>
+<span id="cb2-97"><a href="index.html#cb2-97" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>bin<span class="ot">=</span><span class="fu">cut</span>(dat<span class="sc">$</span>aver2, <span class="at">breaks=</span>cutoff, <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb2-98"><a href="index.html#cb2-98" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-99"><a href="index.html#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="co"># average chisq by bin values</span></span>
+<span id="cb2-100"><a href="index.html#cb2-100" aria-hidden="true" tabindex="-1"></a>out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">chisq_ave=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>chisq,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean))</span>
+<span id="cb2-101"><a href="index.html#cb2-101" aria-hidden="true" tabindex="-1"></a>out<span class="sc">$</span>bin_val<span class="ot">=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>aver2,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean)</span>
+<span id="cb2-102"><a href="index.html#cb2-102" aria-hidden="true" tabindex="-1"></a>px<span class="ot">=</span><span class="fu">min</span>(out<span class="sc">$</span>bin_val)</span>
+<span id="cb2-103"><a href="index.html#cb2-103" aria-hidden="true" tabindex="-1"></a>py<span class="ot">=</span><span class="fu">max</span>(out<span class="sc">$</span>chisq_ave)</span>
+<span id="cb2-104"><a href="index.html#cb2-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-105"><a href="index.html#cb2-105" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb2-106"><a href="index.html#cb2-106" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="st">&quot;fig/chisq-aver2-bin-goodgwas-bmi.png&quot;</span>, <span class="at">res=</span><span class="dv">600</span>, <span class="at">width=</span><span class="dv">30</span>, <span class="at">height=</span><span class="dv">20</span>, <span class="at">units=</span><span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb2-107"><a href="index.html#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">cex.lab=</span><span class="fl">1.2</span>, <span class="at">font.lab=</span><span class="dv">2</span>, <span class="at">cex.main=</span><span class="fl">1.5</span>, <span class="at">pty=</span><span class="st">&quot;s&quot;</span>)</span>
+<span id="cb2-108"><a href="index.html#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(out<span class="sc">$</span>bin_val, out<span class="sc">$</span>chisq_ave,</span>
+<span id="cb2-109"><a href="index.html#cb2-109" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;ave r2 bin&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;mean chisq&quot;</span>,</span>
+<span id="cb2-110"><a href="index.html#cb2-110" aria-hidden="true" tabindex="-1"></a>         <span class="at">main=</span>trait, <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb2-111"><a href="index.html#cb2-111" aria-hidden="true" tabindex="-1"></a>         <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span><span class="st">&quot;darkgray&quot;</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb2-112"><a href="index.html#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(mod,<span class="at">col=</span><span class="st">&quot;orange&quot;</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb2-113"><a href="index.html#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(p<span class="sc">&lt;</span><span class="fl">0.01</span>){<span class="fu">text</span>(px, py, <span class="fu">paste0</span>(<span class="st">&quot;p = &quot;</span>, p_sci),</span>
+<span id="cb2-114"><a href="index.html#cb2-114" aria-hidden="true" tabindex="-1"></a>                <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">cex=</span><span class="dv">2</span>)</span>
+<span id="cb2-115"><a href="index.html#cb2-115" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {<span class="fu">text</span>(px, py, <span class="fu">paste0</span>(<span class="st">&quot;p = &quot;</span>, p_sci), </span>
+<span id="cb2-116"><a href="index.html#cb2-116" aria-hidden="true" tabindex="-1"></a>        <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">cex=</span><span class="fl">1.2</span>, <span class="at">font=</span><span class="dv">2</span>)}</span>
+<span id="cb2-117"><a href="index.html#cb2-117" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<ul>
+<li><p>aver2_j varies with varying level of confounding: 0k, 1k …, 6k non-Europeans. i.e., distant LD becomes stronger as the level of confounding increases.</p></li>
+<li><p>related individuals: no evidence of inflation either by ldsc or the proposed test. This is because relatedness inflates chi-square by inflating the precision of beta_hat, but leaving beta_hat unaffected (see Gross et al. ‘On the impact of relatedness on SNP association analysis’). This is distinct from how population stratification inflates chi-square: beta_hat is inflated by the effects of population stratification on phenotypes. Removing the confounding effects (by including PCs as covariates or using bolt-lmm) can fix the inflation.</p></li>
+</ul>
+<p>Questions:
+[So does this mean: the LD structure imposed by pop. stratification come into an effect when these factors affect phenotypes; i.e., when beta_hat for SNPs is affected].</p>
+<p>Does this also mean that snoring, for which the proposed test shows no much inflation, is because population stratification does not affect snoring phenotype much at all. Is this true?</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="index.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># id lists</span></span>
+<span id="cb3-2"><a href="index.html#cb3-2" aria-hidden="true" tabindex="-1"></a>noneuro<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;noneuro-unrel.rand.1000&quot;</span>, <span class="at">header=</span>F)</span>
+<span id="cb3-3"><a href="index.html#cb3-3" aria-hidden="true" tabindex="-1"></a>white<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;white-unrel.rand.10k&quot;</span>, <span class="at">header=</span>F)</span>
+<span id="cb3-4"><a href="index.html#cb3-4" aria-hidden="true" tabindex="-1"></a>id<span class="ot">=</span><span class="fu">data.frame</span>(<span class="fu">rbind</span>(<span class="fu">cbind</span>(white<span class="sc">$</span>V1,<span class="dv">1</span>),<span class="fu">cbind</span>(noneuro<span class="sc">$</span>V1, <span class="dv">0</span>)))</span>
+<span id="cb3-5"><a href="index.html#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(id)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;id&quot;</span>,<span class="st">&quot;white&quot;</span>)</span>
+<span id="cb3-6"><a href="index.html#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="index.html#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb3-8"><a href="index.html#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># cov</span></span>
+<span id="cb3-9"><a href="index.html#cb3-9" aria-hidden="true" tabindex="-1"></a>cov<span class="ot">=</span><span class="fu">vroom</span>(<span class="st">&quot;phen/covariates.use&quot;</span>, <span class="at">col_names=</span>F)</span>
+<span id="cb3-10"><a href="index.html#cb3-10" aria-hidden="true" tabindex="-1"></a>nm<span class="ot">=</span><span class="fu">read.table</span>(<span class="st">&quot;phen/covariates.use-names&quot;</span>,<span class="at">header=</span>F, <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb3-11"><a href="index.html#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cov)<span class="ot">=</span>nm<span class="sc">$</span>V1</span>
+<span id="cb3-12"><a href="index.html#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="index.html#cb3-13" aria-hidden="true" tabindex="-1"></a>traits<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;awake&quot;</span>,<span class="st">&quot;bmi&quot;</span>,<span class="st">&quot;chron&quot;</span>,<span class="st">&quot;ever&quot;</span>,</span>
+<span id="cb3-14"><a href="index.html#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;neur&quot;</span>,<span class="st">&quot;pulse&quot;</span>,<span class="st">&quot;quals&quot;</span>, <span class="st">&quot;fvc&quot;</span>, <span class="st">&quot;height&quot;</span>,<span class="st">&quot;imp&quot;</span>, </span>
+<span id="cb3-15"><a href="index.html#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;reaction&quot;</span>,<span class="st">&quot;sbp&quot;</span>,<span class="st">&quot;snoring&quot;</span>,<span class="st">&quot;hyper&quot;</span>)</span>
+<span id="cb3-16"><a href="index.html#cb3-16" aria-hidden="true" tabindex="-1"></a>trait<span class="ot">=</span>traits[<span class="dv">9</span>]</span>
+<span id="cb3-17"><a href="index.html#cb3-17" aria-hidden="true" tabindex="-1"></a>phen<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&#39;phen/continuous-traits/&#39;</span>,trait,<span class="st">&#39;.raw.pheno&#39;</span>), <span class="at">col_names=</span>F)</span>
+<span id="cb3-18"><a href="index.html#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="index.html#cb3-19" aria-hidden="true" tabindex="-1"></a>m<span class="ot">=</span><span class="fu">match</span>(id<span class="sc">$</span>id,phen<span class="sc">$</span>X1)</span>
+<span id="cb3-20"><a href="index.html#cb3-20" aria-hidden="true" tabindex="-1"></a>m2<span class="ot">=</span><span class="fu">match</span>(id<span class="sc">$</span>id,cov<span class="sc">$</span>eid)</span>
+<span id="cb3-21"><a href="index.html#cb3-21" aria-hidden="true" tabindex="-1"></a>dat<span class="ot">=</span><span class="fu">data.frame</span>(id,<span class="at">phen=</span>phen<span class="sc">$</span>X3[m], <span class="at">pc1=</span>cov<span class="sc">$</span>pc1[m2])</span>
+<span id="cb3-22"><a href="index.html#cb3-22" aria-hidden="true" tabindex="-1"></a>mod<span class="ot">=</span><span class="fu">lm</span>(phen <span class="sc">~</span> pc1, dat)</span>
+<span id="cb3-23"><a href="index.html#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span>
+<span id="cb3-24"><a href="index.html#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#mod=aov(phen ~ as.factor(white), dat)</span></span>
+<span id="cb3-25"><a href="index.html#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#noneuro-unrel.rand.6000</span></span>
+<span id="cb3-26"><a href="index.html#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#white-unrel.rand.94000</span></span></code></pre></div>
 <p>So far the proposed and existing methods perform equally well.</p>
 <ul>
 <li>good GWAS: no sig. inflation due to confounding</li>
@@ -444,7 +711,13 @@ div.csl-indent {
 <li>control GWAS: no sig. inflation due to confounding</li>
 <li>UKBB recommended: no evidence of inflation by any of the methods.</li>
 </ul>
-<p>The proposed method does not seem to be more advantageous than existing methods. However, this does not mean that the existing methods are without problems. The inflation may not be constant as assumed by existing methods.</p>
+<p>The proposed method does not seem to be more advantageous than existing methods.</p>
+<p><strong>Conclusion</strong></p>
+<ul>
+<li><p>valid ? It is a valid test for detecting confounding effects of population stratification. It measures what it is supposed to measure. 1) aver2_j varies with varying level of confounding: 0k, 1k …, 6k non-Europeans; 2) The variation in aver2_j across SNPs drives/explains variations in the GWAS test statistics or the level of inflation. The more a SNP tags other SNPs, the larger its GWAS test statistics.</p></li>
+<li><p>Is aver2_j reliable ? Do two random sets of SNPs produce similar aver2_j? Yes, aver2_j based on two non-overlapping sets of random SNPs align well. This holds even for m = 1k, although the alignment becomes better as m increases. Thus, for m &gt; 1k, aver2_j is reliable even it is computed using a random set of 1k SNPs. This also indicates that the effects of population stratification on SNP genotypes is systematic so that it is evenly/systematically distributed across the genome. [Population differences in minor allele frequency is systematic across the genome].</p></li>
+<li><p>better? aver2_j does not seem to outperform LDSC on detecting confounding effects of population stratification.</p></li>
+</ul>
 </div>
 <div id="frequently-used-commands" class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span> Frequently used commands</h2>

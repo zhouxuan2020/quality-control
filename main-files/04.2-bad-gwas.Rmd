@@ -621,32 +621,49 @@ for(i in 1:length(traits)){
 #::::::::::::::::::::::::::::::::::::::::::::::
 
 # aver2_j bin-------------------------------
+
 require(vroom)
 traits=c("awake","bmi","chron","ever",
         "neur","pulse","quals", "fvc", "height","imp", 
         "reaction","sbp","snoring","hyper")
-        
-png(paste0("fig/chisq-by-aver2-bin-gwas-mix-bold-lmm.png"),
-      width = 50, height = 30, units = "cm", res=600)
-  par(mfrow=c(3,5))
 
-for (i in 1:length(traits)){
-    trait=traits[i]
-    file=paste0("gwas-bolt-lmm-out/",trait,".out")
-    dat=vroom(file, col_names=T, delim=";")
-    # bin a variable by quantile
-    cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
-    dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
-    # average chisq by bin values
-    out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
-    out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+png("fig/chisq-aver2-bin-bad-gwas-bolt-lmm.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
 
-plot(out$bin_val, out$chisq_ave,
-         xlab="ave r2", ylab="ave chisq",
-         main=trait, las=1,
-         cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
- }
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-bolt-lmm-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+  
+}
 dev.off()
+
 
 # raw aver2_j & chisq-------------------------------
 
@@ -740,7 +757,7 @@ for(i in 1:length(traits)){
 # plot chisq ~ aver2_j  
 #::::::::::::::::::::::::::::::::::::::::::::::
 
-# binned data-------------------------------------------------------------------
+# binned data -------------------------------------
 
 require(vroom)
 traits=c("awake","bmi","chron","ever",
@@ -749,28 +766,137 @@ traits=c("awake","bmi","chron","ever",
 
 for(j in 1:10){
   
-png(paste0("fig/chisq-by-aver2-bin-gwas-mix-",j,"PC.png"),
-      width = 50, height = 30, units = "cm", res=600)
-  par(mfrow=c(3,5))
+  png(paste0("fig/chisq-by-aver2-bin-bad-gwas-",j,"PC.png"), 
+      res=600, width=50, height=30, units="cm")
+  
+  par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
 
-for (i in 1:length(traits)){
-    trait=traits[i]
-    file=paste0("gwas-mix-pc-out/",trait,"-",j,"PC.out")
-    dat=vroom(file, col_names=T, delim=";")
-    # bin a variable by quantile
-    cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
-    dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
-    # average chisq by bin values
-    out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
-    out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+    for(i in 1:length(traits)){
+      trait=traits[i]
+      file=paste0("gwas-mix-pc-out/",trait,"-",j,"PC.out")
+      dat=vroom(file, col_names=T)
+      dat=dat[complete.cases(dat),]
+    
+      # linear model
+      mod=lm(chisq ~ aver2,data=dat)
+      p=summary(mod)$coefficients[,4][2]
+      p_sci=formatC(p, format="e", digit=2)
+    
+      # bin a variable by quantile
+      cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+      dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+      
+      # average chisq by bin values
+      out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+      out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+      px=min(out$bin_val)
+      py=max(out$chisq_ave)
+    
+      # plot
+      plot(out$bin_val, out$chisq_ave,
+               xlab="ave r2 bin", ylab="mean chisq",
+               main=paste0(trait, " ", j, " PC"), las=1,
+               cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+      abline(mod,col="orange", lwd=2)
+      if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                      adj=c(0,1), col="red", cex=2, font=2)
+      } else {text(px, py, paste0("p = ", p_sci), 
+              adj=c(0,1), cex=2, font=2)}
+    }
+    dev.off()
 
-plot(out$bin_val, out$chisq_ave,
-         xlab="ave r2", ylab="ave chisq",
-         main=trait, las=1,
-         cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
- }
-dev.off()
 }
+
+# binned data. single trait varying # of PC ------------------------------------
+# BMI
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/chisq-by-aver2-bin-bad-gwas-varying-PC-bmi.png"), 
+      res=600, width=40, height=30, units="cm")
+par(mfrow=c(3,4), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(j in 1:10){
+    
+      trait=traits[2]
+      file=paste0("gwas-mix-pc-out/",trait,"-",j,"PC.out")
+      dat=vroom(file, col_names=T)
+      dat=dat[complete.cases(dat),]
+    
+      # linear model
+      mod=lm(chisq ~ aver2,data=dat)
+      p=summary(mod)$coefficients[,4][2]
+      p_sci=formatC(p, format="e", digit=2)
+    
+      # bin a variable by quantile
+      cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+      dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+      
+      # average chisq by bin values
+      out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+      out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+      px=min(out$bin_val)
+      py=max(out$chisq_ave)
+    
+      # plot
+      plot(out$bin_val, out$chisq_ave,
+               xlab="ave r2 bin", ylab="mean chisq",
+               main=paste0(trait, " ", j, " PC"), las=1,
+               cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+      abline(mod,col="orange", lwd=2)
+      if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                      adj=c(0,1), col="red", cex=2, font=2)
+      } else {text(px, py, paste0("p = ", p_sci), 
+              adj=c(0,1), cex=2, font=2)}
+    }
+dev.off()
+
+# reaction
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/chisq-by-aver2-bin-bad-gwas-varying-PC-reaction.png"), 
+      res=600, width=40, height=30, units="cm")
+par(mfrow=c(3,4), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(j in 1:10){
+    
+      trait=traits[11]
+      file=paste0("gwas-mix-pc-out/",trait,"-",j,"PC.out")
+      dat=vroom(file, col_names=T)
+      dat=dat[complete.cases(dat),]
+    
+      # linear model
+      mod=lm(chisq ~ aver2,data=dat)
+      p=summary(mod)$coefficients[,4][2]
+      p_sci=formatC(p, format="e", digit=2)
+    
+      # bin a variable by quantile
+      cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+      dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+      
+      # average chisq by bin values
+      out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+      out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+      px=min(out$bin_val)
+      py=max(out$chisq_ave)
+    
+      # plot
+      plot(out$bin_val, out$chisq_ave,
+               xlab="ave r2 bin", ylab="mean chisq",
+               main=paste0(trait, " ", j, " PC"), las=1,
+               cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+      abline(mod,col="orange", lwd=2)
+      if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                      adj=c(0,1), col="red", cex=2, font=2)
+      } else {text(px, py, paste0("p = ", p_sci), 
+              adj=c(0,1), cex=2, font=2)}
+    }
+dev.off()
 
 # raw data-------------------------------------------------------------------
 

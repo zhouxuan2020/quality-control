@@ -1,0 +1,172 @@
+
+# Assortative mating
+
+## Test the idea
+
+### 1st try
+Here we want to test the idea that assortative mating causes correlations between distant causal SNPs, which imposes a LD structure that inflates GWAS chisq. We use bmi as an example. Here are the steps.
+
+1. From good gwas, get the genome-wide significant snps (337k recommended by ukbb).
+   We need to collect the chromosome the snps are in.
+2. compute aver2_j for each SNP based on sig. SNPs in other chromosomes.
+   We need to 22 snp lists, one for SNPs of a given chromosome. For example, for SNPs in chromosome 1, the snp list will be based on snps from all SNPs of other chromosomes. 
+3. chisq ~ aver2_j
+4. compare this with aver2_j computed using random SNPs.
+
+```{bash eval=F}
+
+# get sig. SNPs-----------------------------------------------------------------
+mkdir assortative-mating
+mkdir assortative-mating/snplist
+
+dir1=gwas-norm-337k
+dir2=assortative-mating/snplist
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+awk '($2 <= 5E-8) {print $1}' $dir1/$trait-linear.pvalues > $dir2/$trait-sig-snps
+done
+
+# compute aver2-----------------------------------------------------------------
+mkdir assortative-mating/aver2
+mkdir assortative-mating/out
+
+#for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+trait=height
+list=../assortative-mating/snplist/$trait-sig-snps
+bfile=../gen/geno-norm
+out=../assortative-mating/out/$trait-aver2
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 90G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --lista $list \
+          --listb $list
+">sh_script/calc-aver2-$trait
+#done
+
+# submit the job
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/calc-aver2-$trait
+done >../job-records/calc-aver2
+
+# line up chisq & aver2---------------------------------------------------------
+mkdir assortative-mating/organized
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+aver2=assortative-mating/out/$trait-aver2.rjk2.average
+gwas=gwas-norm-337k/$trait-linear.summaries
+out=assortative-mating/organized/$trait.out
+
+awk 'BEGIN{"snp chisq aver2"}
+     NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print $1, $5, b[$1]}' $aver2 $gwas > $out
+done
+
+```
+
+```{r eval=F}
+
+# plot based on binned aver2 ---------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/chisq-aver2-bin-sig-snps.png"),
+      width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5))
+
+for(i in 1:length(traits)){
+trait=traits[i]
+dat=vroom(paste0("assortative-mating/organized/",trait,".out"), col_names=T)
+names(dat)=c("snp", "chisq", "aver2")
+
+# linear model
+mod=lm(chisq ~ aver2,data=dat)
+m=dim(dat)[1]
+p=summary(mod)$coefficients[,4][2]
+p_sci=formatC(p, format="e", digit=2)
+px=min(dat$aver2)
+py=max(dat$chisq)
+
+# bin a variable by quantile
+cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.05), na.rm=T)
+dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+# average chisq by bin values
+out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+px=min(out$bin_val)
+py=max(out$chisq_ave)
+
+# plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=paste0(trait, " m = ", m), las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+  
+dev.off()
+
+# plot based on raw aver2 ---------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/chisq-aver2-raw-sig-snps.png"),
+      width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5))
+
+for(i in 1:length(traits)){
+trait=traits[i]
+dat=vroom(paste0("assortative-mating/organized/",trait,".out"), col_names=T)
+names(dat)=c("snp", "chisq", "aver2")
+
+# linear model
+mod=lm(chisq ~ aver2,data=dat)
+m=dim(dat)[1]
+p=summary(mod)$coefficients[,4][2]
+p_sci=formatC(p, format="e", digit=2)
+px=min(dat$aver2)
+py=max(dat$chisq)
+
+# plot
+  plot(dat$aver2, dat$chisq,
+           xlab="ave r2 ", ylab="chisq",
+           main=paste0(trait, " m = ", m), las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+  
+dev.off()
+
+```
+
+### 2nd try
+
+Here we refine the approach of our first try.  
+
+```{r eval=F}
+
+
+
+```
+

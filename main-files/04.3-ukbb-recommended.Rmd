@@ -581,11 +581,13 @@ done>../../job-records/ldsc-norm-337k
 
 # summary ----------------------------------------------------------------------
 
-grep Intercept *ldsc.log | awk '{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}' > ../../summary/ldsc-norm-337k
+grep Intercept *ldsc.log | awk '{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}' > ../../summary/ldsc-norm-337k.intercept
+
+grep Ratio *ldsc.log | awk '{split($1, a, /[-]/); split($3, b, /[()]/); print a[1], $2, b[2]}' > ../../summary/ldsc-norm-337k.ratio
 
 R
-ldsc=read.table("summary/ldsc-norm-337k", header=F, stringsAsFactors = F)
-
+# intercept
+ldsc=read.table("summary/ldsc-norm-337k.intercept", header=F, stringsAsFactors = F)
 # get p-values for Wald tests
 # H0: intercept = 1
 alpha=0.05/14 # Bonferroni corrected alpha
@@ -593,6 +595,19 @@ ldsc=data.frame(trait=ldsc$V1, est=ldsc$V2, se=ldsc$V3,
                 wald_p=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F),
                 sig=pchisq(((ldsc$V2-1)/ldsc$V3)^2, df=1, lower.tail=F) < alpha,
                 stringsAsFactors = F)
+write.table(ldsc,"summary/ldsc-norm-337k.summary", col.names=T, row.names=F, quote=F)
+
+# ratio
+ldsc=read.table("summary/ldsc-norm-337k.ratio", header=F, stringsAsFactors = F)
+# get p-values for Wald tests
+# H0: ratio=0
+alpha=0.05/14 # Bonferroni corrected alpha
+ldsc=data.frame(trait=ldsc$V1, est=ldsc$V2, se=ldsc$V3,
+                wald_p=pchisq(((ldsc$V2)/ldsc$V3)^2, df=1, lower.tail=F),
+                sig=pchisq(((ldsc$V2)/ldsc$V3)^2, df=1, lower.tail=F) < alpha,
+                stringsAsFactors = F)
+write.table(ldsc,"summary/ldsc-norm-337k.ratio", col.names=T, row.names=F, quote=F)
+
 ```
 
 ## aver2_j-337k
@@ -666,6 +681,8 @@ write.table(out,paste0("summary/ave-r2-",nm, "-ukbb-norm"), col.names=F, row.nam
 ```
 
 ### organize data
+
+See section \@ref(ukbb_337k_inflation) for an update. In the update, ldscores are now included in the each .out file.
 
 ```{bash eval=F}
 
@@ -754,6 +771,49 @@ plot(out$bin_val, out$chisq_ave,
          main=trait, las=1,
          cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
  }
+dev.off()
+
+# new -----------------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-ukbb-recommend-337k.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-norm-337k-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
 dev.off()
 
 ```

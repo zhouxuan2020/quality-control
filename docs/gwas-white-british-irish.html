@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>11 GWAS: White British + Irish | GWAS Quality Control</title>
+  <meta name="description" content="11 GWAS: White British + Irish | GWAS Quality Control" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="11 GWAS: White British + Irish | GWAS Quality Control" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="11 GWAS: White British + Irish | GWAS Quality Control" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="inclusive-gwas.html"/>
+<link rel="next" href="related-individuals.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Quality Control Project</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> General Info</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#topic"><i class="fa fa-check"></i><b>1.1</b> Topic</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#frequently-used-commands"><i class="fa fa-check"></i><b>1.2</b> Frequently used commands</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="summaries.html"><a href="summaries.html"><i class="fa fa-check"></i><b>2</b> Summaries</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="summaries.html"><a href="summaries.html#good-gwas"><i class="fa fa-check"></i><b>2.1</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher"><i class="fa fa-check"></i><b>2.1.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.1.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression"><i class="fa fa-check"></i><b>2.1.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="summaries.html"><a href="summaries.html#bad-gwas"><i class="fa fa-check"></i><b>2.2</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-1"><i class="fa fa-check"></i><b>2.2.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.2.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-1"><i class="fa fa-check"></i><b>2.2.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="summaries.html"><a href="summaries.html#ukbb-recommended"><i class="fa fa-check"></i><b>2.3</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-2"><i class="fa fa-check"></i><b>2.3.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.3.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-2"><i class="fa fa-check"></i><b>2.3.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="summaries.html"><a href="summaries.html#control-gwas"><i class="fa fa-check"></i><b>2.4</b> Control GWAS</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-3"><i class="fa fa-check"></i><b>2.4.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="2.4.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-3"><i class="fa fa-check"></i><b>2.4.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html"><i class="fa fa-check"></i><b>3</b> Good VS Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-statistics-ld-score"><i class="fa fa-check"></i><b>3.1</b> test statistics ~ LD score</a></li>
+<li class="chapter" data-level="3.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#new-models"><i class="fa fa-check"></i><b>3.2</b> New models?</a></li>
+<li class="chapter" data-level="3.3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#ld-scores-based-on-individual-level-data"><i class="fa fa-check"></i><b>3.3</b> LD scores based on individual level data</a></li>
+<li class="chapter" data-level="3.4" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-the-new-model"><i class="fa fa-check"></i><b>3.4</b> Test the new model</a></li>
+<li class="chapter" data-level="3.5" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#predictors-of-inflation"><i class="fa fa-check"></i><b>3.5</b> predictors of inflation?</a></li>
+<li class="chapter" data-level="3.6" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#regress-chisq-mean-r2_j"><i class="fa fa-check"></i><b>3.6</b> regress chisq ~ mean r^2_j</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#plots"><i class="fa fa-check"></i><b>3.6.1</b> plots</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#predict-inflation-aver2_j"><i class="fa fa-check"></i><b>3.7</b> predict inflation | aver2_j ?</a>
+<ul>
+<li class="chapter" data-level="3.7.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#good_chisq-vs.-adj_chisq"><i class="fa fa-check"></i><b>3.7.1</b> good_chisq vs. adj_chisq</a></li>
+<li class="chapter" data-level="3.7.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#bad-gwas-inf.-vs.-inf._hat-raw"><i class="fa fa-check"></i><b>3.7.2</b> bad gwas: inf. vs. inf._hat: raw</a></li>
+<li class="chapter" data-level="3.7.3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#bad-gwas-inf.-vs.-inf._hat-ave"><i class="fa fa-check"></i><b>3.7.3</b> bad gwas: inf. vs. inf._hat: ave</a></li>
+<li class="chapter" data-level="3.7.4" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#bad-gwas-inf.-from-full-model"><i class="fa fa-check"></i><b>3.7.4</b> bad gwas: inf. from full model</a></li>
+<li class="chapter" data-level="3.7.5" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#good-gwas-inf.-vs.-inf._hat-raw"><i class="fa fa-check"></i><b>3.7.5</b> good gwas: inf. vs. inf._hat: raw</a></li>
+<li class="chapter" data-level="3.7.6" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#good-gwas-inf.-vs.-inf._hat-ave"><i class="fa fa-check"></i><b>3.7.6</b> good gwas: inf. vs. inf._hat: ave</a></li>
+</ul></li>
+<li class="chapter" data-level="3.8" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#ukbb_337k_inflation"><i class="fa fa-check"></i><b>3.8</b> UKBB N = 337k</a>
+<ul>
+<li class="chapter" data-level="3.8.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#organize-data"><i class="fa fa-check"></i><b>3.8.1</b> organize data</a></li>
+<li class="chapter" data-level="3.8.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#plot"><i class="fa fa-check"></i><b>3.8.2</b> plot</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="mathematical-details.html"><a href="mathematical-details.html"><i class="fa fa-check"></i><b>4</b> Mathematical Details</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="mathematical-details.html"><a href="mathematical-details.html#trk_rightk_left"><i class="fa fa-check"></i><b>4.1</b> <span class="math inline">\(tr(K_{right}K_{left})\)</span></a></li>
+<li class="chapter" data-level="4.2" data-path="mathematical-details.html"><a href="mathematical-details.html#verification"><i class="fa fa-check"></i><b>4.2</b> verification</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html"><i class="fa fa-check"></i><b>5</b> chi square ~ <span class="math inline">\(\overline{r^2_j}\)</span></a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#overliner2_j-choice-of-snps"><i class="fa fa-check"></i><b>5.1</b> <span class="math inline">\(\overline{r^2_j}\)</span> &amp; choice of SNPs</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#number-of-snps"><i class="fa fa-check"></i><b>5.1.1</b> number of SNPs</a></li>
+<li class="chapter" data-level="5.1.2" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#maf"><i class="fa fa-check"></i><b>5.1.2</b> maf</a></li>
+<li class="chapter" data-level="5.1.3" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#summary"><i class="fa fa-check"></i><b>5.1.3</b> summary</a></li>
+<li class="chapter" data-level="5.1.4" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#final-plots"><i class="fa fa-check"></i><b>5.1.4</b> Final plots</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#varying-levels-of-confouding"><i class="fa fa-check"></i><b>5.2</b> varying levels of confouding</a></li>
+<li class="chapter" data-level="5.3" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#results-summary"><i class="fa fa-check"></i><b>5.3</b> results summary</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="good.html"><a href="good.html"><i class="fa fa-check"></i><b>6</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="good.html"><a href="good.html#goodid"><i class="fa fa-check"></i><b>6.1</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="6.2" data-path="good.html"><a href="good.html#extract-covariates"><i class="fa fa-check"></i><b>6.2</b> extract covariates</a></li>
+<li class="chapter" data-level="6.3" data-path="good.html"><a href="good.html#gwas"><i class="fa fa-check"></i><b>6.3</b> GWAS</a></li>
+<li class="chapter" data-level="6.4" data-path="good.html"><a href="good.html#chisq-aver2_j"><i class="fa fa-check"></i><b>6.4</b> chisq ~ aver2_j</a></li>
+<li class="chapter" data-level="6.5" data-path="good.html"><a href="good.html#ldsc-interce"><i class="fa fa-check"></i><b>6.5</b> ldsc interce</a></li>
+<li class="chapter" data-level="6.6" data-path="good.html"><a href="good.html#ldsc-intercept"><i class="fa fa-check"></i><b>6.6</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="6.6.1" data-path="good.html"><a href="good.html#under-gcta"><i class="fa fa-check"></i><b>6.6.1</b> under gcta</a></li>
+<li class="chapter" data-level="6.6.2" data-path="good.html"><a href="good.html#under-ldak-thin"><i class="fa fa-check"></i><b>6.6.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="6.6.3" data-path="good.html"><a href="good.html#summary-1"><i class="fa fa-check"></i><b>6.6.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="6.7" data-path="good.html"><a href="good.html#reml"><i class="fa fa-check"></i><b>6.7</b> REML</a>
+<ul>
+<li class="chapter" data-level="6.7.1" data-path="good.html"><a href="good.html#making-grms"><i class="fa fa-check"></i><b>6.7.1</b> making grms</a></li>
+<li class="chapter" data-level="6.7.2" data-path="good.html"><a href="good.html#fast-reml"><i class="fa fa-check"></i><b>6.7.2</b> fast-reml</a></li>
+<li class="chapter" data-level="6.7.3" data-path="good.html"><a href="good.html#inflation-test"><i class="fa fa-check"></i><b>6.7.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="6.8" data-path="good.html"><a href="good.html#he"><i class="fa fa-check"></i><b>6.8</b> HE</a>
+<ul>
+<li class="chapter" data-level="6.8.1" data-path="good.html"><a href="good.html#estimation"><i class="fa fa-check"></i><b>6.8.1</b> estimation</a></li>
+<li class="chapter" data-level="6.8.2" data-path="good.html"><a href="good.html#summary-2"><i class="fa fa-check"></i><b>6.8.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="bad.html"><a href="bad.html"><i class="fa fa-check"></i><b>7</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="bad.html"><a href="bad.html#badid"><i class="fa fa-check"></i><b>7.1</b> ID list</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="bad.html"><a href="bad.html#initial-selection"><i class="fa fa-check"></i><b>7.1.1</b> initial selection</a></li>
+<li class="chapter" data-level="7.1.2" data-path="bad.html"><a href="bad.html#relatedness-filtering"><i class="fa fa-check"></i><b>7.1.2</b> relatedness filtering</a></li>
+<li class="chapter" data-level="7.1.3" data-path="bad.html"><a href="bad.html#final-list"><i class="fa fa-check"></i><b>7.1.3</b> final list</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="bad.html"><a href="bad.html#gwas-lm"><i class="fa fa-check"></i><b>7.2</b> GWAS-lm</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="bad.html"><a href="bad.html#basic-cov"><i class="fa fa-check"></i><b>7.2.1</b> basic cov</a></li>
+<li class="chapter" data-level="7.2.2" data-path="bad.html"><a href="bad.html#basic-cov-pc"><i class="fa fa-check"></i><b>7.2.2</b> basic cov + PC</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="bad.html"><a href="bad.html#gwas-bolt-lmm"><i class="fa fa-check"></i><b>7.3</b> GWAS-bolt-lmm</a></li>
+<li class="chapter" data-level="7.4" data-path="bad.html"><a href="bad.html#chisq-aver2_j-1"><i class="fa fa-check"></i><b>7.4</b> chisq ~ aver2_j</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="bad.html"><a href="bad.html#calc-aver2_j"><i class="fa fa-check"></i><b>7.4.1</b> calc aver2_j</a></li>
+<li class="chapter" data-level="7.4.2" data-path="bad.html"><a href="bad.html#bolt-lmm"><i class="fa fa-check"></i><b>7.4.2</b> bolt-lmm</a></li>
+<li class="chapter" data-level="7.4.3" data-path="bad.html"><a href="bad.html#basic-cov-pc-1"><i class="fa fa-check"></i><b>7.4.3</b> basic cov + PC</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="bad.html"><a href="bad.html#ldsc-intercept-1"><i class="fa fa-check"></i><b>7.5</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="7.5.1" data-path="bad.html"><a href="bad.html#under-gcta-1"><i class="fa fa-check"></i><b>7.5.1</b> under gcta</a></li>
+<li class="chapter" data-level="7.5.2" data-path="bad.html"><a href="bad.html#under-ldak-thin-1"><i class="fa fa-check"></i><b>7.5.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="7.5.3" data-path="bad.html"><a href="bad.html#summary-3"><i class="fa fa-check"></i><b>7.5.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="7.6" data-path="bad.html"><a href="bad.html#reml-1"><i class="fa fa-check"></i><b>7.6</b> REML</a>
+<ul>
+<li class="chapter" data-level="7.6.1" data-path="bad.html"><a href="bad.html#making-grms-1"><i class="fa fa-check"></i><b>7.6.1</b> making grms</a></li>
+<li class="chapter" data-level="7.6.2" data-path="bad.html"><a href="bad.html#fast-reml-1"><i class="fa fa-check"></i><b>7.6.2</b> fast-reml</a></li>
+<li class="chapter" data-level="7.6.3" data-path="bad.html"><a href="bad.html#inflation-test-1"><i class="fa fa-check"></i><b>7.6.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="7.7" data-path="bad.html"><a href="bad.html#he-1"><i class="fa fa-check"></i><b>7.7</b> HE</a>
+<ul>
+<li class="chapter" data-level="7.7.1" data-path="bad.html"><a href="bad.html#estimation-1"><i class="fa fa-check"></i><b>7.7.1</b> estimation</a></li>
+<li class="chapter" data-level="7.7.2" data-path="bad.html"><a href="bad.html#summary-4"><i class="fa fa-check"></i><b>7.7.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="ukbb.html"><a href="ukbb.html"><i class="fa fa-check"></i><b>8</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="ukbb.html"><a href="ukbb.html#total-n-337k"><i class="fa fa-check"></i><b>8.1</b> total N = 337k</a></li>
+<li class="chapter" data-level="8.2" data-path="ukbb.html"><a href="ukbb.html#qc-of-hp3-snps"><i class="fa fa-check"></i><b>8.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="8.3" data-path="ukbb.html"><a href="ukbb.html#gwas-100k"><i class="fa fa-check"></i><b>8.3</b> GWAS-100k</a></li>
+<li class="chapter" data-level="8.4" data-path="ukbb.html"><a href="ukbb.html#gwas-337k"><i class="fa fa-check"></i><b>8.4</b> GWAS-337k</a></li>
+<li class="chapter" data-level="8.5" data-path="ukbb.html"><a href="ukbb.html#ldsc-100k"><i class="fa fa-check"></i><b>8.5</b> ldsc-100k</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="ukbb.html"><a href="ukbb.html#under-gcta-2"><i class="fa fa-check"></i><b>8.5.1</b> under gcta</a></li>
+<li class="chapter" data-level="8.5.2" data-path="ukbb.html"><a href="ukbb.html#under-ldak-thin-2"><i class="fa fa-check"></i><b>8.5.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="8.5.3" data-path="ukbb.html"><a href="ukbb.html#summary-5"><i class="fa fa-check"></i><b>8.5.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="ukbb.html"><a href="ukbb.html#ldsc-337k"><i class="fa fa-check"></i><b>8.6</b> ldsc-337k</a></li>
+<li class="chapter" data-level="8.7" data-path="ukbb.html"><a href="ukbb.html#aver2_j-337k"><i class="fa fa-check"></i><b>8.7</b> aver2_j-337k</a>
+<ul>
+<li class="chapter" data-level="8.7.1" data-path="ukbb.html"><a href="ukbb.html#calc"><i class="fa fa-check"></i><b>8.7.1</b> calc</a></li>
+<li class="chapter" data-level="8.7.2" data-path="ukbb.html"><a href="ukbb.html#organize-data-1"><i class="fa fa-check"></i><b>8.7.2</b> organize data</a></li>
+<li class="chapter" data-level="8.7.3" data-path="ukbb.html"><a href="ukbb.html#chisq-aver2_j-2"><i class="fa fa-check"></i><b>8.7.3</b> chisq ~ aver2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="8.8" data-path="ukbb.html"><a href="ukbb.html#he-2"><i class="fa fa-check"></i><b>8.8</b> HE</a>
+<ul>
+<li class="chapter" data-level="8.8.1" data-path="ukbb.html"><a href="ukbb.html#making-grms-2"><i class="fa fa-check"></i><b>8.8.1</b> making grms</a></li>
+<li class="chapter" data-level="8.8.2" data-path="ukbb.html"><a href="ukbb.html#estimation-2"><i class="fa fa-check"></i><b>8.8.2</b> estimation</a></li>
+<li class="chapter" data-level="8.8.3" data-path="ukbb.html"><a href="ukbb.html#summary-6"><i class="fa fa-check"></i><b>8.8.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="control.html"><a href="control.html"><i class="fa fa-check"></i><b>9</b> control GWAS</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="control.html"><a href="control.html#id-list"><i class="fa fa-check"></i><b>9.1</b> ID list</a></li>
+<li class="chapter" data-level="9.2" data-path="control.html"><a href="control.html#qc-of-hp3-snps-1"><i class="fa fa-check"></i><b>9.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="9.3" data-path="control.html"><a href="control.html#gwas-1"><i class="fa fa-check"></i><b>9.3</b> GWAS</a></li>
+<li class="chapter" data-level="9.4" data-path="control.html"><a href="control.html#ldsc-intercept-2"><i class="fa fa-check"></i><b>9.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="control.html"><a href="control.html#under-gcta-3"><i class="fa fa-check"></i><b>9.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="9.4.2" data-path="control.html"><a href="control.html#under-ldak-thin-3"><i class="fa fa-check"></i><b>9.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="9.4.3" data-path="control.html"><a href="control.html#summary-7"><i class="fa fa-check"></i><b>9.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="control.html"><a href="control.html#he-3"><i class="fa fa-check"></i><b>9.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="9.5.1" data-path="control.html"><a href="control.html#making-grms-3"><i class="fa fa-check"></i><b>9.5.1</b> making grms</a></li>
+<li class="chapter" data-level="9.5.2" data-path="control.html"><a href="control.html#estimation-3"><i class="fa fa-check"></i><b>9.5.2</b> estimation</a></li>
+<li class="chapter" data-level="9.5.3" data-path="control.html"><a href="control.html#summary-8"><i class="fa fa-check"></i><b>9.5.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html"><i class="fa fa-check"></i><b>10</b> inclusive GWAS</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#qc"><i class="fa fa-check"></i><b>10.1</b> QC</a></li>
+<li class="chapter" data-level="10.2" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#gwas-telomere-length"><i class="fa fa-check"></i><b>10.2</b> gwas-telomere length</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#aver2_j"><i class="fa fa-check"></i><b>10.2.1</b> aver2_j</a></li>
+<li class="chapter" data-level="10.2.2" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#organize-data-2"><i class="fa fa-check"></i><b>10.2.2</b> organize data</a></li>
+<li class="chapter" data-level="10.2.3" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#chisq-aver2_j-3"><i class="fa fa-check"></i><b>10.2.3</b> chisq ~ aver2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="inclusive-gwas.html"><a href="inclusive-gwas.html#notesconcerns"><i class="fa fa-check"></i><b>10.3</b> notes/concerns</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html"><i class="fa fa-check"></i><b>11</b> GWAS: White British + Irish</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#id-list-1"><i class="fa fa-check"></i><b>11.1</b> ID list</a>
+<ul>
+<li class="chapter" data-level="11.1.1" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#ids-who-have-no-missing-data"><i class="fa fa-check"></i><b>11.1.1</b> Ids who have no missing data</a></li>
+<li class="chapter" data-level="11.1.2" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#relatedness-filtering-1"><i class="fa fa-check"></i><b>11.1.2</b> relatedness filtering</a></li>
+</ul></li>
+<li class="chapter" data-level="11.2" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#ideas-to-explore"><i class="fa fa-check"></i><b>11.2</b> Ideas to explore:</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="related-individuals.html"><a href="related-individuals.html"><i class="fa fa-check"></i><b>12</b> related individuals</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="related-individuals.html"><a href="related-individuals.html#genotyped-snps"><i class="fa fa-check"></i><b>12.1</b> genotyped SNPs</a>
+<ul>
+<li class="chapter" data-level="12.1.1" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-1"><i class="fa fa-check"></i><b>12.1.1</b> aver2_j</a></li>
+<li class="chapter" data-level="12.1.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-2"><i class="fa fa-check"></i><b>12.1.2</b> gwas</a></li>
+<li class="chapter" data-level="12.1.3" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-3"><i class="fa fa-check"></i><b>12.1.3</b> organize data</a></li>
+<li class="chapter" data-level="12.1.4" data-path="related-individuals.html"><a href="related-individuals.html#summary-9"><i class="fa fa-check"></i><b>12.1.4</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="related-individuals.html"><a href="related-individuals.html#hapmap3-snps"><i class="fa fa-check"></i><b>12.2</b> hapmap3 SNPs</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype-data"><i class="fa fa-check"></i><b>12.2.1</b> genotype data</a></li>
+<li class="chapter" data-level="12.2.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-3"><i class="fa fa-check"></i><b>12.2.2</b> gwas</a></li>
+<li class="chapter" data-level="12.2.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-2"><i class="fa fa-check"></i><b>12.2.3</b> aver2_j</a></li>
+<li class="chapter" data-level="12.2.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-4"><i class="fa fa-check"></i><b>12.2.4</b> organize data</a></li>
+<li class="chapter" data-level="12.2.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-4"><i class="fa fa-check"></i><b>12.2.5</b> chisq ~ aver2_j</a></li>
+<li class="chapter" data-level="12.2.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j"><i class="fa fa-check"></i><b>12.2.6</b> inflation ~ aver2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="related-individuals.html"><a href="related-individuals.html#mix-unrel-rel"><i class="fa fa-check"></i><b>12.3</b> mix unrel &amp; rel</a>
+<ul>
+<li class="chapter" data-level="12.3.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype"><i class="fa fa-check"></i><b>12.3.1</b> genotype</a></li>
+<li class="chapter" data-level="12.3.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-4"><i class="fa fa-check"></i><b>12.3.2</b> gwas</a></li>
+<li class="chapter" data-level="12.3.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-3"><i class="fa fa-check"></i><b>12.3.3</b> aver2_j</a></li>
+<li class="chapter" data-level="12.3.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-5"><i class="fa fa-check"></i><b>12.3.4</b> organize data</a></li>
+<li class="chapter" data-level="12.3.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-5"><i class="fa fa-check"></i><b>12.3.5</b> chisq ~ aver2_j</a></li>
+<li class="chapter" data-level="12.3.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j-1"><i class="fa fa-check"></i><b>12.3.6</b> inflation ~ aver2_j</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html"><i class="fa fa-check"></i><b>13</b> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwas-all-qced-snps"><i class="fa fa-check"></i><b>13.1</b> good GWAS-all qced snps</a></li>
+<li class="chapter" data-level="13.2" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwass--ldak-thin-snps"><i class="fa fa-check"></i><b>13.2</b> good GWASs- ldak-thin snps</a></li>
+<li class="chapter" data-level="13.3" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#bad-gwass-all-qced-snps"><i class="fa fa-check"></i><b>13.3</b> bad GWASs-all qced snps</a></li>
+<li class="chapter" data-level="13.4" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#summary-10"><i class="fa fa-check"></i><b>13.4</b> summary</a></li>
+<li class="chapter" data-level="13.5" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#aver2j"><i class="fa fa-check"></i><b>13.5</b> compute aver2_j</a></li>
+<li class="chapter" data-level="13.6" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#mixed-pop-gwas-with-pc-as-covariates"><i class="fa fa-check"></i><b>13.6</b> mixed pop GWAS with PC as covariates</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="assortative-mating.html"><a href="assortative-mating.html"><i class="fa fa-check"></i><b>14</b> Assortative mating</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="assortative-mating.html"><a href="assortative-mating.html#test-the-idea"><i class="fa fa-check"></i><b>14.1</b> Test the idea</a>
+<ul>
+<li class="chapter" data-level="14.1.1" data-path="assortative-mating.html"><a href="assortative-mating.html#st-try"><i class="fa fa-check"></i><b>14.1.1</b> 1st try</a></li>
+<li class="chapter" data-level="14.1.2" data-path="assortative-mating.html"><a href="assortative-mating.html#nd-try"><i class="fa fa-check"></i><b>14.1.2</b> 2nd try</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html"><i class="fa fa-check"></i><b>15</b> Reference Panel: 1k Genome</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#common-snplist"><i class="fa fa-check"></i><b>15.1</b> common snplist</a></li>
+<li class="chapter" data-level="15.2" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#compute-aver2"><i class="fa fa-check"></i><b>15.2</b> compute aver2</a>
+<ul>
+<li class="chapter" data-level="15.2.1" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#bad-gwas-1"><i class="fa fa-check"></i><b>15.2.1</b> bad gwas</a></li>
+<li class="chapter" data-level="15.2.2" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#varying-levels-of-confounding"><i class="fa fa-check"></i><b>15.2.2</b> varying levels of confounding</a></li>
+<li class="chapter" data-level="15.2.3" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#good-gwas-1"><i class="fa fa-check"></i><b>15.2.3</b> good gwas</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#results"><i class="fa fa-check"></i><b>15.3</b> results</a>
+<ul>
+<li class="chapter" data-level="15.3.1" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#bad-gwas-2"><i class="fa fa-check"></i><b>15.3.1</b> bad gwas</a></li>
+<li class="chapter" data-level="15.3.2" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#varying-levels-of-confounding-1"><i class="fa fa-check"></i><b>15.3.2</b> varying levels of confounding</a></li>
+<li class="chapter" data-level="15.3.3" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#good-gwas-2"><i class="fa fa-check"></i><b>15.3.3</b> good gwas</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">GWAS Quality Control</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="gwas-white-british-irish" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> GWAS: White British + Irish</h1>
+<p>Previously we showed that for the bad gwas that uses white British and a mixture of black &amp; Asians, our test works.
+Here we do GWAS using a sample that contains white British &amp; Irish, who have more subtle difference in ancestry compared to British vs. black &amp; Asians.
+We want to know 1) if there is an inflation in the test statistics ; 2) if there is, can our method detect inflation?</p>
+<div id="id-list-1" class="section level2" number="11.1">
+<h2><span class="header-section-number">11.1</span> ID list</h2>
+<p>We want a list of genetically unrelated white Irish.
+1. get an id list of all Irish people (based on self-reported).
+2. construct grm &amp; remove related individuals -&gt; id list of unrelated Irish.
+3. mix White British with White Irish. N = 100k</p>
+<p>Note. The self-reported ethnicity has been extracted and stored in <code>phen/covariates.phen</code> (see the <code>extract covariates</code> part of section <a href="good.html#good">6</a>).</p>
+<div id="ids-who-have-no-missing-data" class="section level3" number="11.1.1">
+<h3><span class="header-section-number">11.1.1</span> Ids who have no missing data</h3>
+<div class="sourceCode" id="cb89"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb89-1"><a href="gwas-white-british-irish.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract white, asian &amp; black from ukbb----------------------------------------</span></span>
+<span id="cb89-2"><a href="gwas-white-british-irish.html#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span></span>
+<span id="cb89-3"><a href="gwas-white-british-irish.html#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="va">dat</span><span class="op">=</span>read.table<span class="kw">(</span><span class="st">&quot;phen/covariates.phen&quot;</span><span class="ex">,</span> header=T, stringsAsFactors = F<span class="kw">)</span></span>
+<span id="cb89-4"><a href="gwas-white-british-irish.html#cb89-4" aria-hidden="true" tabindex="-1"></a><span class="co"># White Irish (1002)</span></span>
+<span id="cb89-5"><a href="gwas-white-british-irish.html#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="va">dat</span><span class="op">=</span>dat[complete.cases<span class="kw">(</span><span class="ex">dat</span><span class="kw">)</span><span class="ex">,]</span></span>
+<span id="cb89-6"><a href="gwas-white-british-irish.html#cb89-6" aria-hidden="true" tabindex="-1"></a><span class="va">irish</span><span class="op">=</span>1002</span>
+<span id="cb89-7"><a href="gwas-white-british-irish.html#cb89-7" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span>dat[dat<span class="va">$ethnicity</span>%in%irish,] <span class="co"># 12,743</span></span>
+<span id="cb89-8"><a href="gwas-white-british-irish.html#cb89-8" aria-hidden="true" tabindex="-1"></a><span class="ex">write.table</span><span class="er">(</span><span class="va">out</span><span class="op">[</span>,<span class="st">&quot;eid&quot;</span><span class="op">]</span><span class="ex">,</span> <span class="st">&quot;irish-complete-cov.id&quot;</span>, col.names=F, row.names=F, quote=F<span class="kw">)</span></span>
+<span id="cb89-9"><a href="gwas-white-british-irish.html#cb89-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-10"><a href="gwas-white-british-irish.html#cb89-10" aria-hidden="true" tabindex="-1"></a><span class="co"># overlapping Irish across 14 traits--------------------------------------------</span></span>
+<span id="cb89-11"><a href="gwas-white-british-irish.html#cb89-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> irish-complete-cov.id overlap-irish-complete-cov.id</span>
+<span id="cb89-12"><a href="gwas-white-british-irish.html#cb89-12" aria-hidden="true" tabindex="-1"></a><span class="va">dir</span><span class="op">=</span>phen/continuous-traits/</span>
+<span id="cb89-13"><a href="gwas-white-british-irish.html#cb89-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tt <span class="kw">in</span> <span class="dt">{awake</span><span class="op">,</span><span class="dt">bmi</span><span class="op">,</span><span class="dt">chron</span><span class="op">,</span><span class="dt">ever</span><span class="op">,</span><span class="dt">fvc</span><span class="op">,</span><span class="dt">height</span><span class="op">,</span><span class="dt">imp</span><span class="op">,</span><span class="dt">neur</span><span class="op">,</span><span class="dt">pulse</span><span class="op">,</span><span class="dt">quals</span><span class="op">,</span><span class="dt">reaction</span><span class="op">,</span><span class="dt">sbp</span><span class="op">,</span><span class="dt">snoring</span><span class="op">,</span><span class="dt">hyper}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb89-14"><a href="gwas-white-british-irish.html#cb89-14" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> overlap-irish-complete-cov.id temp</span>
+<span id="cb89-15"><a href="gwas-white-british-irish.html#cb89-15" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;(NR==FNR){a[$1];next}($1 in a){print $1, $2}&#39;</span> temp <span class="va">$dir</span>/<span class="va">$tt</span>.raw.pheno <span class="op">&gt;</span> overlap-irish-complete-cov.id</span>
+<span id="cb89-16"><a href="gwas-white-british-irish.html#cb89-16" aria-hidden="true" tabindex="-1"></a><span class="fu">wc</span> <span class="at">-l</span> overlap-irish-complete-cov.id <span class="co"># N = 7,156</span></span>
+<span id="cb89-17"><a href="gwas-white-british-irish.html#cb89-17" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$tt</span></span>
+<span id="cb89-18"><a href="gwas-white-british-irish.html#cb89-18" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb89-19"><a href="gwas-white-british-irish.html#cb89-19" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> temp</span></code></pre></div>
+</div>
+<div id="relatedness-filtering-1" class="section level3" number="11.1.2">
+<h3><span class="header-section-number">11.1.2</span> relatedness filtering</h3>
+<p>Here we want to make bfiles for this particular mix population. The idea is to include british and irish together, so that when we do relatedness filtering and GWAS analyses later, we can just use –keep to select participants.
+Note previously we have a list of overlapping unrelated individuals. They are in overlap-white-complete-cov.id. See section <a href="good.html#good">6</a>.</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb90-1"><a href="gwas-white-british-irish.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co">#-------------</span></span>
+<span id="cb90-2"><a href="gwas-white-british-irish.html#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. make bfiles</span></span>
+<span id="cb90-3"><a href="gwas-white-british-irish.html#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="co">#------------</span></span>
+<span id="cb90-4"><a href="gwas-white-british-irish.html#cb90-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-5"><a href="gwas-white-british-irish.html#cb90-5" aria-hidden="true" tabindex="-1"></a><span class="co"># id lists</span></span>
+<span id="cb90-6"><a href="gwas-white-british-irish.html#cb90-6" aria-hidden="true" tabindex="-1"></a><span class="va">british</span><span class="op">=</span>overlap-white-complete-cov.id <span class="co"># N=147,008</span></span>
+<span id="cb90-7"><a href="gwas-white-british-irish.html#cb90-7" aria-hidden="true" tabindex="-1"></a><span class="va">irish</span><span class="op">=</span>overlap-irish-complete-cov.id <span class="co"># N=7,156</span></span>
+<span id="cb90-8"><a href="gwas-white-british-irish.html#cb90-8" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{print $0}&#39;</span> <span class="va">$british</span> <span class="va">$irish</span> <span class="op">&gt;</span> overlap-british-irish-complete-cov.id <span class="co"># 154,164    </span></span>
+<span id="cb90-9"><a href="gwas-white-british-irish.html#cb90-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-10"><a href="gwas-white-british-irish.html#cb90-10" aria-hidden="true" tabindex="-1"></a><span class="co"># bfiles by chr</span></span>
+<span id="cb90-11"><a href="gwas-white-british-irish.html#cb90-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb90-12"><a href="gwas-white-british-irish.html#cb90-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb90-13"><a href="gwas-white-british-irish.html#cb90-13" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb90-14"><a href="gwas-white-british-irish.html#cb90-14" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb90-15"><a href="gwas-white-british-irish.html#cb90-15" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb90-16"><a href="gwas-white-british-irish.html#cb90-16" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb90-17"><a href="gwas-white-british-irish.html#cb90-17" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 1:0:0</span></span>
+<span id="cb90-18"><a href="gwas-white-british-irish.html#cb90-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-19"><a href="gwas-white-british-irish.html#cb90-19" aria-hidden="true" tabindex="-1"></a><span class="st">./plink2 --pfile ../gen/geno_plink/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb90-20"><a href="gwas-white-british-irish.html#cb90-20" aria-hidden="true" tabindex="-1"></a><span class="st">         --keep ../overlap-british-irish-complete-cov.id </span><span class="dt">\</span></span>
+<span id="cb90-21"><a href="gwas-white-british-irish.html#cb90-21" aria-hidden="true" tabindex="-1"></a><span class="st">         --extract ../gen/snps-unrel-inds.use </span><span class="dt">\</span></span>
+<span id="cb90-22"><a href="gwas-white-british-irish.html#cb90-22" aria-hidden="true" tabindex="-1"></a><span class="st">         --make-bed </span><span class="dt">\</span></span>
+<span id="cb90-23"><a href="gwas-white-british-irish.html#cb90-23" aria-hidden="true" tabindex="-1"></a><span class="st">         --memory 20000 </span><span class="dt">\</span></span>
+<span id="cb90-24"><a href="gwas-white-british-irish.html#cb90-24" aria-hidden="true" tabindex="-1"></a><span class="st">         --out ../gen/tmp/bhr</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb90-25"><a href="gwas-white-british-irish.html#cb90-25" aria-hidden="true" tabindex="-1"></a><span class="st">         --threads 3 </span><span class="dt">\</span></span>
+<span id="cb90-26"><a href="gwas-white-british-irish.html#cb90-26" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/chr<span class="va">$j</span>.sh</span>
+<span id="cb90-27"><a href="gwas-white-british-irish.html#cb90-27" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb90-28"><a href="gwas-white-british-irish.html#cb90-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-29"><a href="gwas-white-british-irish.html#cb90-29" aria-hidden="true" tabindex="-1"></a><span class="co"># submit script</span></span>
+<span id="cb90-30"><a href="gwas-white-british-irish.html#cb90-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb90-31"><a href="gwas-white-british-irish.html#cb90-31" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/chr<span class="va">$i</span>.sh</span>
+<span id="cb90-32"><a href="gwas-white-british-irish.html#cb90-32" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span><span class="op">&gt;</span>../job-records/mkbfile-british-irish</span>
+<span id="cb90-33"><a href="gwas-white-british-irish.html#cb90-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-34"><a href="gwas-white-british-irish.html#cb90-34" aria-hidden="true" tabindex="-1"></a><span class="co"># merge bfiles</span></span>
+<span id="cb90-35"><a href="gwas-white-british-irish.html#cb90-35" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> bfile.list</span>
+<span id="cb90-36"><a href="gwas-white-british-irish.html#cb90-36" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb90-37"><a href="gwas-white-british-irish.html#cb90-37" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span>  <span class="st">&quot;../gen/tmp/bhr</span><span class="va">$j</span><span class="st">&quot;</span> <span class="op">&gt;&gt;</span>bfile.list</span>
+<span id="cb90-38"><a href="gwas-white-british-irish.html#cb90-38" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb90-39"><a href="gwas-white-british-irish.html#cb90-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-40"><a href="gwas-white-british-irish.html#cb90-40" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb90-41"><a href="gwas-white-british-irish.html#cb90-41" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb90-42"><a href="gwas-white-british-irish.html#cb90-42" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb90-43"><a href="gwas-white-british-irish.html#cb90-43" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb90-44"><a href="gwas-white-british-irish.html#cb90-44" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb90-45"><a href="gwas-white-british-irish.html#cb90-45" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 10:0:0</span></span>
+<span id="cb90-46"><a href="gwas-white-british-irish.html#cb90-46" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --make-bed ../gen/geno-british-irish </span><span class="dt">\</span></span>
+<span id="cb90-47"><a href="gwas-white-british-irish.html#cb90-47" aria-hidden="true" tabindex="-1"></a><span class="st">          --mbfile ../gen/bfile.list </span><span class="dt">\</span></span>
+<span id="cb90-48"><a href="gwas-white-british-irish.html#cb90-48" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 3 </span><span class="dt">\</span></span>
+<span id="cb90-49"><a href="gwas-white-british-irish.html#cb90-49" aria-hidden="true" tabindex="-1"></a><span class="st">          --exclude-dups YES  </span></span>
+<span id="cb90-50"><a href="gwas-white-british-irish.html#cb90-50" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/merge-mbfiles-british-irish.sh</span>
+<span id="cb90-51"><a href="gwas-white-british-irish.html#cb90-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-52"><a href="gwas-white-british-irish.html#cb90-52" aria-hidden="true" tabindex="-1"></a><span class="co"># submit the script</span></span>
+<span id="cb90-53"><a href="gwas-white-british-irish.html#cb90-53" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/merge-mbfiles-british-irish.sh <span class="op">&gt;</span>../job-records/merge-mbfiles-british-irish</span>
+<span id="cb90-54"><a href="gwas-white-british-irish.html#cb90-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-55"><a href="gwas-white-british-irish.html#cb90-55" aria-hidden="true" tabindex="-1"></a><span class="co">#-------</span></span>
+<span id="cb90-56"><a href="gwas-white-british-irish.html#cb90-56" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. prune SNPs</span></span>
+<span id="cb90-57"><a href="gwas-white-british-irish.html#cb90-57" aria-hidden="true" tabindex="-1"></a><span class="co">#-------</span></span>
+<span id="cb90-58"><a href="gwas-white-british-irish.html#cb90-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-59"><a href="gwas-white-british-irish.html#cb90-59" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> thin-irish</span>
+<span id="cb90-60"><a href="gwas-white-british-irish.html#cb90-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-61"><a href="gwas-white-british-irish.html#cb90-61" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb90-62"><a href="gwas-white-british-irish.html#cb90-62" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb90-63"><a href="gwas-white-british-irish.html#cb90-63" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb90-64"><a href="gwas-white-british-irish.html#cb90-64" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 10G</span></span>
+<span id="cb90-65"><a href="gwas-white-british-irish.html#cb90-65" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 4</span></span>
+<span id="cb90-66"><a href="gwas-white-british-irish.html#cb90-66" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 5:0:0</span></span>
+<span id="cb90-67"><a href="gwas-white-british-irish.html#cb90-67" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb90-68"><a href="gwas-white-british-irish.html#cb90-68" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --max-threads 4 </span><span class="dt">\</span></span>
+<span id="cb90-69"><a href="gwas-white-british-irish.html#cb90-69" aria-hidden="true" tabindex="-1"></a><span class="st">          --window-prune 0.05 </span><span class="dt">\</span></span>
+<span id="cb90-70"><a href="gwas-white-british-irish.html#cb90-70" aria-hidden="true" tabindex="-1"></a><span class="st">          --window-kb 1000 </span><span class="dt">\</span></span>
+<span id="cb90-71"><a href="gwas-white-british-irish.html#cb90-71" aria-hidden="true" tabindex="-1"></a><span class="st">          --keep ../overlap-irish-complete-cov.id </span><span class="dt">\</span></span>
+<span id="cb90-72"><a href="gwas-white-british-irish.html#cb90-72" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile ../gen/geno-british-irish </span><span class="dt">\</span></span>
+<span id="cb90-73"><a href="gwas-white-british-irish.html#cb90-73" aria-hidden="true" tabindex="-1"></a><span class="st">          --chr </span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb90-74"><a href="gwas-white-british-irish.html#cb90-74" aria-hidden="true" tabindex="-1"></a><span class="st">          --thin ../thin-irish/thin-chr</span><span class="va">$j</span></span>
+<span id="cb90-75"><a href="gwas-white-british-irish.html#cb90-75" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span>  <span class="op">&gt;</span> sh_script/thin<span class="va">$j</span></span>
+<span id="cb90-76"><a href="gwas-white-british-irish.html#cb90-76" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb90-77"><a href="gwas-white-british-irish.html#cb90-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-78"><a href="gwas-white-british-irish.html#cb90-78" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb90-79"><a href="gwas-white-british-irish.html#cb90-79" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/thin<span class="va">$j</span></span>
+<span id="cb90-80"><a href="gwas-white-british-irish.html#cb90-80" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/thin-snps-irish</span>
+<span id="cb90-81"><a href="gwas-white-british-irish.html#cb90-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-82"><a href="gwas-white-british-irish.html#cb90-82" aria-hidden="true" tabindex="-1"></a><span class="co">#-------------</span></span>
+<span id="cb90-83"><a href="gwas-white-british-irish.html#cb90-83" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. kinship matrix under GCTA</span></span>
+<span id="cb90-84"><a href="gwas-white-british-irish.html#cb90-84" aria-hidden="true" tabindex="-1"></a><span class="co">#-------------</span></span>
+<span id="cb90-85"><a href="gwas-white-british-irish.html#cb90-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-86"><a href="gwas-white-british-irish.html#cb90-86" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> kinship-irish</span>
+<span id="cb90-87"><a href="gwas-white-british-irish.html#cb90-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-88"><a href="gwas-white-british-irish.html#cb90-88" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb90-89"><a href="gwas-white-british-irish.html#cb90-89" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb90-90"><a href="gwas-white-british-irish.html#cb90-90" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb90-91"><a href="gwas-white-british-irish.html#cb90-91" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb90-92"><a href="gwas-white-british-irish.html#cb90-92" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb90-93"><a href="gwas-white-british-irish.html#cb90-93" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 1:0:0</span></span>
+<span id="cb90-94"><a href="gwas-white-british-irish.html#cb90-94" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb90-95"><a href="gwas-white-british-irish.html#cb90-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-96"><a href="gwas-white-british-irish.html#cb90-96" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --max-threads 3 </span><span class="dt">\</span></span>
+<span id="cb90-97"><a href="gwas-white-british-irish.html#cb90-97" aria-hidden="true" tabindex="-1"></a><span class="st">          --calc-kins-direct ../kinship-irish/irish-gcta-thin</span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb90-98"><a href="gwas-white-british-irish.html#cb90-98" aria-hidden="true" tabindex="-1"></a><span class="st">          --bfile ../gen/geno-british-irish </span><span class="dt">\</span></span>
+<span id="cb90-99"><a href="gwas-white-british-irish.html#cb90-99" aria-hidden="true" tabindex="-1"></a><span class="st">          --keep ../overlap-irish-complete-cov.id</span><span class="dt">\</span></span>
+<span id="cb90-100"><a href="gwas-white-british-irish.html#cb90-100" aria-hidden="true" tabindex="-1"></a><span class="st">          --extract ../thin-irish/thin-chr</span><span class="va">$j</span><span class="st">.in </span><span class="dt">\</span></span>
+<span id="cb90-101"><a href="gwas-white-british-irish.html#cb90-101" aria-hidden="true" tabindex="-1"></a><span class="st">          --chr </span><span class="va">$j</span><span class="st"> </span><span class="dt">\</span></span>
+<span id="cb90-102"><a href="gwas-white-british-irish.html#cb90-102" aria-hidden="true" tabindex="-1"></a><span class="st">          --power -1 </span><span class="dt">\</span></span>
+<span id="cb90-103"><a href="gwas-white-british-irish.html#cb90-103" aria-hidden="true" tabindex="-1"></a><span class="st">          --ignore-weights YES </span><span class="dt">\</span></span>
+<span id="cb90-104"><a href="gwas-white-british-irish.html#cb90-104" aria-hidden="true" tabindex="-1"></a><span class="st">          --single YES</span></span>
+<span id="cb90-105"><a href="gwas-white-british-irish.html#cb90-105" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span> <span class="op">&gt;</span> sh_script/irish-grm<span class="va">$j</span></span>
+<span id="cb90-106"><a href="gwas-white-british-irish.html#cb90-106" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb90-107"><a href="gwas-white-british-irish.html#cb90-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-108"><a href="gwas-white-british-irish.html#cb90-108" aria-hidden="true" tabindex="-1"></a><span class="co"># submit files</span></span>
+<span id="cb90-109"><a href="gwas-white-british-irish.html#cb90-109" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb90-110"><a href="gwas-white-british-irish.html#cb90-110" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/irish-grm<span class="va">$j</span></span>
+<span id="cb90-111"><a href="gwas-white-british-irish.html#cb90-111" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&gt;</span> ../job-records/grm-irish</span>
+<span id="cb90-112"><a href="gwas-white-british-irish.html#cb90-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-113"><a href="gwas-white-british-irish.html#cb90-113" aria-hidden="true" tabindex="-1"></a><span class="co"># merge grms</span></span>
+<span id="cb90-114"><a href="gwas-white-british-irish.html#cb90-114" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> irish-grm.list</span>
+<span id="cb90-115"><a href="gwas-white-british-irish.html#cb90-115" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="dt">{</span><span class="dv">1</span><span class="dt">..</span><span class="dv">22</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb90-116"><a href="gwas-white-british-irish.html#cb90-116" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;../kinship-irish/irish-gcta-thin</span><span class="va">$j</span><span class="st">&quot;</span> <span class="op">&gt;&gt;</span> irish-grm.list</span>
+<span id="cb90-117"><a href="gwas-white-british-irish.html#cb90-117" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb90-118"><a href="gwas-white-british-irish.html#cb90-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-119"><a href="gwas-white-british-irish.html#cb90-119" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb90-120"><a href="gwas-white-british-irish.html#cb90-120" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb90-121"><a href="gwas-white-british-irish.html#cb90-121" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb90-122"><a href="gwas-white-british-irish.html#cb90-122" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 80G</span></span>
+<span id="cb90-123"><a href="gwas-white-british-irish.html#cb90-123" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 10</span></span>
+<span id="cb90-124"><a href="gwas-white-british-irish.html#cb90-124" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 12:0:0</span></span>
+<span id="cb90-125"><a href="gwas-white-british-irish.html#cb90-125" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --add-grm ../kinship-irish/irish-gcta-thin --mgrm ../irish-grm.list</span></span>
+<span id="cb90-126"><a href="gwas-white-british-irish.html#cb90-126" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/irish-grm.sh</span>
+<span id="cb90-127"><a href="gwas-white-british-irish.html#cb90-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-128"><a href="gwas-white-british-irish.html#cb90-128" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/irish-grm.sh <span class="op">&gt;</span> ../job-records/grm-merge</span>
+<span id="cb90-129"><a href="gwas-white-british-irish.html#cb90-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-130"><a href="gwas-white-british-irish.html#cb90-130" aria-hidden="true" tabindex="-1"></a><span class="co">#can now delete per-chr files</span></span>
+<span id="cb90-131"><a href="gwas-white-british-irish.html#cb90-131" aria-hidden="true" tabindex="-1"></a><span class="co">#rm *gcta-thin{1..22}.*</span></span>
+<span id="cb90-132"><a href="gwas-white-british-irish.html#cb90-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-133"><a href="gwas-white-british-irish.html#cb90-133" aria-hidden="true" tabindex="-1"></a><span class="co">#-----------------------</span></span>
+<span id="cb90-134"><a href="gwas-white-british-irish.html#cb90-134" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Relatedness filtering </span></span>
+<span id="cb90-135"><a href="gwas-white-british-irish.html#cb90-135" aria-hidden="true" tabindex="-1"></a><span class="co">#------------------------</span></span>
+<span id="cb90-136"><a href="gwas-white-british-irish.html#cb90-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-137"><a href="gwas-white-british-irish.html#cb90-137" aria-hidden="true" tabindex="-1"></a><span class="co"># relatedness filtering</span></span>
+<span id="cb90-138"><a href="gwas-white-british-irish.html#cb90-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-139"><a href="gwas-white-british-irish.html#cb90-139" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;#&quot;&#39;!&#39;&quot;/bin/bash</span></span>
+<span id="cb90-140"><a href="gwas-white-british-irish.html#cb90-140" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --constraint </span><span class="dt">\&quot;</span><span class="st">s04|s05</span><span class="dt">\&quot;</span></span>
+<span id="cb90-141"><a href="gwas-white-british-irish.html#cb90-141" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --partition normal</span></span>
+<span id="cb90-142"><a href="gwas-white-british-irish.html#cb90-142" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH --mem 20G</span></span>
+<span id="cb90-143"><a href="gwas-white-british-irish.html#cb90-143" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -c 3</span></span>
+<span id="cb90-144"><a href="gwas-white-british-irish.html#cb90-144" aria-hidden="true" tabindex="-1"></a><span class="st">#SBATCH -t 2:0:0</span></span>
+<span id="cb90-145"><a href="gwas-white-british-irish.html#cb90-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-146"><a href="gwas-white-british-irish.html#cb90-146" aria-hidden="true" tabindex="-1"></a><span class="st">./ldak5.1 --filter ../relatedness/irish-cut.05 </span><span class="dt">\</span></span>
+<span id="cb90-147"><a href="gwas-white-british-irish.html#cb90-147" aria-hidden="true" tabindex="-1"></a><span class="st">          --grm ../kinship-irish/irish-gcta-thin </span><span class="dt">\</span></span>
+<span id="cb90-148"><a href="gwas-white-british-irish.html#cb90-148" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-rel 0.05 </span><span class="dt">\</span></span>
+<span id="cb90-149"><a href="gwas-white-british-irish.html#cb90-149" aria-hidden="true" tabindex="-1"></a><span class="st">          --max-threads 3</span></span>
+<span id="cb90-150"><a href="gwas-white-british-irish.html#cb90-150" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span><span class="op">&gt;</span> sh_script/irish-rel-cut.05.sh</span>
+<span id="cb90-151"><a href="gwas-white-british-irish.html#cb90-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-152"><a href="gwas-white-british-irish.html#cb90-152" aria-hidden="true" tabindex="-1"></a><span class="co"># submit script</span></span>
+<span id="cb90-153"><a href="gwas-white-british-irish.html#cb90-153" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">-A</span> snpher ../sh_script/irish-rel-cut.05.sh <span class="op">&gt;</span> ../job-records/relatedness-filtering-irish</span>
+<span id="cb90-154"><a href="gwas-white-british-irish.html#cb90-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-155"><a href="gwas-white-british-irish.html#cb90-155" aria-hidden="true" tabindex="-1"></a><span class="co"># remaining individuals</span></span>
+<span id="cb90-156"><a href="gwas-white-british-irish.html#cb90-156" aria-hidden="true" tabindex="-1"></a><span class="co"># irish-cut.05.keep N = </span></span>
+<span id="cb90-157"><a href="gwas-white-british-irish.html#cb90-157" aria-hidden="true" tabindex="-1"></a><span class="co"># sum = 6,472</span></span></code></pre></div>
+</div>
+</div>
+<div id="ideas-to-explore" class="section level2" number="11.2">
+<h2><span class="header-section-number">11.2</span> Ideas to explore:</h2>
+<ol style="list-style-type: decimal">
+<li>Plot PC1 &amp; PC2 of the study samples to show the extent to which these study samples differ in ancestry.</li>
+</ol>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="inclusive-gwas.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="related-individuals.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/04.6-bad-gwas-Irish.rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["bookdown-demo.pdf", "bookdown-demo.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

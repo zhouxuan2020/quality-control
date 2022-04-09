@@ -1,0 +1,668 @@
+
+# Reference Panel: 1k Genome
+
+Here we want to test the idea if aver2 computed using mixed populations from a reference panel can be used for our proposed test. We will use genotype data from the 1k genome project as the reference panel. Here are the steps.
+
+1. get the overlapping snp list of the two datasets, ukbb & 1k genome. 
+2. randomly select 1000 snps from each chromosome. This will will give 22k snps.
+3. compute aver2 from each dataset & compare them.
+
+Note: we could also consider stratified analyses based on maf.
+
+## common snplist
+
+```{bash eval=F}
+
+mkdir ref-1kg
+mkdir ref-1kg/snplist
+mkdir ref-1kg/ukbb
+mkdir ref-1kg/1kg
+mkdir ref-1kg/1kg/out
+mkdir ref-1kg/1kg/gen
+mkdir ref-1kg/ukbb/out
+
+# common snp list----------------------------------------------------------------------
+ref=ref-1kg/1kg/gen/1000b.bim
+ukbb1=gen/geno-unrel.bim
+ukbb2=gen/snps-unrel-inds.use
+
+awk '{a=$5; 
+      b=$6;
+      if(a<b) 
+      print $1, $2, $2 "_" a "_" b;
+      else 
+      print $1, $2, $2 "_" b "_"a}' \
+      $ref > 1kg.tmp
+
+awk '{a=$5; 
+      b=$6;
+      if(a<b) 
+      print $1, $2, $1 ":" $4 "_" a "_" b;
+      else 
+      print $1, $2, $1 ":" $4 "_" b "_" a}' \
+      $ukbb1 >ukbb1.tmp
+
+awk 'NR==FNR {a[$1]; next} 
+     {if ($2 in a) print $0}' $ukbb2 ukbb1.tmp > ukbb2.tmp
+
+awk 'NR==FNR {a[$3]; next} 
+     {if ($3 in a) print $0}' \
+     ukbb2.tmp 1kg.tmp > ref-1kg/snplist/1kg-common-snps # m=1,097,285
+
+awk 'NR==FNR {a[$3]; next} 
+     {if ($3 in a) print $0}' \
+     1kg.tmp ukbb2.tmp> ref-1kg/snplist/ukbb-common-snps # m=1,097,285
+     
+# select 22k SNPs from the common list ----------------------------------------
+for i in {1..22}; do
+awk -v i=$i '($1==i){print $3}' ref-1kg/snplist/1kg-common-snps > temp
+shuf temp | head -n 1000 > ref-1kg/snplist/rand-1k-chrom$i
+done
+
+# combine files
+dir=ref-1kg/snplist
+rm $dir/rand-22k
+for i in {1..22}; do
+cat $dir/rand-1k-chrom$i >> $dir/rand-22k
+done
+
+rm ref-1kg/snplist/rand-1k-chrom*
+
+# 1kg snp names
+dir=ref-1kg/snplist
+awk 'NR==FNR {a[$1]; next} 
+     {if ($3 in a) print $2}' \
+     $dir/rand-22k $dir/1kg-common-snps > $dir/1kg-22k-snps.use
+
+# ukbb snp names
+dir=ref-1kg/snplist
+awk 'NR==FNR {a[$1]; next} 
+     {if ($3 in a) print $2}' \
+     $dir/rand-22k $dir/ukbb-common-snps > $dir/ukbb-22k-snps.use
+     
+```
+
+## compute aver2
+
+### bad gwas
+
+```{bash eval=F}
+
+# compute aver2 ----------------------------------------------------------------
+# 1kg
+list=../ref-1kg/snplist/1kg-22k-snps.use
+bfile=../ref-1kg/1kg/gen/1000b
+out=../ref-1kg/aver2/1kg.aver2
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --lista $list \
+          --listb $list
+">sh_script/calc-aver2-1kg
+
+# ukbb
+list=../ref-1kg/snplist/ukbb-22k-snps.use
+bfile=../gen/geno-mix
+out=../ref-1kg/aver2/ukbb.aver2
+id=../mix-pop-gwas.id
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --keep $id \
+          --lista $list \
+          --listb $list
+">sh_script/calc-aver2-ukbb
+
+# submit the job
+for i in {1kg,ukbb}; do
+sbatch -A snpher ../sh_script/calc-aver2-$i
+done >../job-records/calc-aver2-ref
+
+# organize data ----------------------------------------------------------------
+aver2_ref=ref-1kg/aver2/1kg.aver2.rjk2.average
+aver2_ukbb=ref-1kg/aver2/ukbb.aver2.rjk2.average
+ref=ref-1kg/snplist/1kg-common-snps
+ukbb=ref-1kg/snplist/ukbb-common-snps
+out=ref-1kg/aver2/1kg-ukbb.aver2
+
+awk 'NR==FNR {a[$2]; b[$2]=$3; next}
+      {if ($1 in a) print b[$1], $1, $2}' $ref $aver2_ref > ref-1kg/aver2/1kg-tmp
+      
+awk 'NR==FNR {a[$2]; b[$2]=$3; next}
+      {if ($1 in a) print b[$1], $1, $2}' $ukbb $aver2_ukbb > ref-1kg/aver2/ukbb-tmp
+
+dir=ref-1kg/aver2
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb" }
+     NR==FNR {a[$1]; b[$1]=$2; c[$1]=$3; next}
+     {if ($1 in a) print $2, b[$1], c[$1], $3 }' $dir/1kg-tmp $dir/ukbb-tmp > $out 
+
+# combine aver2 with ukbb phenotypes--------------------------------------------
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+gwas=gwas-mix/$trait-linear.summaries
+aver2=ref-1kg/aver2/1kg-ukbb.aver2
+out=ref-1kg/out/$trait.out
+
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq" }
+     NR==FNR && NR > 1 {a[$1]; b[$1]=$5; next} 
+     {if ($1 in a) print $0, b[$1]}' $gwas $aver2> $out
+     
+done
+
+```
+
+### varying levels of confounding
+
+```{bash eval=F}
+# compute aver2 ----------------------------------------------------------------
+# ukbb
+for n in {0k,1k,2k,3k,4k,5k,6k}; do
+
+# mkdir
+mkdir ref-1kg/aver2-$n-noneuro
+
+# define vars
+bfile=../gen/geno-mix
+out=../ref-1kg/aver2-$n-noneuro/ukbb.aver2
+list=../ref-1kg/snplist/ukbb-22k-snps.use
+
+if [ $n == 0k ]; then
+  id=../rand.100000
+else
+  id=../mix-pop-gwas-$n-noneuro.id
+fi
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 25G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --keep $id \
+          --lista $list \
+          --listb $list
+">sh_script/calc-aver2-ukbb-$n-noneuro
+done
+
+# submit the job
+for n in {0k,1k,2k,3k,4k,5k,6k}; do
+sbatch -A snpher ../sh_script/calc-aver2-ukbb-$n-noneuro
+done >../job-records/calc-aver2-varying-noneuro
+
+# organize data ----------------------------------------------------------------
+
+for n in {0k,1k,2k,3k,4k,5k,6k}; do
+dir=ref-1kg/aver2-$n-noneuro
+aver2_ref=ref-1kg/aver2/1kg.aver2.rjk2.average
+aver2_ukbb=$dir/ukbb.aver2.rjk2.average
+ref=ref-1kg/snplist/1kg-common-snps
+ukbb=ref-1kg/snplist/ukbb-common-snps
+out=$dir/1kg-ukbb.aver2
+
+awk 'NR==FNR {a[$2]; b[$2]=$3; next}
+      {if ($1 in a) print b[$1], $1, $2}' $ref $aver2_ref > $dir/1kg-tmp
+      
+awk 'NR==FNR {a[$2]; b[$2]=$3; next}
+      {if ($1 in a) print b[$1], $1, $2}' $ukbb $aver2_ukbb > $dir/ukbb-tmp
+
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb" }
+     NR==FNR {a[$1]; b[$1]=$2; c[$1]=$3; next}
+     {if ($1 in a) print $2, b[$1], c[$1], $3 }' $dir/1kg-tmp $dir/ukbb-tmp > $out 
+done
+
+# combine aver2 with ukbb phenotypes--------------------------------------------
+
+for n in {0k,1k,2k,3k,4k,5k,6k}; do
+# mkdir 
+mkdir ref-1kg/out-$n-noneuro
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=gwas-mix-$n-noneuro/maf.01/$trait-linear.summaries
+aver2=ref-1kg/aver2-$n-noneuro/1kg-ukbb.aver2
+out=ref-1kg/out-$n-noneuro/$trait.out
+
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq" }
+     NR==FNR && NR > 1 {a[$1]; b[$1]=$5; next} 
+     {if ($1 in a) print $0, b[$1]}' $gwas $aver2> $out
+     
+done
+done
+
+```
+
+### good gwas
+
+```{bash eval=F}
+
+# compute aver2 ----------------------------------------------------------------
+
+# ukbb
+list=../ref-1kg/snplist/ukbb-22k-snps.use
+bfile=../gen/geno-unrel
+out=../ref-1kg/aver2-good-gwas/ukbb.aver2
+id=../unrelated/rand.100000
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --keep $id \
+          --lista $list \
+          --listb $list
+">sh_script/calc-aver2-ukbb
+
+# submit the job
+sbatch -A snpher ../sh_script/calc-aver2-ukbb > ../job-records/calc-aver2-good-gwas
+
+# organize data ----------------------------------------------------------------
+dir=ref-1kg/aver2-good-gwas
+aver2_ref=ref-1kg/aver2/1kg.aver2.rjk2.average
+aver2_ukbb=$dir/ukbb.aver2.rjk2.average
+ref=ref-1kg/snplist/1kg-common-snps
+ukbb=ref-1kg/snplist/ukbb-common-snps
+out=$dir/1kg-ukbb.aver2
+
+awk 'NR==FNR {a[$2]; b[$2]=$3; next}
+      {if ($1 in a) print b[$1], $1, $2}' $ref $aver2_ref > $dir/1kg-tmp
+      
+awk 'NR==FNR {a[$2]; b[$2]=$3; next}
+      {if ($1 in a) print b[$1], $1, $2}' $ukbb $aver2_ukbb > $dir/ukbb-tmp
+
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb" }
+     NR==FNR {a[$1]; b[$1]=$2; c[$1]=$3; next}
+     {if ($1 in a) print $2, b[$1], c[$1], $3 }' $dir/1kg-tmp $dir/ukbb-tmp > $out 
+
+# combine aver2 with ukbb phenotypes--------------------------------------------
+
+mkdir ref-1kg/out-good-gwas
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+gwas=unrelated/gwas-good/$trait-linear.summaries
+aver2=ref-1kg/aver2-good-gwas/1kg-ukbb.aver2
+out=ref-1kg/out-good-gwas/$trait.out
+
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq" }
+     NR==FNR && NR > 1 {a[$1]; b[$1]=$5; next} 
+     {if ($1 in a) print $0, b[$1]}' $gwas $aver2> $out
+     
+done
+
+```
+
+
+## results
+
+### bad gwas
+
+```{r eval=F}
+
+# plot aver2 1kg vs. ukbb ------------------------------------------------------
+file="ref-1kg/aver2/1kg-ukbb.aver2"
+dat=read.table(file,stringsAsFactors = F, header=T)
+cor=round(cor(dat$ref, dat$ukbb),2)# 0.6833908
+corx=min(dat$ref)
+cory=max(dat$ukbb)
+  
+png("fig/aver2-1kg-vs-ukbb.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(dat$ref, dat$ukbb,
+     xlab="1k genome", ylab="ukbb",
+     main=" aver2",
+     cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+text(corx, cory, paste0("r = ", cor), 
+          adj=c(0,1), cex=1.2, font=2)
+dev.off()
+
+# plot chisq ~ aver2 1kg  ------------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-bad-gwas-1kg-ref.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("ref-1kg/out/",trait,".out"), col_names=T)
+  dat=dat[,c("ref","chisq")]
+  names(dat)=c("aver2","chisq")
+
+  # linear model
+  mod=lm(chisq ~ aver2,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+}
+dev.off()
+
+
+# plot chisq ~ aver2 ukbb ------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-bad-gwas-ukbb.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("ref-1kg/out/",trait,".out"), col_names=T)
+  dat=dat[,c("ukbb","chisq")]
+  names(dat)=c("aver2","chisq")
+
+  # linear model
+  mod=lm(chisq ~ aver2,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+}
+dev.off()
+
+```
+
+### varying levels of confounding
+
+```{r eval=F}
+
+# plot aver2 1kg vs. ukbb ------------------------------------------------------
+
+n_noneuro=c("0k","1k", "2k", "3k", "4k", "5k", "6k")
+
+png("fig/aver2-1kg-vs-ukbb-varying-noneuro.png", 
+    res=600, width=40, height=20, units="cm")
+par(mfrow=c(2,4), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in n_noneuro){
+
+file=paste0("ref-1kg/aver2-",i,"-noneuro/1kg-ukbb.aver2")
+dat=read.table(file,stringsAsFactors = F, header=T)
+cor=round(cor(dat$ref, dat$ukbb),2)
+corx=min(dat$ref)
+cory=max(dat$ukbb)
+
+plot(dat$ref, dat$ukbb,
+     xlab="1k genome", ylab="ukbb",
+     main=paste0("aver2 ", i," noneuropean"),
+     cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+text(corx, cory, paste0("r = ", cor), 
+          adj=c(0,1), cex=1.2, font=2)
+}
+
+dev.off()
+
+# plot chisq ~ aver2 1kg  ------------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+n_noneuro=c("0k","1k", "2k", "3k", "4k", "5k", "6k")
+
+for(j in n_noneuro){
+
+plotnm=paste0("fig/chisq-aver2-bin-bad-gwas-", j,"-noneuro-1kg-ref.png")
+png(plotnm, res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("ref-1kg/out-",j ,"-noneuro/",trait,".out"), col_names=T)
+  dat=dat[,c("ref","chisq")]
+  names(dat)=c("aver2","chisq")
+
+  # linear model
+  mod=lm(chisq ~ aver2,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+}
+dev.off()
+}
+
+# plot chisq ~ aver2 ukbb ------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+n_noneuro=c("0k","1k", "2k", "3k", "4k", "5k", "6k")
+
+for(j in n_noneuro){
+plotnm=paste0("fig/chisq-aver2-bin-bad-gwas-", j,"-noneuro-ukbb.png")
+png(plotnm, res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("ref-1kg/out-",j,"-noneuro/",trait,".out"), col_names=T)
+  dat=dat[,c("ukbb","chisq")]
+  names(dat)=c("aver2","chisq")
+
+  # linear model
+  mod=lm(chisq ~ aver2,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+}
+dev.off()
+}
+
+```
+
+### good gwas
+
+```{r eval=F}
+
+# plot aver2 1kg vs. ukbb ------------------------------------------------------
+file="ref-1kg/aver2-good-gwas/1kg-ukbb.aver2"
+dat=read.table(file,stringsAsFactors = F, header=T)
+cor=round(cor(dat$ref, dat$ukbb),2)
+corx=min(dat$ref)
+cory=max(dat$ukbb)
+  
+png("fig/aver2-1kg-vs-ukbb-good-gwas.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(dat$ref, dat$ukbb,
+     xlab="1k genome", ylab="ukbb",
+     main=" aver2",
+     cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+text(corx, cory, paste0("r = ", cor), 
+          adj=c(0,1), cex=1.2, font=2)
+dev.off()
+
+# plot chisq ~ aver2 1kg  ------------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-good-gwas-1kg-ref.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("ref-1kg/out-good-gwas/",trait,".out"), col_names=T)
+  dat=dat[,c("ref","chisq")]
+  names(dat)=c("aver2","chisq")
+
+  # linear model
+  mod=lm(chisq ~ aver2,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+}
+dev.off()
+
+# plot chisq ~ aver2 ukbb ------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-good-gwas-ukbb.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("ref-1kg/out-good-gwas/",trait,".out"), col_names=T)
+  dat=dat[,c("ukbb","chisq")]
+  names(dat)=c("aver2","chisq")
+
+  # linear model
+  mod=lm(chisq ~ aver2,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+}
+dev.off()
+
+```
+

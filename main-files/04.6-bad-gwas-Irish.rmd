@@ -1,0 +1,390 @@
+
+# GWAS: White British + Irish
+
+Previously we showed that for the bad gwas that uses white British and a mixture of black & Asians, our test works.
+Here we do GWAS using a sample that contains white British & Irish, who have more subtle difference in ancestry compared to British vs. black & Asians.
+We want to know  1) if there is an inflation in the test statistics ; 2) if there is, can our method detect inflation?
+
+## ID list
+We want a list of genetically unrelated white Irish. 
+1. get an id list of all Irish people (based on self-reported).
+2. construct grm & remove related individuals -> id list of unrelated Irish.
+3. mix White British with White Irish. N = 100k
+
+Note. The self-reported ethnicity has been extracted and stored in `phen/covariates.phen` (see the `extract covariates` part of section \@ref(good)).
+
+### Ids who have no missing data
+
+```{bash eval=F}
+# extract white, asian & black from ukbb----------------------------------------
+R
+dat=read.table("phen/covariates.phen", header=T, stringsAsFactors = F)
+# White Irish (1002)
+dat=dat[complete.cases(dat),]
+irish=1002
+out=dat[dat$ethnicity%in%irish,] # 12,743
+write.table(out[,"eid"], "irish-complete-cov.id", col.names=F, row.names=F, quote=F)
+
+# overlapping Irish across 14 traits--------------------------------------------
+cp irish-complete-cov.id overlap-irish-complete-cov.id
+dir=phen/continuous-traits/
+for tt in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+mv overlap-irish-complete-cov.id temp
+awk '(NR==FNR){a[$1];next}($1 in a){print $1, $2}' temp $dir/$tt.raw.pheno > overlap-irish-complete-cov.id
+wc -l overlap-irish-complete-cov.id # N = 7,156
+echo $tt
+done
+rm temp
+
+```
+
+### relatedness filtering
+
+Here we want to make bfiles for this particular mix population. The idea is to include british and irish together, so that when we do relatedness filtering and GWAS analyses later, we can just use --keep to select participants.
+Note previously we have a list of overlapping unrelated individuals. They are in overlap-white-complete-cov.id. See section \@ref(good). 
+
+```{bash eval=F}
+#-------------
+# 0. make bfiles
+#------------
+
+# id lists
+british=overlap-white-complete-cov.id # N=147,008
+irish=overlap-irish-complete-cov.id # N=7,156
+awk '{print $0}' $british $irish > overlap-british-irish-complete-cov.id # 154,164    
+
+# bfiles by chr
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 1:0:0
+
+./plink2 --pfile ../gen/geno_plink/bhr$j \
+         --keep ../overlap-british-irish-complete-cov.id \
+         --extract ../gen/snps-unrel-inds.use \
+         --make-bed \
+         --memory 20000 \
+         --out ../gen/tmp/bhr$j \
+         --threads 3 \
+"> sh_script/chr$j.sh
+done
+
+# submit script
+for i in {1..22}; do
+sbatch -A snpher ../sh_script/chr$i.sh
+done>../job-records/mkbfile-british-irish
+
+# merge bfiles
+rm bfile.list
+for j in {1..22}; do
+echo  "../gen/tmp/bhr$j" >>bfile.list
+done
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+./ldak5.1 --make-bed ../gen/geno-british-irish \
+          --mbfile ../gen/bfile.list \
+          --max-threads 3 \
+          --exclude-dups YES  
+"> sh_script/merge-mbfiles-british-irish.sh
+
+# submit the script
+sbatch -A snpher ../sh_script/merge-mbfiles-british-irish.sh >../job-records/merge-mbfiles-british-irish
+
+#-------
+# 1. prune SNPs
+#-------
+
+mkdir thin-irish
+
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 4
+#SBATCH -t 5:0:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --max-threads 4 \
+          --window-prune 0.05 \
+          --window-kb 1000 \
+          --keep ../overlap-irish-complete-cov.id \
+          --bfile ../gen/geno-british-irish \
+          --chr $j \
+          --thin ../thin-irish/thin-chr$j
+"  > sh_script/thin$j
+done
+
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/thin$j
+done > ../job-records/thin-snps-irish
+
+#-------------
+# 2. kinship matrix under GCTA
+#-------------
+
+mkdir kinship-irish
+
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 1:0:0
+#SBATCH --constraint \"s04|s05\"
+
+./ldak5.1 --max-threads 3 \
+          --calc-kins-direct ../kinship-irish/irish-gcta-thin$j \
+          --bfile ../gen/geno-british-irish \
+          --keep ../overlap-irish-complete-cov.id\
+          --extract ../thin-irish/thin-chr$j.in \
+          --chr $j \
+          --power -1 \
+          --ignore-weights YES \
+          --single YES
+" > sh_script/irish-grm$j
+done
+
+# submit files
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/irish-grm$j
+done > ../job-records/grm-irish
+
+# merge grms
+rm irish-grm.list
+for j in {1..22}; do
+echo "../kinship-irish/irish-gcta-thin$j" >> irish-grm.list
+done
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 80G
+#SBATCH -c 10
+#SBATCH -t 12:0:0
+./ldak5.1 --add-grm ../kinship-irish/irish-gcta-thin --mgrm ../irish-grm.list
+"> sh_script/irish-grm.sh
+
+sbatch -A snpher ../sh_script/irish-grm.sh > ../job-records/grm-merge
+
+#can now delete per-chr files
+#rm *gcta-thin{1..22}.*
+
+#-----------------------
+# 3. Relatedness filtering 
+#------------------------
+
+# relatedness filtering
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 2:0:0
+
+./ldak5.1 --filter ../relatedness/irish-cut.05 \
+          --grm ../kinship-irish/irish-gcta-thin \
+          --max-rel 0.05 \
+          --max-threads 3
+"> sh_script/irish-rel-cut.05.sh
+
+# submit script
+sbatch -A snpher ../sh_script/irish-rel-cut.05.sh > ../job-records/relatedness-filtering-irish
+
+# remaining individuals
+# irish-cut.05.keep N = 6,632 
+
+# mix 93,368 british with irish--------------------------------------------------------------
+#awk '(NR==FNR) {a[$1] ;next} ($1 in a) {print $0}'  gen/geno-british-irish.fam rand.100000 > check
+
+shuf rand.100000 | head -n 93368 > british.rand.93368
+cat british.rand.93368 relatedness/irish-cut.05.keep > british-irish-gwas.id
+
+```
+
+## GWAS-lm
+
+We use basic covariates only: age, sex and townsend.
+
+```{bash eval=F}
+
+# gwas------------------------------------------------------------------------------
+
+mkdir gwas-british-irish 
+
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../gwas-british-irish/$i-linear \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-british-irish \
+          --keep ../british-irish-gwas.id \
+          --extract ../gen/snps-unrel-inds.use \
+          --covar ../phen/basic-covariates.use \
+          --max-threads 3 \
+"> sh_script/$i-linear.sh
+done
+
+# submit files
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear.sh
+done>../job-records/gwas-british-irish
+
+
+```
+
+## chisq ~ aver2_j
+
+### calc aver2_j
+
+We use the same snp lists as for the good and bad GWASs (see section \@ref(aver2j)):
+`left-snps-unrel-inds-10k` & `right-snps-unrel-inds-10k`.
+
+```{bash eval=F}
+
+# new directory
+mkdir inflation/british-irish
+
+# to calc aver2 for lista-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../british-irish-gwas.id 
+bfile=../gen/geno-british-irish
+out=../inflation/british-irish/aver2-lista
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-lista
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-lista >../job-records/calc-aver2-british-irish
+
+# to calc aver2 for listb-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../british-irish-gwas.id 
+bfile=../gen/geno-british-irish
+out=../inflation/british-irish/aver2-listb
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $listb \
+          --listb $lista
+">sh_script/calc-aver2-listb
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-listb >../job-records/calc-aver2-listb-british-irish
+
+# merge aver2 of the two lists--------------------------------------------------
+
+# UP TO HERE...........................................................................................
+
+```
+
+### organize data
+
+```{bash eval=F}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# extract LD score
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+# convert snp list to rs system ------------------------------------------------
+infile=gen/snps-unrel-inds.use
+outfile=gen/snps-unrel-inds.use-rs
+awk '(NR==FNR){a[$1]; next}
+     ($1 in a){print $1, $2}' $infile doug/ukbb.ldsc  > $outfile
+
+#  extract ld scores -----------------------------------------------------------
+dir=ldsc/eur_w_ld_chr
+for chrom in {1..22}; do
+zcat $dir/$chrom.l2.ldscore.gz | awk 'NR>1 {print $2, $6}' > ldscore
+awk '(NR==FNR){a[$2]; b[$2]=$1; next}
+      ($1 in a){print b[$1], $2}' gen/snps-unrel-inds.use-rs ldscore > temp
+if [ $chrom -eq 1 ]
+then 
+ mv temp snps-unrel-inds.ldscore
+else
+ cat snps-unrel-inds.ldscore temp > temp2
+ mv temp2 snps-unrel-inds.ldscore
+fi
+echo $chrom
+done
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# putting information together
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+dir=gwas-british-irish
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=$dir/$trait-linear.summaries
+aver2=summary/ave-r2-10k-snps-ukbb-norm
+ldsc=snps-norm.ldscore
+out=gwas-norm-337k-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+
+```
+
+
+## Ideas to explore/ to do list:
+
+1. Plot PC1 & PC2 of the study samples to show the extent to which these study samples differ in ancestry.
+
+2. genobatch & test centre were not included as covariates in GWASs. Should they be included?
+
+3. sketch the gwas QC steps and check with Doug if any steps need to be redone.
+
+4. lista vs. listb. Currently based on 10k snps from each side of the genome. Why right vs. left? Should we come up with a simpler way and redo the analyses?
+
+

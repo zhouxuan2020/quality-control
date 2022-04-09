@@ -586,6 +586,39 @@ dev.off()
 
 ```
 
+```{r eval=F}
+
+# Here we want to include a plot to show that inflation is not constant across the genome. i.e., LDSC is wrong.
+# we plot inflation ~ maf for bmi
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", 
+        "reaction","sbp","snoring","hyper")
+trait=traits[2]
+
+png(paste0("fig/inflation-by-mafbin-bmi.png"),
+    width =30, height = 20, units = "cm", res=600)
+par(cex.lab=1.2, font.lab=2)
+
+dat=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+sel=dat[,c("snp","inflation","maf","maf_bin")]
+sel=sel[complete.cases(sel),]
+out=data.frame(inflation=tapply(sel$inflation,INDEX=sel$maf_bin, mean))
+out$maf_bin=1:dim(out)[1]
+out$maf_bin_val=tapply(sel$maf,INDEX=sel$maf_bin, mean)
+  
+plot(out$maf_bin_val, out$inflation,
+     xlab="maf bin", ylab=" est. inflation (confoudned chisq - good chisq)",
+     main=trait, las=1,
+     cex = 1.5, pch=21,  bg="grey", col="white", lwd=0.5)
+
+dev.off()
+
+
+```
+
+
 
 ```{r eval=F}
 
@@ -655,7 +688,7 @@ dev.off()
 
 ```
 
-## regress bad chisq ~ mean r^2_j
+## regress chisq ~ mean r^2_j
 
 THIS IS NEW
 
@@ -781,8 +814,109 @@ dev.off()
 
 ```
 
+### plots
 
-Below is the OLD cod.
+```{r eval=F}
+
+#:::::::::::::::::::::::::::
+# good gwas
+#:::::::::::::::::::::::::::
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-good-gwas.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("unrelated/gwas-good-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  #png("fig/chisq-aver2-bin-good-gwas.png", res=600, width=50, height=30, units="cm")
+  #par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+  #dev.off()
+  
+}
+dev.off()
+
+
+#:::::::::::::::::::::::::::
+# bad gwas
+#:::::::::::::::::::::::::::
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-bad-gwas.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-mix-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+  
+}
+dev.off()
+
+```
+
+Below is the OLD code.
 ```{r eval=F}
 
 #::::::::
@@ -906,4 +1040,620 @@ m=match(slope$trait,h2$trait)
 all=cbind(slope,h2[m,-1])
 
 ```
+
+## predict inflation | aver2_j ?
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+trait=traits[2]
+
+# putting info together
+file=paste0("summary/", trait, "-gwas-test-stats-compare2.txt")
+dat=vroom(file, col_names=T)
+sel=c(1:2,5,6)
+r2=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+m=match(r2$snp, dat$SNP)
+use=data.frame(dat[m,c(1,5,6,2)], r2[,c(6:8)])
+use=use[complete.cases(use),]
+
+# inflation
+use$inflation=use$bad_chisq-use$good_chisq
+good=lm(good_chisq~ldsc_ref, data=use)
+good_hat=predict(good)
+bad=lm(bad_chisq~r2_bad, data=use)
+bad_hat=predict(bad)
+inflation_hat=bad_hat-good_hat
+cor(inflation_hat,use$inflation) # 0.89
+use$inflation_hat=inflation_hat
+
+dat=use
+
+# bin a variable by quantile
+cutoff=quantile(dat$r2_bad, probs = seq(0, 1, 0.005), na.rm=T)
+dat$bin=cut(dat$r2_bad, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+# average chisq by bin values
+out=data.frame(inflation_ave=tapply(dat$inflation,INDEX=dat$bin, mean),
+               inflation_hat_ave=tapply(dat$inflation_hat,INDEX=dat$bin, mean))
+out$bin_val=tapply(dat$r2_bad,INDEX=dat$bin, mean)
+
+# plot: inflation vs. inflation_hat ~ aver2 bin
+png("fig/inflation-vs-predicted-aver2-bin-badgwas-bmi.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(out$bin_val, out$inflation_ave,
+         xlab="ave r2 bin", ylab="inflation",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+points(out$bin_val, out$inflation_hat_ave, cex=1.5, pch=21, col="orange")
+dev.off()
+
+# plot: inflation vs. inflation_hat ~ aver2 raw
+png("fig/inflation-vs-predicted-aver2-raw-badgwas-bmi.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(dat$r2_bad, dat$inflation,
+         xlab="ave r2 ", ylab="inflation",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+points(dat$r2_bad, dat$inflation_hat, cex=1.5, pch=21, col="orange")
+dev.off()
+
+# plot: inflation vs. inflation_hat: ave
+start=min(c(out$inflation_ave,out$inflation_hat_ave))
+end=max(c(out$inflation_ave,out$inflation_hat_ave))
+    
+png("fig/true-vs-predicted-inflation-ave.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(out$inflation_ave, out$inflation_hat_ave,
+     xlab="ave inflation", ylab="ave inflation hat",
+     main=" bmi", 
+     xlim=c(start, end), ylim=c(start, end),
+     cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(0, 1, col="orange", lwd=1.5, lty=1)
+points(out$inflation_ave, out$inflation_hat_ave,,cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+dev.off()
+
+# plot: inflation vs. inflation_hat
+start=min(c(dat$inflation,dat$inflation_hat))
+end=max(c(dat$inflation,dat$inflation_hat))
+    
+png("fig/true-vs-predicted-inflation.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(dat$inflation, dat$inflation_hat,
+     xlab="ave inflation", ylab="ave inflation hat",
+     main=" bmi", 
+     xlim=c(start, end), ylim=c(start, end),
+     cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(0, 1, col="orange", lwd=1.5, lty=1)
+points(dat$inflation, dat$inflation_hat,cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+dev.off()
+
+#..............
+write.table(use,"summary/bmi-inflation.use", col.names=T, row.names=F, quote=F)
+
+## other things to try & consider
+use$inflation=use$bad_chisq-use$good_chisq
+mod1=lm(bad_chisq~ldsc_ref, data=use)
+mod2=lm(good_chisq~ldsc_ref, data=use)
+
+e1=resid(mod1)
+new_chisq=e1+7.778390
+mod3=lm(new_chisq ~ use$r2_bad )
+mod4=lm(bad_chisq~r2_bad, data=use)
+mod5=lm(inflation~r2_bad, data=use)
+use$inflation_hat=predict(mod3)
+
+mod6=lm(bad_chisq~r2_bad+ldsc_ref, data=use)
+
+dat=use
+
+# bin a variable by quantile
+cutoff=quantile(dat$r2_bad, probs = seq(0, 1, 0.005), na.rm=T)
+dat$bin=cut(dat$r2_bad, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+# average chisq by bin values
+out=data.frame(inflation_ave=tapply(dat$inflation,INDEX=dat$bin, mean),
+               inflation_hat_ave=tapply(dat$inflation_hat,INDEX=dat$bin, mean))
+out$bin_val=tapply(dat$r2_bad,INDEX=dat$bin, mean)
+
+# plot: inflation vs. inflation_hat ~ aver2 bin
+png("fig/inflation-vs-predicted-aver2-bin-badgwas-bmi.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(out$bin_val, out$inflation_ave,
+         xlab="ave r2 bin", ylab="inflation",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+points(out$bin_val, out$inflation_hat_ave, cex=1.5, pch=21, col="orange")
+dev.off()
+
+# plot: inflation vs. inflation_hat ~ aver2 raw
+png("fig/inflation-vs-predicted-aver2-raw-badgwas-bmi.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(dat$r2_bad, dat$inflation,
+         xlab="ave r2 ", ylab="inflation",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+points(dat$r2_bad, dat$inflation_hat, cex=1.5, pch=21, col="orange")
+dev.off()
+
+# plot: inflation vs. inflation_hat: ave
+start=min(c(out$inflation_ave,out$inflation_hat_ave))
+end=max(c(out$inflation_ave,out$inflation_hat_ave))
+    
+png("fig/true-vs-predicted-inflation-ave.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(out$inflation_ave, out$inflation_hat_ave,
+     xlab="ave inflation", ylab="ave inflation hat",
+     main=" bmi", 
+     xlim=c(start, end), ylim=c(start, end),
+     cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(0, 1, col="orange", lwd=1.5, lty=1)
+points(out$inflation_ave, out$inflation_hat_ave,,cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+dev.off()
+
+# plot: inflation vs. inflation_hat
+start=min(c(dat$inflation,dat$inflation_hat))
+end=max(c(dat$inflation,dat$inflation_hat))
+    
+png("fig/true-vs-predicted-inflation.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(dat$inflation, dat$inflation_hat,
+     xlab="ave inflation", ylab="ave inflation hat",
+     main=" bmi", 
+     xlim=c(start, end), ylim=c(start, end),
+     cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(0, 1, col="orange", lwd=1.5, lty=1)
+points(dat$inflation, dat$inflation_hat,cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+dev.off()
+
+
+```
+
+### good_chisq vs. adj_chisq
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/good_chisq-vs-adj_chisq.png"),
+      width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+
+  # putting info together
+  trait=traits[i]
+  file=paste0("summary/", trait, "-gwas-test-stats-compare2.txt")
+  dat=vroom(file, col_names=T)
+  sel=c(1:2,5,6)
+  r2=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+  m=match(r2$snp, dat$SNP)
+  use=data.frame(dat[m,c(1,5,6,2)], r2[,c(6:8)])
+  use=use[complete.cases(use),]
+  
+  # adjust chisq
+  mod=lm(bad_chisq ~ r2_bad, data=use)
+  use$adj_chisq=use$bad_chisq-mod$coefficients[2]*use$r2_bad
+  
+  # plot
+  start=min(c(use$good_chisq,use$adj_chisq))
+  end=max(c(use$good_chisq,use$adj_chisq))
+  
+  plot(use$good_chisq, use$adj_chisq,  
+       xlab="good_chisq", ylab="bad_chisq - b_hat * ave_r2",
+       main=trait, 
+       xlim=c(start, end), ylim=c(start, end),
+       cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1, col="orange", lwd=1.5, lty=1)
+  points(use$good_chisq, use$adj_chisq, cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+}
+
+dev.off()
+
+```
+
+### bad gwas: inf. vs. inf._hat: raw
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/inflation-vs-inflation-hat.png"),
+     width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+
+  # putting info together
+  trait=traits[i]
+  file=paste0("summary/", trait, "-gwas-test-stats-compare2.txt")
+  dat=vroom(file, col_names=T)
+  sel=c(1:2,5,6)
+  r2=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+  m=match(r2$snp, dat$SNP)
+  use=data.frame(dat[m,c(1,5,6,2)], r2[,c(6:8)])
+  use=use[complete.cases(use),]
+
+  # inflation  
+  use$inflation=use$bad_chisq-use$good_chisq
+  mod1=lm(bad_chisq~ldsc_ref, data=use)
+  new=resid(mod1)+mod1$coefficients[1]-1
+  mod2=lm(new~use$r2_bad)
+  use$inflation_hat=predict(mod2)
+  
+  # plot: inflation vs. inflation_hat
+  start=min(c(use$inflation,use$inflation_hat))
+  end=max(c(use$inflation,use$inflation_hat))
+  
+  plot(use$inflation, use$inflation_hat,
+       xlab="inflation", ylab="inflation hat",
+       main=trait, 
+       xlim=c(start, end), ylim=c(start, end),
+       cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1, col="orange", lwd=1.5, lty=1)
+  abline(h=lm(bad_chisq~ldsc_ref, data=use)$coefficients[1]-1, 
+         col="red", lwd=1.5, lty=1)
+  points(use$inflation, use$inflation_hat,cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+}
+
+dev.off()
+
+```
+
+### bad gwas: inf. vs. inf._hat: ave
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/inflation-vs-inflation-hat-ave.png"),
+     width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+
+  # putting info together
+  trait=traits[i]
+  file=paste0("summary/", trait, "-gwas-test-stats-compare2.txt")
+  dat=vroom(file, col_names=T)
+  sel=c(1:2,5,6)
+  r2=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+  m=match(r2$snp, dat$SNP)
+  use=data.frame(dat[m,c(1,5,6,2)], r2[,c(6:8)])
+  use=use[complete.cases(use),]
+  
+  # inflation
+  use$inflation=use$bad_chisq-use$good_chisq
+  mod1=lm(bad_chisq~ldsc_ref, data=use)
+  new=resid(mod1)+mod1$coefficients[1]-1
+  mod2=lm(new~use$r2_bad)
+  use$inflation_hat=predict(mod2)
+  
+  # bin a variable by quantile
+  cutoff=quantile(use$r2_bad, probs = seq(0, 1, 0.005), na.rm=T)
+  use$bin=cut(use$r2_bad, breaks=cutoff, labels=1:(length(cutoff)-1))
+    
+  # average chisq by bin values
+  out=data.frame(inflation_ave=tapply(use$inflation,INDEX=use$bin, mean),
+                 inflation_hat_ave=tapply(use$inflation_hat,INDEX=use$bin, mean))
+  out$bin_val=tapply(use$r2_bad,INDEX=use$bin, mean)
+
+  # plot
+  start=min(c(out$inflation_ave,out$inflation_hat_ave))
+  end=max(c(out$inflation_ave,out$inflation_hat_ave))
+  
+  plot(out$inflation_ave, out$inflation_hat_ave,
+       xlab="ave inflation", ylab="ave inflation hat",
+       main=trait, 
+       xlim=c(start, end), ylim=c(start, end),
+       cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1, col="orange", lwd=1.5, lty=1)
+  abline(h=lm(bad_chisq~ldsc_ref, data=use)$coefficients[1]-1, 
+         col="red", lwd=1.5, lty=1)
+  points(out$inflation_ave, out$inflation_hat_ave,cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+}
+
+dev.off()
+
+```
+
+### bad gwas: inf. from full model
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/inflation-vs-inflation-hat-ave-full-mod.png"),
+     width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+
+  # putting info together
+  trait=traits[i]
+  file=paste0("summary/", trait, "-gwas-test-stats-compare2.txt")
+  dat=vroom(file, col_names=T)
+  sel=c(1:2,5,6)
+  r2=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+  m=match(r2$snp, dat$SNP)
+  use=data.frame(dat[m,c(1,5,6,2)], r2[,c(6:8)])
+  use=use[complete.cases(use),]
+  
+  # inflation
+  use$inflation=use$bad_chisq-use$good_chisq
+  #mod1=lm(bad_chisq~ldsc_ref, data=use)
+  #new=resid(mod1)+mod1$coefficients[1]-1
+  #mod2=lm(new~use$r2_bad)
+  #use$inflation_hat=predict(mod2)
+  mod=lm(bad_chisq~r2_bad + ldsc_ref, data=use)
+  use$inflation_hat = mod$coefficients[1]+mod$coefficients[2]*use$r2_bad-1
+  
+  # bin a variable by quantile
+  cutoff=quantile(use$r2_bad, probs = seq(0, 1, 0.005), na.rm=T)
+  use$bin=cut(use$r2_bad, breaks=cutoff, labels=1:(length(cutoff)-1))
+    
+  # average chisq by bin values
+  out=data.frame(inflation_ave=tapply(use$inflation,INDEX=use$bin, mean),
+                 inflation_hat_ave=tapply(use$inflation_hat,INDEX=use$bin, mean))
+  out$bin_val=tapply(use$r2_bad,INDEX=use$bin, mean)
+
+  # plot
+  start=min(c(out$inflation_ave,out$inflation_hat_ave))
+  end=max(c(out$inflation_ave,out$inflation_hat_ave))
+  
+  plot(out$inflation_ave, out$inflation_hat_ave,
+       xlab="ave inflation", ylab="ave inflation hat",
+       main=trait, 
+       xlim=c(start, end), ylim=c(start, end),
+       cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1, col="orange", lwd=1.5, lty=1)
+  abline(h=lm(bad_chisq~ldsc_ref, data=use)$coefficients[1]-1, 
+         col="red", lwd=1.5, lty=1)
+  points(out$inflation_ave, out$inflation_hat_ave,cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+}
+
+dev.off()
+
+```
+
+### good gwas: inf. vs. inf._hat: raw
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/inflation-vs-inflation-hat-goodgwas.png"),
+     width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+
+  # putting info together
+  trait=traits[i]
+  file=paste0("summary/", trait, "-gwas-test-stats-compare2.txt")
+  dat=vroom(file, col_names=T)
+  r2=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+  m=match(r2$snp, dat$SNP)
+  use=data.frame(dat[m,c(1,4,5,6,2)], r2[,c(6:8)])
+  use=use[complete.cases(use),]
+
+  # inflation  
+  use$inflation=use$control_chisq-use$good_chisq
+  mod1=lm(good_chisq~ldsc_ref, data=use)
+  new=resid(mod1)+mod1$coefficients[1]-1
+  mod2=lm(new~use$r2_good)
+  use$inflation_hat=predict(mod2)
+  
+  # plot: inflation vs. inflation_hat
+  start=min(c(use$inflation,use$inflation_hat))
+  end=max(c(use$inflation,use$inflation_hat))
+  
+  plot(use$inflation, use$inflation_hat,
+       xlab="inflation", ylab="inflation hat",
+       main=trait, 
+       xlim=c(start, end), ylim=c(start, end),
+       cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1, col="orange", lwd=1.5, lty=1)
+  abline(h=lm(good_chisq~ldsc_ref, data=use)$coefficients[1]-1, 
+         col="red", lwd=1.5, lty=1)
+  points(use$inflation, use$inflation_hat,cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+}
+
+dev.off()
+
+```
+
+### good gwas: inf. vs. inf._hat: ave
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/inflation-vs-inflation-hat-ave-goodgwas.png"),
+     width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+
+  # putting info together
+  trait=traits[i]
+  file=paste0("summary/", trait, "-gwas-test-stats-compare2.txt")
+  dat=vroom(file, col_names=T)
+  r2=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+  m=match(r2$snp, dat$SNP)
+  use=data.frame(dat[m,c(1,4,5,6,2)], r2[,c(6:8)])
+  use=use[complete.cases(use),]
+
+  # inflation  
+  use$inflation=use$control_chisq-use$good_chisq
+  mod1=lm(good_chisq~ldsc_ref, data=use)
+  new=resid(mod1)+mod1$coefficients[1]-1
+  mod2=lm(new~use$r2_good)
+  use$inflation_hat=predict(mod2)
+  
+ # bin a variable by quantile
+  cutoff=quantile(use$r2_good, probs = seq(0, 1, 0.005), na.rm=T)
+  use$bin=cut(use$r2_good, breaks=cutoff, labels=1:(length(cutoff)-1))
+    
+  # average chisq by bin values
+  out=data.frame(inflation_ave=tapply(use$inflation,INDEX=use$bin, mean),
+                 inflation_hat_ave=tapply(use$inflation_hat,INDEX=use$bin, mean))
+  out$bin_val=tapply(use$r2_good,INDEX=use$bin, mean)
+
+  # plot
+  start=min(c(out$inflation_ave,out$inflation_hat_ave))
+  end=max(c(out$inflation_ave,out$inflation_hat_ave))
+  
+  plot(out$inflation_ave, out$inflation_hat_ave,
+       xlab="ave inflation", ylab="ave inflation hat",
+       main=trait, 
+       xlim=c(start, end), ylim=c(start, end),
+       cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1, col="orange", lwd=1.5, lty=1)
+  abline(h=lm(good_chisq~ldsc_ref, data=use)$coefficients[1]-1, 
+         col="red", lwd=1.5, lty=1)
+  points(out$inflation_ave, out$inflation_hat_ave,cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  
+}
+
+dev.off()
+
+```
+
+## UKBB N = 337k {#ukbb_337k_inflation}
+
+From the above, we know that by assuming constant inflation, ldsc underestimates inflation. Then why for N = 337k, ldsc shows inflation in the absence of confouding?
+Here we want to estimate inflation for the recommended 337k UKBB (inflation is estimated using the full model).
+
+Note: previously we tested if the slope of the regression chisq ~ aver2 greater than 0 or not. Here we want to get the estimated inflation from the full model, i.e., chisq ~ aver2 + ldsc. So we need to reorganize information.
+
+### organize data
+
+```{bash eval=F}
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# extract LD score
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+# convert snp list to rs system ------------------------------------------------
+infile=gen/snps-norm.use
+outfile=gen/snps-norm.use-rs
+awk '(NR==FNR){a[$1]; next}
+     ($1 in a){print $1, $2}' $infile doug/ukbb.ldsc  > $outfile
+
+#  extract ld scores -----------------------------------------------------------
+dir=ldsc/eur_w_ld_chr
+for chrom in {1..22}; do
+zcat $dir/$chrom.l2.ldscore.gz | awk 'NR>1 {print $2, $6}' > ldscore
+awk '(NR==FNR){a[$2]; b[$2]=$1; next}($1 in a){print b[$1], $2}' gen/snps-norm.use-rs ldscore > temp
+if [ $chrom -eq 1 ]
+then 
+ mv temp snps-norm.ldscore
+else
+ cat snps-norm.ldscore temp > temp2
+ mv temp2 snps-norm.ldscore
+fi
+echo $chrom
+done
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# putting information together
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=gwas-norm-337k/$trait-linear.summaries
+aver2=summary/ave-r2-10k-snps-ukbb-norm
+ldsc=snps-norm.ldscore
+out=gwas-norm-337k-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+### plot
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/inflation-hat-aver2-bin-ukbb-recommended.png"),
+     width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+
+  trait=traits[i]
+  dat=vroom(paste0("gwas-norm-337k-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  
+  # predicted inflation
+  mod=lm(chisq~aver2 + ldsc, data=dat)
+  mod1=lm(chisq~ ldsc, data=dat)
+  mod2=lm(chisq~ aver2, data=dat)
+  dat$inflation_hat = mod$coefficients[1]+mod$coefficients[2]*dat$aver2-1
+  
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+    
+  # average chisq by bin values
+  out=data.frame(inflation_hat_ave=tapply(dat$inflation_hat,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+
+  # plot
+  start=min(out$inflation_hat_ave)
+  end=max(out$inflation_hat_ave)
+  
+  plot(out$bin_val, out$inflation_hat_ave,
+       xlab="ave r2 bin", ylab="ave inflation hat",
+       main=trait,  ylim=c(start, end),
+       cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+}
+
+dev.off()
+
+```
+
 

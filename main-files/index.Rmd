@@ -17,14 +17,14 @@ description: " "
 
 ## Topic
 
-We propose a new method to detect the inflation of GWAS test statistics caused by population stratification (& cryptic relatedness). Here we document all analyses and results.
+We propose a new method to detect the inflation of GWAS test statistics caused by population stratification. Here we document all analyses and results.
 
-**Background**:
+**Rationale**:
 
-1. Existing methods: use summary statistics to detect and correct inflation in GWAS test statistics.
+1. Existing methods: use summary statistics to detect and estimate inflation in GWAS test statistics.
 
   * genomic inflation factor:  
-    * $S_{median}$/$\chi^2 (1)_{median}$ > 1 ? 
+    * $\lambda = S_{median}$/$\chi^2 (1)_{median}$ > 1 ? 
     * does not account for inflation due to polygenicity
     
   * LD score regression [@bulik2015ld] (LDSC):
@@ -32,23 +32,267 @@ We propose a new method to detect the inflation of GWAS test statistics caused b
       * under GCTA: $q_{i}=1, Q=\sum_{i}^{m}q_i=m$ 
       * under LDAK-thin: $q_{i}=I_{i}[f_{i}(1-f_{i})]^{0.75}$
     * It separates the inflation due to confounding (intercept) and the inflation due to polygenicity (slope).
-    * The inflation due to confounding may not be constant but SNP specific instead [@holmes]. Hence, summary statistics may not be good after all to detect the inflation due to confounding. 
+    * The inflation due to confounding may not be constant but SNP specific instead [@holmes]. Hence, summary statistics may not be good after all to detect the inflation due to confounding.
 
-2. Proposed method: use individual level data to detect inflation and maybe extended to summary statistics (?).
+2. limitations: LDSC as a means of detecting confounding influence from population stratification has three major limitations [the usefulness of LDSC is compromised by a number of factors; the usefulness of the LDSC intercept is limited in a number of ways].
+
+  * [inflation estimates vary depending on heritability model, and it is hard to know which heritability model is true] The model varies depending on the choice of heritability model. ldak vs. gcta [tagging depends on heritability model]. gcta vs. ldak-thin: inflation is reduced under ldak-thin.
+
+When ldsc **fails**:
+  * Hard to interpret in practice: An inflation indicated by ldsc can be evident in the absence of confounding, when the sample size and/or heritability of the trait is sufficiently large. For example, for height (h2=x), with a sample size of xx, the inflation is xx (Loh et al., 2018). To facilitate the interpretation, how much the ldsc intercept deviates from 1 has been expressed relative to the overall deviation of chi-square from 1, with this ratio close to 0 being interpreted as being less subjective to the confounding (see xx for more examples). As such, whether a GWAS is confounded has became a matter of the judgement by the investigators [subject to the judgement of the investigators]. An objective measure of confounding [well calibrated measure] is much needed. 
+
+  * ldsc assumes the inflation due to confounding is constant across SNPs. However, there are reasons to believe the otherwise. 
+
+Populations of different ancestries differ in minor allele frequency. Mixing their genotype data can generate spurious correlations between SNPs. This creates a spurious LD structure that enables otherwise independent SNPs tag each other, causing inflation in test statistics. The stronger the fake tagging, the larger the inflation. Thus, how much a test statistics inflates would depend on how much the SNP tags confounding SNPs. [This is exactly what we observed. **show a plot of aver_2 ~ average chisq** ]. We exploit this relationship [the relationship between fake tagging & chisq] to detect population stratification.
+
+ * New test: regress chisq on aver2_j
+chisq = b0 + aver2_j * b1 + e  
+
+Under H0 (i.e., no inflation due to confounding), beta1 = 0 -> evidence of no confounding 
+Under H1 (i.e., ), beta1 > 0 -> evidence of confounding.
+
+Here we use aver2_j to index/measure the extent of fake tagging of a snp [created by mixing populations of different ancestries];
+
+[Talk about results: 
+bad gwas: can detect confounding when there is;
+good gwas, PC corrected gwas & bolt-lmm gwas: can declare no confounding there is no.
+However, although conceptually better than ldsc; it does not seem to add much to ldsc.
+ukbb recommended gwas (330k; even when the sample size is high): inflation does not depend on sample size as ldsc [This is where the ldsc fails: it declares inflation when there is no]. 
+
+Once we [Upon] establish the test as a valid test for confounding, we conducted sensitivity analyses: aver2_j is not fixed; but a random variable, vary depending on the snp list used for calculation. Do aver2_j align based on different snp lists? Does it depend on the number of SNPs? Does it depend on minor allele frequency.  
+[Benchmark against ldsc]
+Compared to LDSC intercept. our method 1) makes no assumption about heritability model. 2) does not assume constant inflation due to confounding. We show that the proposed test can do what ldsc does and also well when ldsc fails. However, to compute aver2_j, individual level genotype data are required. But ldsc only needs reference data to compute LD scores.
+
+  ** mixing populations --?--> generates spurious correlations between distant SNPs (cross ) -> SNPs not only tag neighbouring SNPs but also SNPs in other chromosomes. That is, a new LD structure or 'fake tagging' arises -> inflation in test statistics. Thus, inflation depends on the extent of the tagging & may vary across SNPs. Therefore, inflation may not be a constant as assumed by LDSC.
+
+```{r eval=F}
+
+for(i in 1:1000){
+# pop1
+x1=rbinom(1000,2,0.1)
+y1=rbinom(1000,2,0.1)
+# pop2
+x2=rbinom(500,2,0.3)
+y2=rbinom(500,2,0.3)
+# mix pop1 & pop2
+x=c(x1,x2)
+y=c(y1,y2)
+# correlations
+out0=data.frame(cor1=cor(x1,y1), cor2=cor(x2,y2), cor3=cor(x,y))
+if(i==1){out1=out0} else{out1=rbind(out1,out0)}
+}
+
+# plot histgram 
+png(paste0("fig/mix-pop-generates-suprious-cor.png"),
+    width = 30, height = 10, units = "cm", res=600)
+nm=c("pop1", "pop2", "pop1+pop2")
+par(mfrow=c(1,3), pty="s")
+
+for(i in 1:3){
+if(i<3){
+  hist(out1[,i], breaks=20,
+     border=F, col="lightgray",
+     main=nm[i], las=1,
+     xlab="cor(x,y)")}
+
+if(i==3){
+  hist(out1[,i], breaks=20,
+     border=F, col="lightgray",
+     main=nm[i], las=1,
+     xlab="cor(x,y)", xlim=c(-0.05, 0.2))
+}
+abline(v=0, col="orange", lwd=1.5, lty=3)
+}
+dev.off()
+
+```
+
+OTHER THOUGHTS: The new LD structure could tag genuine (distant) SNP effects on the phenotypes or could tag spurious SNP effects on phenotypes. We show that after removing the effects of population stratification (i.e., including PCs as covariates), despite the presence of the LD structure (since the genetic data were not changed at all), aver2_j no longer explains variation in GWAS test statistics. Hence, the LD structure induced by population stratification largely tags the spurious SNP effects on phenotypes, not genuine SNP effects on phenotypes.
+
+WHAT HAPPENS if we use this GWAS model: y ~ snp_j + aver2_j ?? We observed that aver2_j tags the effects of population stratification and some other unknown latent structures of genetic data. If two SNPs are completely random, then it would be zero. MAY be read this paper in detail: Apparent latent structure within the UK Biobank sample has implications for epidemiological analysis.
+
+3. Proposed method: use individual level data to detect inflation and maybe extended to summary statistics (?)
+
+  * we want a method 1) that is independent of heritability model; 2) does not assume a constant inflation. 
     
   * $T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} > 0$ ?
   * Confounding causes cross-chromosome correlations, such that each part of the genome tags each other. Hence, for confounded GWASs, $T = (\hat{h^2}_{right} + \hat{h^2}_{left}) - \hat{h^2}_{whole} > 0$.
   * when $h_{right}^2, h_{left}^2, h_{whole}^2$ are estimated using Haseman Elston regression, this test amounts to testing $tr(K_{left}K_{right}) = 0$ or average SNP correlation^2 (between left and right) = 0.
-  * Challenge: We do not know the distribution of $T$ under the null (i.e., no confounding). Consequently, the test is an approximate test. We hope to get an exact test. Also we want to simplify the test by directly testing if $tr(K_{left}K_{right}) = 0$ or average SNP correlation^2 (between left and right) = 0. Still we need to work out the distribution of average SNP correlation^2 (between left and right) under the null (i.e., no association). 
+  * Challenge: We do not know the distribution of $T$ under the null (i.e., no confounding). Consequently, the test is an approximate test. We hope to get an exact test. Also we want to simplify the test by directly testing if $tr(K_{left}K_{right}) = 0$ or average SNP correlation^2 (between left and right) = 0. Still we need to work out the distribution of average SNP correlation^2 (between left and right) under the null (i.e., no association).
 
 **Design**:
 
-  * good GWASs: 100k unrelated white British
-  * bad or confounded GWASs: 93k unrelated white British + 7k blacks & Asians 
+  * good GWASs: 100k unrelated white British.
+  * bad or confounded GWASs: 93k unrelated white British + 7k blacks & Asians
+  * varying levels of confounding: 0 - 6k blacks and Asians.
   * control GWASs: 93k unrelated white British + 7k unrelated white British (who are not included in the good GWASs)
-  * We also checked if confouding is evident for the UKBB recommended white British (a randomly selection of  100k out of 337k), on which most UKBB GWASs are based. 
+  * We also checked if confounding due to population stratification is evident for the UKBB recommended white British (a randomly selection of  100k out of 337k), on which most UKBB GWASs are based.
+  
+  * we also checked: 1. how well the current methods handle the inflation: bolt-lmm & including pc as covariates; 2. Is it OK to use the recommended 337k ukbb individuals for GWAS? Is there any evidence of inflation in GWAS stats?  
   
 **Results**:
+
+```{r eval=F}
+
+# using BMI for illustration: badgwas chisq; goodgwas chisq ~ aver^2
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+trait=traits[2]
+
+# bad gwas without binning aver2 -----------------------------------------------
+dat=vroom(paste0("gwas-mix-out/",trait,".out"), col_names=T)
+dat=dat[complete.cases(dat),]
+
+# linear model
+mod=lm(chisq ~ aver2,data=dat)
+p=summary(mod)$coefficients[,4][2]
+p_sci=formatC(p, format="e", digit=2)
+px=min(dat$aver2)
+py=max(dat$chisq)
+
+# plot
+png("fig/chisq-aver2-bmi.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(dat$aver2, dat$chisq,
+         xlab="ave r2", ylab="chisq",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(mod,col="orange", lwd=2)
+if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                adj=c(0,1), col="red", cex=2)
+} else {text(px, py, paste0("p = ", p_sci), 
+        adj=c(0,1), cex=1.2, font=2)}
+dev.off()
+
+# bad gwas using binned aver2 --------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+trait=traits[2]
+
+dat=vroom(paste0("gwas-mix-out/",trait,".out"), col_names=T)
+dat=dat[complete.cases(dat),]
+
+# linear model
+mod=lm(chisq ~ aver2,data=dat)
+p=summary(mod)$coefficients[,4][2]
+p_sci=formatC(p, format="e", digit=2)
+px=min(dat$aver2)
+py=max(dat$chisq)
+
+# bin a variable by quantile
+cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+# average chisq by bin values
+out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+px=min(out$bin_val)
+py=max(out$chisq_ave)
+
+# plot
+png("fig/chisq-aver2-bin-badgwas-bmi.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(out$bin_val, out$chisq_ave,
+         xlab="ave r2 bin", ylab="mean chisq",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(mod,col="orange", lwd=2)
+if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                adj=c(0,1), col="red", cex=2)
+} else {text(px, py, paste0("p = ", p_sci), 
+        adj=c(0,1), cex=1.2, font=2)}
+dev.off()
+
+# good gwas using binned aver2 -------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+trait=traits[2]
+dat=vroom(paste0("unrelated/gwas-good-out/",trait,".out"), col_names=T)
+dat=dat[complete.cases(dat),]
+
+# linear model
+mod=lm(chisq ~ aver2,data=dat)
+p=summary(mod)$coefficients[,4][2]
+p_sci=formatC(p, format="e", digit=2)
+px=min(dat$aver2)
+py=max(dat$chisq)
+
+# bin a variable by quantile
+cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+# average chisq by bin values
+out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+px=min(out$bin_val)
+py=max(out$chisq_ave)
+
+# plot
+png("fig/chisq-aver2-bin-goodgwas-bmi.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(out$bin_val, out$chisq_ave,
+         xlab="ave r2 bin", ylab="mean chisq",
+         main=trait, las=1,
+         cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(mod,col="orange", lwd=2)
+if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                adj=c(0,1), col="red", cex=2)
+} else {text(px, py, paste0("p = ", p_sci), 
+        adj=c(0,1), cex=1.2, font=2)}
+dev.off()
+
+```
+
+ * aver2_j varies with varying level of confounding: 0k, 1k ..., 6k non-Europeans. i.e., distant LD becomes stronger as the level of confounding increases. 
+ 
+ * related individuals: no evidence of inflation either by ldsc or the proposed test. This is because relatedness inflates chi-square by inflating the precision of beta_hat, but leaving beta_hat unaffected (see Gross et al. 'On the impact of relatedness on SNP association analysis'). This is distinct from how population stratification inflates chi-square: beta_hat is inflated by the effects of population stratification on phenotypes. Removing the confounding effects (by including PCs as covariates or using bolt-lmm) can fix the inflation. 
+
+Questions:
+ [So does this mean: the LD structure imposed by pop. stratification come into an effect when these factors affect phenotypes; i.e., when beta_hat for SNPs is affected].
+ 
+Does this also mean that snoring, for which the proposed test shows no much inflation, is because population stratification does not affect snoring phenotype much at all. Is this true?
+
+```{r eval=F}
+# id lists
+noneuro=read.table("noneuro-unrel.rand.1000", header=F)
+white=read.table("white-unrel.rand.10k", header=F)
+id=data.frame(rbind(cbind(white$V1,1),cbind(noneuro$V1, 0)))
+names(id)=c("id","white")
+
+require(vroom)
+# cov
+cov=vroom("phen/covariates.use", col_names=F)
+nm=read.table("phen/covariates.use-names",header=F, stringsAsFactors = F)
+names(cov)=nm$V1
+
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+trait=traits[9]
+phen=vroom(paste0('phen/continuous-traits/',trait,'.raw.pheno'), col_names=F)
+
+m=match(id$id,phen$X1)
+m2=match(id$id,cov$eid)
+dat=data.frame(id,phen=phen$X3[m], pc1=cov$pc1[m2])
+mod=lm(phen ~ pc1, dat)
+summary(mod)
+#mod=aov(phen ~ as.factor(white), dat)
+#noneuro-unrel.rand.6000
+#white-unrel.rand.94000
+
+```
+
 
 So far the proposed and existing methods perform equally well.
 
@@ -57,7 +301,15 @@ So far the proposed and existing methods perform equally well.
   * control GWAS: no sig. inflation due to confounding
   * UKBB recommended: no evidence of inflation by any of the methods.
 
-The proposed method does not seem to be more advantageous than existing methods. However, this does not mean that the existing methods are without problems. The inflation may not be constant as assumed by existing methods.
+The proposed method does not seem to be more advantageous than existing methods.
+
+**Conclusion**
+
+  * valid ?  It is a valid test for detecting confounding effects of population stratification. It measures what it is supposed to measure. 1) aver2_j varies with varying level of confounding: 0k, 1k ..., 6k non-Europeans; 2) The variation in aver2_j across SNPs drives/explains variations in the GWAS test statistics or the level of inflation. The more a SNP tags other SNPs, the larger its GWAS test statistics.  
+  
+  * Is aver2_j reliable ? Do two random sets of SNPs produce similar aver2_j? Yes, aver2_j based on two non-overlapping sets of random SNPs align well. This holds even for m = 1k, although the alignment becomes better as m increases. Thus, for m > 1k, aver2_j is reliable even it is computed using a random set of 1k SNPs. This also indicates that the effects of population stratification on SNP genotypes is systematic so that it is evenly/systematically distributed across the genome. [Population differences in minor allele frequency is systematic across the genome].
+  
+  * better? aver2_j does not seem to outperform LDSC on detecting confounding effects of population stratification. 
 
 ## Frequently used commands
 
