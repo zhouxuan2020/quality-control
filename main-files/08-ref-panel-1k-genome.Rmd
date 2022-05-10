@@ -155,11 +155,17 @@ awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb" }
 for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
 gwas=gwas-mix/$trait-linear.summaries
 aver2=ref-1kg/aver2/1kg-ukbb.aver2
+tmp=ref-1kg/out/$trait.tmp
+ldsc=snps-unrel-inds.ldscore
 out=ref-1kg/out/$trait.out
 
 awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq" }
      NR==FNR && NR > 1 {a[$1]; b[$1]=$5; next} 
-     {if ($1 in a) print $0, b[$1]}' $gwas $aver2> $out
+     {if ($1 in a) print $0, b[$1]}' $gwas $aver2> $tmp
+
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq ldsc" }
+     NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print $0, b[$1]}' $ldsc $tmp > $out
      
 done
 
@@ -237,12 +243,17 @@ for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,
 
 gwas=gwas-mix-$n-noneuro/maf.01/$trait-linear.summaries
 aver2=ref-1kg/aver2-$n-noneuro/1kg-ukbb.aver2
+tmp=ref-1kg/out-$n-noneuro/$trait.tmp
+ldsc=snps-unrel-inds.ldscore
 out=ref-1kg/out-$n-noneuro/$trait.out
 
 awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq" }
      NR==FNR && NR > 1 {a[$1]; b[$1]=$5; next} 
-     {if ($1 in a) print $0, b[$1]}' $gwas $aver2> $out
+     {if ($1 in a) print $0, b[$1]}' $gwas $aver2> $tmp
      
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq ldsc" }
+     NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print $0, b[$1]}' $ldsc $tmp > $out     
 done
 done
 
@@ -302,18 +313,24 @@ mkdir ref-1kg/out-good-gwas
 for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
 gwas=unrelated/gwas-good/$trait-linear.summaries
 aver2=ref-1kg/aver2-good-gwas/1kg-ukbb.aver2
+tmp=ref-1kg/out-good-gwas/$trait.tmp
+ldsc=snps-unrel-inds.ldscore
 out=ref-1kg/out-good-gwas/$trait.out
 
 awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq" }
      NR==FNR && NR > 1 {a[$1]; b[$1]=$5; next} 
-     {if ($1 in a) print $0, b[$1]}' $gwas $aver2> $out
+     {if ($1 in a) print $0, b[$1]}' $gwas $aver2> $tmp
+     
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq ldsc" }
+     NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print $0, b[$1]}' $ldsc $tmp > $out
      
 done
 
 ```
 
 
-## results
+## detect confounding
 
 ### bad gwas
 
@@ -326,6 +343,7 @@ cor=round(cor(dat$ref, dat$ukbb),2)# 0.6833908
 corx=min(dat$ref)
 cory=max(dat$ukbb)
   
+# correlation --------------------
 png("fig/aver2-1kg-vs-ukbb.png", res=600, width=30, height=20, units="cm")
 par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
 plot(dat$ref, dat$ukbb,
@@ -334,6 +352,24 @@ plot(dat$ref, dat$ukbb,
      cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
 text(corx, cory, paste0("r = ", cor), 
           adj=c(0,1), cex=1.2, font=2)
+dev.off()
+
+# histograms of STANDARDIZED aver2 --------------------------------------------
+png("fig/aver2-1kg-vs-ukbb-histogram.png", res=600, width=30, height=20, units="cm")
+dat$ref_std=scale(dat$ref)
+dat$ukbb_std=scale(dat$ukbb)
+par(cex.lab=1.2, font.lab=2, cex.main=1.5)
+start=min(dat[,5:6])
+end=max(dat[,5:6])
+hist1=hist(dat$ref_std, freq=F, 
+           col=rgb(211,211,211, max=255, alpha=180),
+           breaks=100, border=F, ylim=c(0,3),
+           xlim=c(start,5))
+hist2=hist(dat$ukbb_std, freq=F,
+           col=rgb(255, 179,138, max=255, alpha=180),
+           breaks=100, border=F, ylim=c(0,3),
+           xlim=c(start, 5),
+           add=T)
 dev.off()
 
 # plot chisq ~ aver2 1kg  ------------------------------------------------------
@@ -348,11 +384,11 @@ par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
 for(i in 1:length(traits)){
   trait=traits[i]
   dat=vroom(paste0("ref-1kg/out/",trait,".out"), col_names=T)
-  dat=dat[,c("ref","chisq")]
-  names(dat)=c("aver2","chisq")
+  dat=dat[,c("ref","chisq", "ldsc")]
+  names(dat)=c("aver2","chisq", "ldsc")
 
   # linear model
-  mod=lm(chisq ~ aver2,data=dat)
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
   p=summary(mod)$coefficients[,4][2]
   p_sci=formatC(p, format="e", digit=2)
 
@@ -371,7 +407,7 @@ for(i in 1:length(traits)){
            xlab="ave r2 bin", ylab="mean chisq",
            main=trait, las=1,
            cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
-  abline(mod,col="orange", lwd=2)
+  abline(lm(chisq ~ aver2 ,data=dat),col="orange", lwd=2)
   if(p<0.01){text(px, py, paste0("p = ", p_sci),
                   adj=c(0,1), col="red", cex=2, font=2)
   } else {text(px, py, paste0("p = ", p_sci), 
@@ -424,6 +460,116 @@ for(i in 1:length(traits)){
 }
 dev.off()
 
+# chisq ~ STANDARDIZED aver2 binned data----------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-ukbb-vs-1kg.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, las=1)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  bad=vroom(paste0("ref-1kg/out/",trait,".out"), col_names=T)
+  dat=data.frame(snp=bad$ukbb_snp,
+                 aver2_ref=scale(bad$ref), # NOTE: aver2 is standardized
+                 aver2_ukbb=scale(bad$ukbb), # NOTE: aver2 is standardized
+                 chisq=bad$chisq, # chisq from the bad gwas
+                 ldsc=bad$ldsc)
+
+  # linear model
+  mod1=lm(chisq ~ aver2_ref + ldsc,data=dat) # using aver2 from 1kg
+  mod2=lm(chisq ~ aver2_ukbb + ldsc,data=dat) # using aver2 from ukbb
+  
+  # chisq hat
+  dat$predict_ref=predict(mod1)
+  dat$predict_ukbb=predict(mod2)
+  
+  # bin a variable by quantile
+  cutoff1=quantile(dat$aver2_ref, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin1=cut(dat$aver2_ref, breaks=cutoff1, labels=1:(length(cutoff1)-1))
+  cutoff2=quantile(dat$aver2_ukbb, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin2=cut(dat$aver2_ukbb, breaks=cutoff2, labels=1:(length(cutoff2)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ref=tapply(dat$chisq,INDEX=dat$bin1, mean),
+                 chisq_ukbb=tapply(dat$chisq,INDEX=dat$bin2, mean),
+                 predict_ref=tapply(dat$predict_ref,INDEX=dat$bin1, mean),
+                 predict_ukbb=tapply(dat$predict_ukbb,INDEX=dat$bin2, mean))
+  out$bin_ref=tapply(dat$aver2_ref,INDEX=dat$bin1, mean)
+  out$bin_ukbb=tapply(dat$aver2_ukbb,INDEX=dat$bin2, mean)
+  
+  # plot
+  ystart=min(out[,1:4])
+  yend=max(out[,1:4])
+  xstart=min(out[, 5:6])
+  xend=max(out[,5:6])
+  
+  plot(out$bin_ukbb, out$chisq_ukbb,
+       ylab="mean chisq", xlab=" standardized aver2 bin",
+       xlim=c(xstart, xend), ylim=c(ystart, yend),
+       main=trait, cex = 1.5, pch=21,  bg="lightgray", col="white", lwd=0.5)
+  points(out$bin_ref, out$chisq_ref, cex = 1.5, pch=21, 
+         bg=rgb(255, 179, 138, max=255, alpha=200), 
+         col="white", lwd=0.5)
+  lines(out$bin_ukbb, out$predict_ukbb, 1, col="darkgrey", lwd=1.5, type="l")
+  lines(out$bin_ref, out$predict_ref, 1, 
+        col="darkorange", lwd=1.5, type="l")
+  
+}
+dev.off()
+
+
+# raw chisq ~ STANDARDIZED aver2------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-ukbb-vs-1kg.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, las=1)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  bad=vroom(paste0("ref-1kg/out/",trait,".out"), col_names=T)
+  dat=data.frame(snp=bad$ukbb_snp,
+                 aver2_ref=scale(bad$ref), # NOTE: aver2 is standardized
+                 aver2_ukbb=scale(bad$ukbb), # NOTE: aver2 is standardized
+                 chisq=bad$chisq, # chisq from the bad gwas
+                 ldsc=bad$ldsc)
+
+  # linear model
+  mod1=lm(chisq ~ aver2_ref + ldsc,data=dat) # using aver2 from 1kg
+  mod2=lm(chisq ~ aver2_ukbb + ldsc,data=dat) # using aver2 from ukbb
+  # chisq hat
+  dat$predict_ref=predict(mod1)
+  dat$predict_ukbb=predict(mod2)
+  
+  # plot
+  ystart=min(c(dat$chisq,dat$predict_ref, dat$predict_ukbb))
+  yend=max(c(dat$chisq,dat$predict_ref, dat$predict_ukbb))
+  xstart=min(c(dat$aver2_ref, dat$aver2_ukbb))
+  xend=max(c(dat$aver2_ref, dat$aver2_ukbb))
+  
+  plot(dat$aver2_ukbb, dat$chisq,
+       ylab="chisq", xlab=" standardized aver2",
+       xlim=c(xstart, xend), ylim=c(ystart, yend),
+       main=trait, cex = 1.5, pch=21,  bg="lightgray", col="white", lwd=0.5)
+  points(dat$aver2_ref, dat$chisq, cex = 1.5, pch=21, 
+         bg=rgb(255, 179, 138, max=255, alpha=200), 
+         col="white", lwd=0.5)
+  lines(dat$aver2_ukbb, dat$predict_ukbb, 1, col="darkgrey", lwd=1.5, type="l")
+  lines(dat$aver2_ref, dat$predict_ref, 1, 
+        col="darkorange", lwd=1.5, type="l")
+  
+}
+dev.off()
+
+
+
 ```
 
 ### varying levels of confounding
@@ -473,11 +619,11 @@ par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
 for(i in 1:length(traits)){
   trait=traits[i]
   dat=vroom(paste0("ref-1kg/out-",j ,"-noneuro/",trait,".out"), col_names=T)
-  dat=dat[,c("ref","chisq")]
-  names(dat)=c("aver2","chisq")
+  dat=dat[,c("ref","chisq", "ldsc")]
+  names(dat)=c("aver2","chisq", "ldsc")
 
   # linear model
-  mod=lm(chisq ~ aver2,data=dat)
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
   p=summary(mod)$coefficients[,4][2]
   p_sci=formatC(p, format="e", digit=2)
 
@@ -496,7 +642,7 @@ for(i in 1:length(traits)){
            xlab="ave r2 bin", ylab="mean chisq",
            main=trait, las=1,
            cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
-  abline(mod,col="orange", lwd=2)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
   if(p<0.01){text(px, py, paste0("p = ", p_sci),
                   adj=c(0,1), col="red", cex=2, font=2)
   } else {text(px, py, paste0("p = ", p_sci), 
@@ -589,11 +735,11 @@ par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
 for(i in 1:length(traits)){
   trait=traits[i]
   dat=vroom(paste0("ref-1kg/out-good-gwas/",trait,".out"), col_names=T)
-  dat=dat[,c("ref","chisq")]
-  names(dat)=c("aver2","chisq")
+  dat=dat[,c("ref","chisq", "ldsc")]
+  names(dat)=c("aver2","chisq", "ldsc")
 
   # linear model
-  mod=lm(chisq ~ aver2,data=dat)
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
   p=summary(mod)$coefficients[,4][2]
   p_sci=formatC(p, format="e", digit=2)
 
@@ -612,7 +758,7 @@ for(i in 1:length(traits)){
            xlab="ave r2 bin", ylab="mean chisq",
            main=trait, las=1,
            cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
-  abline(mod,col="orange", lwd=2)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
   if(p<0.01){text(px, py, paste0("p = ", p_sci),
                   adj=c(0,1), col="red", cex=2, font=2)
   } else {text(px, py, paste0("p = ", p_sci), 
@@ -663,6 +809,613 @@ for(i in 1:length(traits)){
           adj=c(0,1), cex=1.2, font=2)}
 }
 dev.off()
+
+```
+
+## estimate inflation
+
+Here we want to estimate inflation using aver2 computed from 1k genome and compare that with aver2 computed from UKBB. We observed that the aver2 values from 1k genome are larger than those from UKBB, although the correlation is strong (~0.6). Here we want to check if the difference in the absolute values of aver2 affects the estimation of inflation. Inflation is under-estimated when using aver2 from 1kg.
+
+Note we standardized aver2 so that inflation~aver2_ukbb & inflation ~ aver2_ref can be plotted side by side.
+
+```{r eval=F}
+# estimated inflation: 1k genome vs. ukbb --------------------------------------
+# get transparent colors
+colmat=col2rgb(c("darkgrey", "powderblue"))
+mycol1=rgb(colmat[1,1], colmat[2,1], colmat[3,1], max=255, alpha=200)
+mycol2=rgb(colmat[1,2], colmat[2,2], colmat[3,2], max=255, alpha=200)
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/inflation-hat-ukbb-vs-1kg.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  bad=vroom(paste0("ref-1kg/out/",trait,".out"), col_names=T)
+  good=vroom(paste0("ref-1kg/out-good-gwas/",trait,".out"), col_names=T)
+  m=match(good$ukbb_snp, bad$ukbb_snp)
+  bad=bad[m,] # align good and bad gwas data
+  dat=data.frame(snp=good$ukbb_snp,
+                 inflation=bad$chisq-good$chisq,
+                 aver2_ref=bad$ref,
+                 aver2_ukbb=bad$ukbb,
+                 chisq=bad$chisq, # chisq from the bad gwas
+                 ldsc=good$ldsc)
+
+  # linear model
+  mod1=lm(chisq ~ aver2_ref + ldsc,data=dat) # using aver2 from 1kg
+  mod2=lm(chisq ~ aver2_ukbb + ldsc,data=dat) # using aver2 from ukbb
+  
+  # inflation hat
+  dat$inflation_ref=mod1$coefficients[1]+mod1$coefficients[2]*dat$aver2_ref-1
+  dat$inflation_ukbb=mod2$coefficients[1]+mod2$coefficients[2]*dat$aver2_ukbb-1
+  # plot
+  start=min(c(dat$inflation,dat$inflation_ref, dat$inflation_ukbb))
+  end=max(c(dat$inflation,dat$inflation_ref, dat$inflation_ukbb))
+  
+  plot(dat$inflation, dat$inflation_ukbb,
+           xlab="inflation", ylab="inflation_hat",
+           main=trait, las=1,
+           xlim=c(start, end), ylim=c(start,end),
+           cex = 1.5, pch=21,  bg=mycol1, col="white", lwd=0.5)
+  points(dat$inflation, dat$inflation_ref, cex = 1.5, 
+         pch=21,  bg=mycol2, col="white", lwd=0.5)
+  abline(0, 1, col="orange", lwd=1.5, lty=1)
+}
+dev.off()
+
+
+# inflation ~ STANDARDIZED aver2 raw --------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/inflation-aver2-ukbb-vs-1kg.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, las=1)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  bad=vroom(paste0("ref-1kg/out/",trait,".out"), col_names=T)
+  good=vroom(paste0("ref-1kg/out-good-gwas/",trait,".out"), col_names=T)
+  m=match(good$ukbb_snp, bad$ukbb_snp)
+  bad=bad[m,] # align good and bad gwas data
+  dat=data.frame(snp=good$ukbb_snp,
+                 inflation=bad$chisq-good$chisq,
+                 aver2_ref=scale(bad$ref), # NOTE: aver2 is standardized
+                 aver2_ukbb=scale(bad$ukbb), # NOTE: aver2 is standardized
+                 chisq=bad$chisq, # chisq from the bad gwas
+                 ldsc=good$ldsc)
+
+  # linear model
+  mod1=lm(chisq ~ aver2_ref + ldsc,data=dat) # using aver2 from 1kg
+  mod2=lm(chisq ~ aver2_ukbb + ldsc,data=dat) # using aver2 from ukbb
+  # inflation hat
+  dat$inflation_ref=mod1$coefficients[1]+mod1$coefficients[2]*dat$aver2_ref-1
+  dat$inflation_ukbb=mod2$coefficients[1]+mod2$coefficients[2]*dat$aver2_ukbb-1
+  
+  # plot
+  ystart=min(c(dat$inflation,dat$inflation_ref, dat$inflation_ukbb))
+  yend=max(c(dat$inflation,dat$inflation_ref, dat$inflation_ukbb))
+  xstart=min(c(dat$aver2_ref, dat$aver2_ukbb))
+  xend=max(c(dat$aver2_ref, dat$aver2_ukbb))
+  
+  plot(dat$aver2_ukbb, dat$inflation,
+       ylab="inflation", xlab=" standardized aver2",
+       xlim=c(xstart, xend), ylim=c(ystart, yend),
+       main=trait, cex = 1.5, pch=21,  bg="lightgray", col="white", lwd=0.5)
+  points(dat$aver2_ref, dat$inflation, cex = 1.5, pch=21, 
+         bg=rgb(255, 179, 138, max=255, alpha=200), 
+         col="white", lwd=0.5)
+  lines(dat$aver2_ukbb, dat$inflation_ukbb, 1, col="darkgrey", lwd=1.5, type="l")
+  lines(dat$aver2_ref, dat$inflation_ref, 1, 
+        col="darkorange", lwd=1.5, type="l")
+  
+}
+dev.off()
+
+# inflation ~ STANDARDIZED aver2 binned data----------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/inflation-aver2-bin-ukbb-vs-1kg.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, las=1)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  bad=vroom(paste0("ref-1kg/out/",trait,".out"), col_names=T)
+  good=vroom(paste0("ref-1kg/out-good-gwas/",trait,".out"), col_names=T)
+  m=match(good$ukbb_snp, bad$ukbb_snp)
+  bad=bad[m,] # align good and bad gwas data
+  dat=data.frame(snp=good$ukbb_snp,
+                 inflation=bad$chisq-good$chisq,
+                 aver2_ref=scale(bad$ref), # NOTE: aver2 is standardized
+                 aver2_ukbb=scale(bad$ukbb), # NOTE: aver2 is standardized
+                 chisq=bad$chisq, # chisq from the bad gwas
+                 ldsc=good$ldsc)
+
+  # linear model
+  mod1=lm(chisq ~ aver2_ref + ldsc,data=dat) # using aver2 from 1kg
+  mod2=lm(chisq ~ aver2_ukbb + ldsc,data=dat) # using aver2 from ukbb
+  
+  # inflation hat
+  dat$inflation_ref=mod1$coefficients[1]+mod1$coefficients[2]*dat$aver2_ref-1
+  dat$inflation_ukbb=mod2$coefficients[1]+mod2$coefficients[2]*dat$aver2_ukbb-1
+  
+  # bin a variable by quantile
+  cutoff1=quantile(dat$aver2_ref, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin1=cut(dat$aver2_ref, breaks=cutoff1, labels=1:(length(cutoff1)-1))
+  cutoff2=quantile(dat$aver2_ukbb, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin2=cut(dat$aver2_ukbb, breaks=cutoff2, labels=1:(length(cutoff2)-1))
+  
+  # average chisq by bin values
+  out=data.frame(inflation_ref=tapply(dat$inflation,INDEX=dat$bin1, mean),
+                 inflation_ukbb=tapply(dat$inflation,INDEX=dat$bin2, mean),
+                 inflation_hat_ref=tapply(dat$inflation_ref,INDEX=dat$bin1, mean),
+                 inflation_hat_ukbb=tapply(dat$inflation_ukbb,INDEX=dat$bin2, mean))
+  out$bin_ref=tapply(dat$aver2_ref,INDEX=dat$bin1, mean)
+  out$bin_ukbb=tapply(dat$aver2_ukbb,INDEX=dat$bin2, mean)
+  
+  # plot
+  ystart=min(out[,1:4])
+  yend=max(out[,1:4])
+  xstart=min(out[, 5:6])
+  xend=max(out[,5:6])
+  
+  plot(out$bin_ukbb, out$inflation_ukbb,
+       ylab="mean inflation", xlab=" standardized aver2 bin",
+       xlim=c(xstart, xend), ylim=c(ystart, yend),
+       main=trait, cex = 1.5, pch=21,  bg="lightgray", col="white", lwd=0.5)
+  points(out$bin_ref, out$inflation_ref, cex = 1.5, pch=21, 
+         bg=rgb(255, 179, 138, max=255, alpha=200), 
+         col="white", lwd=0.5)
+  lines(out$bin_ukbb, out$inflation_hat_ukbb, 1, col="darkgrey", lwd=1.5, type="l")
+  lines(out$bin_ref, out$inflation_hat_ref, 1, 
+        col="darkorange", lwd=1.5, type="l")
+  
+}
+dev.off()
+
+```
+
+## stratified aver2
+
+### calc aver2
+Here we want to compute aver2 for African+Asians, African+European, European+Asian.
+
+```{bash eval=F}
+
+# select  id---------------------------------------------------------------------
+
+# get n=500 for each pop
+infile=ref-1kg/1kg/gen/1000g.pops
+for pop in {AFR,EUR,EAS}; do
+outfile=ref-1kg/$pop-500.use
+awk -v pop=$pop '($3==pop){print $1, $1}' $infile > ref-1kg/tmp
+shuf ref-1kg/tmp | head -n 500 > $outfile
+rm ref-1kg/tmp 
+done
+
+# mix 2 pops at at time
+for pop1 in {AFR,EUR}; do
+for pop2 in {AFR,EAS}; do
+if [ "$pop1" != "$pop2" ] ; then 
+  infile1=ref-1kg/$pop1-500.use
+  infile2=ref-1kg/$pop2-500.use
+  outfile=ref-1kg/$pop1-$pop2.use
+  cat $infile1 $infile2 > $outfile
+fi
+done
+done
+
+# mix 3 pops together
+infile1=ref-1kg/EUR-500.use
+infile2=ref-1kg/EAS-500.use
+infile3=ref-1kg/AFR-500.use
+outfile=ref-1kg/EUR-EAS-AFR.use
+cat $infile1 $infile2 $infile3 > $outfile
+
+# compute aver2 for each mixture pops-------------------------------------------
+
+for pop in {AFR-EAS,EUR-AFR,EUR-EAS,EUR-EAS-AFR}; do
+list=../ref-1kg/snplist/1kg-22k-snps.use
+bfile=../ref-1kg/1kg/gen/1000b
+id=../ref-1kg/$pop.use
+out=../ref-1kg/aver2/1kg-$pop.aver2
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 2
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --keep $id \
+          --lista $list \
+          --listb $list
+">sh_script/calc-aver2-1kg-$pop
+done
+
+# submit the job
+for pop in {AFR-EAS,EUR-AFR,EUR-EAS,EUR-EAS-AFR}; do
+sbatch -A snpher ../sh_script/calc-aver2-1kg-$pop
+done >../job-records/calc-aver2-pairwise-mixture
+
+
+```
+
+### organize data
+
+```{bash eval=F}
+
+# putting aver2 together for ukbb & 1kg------------------------------------------
+for pop in {AFR-EAS,EUR-AFR,EUR-EAS,EUR-EAS-AFR}; do
+dir=ref-1kg/aver2
+aver2_ref=$dir/1kg-$pop.aver2.rjk2.average
+aver2_ukbb=$dir/ukbb.aver2.rjk2.average
+ref=ref-1kg/snplist/1kg-common-snps
+ukbb=ref-1kg/snplist/ukbb-common-snps
+out=$dir/1kg-ukbb-$pop.aver2
+
+awk 'NR==FNR {a[$2]; b[$2]=$3; next}
+      {if ($1 in a) print b[$1], $1, $2}' $ref $aver2_ref > $dir/1kg-tmp
+      
+awk 'NR==FNR {a[$2]; b[$2]=$3; next}
+      {if ($1 in a) print b[$1], $1, $2}' $ukbb $aver2_ukbb > $dir/ukbb-tmp
+
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb" }
+     NR==FNR {a[$1]; b[$1]=$2; c[$1]=$3; next}
+     {if ($1 in a) print $2, b[$1], c[$1], $3 }' $dir/1kg-tmp $dir/ukbb-tmp > $out 
+done
+
+# combine aver2 + chisq + ldsc -------------------------------------------------
+mkdir ref-1kg/pairwise-mixture-out
+
+for pop in {AFR-EAS,EUR-AFR,EUR-EAS,EUR-EAS-AFR}; do
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=gwas-mix/$trait-linear.summaries
+aver2=ref-1kg/aver2/1kg-ukbb-$pop.aver2
+tmp=ref-1kg/pairwise-mixture-out/$trait.tmp
+ldsc=snps-unrel-inds.ldscore
+out=ref-1kg/pairwise-mixture-out/$trait-$pop.out
+
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq" }
+     NR==FNR && NR > 1 {a[$1]; b[$1]=$5; next} 
+     {if ($1 in a) print $0, b[$1]}' $gwas $aver2> $tmp
+     
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq ldsc" }
+     NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print $0, b[$1]}' $ldsc $tmp > $out     
+done
+done
+
+
+# combine aver2 + chisq + ldsc for chisq ~ multi-aver2--------------------------
+dir=ref-1kg/pairwise-mixture-out
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+awk 'NR>1 {print $1, $5, $6}' $dir/$trait-AFR-EAS.out > $dir/ukbb_snps_chisq_ldsc
+outfile=$dir/$trait-all.out
+snps=$dir/ukbb_snps_chisq_ldsc
+
+for pop in {AFR-EAS,EUR-AFR,EUR-EAS}; do
+infile=$dir/$trait-$pop.out
+
+awk 'NR==FNR {a[$1]; b[$1]=$3; next} 
+     {if ($1 in a) print b[$1];
+      else print "NA" }' $infile $snps> $dir/$pop
+
+done
+paste $snps \
+      $dir/AFR-EAS \
+      $dir/EUR-AFR \
+      $dir/EUR-EAS \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "ukbb_snp;chisq;ldsc;AFR_EAS;EUR_AFR;EUR_EAS"}
+             {$1=$1}1' > $outfile
+done
+
+```
+
+### plot aver2 of pairwise mixture pops
+
+aver2 is sensitive to population stratification. Stratified aver2 helps to segregate SNPs that are particularly sensitive to population differences. For the random selection of SNPs, some are particularly sensitive to European-Asian differences but not so much to European-African differences; others are particularly sensitive to European-African differences but not so much to European-Asian differences.   
+
+Ideas to explore:
+1. annotate the genome using aver2 computed using pairwise population mixtures so that we have different sets of SNPs that are particularly sensitive to a pair of population mixture.
+2. We could regress chisq on multiple aver2 computed using different pairwise pop mixtures. The advantage of this approach is that we can hold various ancestry differences constant, while varying other ancestry differences. If there is inflation caused by pop stratification, we can use this approach to pinpoint the inflation is due to what ancestry differences.   
+
+```{r eval=F}
+
+# compare with ukbb ------------------------------------------------------------
+
+pop=c("AFR-EAS","EUR-AFR","EUR-EAS","EUR-EAS-AFR")
+
+png("fig/aver2-1kg-vs-ukbb-pairwise-mixture.png", 
+    res=600, width=40, height=10, units="cm")
+par(mfrow=c(1,4), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in pop){
+
+file=paste0("ref-1kg/aver2/1kg-ukbb-",i,".aver2")
+dat=read.table(file,stringsAsFactors = F, header=T)
+cor=round(cor(dat$ref, dat$ukbb, use="pairwise.complete.obs"),2)
+corx=min(dat$ref, na.rm=T)
+cory=max(dat$ukbb, na.rm=T)
+
+plot(dat$ref, dat$ukbb,
+     xlab="1k genome", ylab="ukbb",
+     main=paste0("aver2 ", i),
+     cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+text(corx, cory, paste0("r = ", cor), 
+          adj=c(0,1), cex=1.2, font=2)
+}
+
+dev.off()
+
+# 3d scatter of r2 of pairwise mixture populations -----------------------------
+
+# organize data
+pop=c("AFR-EAS","EUR-AFR","EUR-EAS")
+colnm=c("AFR_EAS","EUR_AFR","EUR_EAS")
+for(i in 1:3){
+mix=pop[i]
+file=paste0("ref-1kg/aver2/1kg-ukbb-",mix,".aver2")
+dat=read.table(file,stringsAsFactors = F, header=T)
+out0=dat[,c(1,3)]
+names(out0)=c("ukbb_snp",colnm[i])
+if(i==1){out=out0} else {out=cbind(out,out0[-1]); names(out)[i+1]=colnm[i]}
+}
+
+# plot
+library("scatterplot3d")
+# 1. Source the function
+source('http://www.sthda.com/sthda/RDoc/functions/addgrids3d.r')
+#source('~/hubiC/Documents/R/function/addgrids3d.r')
+
+png("fig/aver2-3dscatter-pairwise-mixture.png", res=600, width=30, height=20, units="cm")
+scatterplot3d(out[, c(2,4,3)], angle=120, pch = 16, color="lightgrey")
+dev.off()
+
+# plot aver2 by binned percentiles of aver2 for afr_eas------------------------
+
+# bin aver2 for EUR_EAS mixture
+cutoff=quantile(out$AFR_EAS, probs = seq(0, 1, 0.1), na.rm=T)
+out$bin_afr_eas=cut(out$AFR_EAS, breaks=cutoff, labels=1:(length(cutoff)-1))
+
+# set colors
+# get 10 distinctive transparent colors 
+require("RColorBrewer")
+pallete=brewer.pal(10, name="Spectral")
+mycol=apply(col2rgb(pallete), 2, 
+            function(X) rgb(X[1], X[2], X[3], max=255, alpha=200))
+xrange=c(min(out$EUR_AFR), max(out$EUR_AFR))
+yrange=c(min(out$EUR_EAS), max(out$EUR_EAS))
+
+# all bins in one plot
+png("fig/aver2-by-afr-eas-bin.png", res=600, width=30, height=20, units="cm")
+par(pty="s")
+plot(NULL, xlab="eur-afr", ylab="eur-eas",
+     main="ave r2_j by afr-eas", las=1, xlim=xrange, ylim=yrange)
+for(i in 1:10){
+ sel=out[out$bin_afr_eas==i,]
+ points(sel$EUR_AFR, sel$EUR_EAS, cex = 1.5, pch=21, 
+         bg=mycol[i], col="white", lwd=0.5) 
+}
+dev.off()
+
+# bins in separate plots
+png("fig/aver2-by-afr-eas-bin-panel.png", res=600, width=50, height=20, units="cm")
+par(mfrow=c(2,5), cex.lab=1.2, font.lab=2, cex.main=1.5, las=1)
+for(i in 1:10){
+ sel=out[out$bin_afr_eas==i,]
+ plot(sel$EUR_AFR, sel$EUR_EAS, cex = 1.5, pch=21,
+      xlab="european-african", ylab="european-east asian",
+      bg=mycol[i], col="white", lwd=0.5, las=1,
+      xlim=xrange, ylim=yrange, main=paste0("afr-eas bin ", i)) 
+}
+dev.off()
+
+```
+
+### chisq ~ 1 x aver2
+
+```{r eval=F}
+
+# plot chisq ~ aver2 1kg by pop mixture: individual plots-----------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+pop=c("AFR-EAS","EUR-AFR","EUR-EAS","EUR-EAS-AFR")
+
+for(j in pop){
+
+plotnm=paste0("fig/chisq-aver2-bin-bad-gwas-1kg-ref-", j,".png")
+png(plotnm, res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("ref-1kg/pairwise-mixture-out/",trait,"-",j,".out"), col_names=T)
+  dat=dat[,c("ref","chisq", "ldsc")]
+  names(dat)=c("aver2","chisq", "ldsc")
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+}
+dev.off()
+}
+
+# plot chisq ~ aver2 | afr-eas-bin = 1------------------------------------------
+# afr-eas-bin= snps for which Africans and East Asians are not different in MAF
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+plotnm=paste0("fig/chisq-aver2-bin-bad-gwas-1kg-ref-eur-eas-afr-eas-bin1.png")
+png(plotnm, res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("ref-1kg/pairwise-mixture-out/",trait,"-all.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  
+  # bin aver2 for EUR_EAS mixture
+  cutoff=quantile(dat$AFR_EAS, probs = seq(0, 1, 0.1), na.rm=T)
+  dat$bin_afr_eas=cut(dat$AFR_EAS, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  dat=dat[dat$bin_afr_eas==1,c("EUR_EAS", "chisq", "ldsc")]
+  names(dat)=c("aver2","chisq", "ldsc")
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc, data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+}
+dev.off()
+
+
+# plot chisq ~ aver2 | conditional plot------------------------------------------
+# afr-eas-bin= snps for which Africans and East Asians are not different in MAF
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+plotnm=paste0("fig/chisq-aver2-bin-bad-gwas-1kg-ref-eur-afr-conditional.png")
+png(plotnm, res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("ref-1kg/pairwise-mixture-out/",trait,"-all.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  
+  # bin aver2 for EUR_EAS mixture
+  cutoff1=quantile(dat$EUR_AFR, probs = seq(0, 1, 0.1), na.rm=T)
+  dat$bin1=cut(dat$EUR_AFR, breaks=cutoff1, labels=1:(length(cutoff1)-1))
+  cutoff2=quantile(dat$AFR_EAS, probs = seq(0, 1, 0.1), na.rm=T)
+  dat$bin2=cut(dat$AFR_EAS, breaks=cutoff2, labels=1:(length(cutoff2)-1))
+  
+  dat=dat[dat$bin1==1 & dat$bin2==8 ,c("EUR_EAS", "chisq", "ldsc")]
+  names(dat)=c("aver2","chisq", "ldsc")
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc, data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+  
+  px=min(dat$aver2)
+  py=max(dat$chisq)
+
+  # plot
+  plot(dat$aver2, dat$chisq,
+           xlab="ave r2", ylab="chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+}
+dev.off()
+
+```
+
+### chisq ~ multi-aver2
+
+```{r eval=F}
+
+# linear regression ------------------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("ref-1kg/pairwise-mixture-out/",trait,"-all.out"), col_names=T)
+
+  # linear model
+  mod=lm(chisq ~ AFR_EAS + EUR_AFR + EUR_EAS + ldsc, data=dat)
+  est0=data.frame(trait=trait,
+                  AFR_EAS=summary(mod)$coefficients[2,1],
+                  EUR_AFR=summary(mod)$coefficients[3,1],
+                  EUR_EAS=summary(mod)$coefficients[4,1])
+  
+  p0=data.frame(trait=trait,
+                  AFR_EAS=summary(mod)$coefficients[2,4],
+                  EUR_AFR=summary(mod)$coefficients[3,4],
+                  EUR_EAS=summary(mod)$coefficients[4,4])
+
+ if(i==1){est=est0; p=p0} else{est=rbind(est,est0); p=rbind(p,p0)}
+}
+
+# ridge regression -------------------------------------------------------------
+library(glmnet)
+dat=dat[complete.cases(dat),]
+mod = glmnet(as.matrix(dat[,3:6]), as.matrix(dat[,2]), 
+             family="gaussian", intercept = F, alpha=0)
 
 ```
 

@@ -1,5 +1,5 @@
 
-# inclusive GWAS
+# previous GWAS
 
 Here we conduct a GWAS that mimic the QC steps taken by some of the most inclusive GWAS studies. For example, the GWAS conducted by Codd et al. (2021) on telomere length has the following QC step, which resulted in n = 472,174 and m = 19.4 million SNPs
 
@@ -472,9 +472,301 @@ dev.off()
 
 ```
 
+## PR interval GWAS
+
+Here we want to check whether previous GWAS was affected by confounding. 
+We use the PR interval GWAS as an example to work out the workflow.
+
+### aver2_j
+
+```{r eval=F}
+mkdir previous-gwas-sumstats
+
+# common SNPs: 1kg, gwas & ldsc-------------------------------------------------
+
+# 1kg & ldsc
+dir=previous-gwas-sumstats
+ldsc=$dir/snp-list/ldsc.snps
+snp1kg=$dir/snp-list/1kg.snps
+out=$dir/snp-list/ldsc-1kg-common.snps
+
+awk '{a=$5; 
+      b=$6;
+      if(a<b) 
+      print $2, $2 "_" a "_" b;
+      else 
+      print $2, $2 "_" b "_"a}' \
+      $snp1kg > 1kg.tmp
+
+awk '{a=$3; 
+      b=$4;
+      if(a<b) 
+      print $1, $2"_" a "_" b;
+      else 
+      print $1, $2"_" b "_" a}' \
+      $ldsc > ldsc.tmp
+
+awk 'NR==FNR {a[$2]; b[$2]=$1; next} 
+     {if ($2 in a) print $1, b[$2], $2}' 1kg.tmp ldsc.tmp > $out
+
+# gwas snps
+dir=previous-gwas-sumstats
+infile=$dir/PR_1000g_GWAS_ALL.zip
+outfile=$dir/snp-list/pr.snps
+
+zcat $infile | awk 'NR >1 {a=$2;
+                 b=$3;
+                 if(a<b)
+                 print $1, $5 ":" $6 "_" toupper(a) "_" toupper(b);
+                 else 
+                 print $1, $5 ":" $6 "_" toupper(b) "_" toupper(a)}' > $outfile 
+
+# select gwas snps common to 1kg & ldsc
+dir=previous-gwas-sumstats
+snp=$dir/snp-list/ldsc-1kg-common.snps
+gwas=$dir/snp-list/pr.snps
+outfile=$dir/pr-sel.snps
+
+awk 'NR==FNR {a[$3]; next} 
+     {if ($2 in a) print $0}' $snp $gwas > $outfile 
+
+# organize gwas data------------------------------------------------------------
+infile=previous-gwas-sumstats/PR_1000g_GWAS_ALL.zip
+outfile=previous-gwas-sumstats/pr.gwas
+zcat $infile | awk 'BEGIN {print "snp chr pos chisq p_val"}
+                   NR >1 {print $1, $5, $6, ($7/$8)^2, $9}' > $outfile
+
+# select gwas data for snps common with 1kg & ldsc
+infile=previous-gwas-sumstats/pr.gwas
+snpfile=previous-gwas-sumstats/pr-sel.snps
+outfile=previous-gwas-sumstats/pr-sel.gwas
+ 
+awk 'NR==FNR {a[$1]; b[$1]=$2 ; next}
+     BEGIN {print "snp rs chr pos chisq p_val"}
+     {if ($1 in a) print b[$1], $0}' $snpfile $infile > $outfile
+
+# select 10k SNPs to compute ave r2_j-------------------------------------------
+# selection based on percentiles of chisq
+R
+require(vroom)
+dat=vroom("previous-gwas-sumstats/pr-sel.gwas", col_names=T)
+
+# bin snps by percentiles of chisq to get a good range of test statistics
+cutoff=quantile(dat$chisq, probs = seq(0, 1, 0.01), na.rm=T)
+dat$chisq_bin=cut(dat$chisq, breaks=cutoff, labels=1:(length(cutoff)-1))
+
+# sample 200 SNPs from each percentile bin
+out=unlist(tapply(dat$snp, dat$chisq_bin, 
+           function(x) sample(x, 200, replace=F)))
+
+# check which chromosomes they come from
+m=match(out,dat$snp)
+sel=dat[m,]
+
+write.table(sel[,1:2],"previous-gwas-sumstats/pr-20k.snps",
+            col.names=F, row.names=F, quote=F)
+
+# compute aver2 using 1kg genotype data-----------------------------------------
+mkdir previous-gwas-sumstats/aver2
+
+snp=previous-gwas-sumstats/snp-list/ldsc-1kg-common.snps
+infile=previous-gwas-sumstats/pr-20k.snps
+outfile=previous-gwas-sumstats/aver2/pr-20k.use
+
+awk 'NR==FNR {a[$1]; next}
+     {if ($3 in a) print $2, $2}' $infile $snp > $outfile
+
+# calc aver2
+list=../previous-gwas-sumstats/aver2/pr-20k.use
+bfile=../ref-1kg/1kg/gen/1000b
+out=../previous-gwas-sumstats/aver2/pr.aver2
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --lista $list \
+          --listb $list
+">sh_script/calc-aver2-pr
+
+sbatch -A snpher ../sh_script/calc-aver2-pr
+
+```
+
+### organize data
+
+```{bash eval=F}
+
+# extract ld scores for SNPs common to 1kg & ldsc-------------------------------
+dir=ldsc/eur_w_ld_chr
+snps=previous-gwas-sumstats/snp-list/ldsc-1kg-common.snps
+out=previous-gwas-sumstats/ldsc-1kg-common-snps.ldscore
+for chrom in {1..22}; do
+zcat $dir/$chrom.l2.ldscore.gz | awk 'NR>1 {print $2, $6}' > ldscore
+awk '(NR==FNR){a[$1]; b[$1]=$2; c[$1]=$3; next}
+     ($1 in a){print $1, b[$1], c[$1], $2}' $snps ldscore > temp
+if [ $chrom -eq 1 ]
+then 
+ mv temp $out
+else
+ cat $out temp > temp2
+ mv temp2 $out
+fi
+echo $chrom
+done
+
+# organize data ----------------------------------------------------------------
+dir=previous-gwas-sumstats
+gwas=$dir/pr-sel.gwas
+snps=previous-gwas-sumstats/snp-list/ldsc-1kg-common.snps
+aver2=$dir/aver2/pr.aver2.rjk2.average
+ldsc=$dir/ldsc-1kg-common-snps.ldscore
+out=$dir/pr.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$3]; b[$3]=$4; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$2]; b[$2]=$3; next} 
+     {if ($1 in a) print b[$1], $2}' $snps $aver2 > tmp/aver2.tmp0
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' tmp/aver2.tmp0 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+```
+
+### chisq ~ aver2_j
+
+```{r eval=F}
+require(vroom)
+
+trait="pr"
+dat=vroom(paste0("previous-gwas-sumstats/",trait,".out"), col_names=T)
+dat=dat[complete.cases(dat),]
+
+# linear model
+mod=lm(chisq ~ aver2 + ldsc,data=dat)
+p=summary(mod)$coefficients[,4][2]
+p_sci=formatC(p, format="e", digit=2)
+
+# bin a variable by quantile
+cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+
+# average chisq by bin values
+out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+px=min(out$bin_val)
+py=max(out$chisq_ave)
+
+# plot binned chisq
+png("fig/chisq-aver2-bin-pr-interval.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(lm(chisq ~ aver2, data=dat),col="orange", lwd=2)
+if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                adj=c(0,1), col="red", cex=2, font=2)
+} else {text(px, py, paste0("p = ", p_sci), 
+        adj=c(0,1), cex=2, font=2)}
+
+dev.off()
+
+# plot raw chisq
+png("fig/chisq-aver2-pr-interval.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+px=min(dat$aver2)
+py=max(dat$chisq)
+plot(dat$aver2, dat$chisq,
+           xlab="ave r2", ylab="chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(lm(chisq ~ aver2, data=dat),col="orange", lwd=2)
+if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                adj=c(0,1), col="red", cex=2, font=2)
+} else {text(px, py, paste0("p = ", p_sci), 
+        adj=c(0,1), cex=2, font=2)}
+
+dev.off()
+
+# test------------------
+
+# bin a variable by quantile
+cutoff=quantile(dat$chisq, probs = seq(0, 1, 0.01), na.rm=T)
+dat$chisq_bin=cut(dat$chisq, breaks=cutoff, labels=1:(length(cutoff)-1))
+
+# average chisq by bin values
+out=data.frame(aver2_ave=tapply(dat$aver2,INDEX=dat$chisq_bin, mean))
+out$chisq_bin_val=tapply(dat$chisq,INDEX=dat$chisq_bin, mean)
+
+png("fig/chisq-aver2-pr-interval-test.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+plot(out$chisq_bin_val[60:99], out$aver2_ave[60:99],
+           xlab="chisq", ylab="ave r2",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(lm(chisq_bin_val[80:99] ~ aver2_ave[80:99], data=out),col="orange", lwd=2)
+dev.off()
+
+
+png("fig/chisq-aver2-pr-interval-test2.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+plot(1:99, out$chisq_bin_val[1:99],
+           xlab="chisq", ylab="ave r2",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+
+dev.off()
+
+```
+
+## Ben Neale Pan-UKBB
+
+```{bash eval=F}
+mkdir neale-pangwas
+
+dir=neale-pangwas
+infile=$dir/biomarkers-30600-both_sexes-irnt.tsv.bgz
+outfile=$dir/biomarkers-30600.gwas
+
+zcat $infile | awk 'BEGIN{print "snp chisq"}
+                     NR>1{a=$3;b=$4;
+                     if(a<b && $6!="NA" && $7!="NA")
+                     print $1":"$2"_"$3"_"$4, ($6/$7)^2;
+                     if(a>b && $6!="NA" && $7!="NA")
+                     print $1":"$2"_"$4"_"$3,($6/$7)^2}' > $outfile
+                     
+
+
+```
+
+
 
 ## notes/concerns
 
  * Telomere length GWAS:
     * The QC seems too rough so that some SNPs have multiple alleles.  
+
+
 

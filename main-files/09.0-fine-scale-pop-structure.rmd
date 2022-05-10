@@ -1,0 +1,1758 @@
+
+# Fine-scale population stratification
+
+## birth location data
+
+```{bash eval=F}
+# extract raw phenotype data ----------------------------------------------------
+options(scipen = 100)
+head=read.table("phen/ukb45861.header", sep=",", header=F, stringsAsFactors = F)
+# function to get the variables
+get=function(nm){
+  colnum=grep(nm,head,fixed=TRUE)
+  out=data.frame(t(rbind(colnum, head[,colnum])))
+  names(out)=c("column", "field")
+  return (out)
+}
+
+# get the variables
+out=rbind(get('129-'), # east co-ordinate: birth place in UK
+          get('130-')) # north co-ordinate: birth place in UK
+
+# only select the right variables
+out=out[c(1:3, 20:22),]
+
+write.table(out,"phen/birth-place.colnum", col.names=F, row.names=F, sep="\t", quote=F)
+
+# extract dat-------------------------------------------------------------------
+awk -F '","' '(NR==FNR){a[$1];next}
+              {printf "%s\"", $1;
+               for(i in a){printf " \"%s\"", $i};
+               printf "\n"}' phen/birth-place.colnum phen/ukb45861.csv > phen/birth-place.dat
+               
+# organize dat------------------------------------------------------------------
+mkdir phen/other-traits
+dat=read.table("phen/birth-place.dat", header=T, stringsAsFactors=F)
+cov=read.table("phen/covariates.phen", header=T, stringsAsFactors=F)
+m=match(dat$eid,cov$eid)
+cov=cov[m,]
+
+# -1 = unknown location
+dat1=dat
+for(i in 2:7){
+dat1[dat[,i]==-1 & !is.na(dat[,i]),i]="NA"
+}
+
+# note: Cook 2020 p.2804 mentioned that 
+# "We excluded individuals with missing birth location and 
+# those from the pilot study at the Stockport recruitment (centre code10003) 
+# center for which the Cartesian coordinates were incorrect. 
+
+# exclude stockport centre
+dat1[cov$centre==10003 & !is.na(cov$centre),"X130.0.0"]="NA"
+dat1[cov$centre==10003 & !is.na(cov$centre),"X129.0.0"]="NA"
+
+# note: we only use the baseline data
+write.table(cbind(dat1[,1],dat[,1], dat[,7]),
+            "phen/other-traits/east-coord-birth-place.raw.pheno", 
+            col.names=F, row.names=F, quote=F)
+write.table(cbind(dat1[,1],dat[,1], dat[,6]),
+            "phen/other-traits/north-coord-birth-place.raw.pheno", 
+            col.names=F, row.names=F, quote=F)
+            
+```
+
+## pca of 337k
+
+```{bash eval=F}
+
+# Prune snps
+
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 4
+#SBATCH -t 10:0:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --max-threads 4 \
+          --window-prune 0.05 \
+          --window-kb 1000 \
+          --extract ../gen/snps-norm.use \
+          --bfile ../gen/geno-norm \
+          --keep ../ukbb-recommend.id \
+          --thin ../thin/thin-geno-norm
+"  > sh_script/thin-geno-norm
+
+sbatch -A snpher ../sh_script/thin-geno-norm-chr$j >../job-records/thin-geno-norm
+
+# pca using thinned snps
+echo "#"'!'"/bin/bash
+#SBATCH --mem 50G
+#SBATCH -c 10
+#SBATCH -t 6:0:0
+
+./plink2 --threads 15 \
+         --pca approx \
+         --bfile ../gen/geno-norm \
+         --memory 100000 \
+         --extract ../thin/thin-geno-norm.in \
+         --keep ../ukbb-recommend.id \
+         --out ../gen/pca-337k-ukbb
+">sh_script/pca-337k-white-british.sh
+
+sbatch -A snpher ../sh_script/pca-337k-white-british.sh >../job-records/pca
+
+```
+
+Here we want to find out the correlation between PC and birth place.
+
+```{r eval=F}
+
+east=read.table("phen/other-traits/east-coord-birth-place.raw.pheno")
+north=read.table("phen/other-traits/north-coord-birth-place.raw.pheno")
+id=read.table("ukbb-recommend.id")
+# pcs of 337k recommended individuals
+pc=read.table("gen/pca-337k-ukbb.eigenvec", header=F)
+# pcs provided by ukbb
+pc_ukbb=read.table("phen/PC-10.use", header=F)
+  
+m1=match(id$V1,pc$V1)
+m2=match(id$V1,east$V1)
+m3=match(id$V1,north$V1)
+m4=match(id$V1,pc_ukbb$V1)
+
+pc_ukbb=pc_ukbb[m4,-1]
+names(pc_ukbb)=c("id", paste0("pc",1:10))
+dat=data.frame(id=id$V1,
+               east=east$V3[m2],
+               north=north$V3[m3],
+               pc[m1,3:12])
+names(dat)[4:13]=paste0("PC",1:10)
+
+cor(dat$east,dat[,4:13], use="pair")
+cor(dat$north,dat[,4:13], use="pair")
+
+cor(dat[,4:13],pc_ukbb[,2:11])
+
+# plot pc1 vs. pc2
+png("fig/ukbb-337k-inhouse-pc1-vs-pc2.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5)
+plot(dat$PC1, dat$PC2,
+         xlab="1st PC", ylab="2nd PC",
+         main="ukbb 337k unrelated white British", las=1,
+         cex = 0.8, pch=21, bg="darkgray", col="white", lwd=0.5)
+
+dev.off()
+
+# plot pc1 vs. pc2 col-coded by birth location
+
+cutoff1=quantile(dat$east, probs = seq(0, 1, 0.1), na.rm=T)
+dat$bin_east=cut(dat$east, breaks=cutoff1, labels=1:(length(cutoff1)-1))
+cutoff2=quantile(dat$north, probs = seq(0, 1, 0.1), na.rm=T)
+dat$bin_north=cut(dat$north, breaks=cutoff2, labels=1:(length(cutoff2)-1))
+
+require("RColorBrewer")
+pallete1=brewer.pal(10, name="Spectral")
+mycol1=apply(col2rgb(pallete1), 2, 
+            function(X) rgb(X[1], X[2], X[3], max=255, alpha=220))
+
+#pallete2=brewer.pal(10, name="Purples")
+#mycol2=apply(col2rgb(pallete2), 2, 
+#            function(X) rgb(X[1], X[2], X[3], max=255, alpha=220))
+
+png("fig/ukbb-337k-inhouse-pc1-vs-pc2-by-birth-location.png", res=600, width=40, height=20, units="cm")
+
+par(mfrow=c(1,2), cex.lab=1.2, font.lab=2, cex.main=1.5)
+# east
+plot(NULL, xlab="1st PC", ylab="2nd PC",
+     xlim=c(min(dat$PC1), max(dat$PC1)), 
+     ylim=c(min(dat$PC2), max(dat$PC2)),
+     main="by east coord bin", las=1)
+for(i in 1:10){
+ sel=dat[dat$bin_east==i & !is.na(dat$bin_east),]
+ points(sel$PC1, sel$PC2, cex = 1.5, pch=21, 
+         bg=mycol1[i], col="white", lwd=0.5) 
+}
+
+# north
+plot(NULL, xlab="1st PC", ylab="2nd PC",
+     xlim=c(min(dat$PC1), max(dat$PC1)), 
+     ylim=c(min(dat$PC2), max(dat$PC2)),
+     main="by north coord bin", las=1)
+for(i in 1:10){
+ sel=dat[dat$bin_north==i & !is.na(dat$bin_north),]
+ points(sel$PC1, sel$PC2, cex = 1.5, pch=21, 
+         bg=mycol2[i], col="white", lwd=0.5) 
+}
+
+dev.off()
+
+# seperate plots by location bin
+require("RColorBrewer")
+pallete=brewer.pal(10, name="Spectral")
+mycol=apply(col2rgb(pallete), 2, 
+            function(X) rgb(X[1], X[2], X[3], max=255, alpha=220))
+
+png("fig/ukbb-337k-inhouse-pc1-vs-pc2-by-east-bin-panel.png", res=600, width=50, height=20, units="cm")
+
+par(mfrow=c(2,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+# east
+for(i in 1:10){
+plot(dat$PC1, dat$PC2, xlab="1st PC", ylab="2nd PC",
+     xlim=c(min(dat$PC1), max(dat$PC1)), 
+     ylim=c(min(dat$PC2), max(dat$PC2)),
+     col=rgb(211,211,211,max=255, alpha=150), 
+     main=paste0("east coord bin ", i), las=1)
+
+ sel=dat[dat$bin_east==i & !is.na(dat$bin_east),]
+ points(sel$PC1, sel$PC2, cex = 1.5, pch=21, 
+         bg=mycol[i], col="white", lwd=0.5) 
+}
+dev.off()
+
+# north
+png("fig/ukbb-337k-inhouse-pc1-vs-pc2-by-north-bin-panel.png", res=600, width=50, height=20, units="cm")
+par(mfrow=c(2,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+for(i in 1:10){
+plot(dat$PC1, dat$PC2, xlab="1st PC", ylab="2nd PC",
+     xlim=c(min(dat$PC1), max(dat$PC1)), 
+     ylim=c(min(dat$PC2), max(dat$PC2)),
+     col=rgb(211,211,211,max=255, alpha=150),
+     main=paste0("east coord bin ", i), las=1)
+ sel=dat[dat$bin_north==i & !is.na(dat$bin_north),]
+ points(sel$PC1, sel$PC2, cex = 1.5, pch=21, 
+         bg=mycol[i], col="white", lwd=0.5) 
+}
+dev.off()
+
+```
+
+```{r eval=F}
+
+# plot birth location east vs. north
+east=read.table("phen/other-traits/east-coord-birth-place.raw.pheno")
+north=read.table("phen/other-traits/north-coord-birth-place.raw.pheno")
+id=read.table("ukbb-recommend.id")
+# pcs of 337k recommended individuals
+pc=read.table("gen/pca-337k-ukbb.eigenvec", header=F)
+# pcs provided by ukbb
+pc_ukbb=read.table("phen/PC-10.use", header=F)
+  
+m1=match(id$V1,pc$V1)
+m2=match(id$V1,east$V1)
+m3=match(id$V1,north$V1)
+m4=match(id$V1,pc_ukbb$V1)
+
+pc_ukbb=pc_ukbb[m4,-1]
+names(pc_ukbb)=c("id", paste0("pc",1:10))
+dat=data.frame(id=id$V1,
+               east=east$V3[m2],
+               north=north$V3[m3],
+               pc[m1,3:12])
+names(dat)[4:13]=paste0("PC",1:10)
+
+# plot birth location
+png("fig/ukbb-337k-birth-location.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+plot(dat$north, dat$east,
+         xlab="north coord", ylab="east coordinate",
+         main="ukbb 337k unrelated white British", las=1,
+         cex = 0.8, pch=21, bg="darkgray", col="white", lwd=0.5)
+
+dev.off()
+
+# plot birth location col-coded by PC1
+cutoff1=quantile(dat$PC1, probs = seq(0, 1, 0.1), na.rm=T)
+dat$bin_PC1=cut(dat$PC1, breaks=cutoff1, labels=1:(length(cutoff1)-1))
+cutoff2=quantile(dat$PC2, probs = seq(0, 1, 0.1), na.rm=T)
+dat$bin_PC2=cut(dat$PC2, breaks=cutoff2, labels=1:(length(cutoff2)-1))
+
+require("RColorBrewer")
+pallete=brewer.pal(10, name="Spectral")
+mycol=apply(col2rgb(pallete), 2, 
+            function(X) rgb(X[1], X[2], X[3], max=255, alpha=150))
+
+png("fig/ukbb-337k-birth-location-by-pc.png", res=600, width=40, height=20, units="cm")
+
+par(mfrow=c(1,2), cex.lab=1.2, font.lab=2, cex.main=1.5,pty="s")
+# PC1
+plot(NULL, xlab="north", ylab="east",
+     xlim=c(min(dat$north, na.rm=T), max(dat$north, na.rm=T)), 
+     ylim=c(min(dat$east, na.rm=T), max(dat$east, na.rm=T)),
+     main="by PC1 bin", las=1)
+for(i in 1:10){
+ sel=dat[dat$bin_PC1==i & !is.na(dat$bin_PC1),]
+ points(sel$north, sel$east, cex = 0.8, pch=21, 
+         bg=mycol[i], col="white", lwd=0.5) 
+}
+
+# PC2
+plot(NULL, xlab="north", ylab="east",
+     xlim=c(min(dat$north, na.rm=T), max(dat$north, na.rm=T)), 
+     ylim=c(min(dat$east, na.rm=T), max(dat$east, na.rm=T)),
+     main="by PC2 bin", las=1)
+for(i in 1:10){
+ sel=dat[dat$bin_PC2==i & !is.na(dat$bin_PC2),]
+ points(sel$north, sel$east, cex = 0.8, pch=21, 
+         bg=mycol[i], col="white", lwd=0.5) 
+}
+
+dev.off()
+
+# seperate plots -----------------------------------------------------------------
+
+png("fig/ukbb-337k-birth-location-by-pc1-bin-panel.png", res=600, width=50, height=20, units="cm")
+
+par(mfrow=c(2,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+# PC1
+for(i in 1:10){
+plot(NULL, xlab="north", ylab="east",
+     pch=21, cex=0.5, col=rgb(211,211,211,max=255, alpha=150), 
+     xlim=c(min(dat$north, na.rm=T), max(dat$north, na.rm=T)), 
+     ylim=c(min(dat$east, na.rm=T), max(dat$east, na.rm=T)),
+     main=paste0("PC1 bin ", i), las=1)
+
+ sel=dat[dat$bin_PC1==i & !is.na(dat$bin_PC1),]
+ points(sel$north, sel$east, cex = 1, pch=21, 
+         bg=mycol[i], col="white", lwd=0.5) 
+}
+dev.off()
+
+# PC2
+png("fig/ukbb-337k-birth-location-by-pc2-bin-panel.png", res=600, width=50, height=20, units="cm")
+par(mfrow=c(2,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+for(i in 1:10){
+plot(NULL, xlab="north", ylab="east",
+     pch=21, cex=0.5, col=rgb(211,211,211,max=255, alpha=150), 
+     xlim=c(min(dat$north, na.rm=T), max(dat$north, na.rm=T)), 
+     ylim=c(min(dat$east, na.rm=T), max(dat$east, na.rm=T)),
+     main=paste0("PC2 bin ", i), las=1)
+ sel=dat[dat$bin_PC2==i & !is.na(dat$bin_PC2),]
+ points(sel$north, sel$east, cex = 1, pch=21, 
+         bg=mycol[i], col="white", lwd=0.5) 
+}
+dev.off()
+
+# seperate plots 5 bins --------------------------------------------------------
+
+# plot birth location col-coded by PC1
+cutoff1=quantile(dat$PC1, probs = seq(0, 1, 0.2), na.rm=T)
+dat$bin_PC1=cut(dat$PC1, breaks=cutoff1, labels=1:(length(cutoff1)-1))
+cutoff2=quantile(dat$PC2, probs = seq(0, 1, 0.2), na.rm=T)
+dat$bin_PC2=cut(dat$PC2, breaks=cutoff2, labels=1:(length(cutoff2)-1))
+
+require("RColorBrewer")
+pallete=brewer.pal(5, name="Spectral")
+mycol=apply(col2rgb(pallete), 2, 
+            function(X) rgb(X[1], X[2], X[3], max=255, alpha=218))
+
+png("fig/ukbb-337k-birth-location-by-pc1-bin-5panel.png", res=600, width=50, height=10, units="cm")
+
+par(mfrow=c(1,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+# PC1
+for(i in 1:5){
+plot(NULL, xlab="north", ylab="east",
+     pch=21, cex=0.5, col=rgb(211,211,211,max=255, alpha=150), 
+     xlim=c(min(dat$north, na.rm=T), max(dat$north, na.rm=T)), 
+     ylim=c(min(dat$east, na.rm=T), max(dat$east, na.rm=T)),
+     main=paste0("PC1 bin ", i), las=1)
+
+ sel=dat[dat$bin_PC1==i & !is.na(dat$bin_PC1),]
+ points(sel$north, sel$east, cex = 1, pch=21, 
+         bg=mycol[i], col="white", lwd=0.5) 
+}
+dev.off()
+
+# PC2
+png("fig/ukbb-337k-birth-location-by-pc2-bin-5panel.png", res=600, width=50, height=10, units="cm")
+par(mfrow=c(1,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+for(i in 1:5){
+plot(NULL, xlab="north", ylab="east",
+     pch=21, cex=0.5, col=rgb(211,211,211,max=255, alpha=150), 
+     xlim=c(min(dat$north, na.rm=T), max(dat$north, na.rm=T)), 
+     ylim=c(min(dat$east, na.rm=T), max(dat$east, na.rm=T)),
+     main=paste0("PC2 bin ", i), las=1)
+ sel=dat[dat$bin_PC2==i & !is.na(dat$bin_PC2),]
+ points(sel$north, sel$east, cex = 1, pch=21, 
+         bg=mycol[i], col="white", lwd=0.5) 
+}
+dev.off()
+
+```
+
+## birth place gwas
+
+We want to replicate results by Cook et al. (2020), where they found that the GWAS for the east and north coordinates of birth place is confounded. Note: Cook used 8.8 M well-imputed SNPs with MAF > 0.5%, but we used 1.1 Hapmap3 SNPs with MAF > 0.01 (this is because ldsc provide ldscores for these SNPs).
+
+We want to find out if chisq varies with aver2, and if ldsc intercept indicates inflation.
+
+### gwas
+
+```{bash eval=F}
+
+mkdir birth-place-gwas
+
+for i in {east-coord-birth-place,north-coord-birth-place}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../birth-place-gwas/$i-linear \
+          --pheno ../phen/other-traits/$i.raw.pheno \
+          --bfile ../gen/geno-norm \
+          --keep ../ukbb-recommend.id \
+          --extract ../gen/snps-norm.use \
+          --covar ../phen/covariates.use \
+          --max-threads 3 \
+"> sh_script/$i-linear.sh
+done
+
+# submit files
+for i in {east-coord-birth-place,north-coord-birth-place}; do
+sbatch -A snpher ../sh_script/$i-linear.sh
+done>../job-records/gwas-birth-place
+
+```
+
+### chisq ~ aver2
+
+Using our method, we found evidence of confounding in the birth place GWASs. That is, some genetic differences between sub-populations drive the test statistics. This is somewhat surprising for two reasons: 1) using the same aver2 (i.e., for the 337k ukbb white British), our method finds no evidence of confounding for the other 14 traits. 2). genetic variation in birth location was not evident in PCs [no correlation between PCs and coordiantes of birth place]. That is, geographic location of birth place did not systematically vary in genotype data. This suggests that aver2 can pick up fine-scale population structure that is not even evident in the PCs.
+
+This suggests that:
+1) despite the best efforts of controlling for confounding bias, a post-gwas check for confounding bias is necessary.
+2) aver2 can catch subtle systematic genetic variation (i.e., is sensitive to fine-scale population structure), but the fine-scale population structure does not necessarily cause inflation in test statistics (or confound GWAS).  
+
+```{bash eval=F}
+
+# organize data ----------------------------------------------------------------
+mkdir birth-place-gwas-out
+
+for trait in {east-coord-birth-place,north-coord-birth-place}; do
+
+gwas=birth-place-gwas/$trait-linear.summaries
+aver2=summary/ave-r2-10k-snps-ukbb-norm
+ldsc=snps-norm.ldscore
+out=birth-place-gwas-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+```{r eval=F}
+# plot
+
+require(vroom)
+traits=c("east-coord-birth-place","north-coord-birth-place")
+
+png("fig/chisq-aver2-bin-ukbb-recommend-337k-birth-place.png", res=600, width=20, height=10, units="cm")
+par(mfrow=c(1,2), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("birth-place-gwas-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+
+```
+
+### detect inflation using 1kg
+
+```{bas eval=F}
+
+# combine gwas results with aver2 from 1kg--------------------------------------
+
+for trait in {east-coord-birth-place,north-coord-birth-place}; do
+gwas=birth-place-gwas/$trait-linear.summaries
+aver2=ref-1kg/aver2/1kg-ukbb.aver2
+tmp=birth-place-gwas-out/$trait.tmp
+ldsc=snps-norm.ldscore
+out=birth-place-gwas-out/$trait-1kg-ref.out
+
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq" }
+     NR==FNR && NR > 1 {a[$1]; b[$1]=$5; next} 
+     {if ($1 in a) print $0, b[$1]}' $gwas $aver2> $tmp
+
+awk 'BEGIN{print "ukbb_snp ref_snp ref ukbb chisq ldsc" }
+     NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print $0, b[$1]}' $ldsc $tmp > $out
+     
+done
+
+```
+
+```{r eval=F}
+
+# chisq ~ aver2-----------------------------------------------------------------
+
+
+```
+
+
+
+### gwas results
+
+Here we use manhattan to check if there is any genome-wide significant results of the birth. 
+
+```{r eval=F}
+
+# define a plotting function
+Manhattan=function(var){
+  # organize data
+  library(vroom)
+  p0=vroom(paste0("birth-place-gwas/",var,"-linear.assoc"), col_names=T)
+  p1=p0[p0$Wald_P<=sel & p0$Wald_P!=0 & !is.na(p0$Wald_P),] # only plot <= 0.01 & > 0
+  p1=p1[order(p1$Chromosome, p1$Basepair, decreasing=F),] # sort data frame
+  
+  # x coordinate based on base pair
+  for(i in 1:22){
+    maxbp0=data.frame(chr=i,maxbp=max(p1$Basepair[p1$Chromosome==i]))
+    # keep track of maxbp of each chr for later use
+    if(i==1) {
+      cummaxbp=max(p1$Basepair[p1$Chromosome==i])
+      pos=p1$Basepair[p1$Chromosome==i]
+      maxbp=maxbp0
+    }else{
+      pos=c(pos,p1$Basepair[p1$Chromosome==i]+cummaxbp)
+      cummaxbp=cummaxbp+max(p1$Basepair[p1$Chromosome==i])
+      maxbp=rbind(maxbp, maxbp0)
+    } # add for i > 1, the pos or the x-coordinate of a current snp is the sum 
+    # of its basepair & the cumulative max basepair from previous chromosomes. 
+  }
+  
+  p2=data.frame(chr=p1$Chromosome,
+                Predictor=p1$Predictor,
+                x=pos,
+                neglog10p=-log10(p1$Wald_P), stringsAsFactors = F)
+  if(sum(p2$neglog10p>=-log10(5*10^-8))>0) sig=p2[p2$neglog10p>=-log10(5*10^-8),]
+  
+  # define objects
+  mycol=rep(c("darkgray", "gray"), 11)
+  xtick=c(min(p2$x), cumsum(maxbp$maxbp))
+  lab.pos=(xtick[1:22]+xtick[2:23])/2
+  
+  #plotting
+  nm=paste0("fig/",var,"-manhattan-plot.png")
+  png(nm, width=30, height=10, units="cm", res=100)
+  plot(NULL, xlab="chromosome", ylab="-log10(p)",
+       xlim=c(min(p2$x),max(p2$x)), ylim=c(-log10(0.01),-log10(5*10^-8)+2),
+       xaxt='n', main=var,
+       bty="n", las=2 )
+  for(i in 1:22){
+    points(p2$x[p2$chr==i], p2$neglog10p[p2$chr==i], 
+           cex = 0.3, pch=16,  col=mycol[i])
+  }
+  abline(h=-log10(5*10^-8), col="orange", lty=3)
+  if(sum(p2$neglog10p>=-log10(5*10^-8))>0){
+    points(sig$x, sig$neglog10p, 
+           cex = 0.8, pch=21,  bg="steelblue", col="white", lwd=0.5)}
+  axis(side=1, at=xtick, labels = FALSE)
+  text(x=lab.pos, y= par("usr")[3] - 1.5, labels=1:22, xpd=T, cex = 0.8, font=2)
+  dev.off()
+}
+
+# call the function
+traits=c("east-coord-birth-place","north-coord-birth-place")
+cutoff=5*10^-8
+sel=0.01
+for(i in 1:length(traits)){
+  Manhattan(traits[i])
+}
+
+```
+
+
+## GWAS based on PC clusters
+
+Here we investigate if fine-scale population structure within unrelated white British (337k) can inflate gwas test statistics. To this end, we performed good & bad GWASs that vary in the heterogeneity of pop. structure, as assessed by PCs (see plot). The good GWAS contains individuals with an average PC1 xx, wheareas the bad GWAS contains individuals with PC1 and PC2 xx. 
+
+### id lists
+
+```{r eval=F}
+# k-mean clustering of PC1 & PC2------------------------------------------------
+# pcs of 337k recommended individuals
+pc=read.table("gen/pca-337k-ukbb.eigenvec", header=F)
+names(pc)=c("eid", "eid", paste0("PC", 1:10))
+pc1pc2=pc[,3:4]
+set.seed(14)
+cluster=kmeans(pc1pc2, centers=3, nstart=50)
+pc$cluster=cluster$cluster
+centroid=data.frame(PC1=tapply(pc$PC1,INDEX=pc$cluster, mean),
+                    PC2=tapply(pc$PC2,INDEX=pc$cluster, mean))
+centroid$n=table(pc$cluster)
+
+# plot pc1 vs. pc3 by the clusters----------------------------------------------
+require("RColorBrewer")
+pallete=brewer.pal(3, name="Spectral")
+mycol=apply(col2rgb(pallete), 2, 
+            function(X) rgb(X[1], X[2], X[3], max=255, alpha=150))
+
+png("fig/ukbb-337k-inhouse-pc1-vs-pc2.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5)
+plot(NULL, xlab="1st PC", ylab="2nd PC",
+     xlim=c(min(pc$PC1), max(pc$PC1)), 
+     ylim=c(min(pc$PC2), max(pc$PC2)),
+     main="ukbb 337k unrelated white British", las=1,
+     cex = 0.8, pch=21, bg="darkgray", col="white", lwd=0.5)
+
+for(i in 1:3){
+ sel=pc[pc$cluster==i & !is.na(pc$cluster),]
+ points(sel$PC1, sel$PC2, cex = 1, pch=21, 
+         bg=mycol[i], col="white", lwd=0.5)
+ # centroid
+ points(centroid[i,1], centroid[i,2], cex = 1.5, pch=21, 
+         bg="steelblue", col="white", lwd=0.5)
+}
+
+dev.off()
+
+# plot location by PC clusters--------------------------------------------------
+east=read.table("phen/other-traits/east-coord-birth-place.raw.pheno")
+north=read.table("phen/other-traits/north-coord-birth-place.raw.pheno")
+m1=match(pc$eid,east$V1)
+m2=match(pc$eid,north$V1)
+pc$east=east$V3[m1]
+pc$north=north$V3[m2]
+
+loc_mean=data.frame(east=tapply(pc$east,INDEX=pc$cluster, function(X) mean(X, na.rm=T)),
+                    north=tapply(pc$north,INDEX=pc$cluster, function(X) mean(X, na.rm=T)))
+
+require("RColorBrewer")
+pallete=brewer.pal(4, name="Spectral")
+mycol=apply(col2rgb(pallete[c(1,3,4)]), 2, 
+            function(X) rgb(X[1], X[2], X[3], max=255, alpha=150))
+
+png("fig/ukbb-337k-birth-location-by-pc-cluster.png", res=600, width=30, height=10, units="cm")
+par(mfrow=c(1,3), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+for(i in 1:3){
+  plot(NULL,
+     xlim=c(min(pc$north, na.rm=T), max(pc$north, na.rm=T)), 
+     ylim=c(min(pc$east, na.rm=T), max(pc$east, na.rm=T)),
+     xlab="north coord", ylab="east coordinate",
+     main=paste0("cluster ", i ), las=1,
+     cex = 0.8, pch=21, bg="darkgray", col="white", lwd=0.5)
+   
+   sel=pc[pc$cluster==i & !is.na(pc$cluster),]
+   points(sel$north, sel$east, cex = 0.8, pch=21, 
+         bg=mycol[i], col="white", lwd=0.5)
+   # centre
+  points(loc_mean[i,"north"], loc_mean[i,"east"], cex = 1.5, pch=21, 
+         bg="slategrey", col="slategrey", lwd=0.5)
+}
+dev.off()
+
+# id lists----------------------------------------------------------------------
+# cluster 1. c1=100k; 
+# c1a=50k for bad gwas, c1b=50k for control gwas non-overlapping ids.
+options(scipen = 100)
+sel=pc$eid[pc$cluster==1]
+set.seed(4)
+c1=sample(sel,100000,replace=F) # good gwas: 100k
+set.seed(14)
+c1a=sample(c1,50000,replace=F) # for bad gwas: 50k
+set.seed(114)
+c1b=sample(sel[!sel%in%c1],50000,replace=F) # for control gwas: 50k
+
+# cluster 2 & 3 -> each 1 list = 25k
+sel=pc$eid[pc$cluster==2]
+set.seed(5)
+c2=sample(sel,25000,replace=F)
+
+sel=pc$eid[pc$cluster==3]
+set.seed(56)
+c3=sample(sel,25000,replace=F)
+
+# final list
+write.table(cbind(c1,c1), 
+            "ukbb-recommended-good-gwas.id", 
+            col.names=F, row.names=F, quote=F)
+write.table(cbind(c(c1a,c2,c3),c(c1a,c2,c3)), 
+            "ukbb-recommended-bad-gwas.id", col.names=F, row.names=F, quote=F)
+write.table(cbind(c(c1a,c1b),c(c1a,c1b)), 
+            "ukbb-recommended-control-gwas.id", col.names=F, row.names=F, quote=F)
+```
+
+### id list for bad gwas2
+Here we want to do a GWAS based on the mixture of cluster 1 & cluster 2 only.
+So that pop structure mostly come from PC1.
+
+```{r eval=F}
+options(scipen = 100)
+pc=read.table("gen/pca-337k-ukbb.eigenvec", header=F)
+names(pc)=c("eid", "eid", paste0("PC", 1:10))
+pc1pc2=pc[,3:4]
+set.seed(14)
+cluster=kmeans(pc1pc2, centers=3, nstart=50)
+centroid=data.frame(PC1=tapply(pc$PC1,INDEX=pc$cluster, mean),
+                    PC2=tapply(pc$PC2,INDEX=pc$cluster, mean))
+centroid$n=table(pc$cluster)
+
+sel=pc$eid[pc$cluster==1]
+set.seed(4)
+c1=sample(sel,100000,replace=F) # good gwas: 100k
+set.seed(14)
+c1a=sample(c1,50000,replace=F) # for bad gwas: 50k
+
+# cluster 2  -> each 1 list = 50k
+sel=pc$eid[pc$cluster==2]
+set.seed(5)
+c2=sample(sel,50000,replace=F)
+
+# final list
+write.table(cbind(c(c1a,c2),c(c1a,c2)), 
+            "ukbb-recommended-bad-gwas-2.id", col.names=F, row.names=F, quote=F)
+
+```
+
+
+### id list for bad gwas3
+Here we use mix individuals of the bottom and top PC1 only without considering PC2.
+
+```{r eval=F}
+options(scipen = 100)
+pc=read.table("gen/pca-337k-ukbb.eigenvec", header=F)
+names(pc)=c("eid", "eid", paste0("PC", 1:10))
+
+dat=pc[order(pc$PC1),]
+out=rbind(dat[1:50000,1:2], 
+          dat[(dim(dat)[1]-50000+1):dim(dat)[1],1:2])
+
+# final list
+write.table(out, "ukbb-recommended-bad-gwas-3.id", col.names=F, row.names=F, quote=F)
+
+```
+
+
+### bad gwas
+
+```{bash eval=F}
+
+mkdir fine-scale-pop-struct
+mkdir fine-scale-pop-struct/bad-gwas
+
+dir=fine-scale-pop-struct/bad-gwas
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../$dir/$i-linear \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-norm \
+          --keep ../ukbb-recommended-bad-gwas.id \
+          --extract ../gen/snps-norm.use \
+          --covar ../phen/basic-covariates.use \
+          --max-threads 3 \
+"> sh_script/$i-linear.sh
+done
+
+# submit files
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear.sh
+done>../job-records/bad-gwas-fine-scale
+
+```
+
+### bad gwas#2
+
+For mixing cluster 1 & cluster 2 only.
+
+```{bash eval=F}
+
+mkdir fine-scale-pop-struct/bad-gwas-2
+
+dir=fine-scale-pop-struct/bad-gwas-2
+id=ukbb-recommended-bad-gwas-2.id
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../$dir/$i-linear \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-norm \
+          --keep ../$id \
+          --extract ../gen/snps-norm.use \
+          --covar ../phen/basic-covariates.use \
+          --max-threads 3 \
+"> sh_script/$i-linear.sh
+done
+
+# submit files
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear.sh
+done>../job-records/bad-gwas-2-fine-scale
+
+```
+
+### bad gwas#3
+
+```{bash eval=F}
+
+mkdir fine-scale-pop-struct/bad-gwas-3
+
+dir=fine-scale-pop-struct/bad-gwas-3
+id=ukbb-recommended-bad-gwas-3.id
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../$dir/$i-linear \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-norm \
+          --keep ../$id \
+          --extract ../gen/snps-norm.use \
+          --covar ../phen/basic-covariates.use \
+          --max-threads 3 \
+"> sh_script/$i-linear.sh
+done
+
+# submit files
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear.sh
+done>../job-records/bad-gwas-3-fine-scale
+
+```
+
+### good gwas
+
+```{bash eval=F}
+
+mkdir fine-scale-pop-struct/good-gwas
+
+dir=fine-scale-pop-struct/good-gwas
+id=ukbb-recommended-good-gwas.id
+
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../$dir/$i-linear \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-norm \
+          --keep ../$id \
+          --extract ../gen/snps-norm.use \
+          --covar ../phen/covariates.use \
+          --max-threads 3 \
+"> sh_script/$i-linear.sh
+done
+
+# submit files
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear.sh
+done>../job-records/good-gwas-fine-scale
+
+```
+
+### control gwas
+
+```{bash eval=F}
+
+mkdir fine-scale-pop-struct/control-gwas
+
+dir=fine-scale-pop-struct/control-gwas
+id=ukbb-recommended-control-gwas.id
+
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../$dir/$i-linear \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-norm \
+          --keep ../$id \
+          --extract ../gen/snps-norm.use \
+          --covar ../phen/covariates.use \
+          --max-threads 3 \
+"> sh_script/$i-linear.sh
+done
+
+# submit files
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear.sh
+done>../job-records/control-gwas-fine-scale
+
+```
+
+## compute aver2
+
+### bad-gwas
+
+```{bash eval=F}
+# new directory
+mkdir inflation/fine-scale-pop-struct/bad-gwas
+
+# to calc aver2 for lista-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../ukbb-recommended-bad-gwas.id
+bfile=../gen/geno-norm
+out=../inflation/fine-scale-pop-struct/bad-gwas/aver2-lista
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-lista
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-lista >../job-records/calc-aver2-fine-pop-bad-gwas
+
+# to calc aver2 for listb-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../ukbb-recommended-bad-gwas.id
+bfile=../gen/geno-norm
+out=../inflation/fine-scale-pop-struct/bad-gwas/aver2-listb
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $listb \
+          --listb $lista
+">sh_script/calc-aver2-listb
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-listb >../job-records/calc-aver2-fine-pop-bad-gwas
+
+# merge aver2 of the two lists--------------------------------------------------
+dir=inflation/fine-scale-pop-struct/bad-gwas
+a=$dir/aver2-lista.rjk2.average
+b=$dir/aver2-listb.rjk2.average
+out=$dir/bad-gwas.aver2
+awk 'FNR > 1 {print $1, $2}'  $a $b > $out
+
+```
+
+### bad-gwas#2
+
+```{bash eval=F}
+# new directory
+mkdir inflation/fine-scale-pop-struct/bad-gwas-2
+
+# to calc aver2 for lista-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../ukbb-recommended-bad-gwas-2.id
+bfile=../gen/geno-norm
+out=../inflation/fine-scale-pop-struct/bad-gwas-2/aver2-lista
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-lista
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-lista >../job-records/calc-aver2-fine-pop-bad-gwas-2
+
+# to calc aver2 for listb-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../ukbb-recommended-bad-gwas-2.id
+bfile=../gen/geno-norm
+out=../inflation/fine-scale-pop-struct/bad-gwas-2/aver2-listb
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $listb \
+          --listb $lista
+">sh_script/calc-aver2-listb
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-listb >../job-records/calc-aver2-fine-pop-bad-gwas-2
+
+# merge aver2 of the two lists--------------------------------------------------
+dir=inflation/fine-scale-pop-struct/bad-gwas-2
+a=$dir/aver2-lista.rjk2.average
+b=$dir/aver2-listb.rjk2.average
+out=$dir/bad-gwas-2.aver2
+awk 'FNR > 1 {print $1, $2}'  $a $b > $out
+
+```
+
+### bad-gwas#3
+
+```{bash eval=F}
+# new directory
+mkdir inflation/fine-scale-pop-struct/bad-gwas-3
+
+# to calc aver2 for lista-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../ukbb-recommended-bad-gwas-3.id
+bfile=../gen/geno-norm
+out=../inflation/fine-scale-pop-struct/bad-gwas-3/aver2-lista
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-lista
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-lista >../job-records/calc-aver2-fine-pop-bad-gwas-3
+
+# to calc aver2 for listb-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../ukbb-recommended-bad-gwas-3.id
+bfile=../gen/geno-norm
+out=../inflation/fine-scale-pop-struct/bad-gwas-3/aver2-listb
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $listb \
+          --listb $lista
+">sh_script/calc-aver2-listb
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-listb >../job-records/calc-aver2-fine-pop-bad-gwas-3
+
+# merge aver2 of the two lists--------------------------------------------------
+dir=inflation/fine-scale-pop-struct/bad-gwas-3
+a=$dir/aver2-lista.rjk2.average
+b=$dir/aver2-listb.rjk2.average
+out=$dir/bad-gwas-3.aver2
+awk 'FNR > 1 {print $1, $2}'  $a $b > $out
+
+```
+
+
+### good-gwas
+
+```{bash eval=F}
+# new directory
+mkdir inflation/fine-scale-pop-struct/good-gwas
+
+# to calc aver2 for lista-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../ukbb-recommended-good-gwas.id
+bfile=../gen/geno-norm
+out=../inflation/fine-scale-pop-struct/good-gwas/aver2-lista
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-lista
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-lista >../job-records/calc-aver2-fine-pop-good-gwas
+
+# to calc aver2 for listb-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../ukbb-recommended-good-gwas.id
+bfile=../gen/geno-norm
+out=../inflation/fine-scale-pop-struct/good-gwas/aver2-listb
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $listb \
+          --listb $lista
+">sh_script/calc-aver2-listb
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-listb >../job-records/calc-aver2-fine-pop-good-gwas
+
+# merge aver2 of the two lists--------------------------------------------------
+dir=inflation/fine-scale-pop-struct/good-gwas
+a=$dir/aver2-lista.rjk2.average
+b=$dir/aver2-listb.rjk2.average
+out=$dir/good-gwas.aver2
+awk 'FNR > 1 {print $1, $2}'  $a $b > $out
+
+```
+
+### control-gwas
+
+```{bash eval=F}
+# new directory
+mkdir inflation/fine-scale-pop-struct/control-gwas
+
+# to calc aver2 for lista-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../ukbb-recommended-control-gwas.id
+bfile=../gen/geno-norm
+out=../inflation/fine-scale-pop-struct/control-gwas/aver2-lista
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-lista
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-lista >../job-records/calc-aver2-fine-pop-control-gwas
+
+# to calc aver2 for listb-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../ukbb-recommended-control-gwas.id
+bfile=../gen/geno-norm
+out=../inflation/fine-scale-pop-struct/control-gwas/aver2-listb
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $listb \
+          --listb $lista
+">sh_script/calc-aver2-listb
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-listb >../job-records/calc-aver2-fine-pop-control-gwas
+
+# merge aver2 of the two lists--------------------------------------------------
+dir=inflation/fine-scale-pop-struct/control-gwas
+a=$dir/aver2-lista.rjk2.average
+b=$dir/aver2-listb.rjk2.average
+out=$dir/control-gwas.aver2
+awk 'FNR > 1 {print $1, $2}'  $a $b > $out
+
+```
+
+## chisq ~ aver2 
+
+### bad gwas
+
+```{bash eval=F}
+
+# organize information----------------------------------------------------------
+
+mkdir fine-scale-pop-struct/bad-gwas-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=fine-scale-pop-struct/bad-gwas/$trait-linear.summaries
+aver2=inflation/fine-scale-pop-struct/bad-gwas/bad-gwas.aver2
+ldsc=snps-norm.ldscore
+out=fine-scale-pop-struct/bad-gwas-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+```{r eval=F}
+
+# plot chisq ~ aver2------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-fine-pop-bad-gwas.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("fine-scale-pop-struct/bad-gwas-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
+### bad gwas#2
+
+```{bash eval=F}
+
+# organize information----------------------------------------------------------
+
+mkdir fine-scale-pop-struct/bad-gwas-2-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=fine-scale-pop-struct/bad-gwas-2/$trait-linear.summaries
+aver2=inflation/fine-scale-pop-struct/bad-gwas-2/bad-gwas-2.aver2
+ldsc=snps-norm.ldscore
+out=fine-scale-pop-struct/bad-gwas-2-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+```{r eval=F}
+
+# plot chisq ~ aver2------------------------------------------------------------
+
+require(vroom)
+
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-fine-pop-bad-gwas-2.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("fine-scale-pop-struct/bad-gwas-2-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
+### bad gwas#3
+
+```{bash eval=F}
+
+# organize information----------------------------------------------------------
+
+mkdir fine-scale-pop-struct/bad-gwas-3-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=fine-scale-pop-struct/bad-gwas-3/$trait-linear.summaries
+aver2=inflation/fine-scale-pop-struct/bad-gwas-3/bad-gwas-3.aver2
+ldsc=snps-norm.ldscore
+out=fine-scale-pop-struct/bad-gwas-3-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+```{r eval=F}
+
+# plot chisq ~ aver2------------------------------------------------------------
+
+require(vroom)
+
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-fine-pop-bad-gwas-3.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("fine-scale-pop-struct/bad-gwas-3-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
+
+### good gwas
+
+```{bash eval=F}
+
+# organize information----------------------------------------------------------
+
+mkdir fine-scale-pop-struct/good-gwas-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=fine-scale-pop-struct/good-gwas/$trait-linear.summaries
+aver2=inflation/fine-scale-pop-struct/good-gwas/good-gwas.aver2
+ldsc=snps-norm.ldscore
+out=fine-scale-pop-struct/good-gwas-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+```{r eval=F}
+
+# plot chisq ~ aver2------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-fine-pop-good-gwas.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("fine-scale-pop-struct/good-gwas-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
+### control gwas
+
+```{bash eval=F}
+
+# organize information----------------------------------------------------------
+
+mkdir fine-scale-pop-struct/control-gwas-out
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=fine-scale-pop-struct/control-gwas/$trait-linear.summaries
+aver2=inflation/fine-scale-pop-struct/control-gwas/control-gwas.aver2
+ldsc=snps-norm.ldscore
+out=fine-scale-pop-struct/control-gwas-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+```{r eval=F}
+
+# plot chisq ~ aver2------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-fine-pop-control-gwas.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("fine-scale-pop-struct/control-gwas-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
+## inflation ~ aver2
+
+In the above, we showed that bad GWAS that mixes individuals of bottom 50k and top 50k based on PC1 is confounded. Here we want to show that the inflation varies with respect to aver2.
+
+```{bash eval=F}
+
+# organize data
+mkdir fine-scale-pop-struct/inflation-good-dad-gwas-3
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+good=fine-scale-pop-struct/good-gwas-out/$trait.out
+bad=fine-scale-pop-struct/bad-gwas-3-out/$trait.out
+out=fine-scale-pop-struct/inflation-good-dad-gwas-3/$trait.out
+
+awk -F';' 'BEGIN{print"snp inflation aver2 ldsc"}
+     (NR==FNR && NR>1) {a[$1]; b[$1]=$2; next}
+     (NR>1){if ($1 in a) print $1, $2-b[$1], $3, $4}' $good $bad > $out
+
+done
+
+```
+
+```{r eval=F}
+
+# plot inflation ~ aver2------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/inflation-aver2-bin-fine-pop-good-bad-gwas-3.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("fine-scale-pop-struct/inflation-good-dad-gwas-3/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(inflation ~ aver2 ,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(inflation_ave=tapply(dat$inflation,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$inflation_ave)
+
+  # plot
+  plot(out$bin_val, out$inflation_ave,
+           xlab="ave r2 bin", ylab="mean inflation",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(inflation ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
+
+
+

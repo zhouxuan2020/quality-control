@@ -257,6 +257,67 @@ cat white.rand.93528 relatedness/asian-cut.05.keep relatedness/black-cut.05.keep
 
 ```
 
+### PC plot
+
+```{r eval=F}
+
+# id
+white=read.table("white.rand.93528", header=F)
+black=read.table("relatedness/black-cut.05.keep", header=F)
+asian=read.table("relatedness/asian-cut.05.keep", header=F)
+
+# cov
+require(vroom)
+cov=vroom("phen/covariates.phen", col_names=T)
+m1=match(white$V1, cov$eid)
+m2=match(black$V1, cov$eid)
+m3=match(asian$V1, cov$eid)
+white=cov[m1,c("eid", "pc1", "pc2")]
+white$ethnicity=1
+white$white=1
+black=cov[m2,c("eid", "pc1", "pc2")]
+black$ethnicity=2
+black$white=0
+asian=cov[m3,c("eid", "pc1", "pc2")]
+asian$ethnicity=3
+asian$white=0
+
+dat=rbind(white,black,asian)
+pc1_ave=tapply(dat$pc1,INDEX=dat$ethnicity, mean)
+pc2_ave=tapply(dat$pc2,INDEX=dat$ethnicity, mean)
+pc1_se=tapply(dat$pc1,INDEX=dat$ethnicity, sd)
+pc2_se=tapply(dat$pc2,INDEX=dat$ethnicity, sd)
+ave=cbind(pc1_ave,pc2_ave)
+se=cbind(pc1_se,pc2_se)
+
+# plot
+
+png("fig/white-black-asian-pc1-vs-pc2.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+plot(dat$pc1[dat$ethnicity==1], dat$pc2[dat$ethnicity==1],
+         xlab="1st PC", ylab="2nd PC",
+         main="PC1 vs PC2", las=1,
+         xlim=c(min(dat$pc1),max(dat$pc1)), 
+         ylim=c(min(dat$pc2),max(dat$pc2)),
+         cex = 0.8, pch=16, col="lightgray", lwd=0.5)
+
+points(dat$pc1[dat$ethnicity==2],dat$pc2[dat$ethnicity==2], 
+       cex = 0.8, pch=16,  col="orange", lwd=0.5)
+
+points(dat$pc1[dat$ethnicity==3],dat$pc2[dat$ethnicity==3], 
+       cex = 0.8, pch=16,  col="darkcyan", lwd=0.5)
+
+points(ave[1,1], ave[1,2], cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+points(ave[2,1], ave[2,2], cex = 1.5, pch=21,  bg="red", col="white", lwd=0.5)
+points(ave[3,1], ave[3,2], cex = 1.5, pch=21,  bg="blue", col="white", lwd=0.5)
+
+dev.off()
+
+```
+
+
+
 ## GWAS-lm
 
 ### basic cov
@@ -552,6 +613,257 @@ done
 
 ```
 
+## correct genotypes
+
+Here we want to adjust genotypes for PCs. We add one PC at a time and check the change in the distribution of aver2. How is that compared to the aver2 from the good gwas?
+
+### cal-aver2
+```{bash eval=F}
+
+# organize covariate files [only PCs]-------------------------------------------
+R
+options(scipen = 999)
+require(vroom)
+cov=vroom("phen/covariates.phen", col_names=T)
+nm=c("eid",paste0("pc",1:40))
+cov=cov[,nm]
+
+#1:10, 
+for(i in c(1:10, 20, 40)){
+  sel=c("eid", "eid", paste0("pc", 1:i))
+  out=cov[,sel]
+  file1=paste0("phen/PC-",i,".use")
+  file2=paste0("phen/PC-",i,".use-names")
+  write.table(out,file1, col.names=F, row.names=F,quote=F)
+  write.table(names(out),file2, col.names=F, row.names=F,quote=F)
+}
+
+# calc aver2 ---------------------------------------------------------------
+mkdir inflation/adjust-geno
+
+# lista-------------------------------------------------------
+for i in {1..10,20,40}; do
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../mix-pop-gwas.id 
+bfile=../gen/geno-mix
+cov=../phen/PC-$i.use
+out=../inflation/adjust-geno/aver2-lista-PC$i
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --covar $cov \
+          --keep $id \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-lista-PC$i
+done
+
+# job submission
+for i in {1:10,20,40}; do
+sbatch -A snpher ../sh_script/calc-aver2-lista-PC$i 
+done>../job-records/calc-aver2-adj-geno-lista
+
+# listb-------------------------------------------------------
+
+for i in {1..10,20,40}; do
+
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../mix-pop-gwas.id 
+bfile=../gen/geno-mix
+cov=../phen/PC-$i.use
+out=../inflation/adjust-geno/aver2-listb-PC$i
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 7
+#SBATCH -t 00:20:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --covar $cov \
+          --keep $id \
+          --bfile $bfile \
+          --lista $listb \
+          --listb $lista
+">sh_script/calc-aver2-listb-PC$i
+done
+
+# job submission
+for i in {1:10,20,40}; do
+sbatch -A snpher ../sh_script/calc-aver2-listb-PC$i 
+done>../job-records/calc-aver2-adj-geno-listb
+
+# merge aver2 of the two lists--------------------------------------------------
+dir=inflation/adjust-geno
+
+for i in {1:10,20,40}; do
+a=$dir/aver2-lista-PC$i.rjk2.average
+b=$dir/aver2-listb-PC$i.rjk2.average
+out=$dir/geno-mix-PC-$i.aver2
+awk 'FNR > 1 {print $1, $2}'  $a $b > $out
+done
+
+```
+
+### compare changes in aver2
+
+```{r eval=F}
+
+good=read.table("summary/ave-r2-by-snp-goodgwas", header=F,
+                stringsAsFactors = F)
+bad=read.table("summary/ave-r2-by-snp-badgwas", header=F,
+               stringsAsFactors = F)
+pc=c(1:10,20,40)
+for(i in 1:length(pc)){
+  file=paste0("inflation/adjust-geno/geno-mix-PC-",pc[i],".aver2")
+  dat=read.table(file,header=F)
+  names(dat)=c("snp",paste0("pc",pc[i]))
+  if(i==1){out=dat} else{out=cbind(out,dat[,2]); names(out)[i+1]=paste0("pc",pc[i])}
+}
+
+m1=match(out$snp, good$V1)
+m2=match(out$snp, bad$V1)
+out$good=good$V2[m1]
+out$bad=bad$V2[m2]
+
+# get the average and standard deviation
+summary=data.frame(gwas=names(out)[-1],
+                   ave=apply(out[,-1],2,mean),
+                   sd=apply(out[,-1],2,sd))
+write.table(summary,"summary/aver2-correct-geno-using-pcs.txt", col.names=T, row.names=F,
+            quote=F)
+
+# plot histograms
+require(tidyr)
+require(ggplot2)
+out_long=gather(out, key=gwas, value=aver2, pc1:bad, factor_key=F)
+
+sel=out_long$gwas%in%c("pc1","pc2","pc20", "pc40") 
+p=ggplot(out_long[sel,], aes(aver2,fill=gwas)) + 
+  geom_density(alpha=0.2)
+  #geom_histogram(alpha = 0.5, position = 'identity')
+
+png(paste0("fig/aver2-pc-corrected.png"),
+    width = 30, height = 10, units = "cm", res=600)
+p
+dev.off()
+
+
+# qq plot get quantiles
+dat=as.data.frame(apply(out[,-1],2, 
+      function(X)quantile(X, probs = seq(0, 1, 0.01), na.rm=T)))
+
+# plot
+png("fig/aver2-bad-vs-pc-corrected.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5)
+plot(dat$pc1, dat$pc10,
+     xlab="ave r2 bad gwas", ylab="ave r2 10 pc",
+     main=" 1k vs. 10k SNPs", 
+     #xlim=c(start, end), ylim=c(start, end),
+     cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+abline(0, 1, col="orange", lwd=1.5, lty=1)
+points(dat$pc1, dat$pc10,cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+dev.off()
+
+```
+
+### chisq ~ aver2
+
+```{bash eval=F}
+# organize info
+for j in {1..10}; do
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+gwas=gwas-mix/$trait-linear.summaries
+aver2=inflation/adjust-geno/geno-mix-PC-$j.aver2
+ldsc=snps-unrel-inds.ldscore
+out=gwas-mix-out/$trait-correct-geno-$j'PC'.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+done
+```
+
+```{r eval=F}
+# plot--------------------------------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(j in c(1:10, 20,40)){
+  
+  png(paste0("fig/chisq-aver2-bin-bad-gwas-correct-geno-",j,"PC.png"), 
+      res=600, width=50, height=30, units="cm")
+  
+  par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+    for(i in 1:length(traits)){
+      trait=traits[i]
+      file=paste0("gwas-mix-out/",trait,"-correct-geno-",j,"PC.out")
+      dat=vroom(file, col_names=T)
+      dat=dat[complete.cases(dat),]
+    
+      # linear model
+      mod=lm(chisq ~ aver2 + ldsc,data=dat)
+      p=summary(mod)$coefficients[,4][2]
+      p_sci=formatC(p, format="e", digit=2)
+    
+      # bin a variable by quantile
+      cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+      dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+      
+      # average chisq by bin values
+      out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+      out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+      px=min(out$bin_val)
+      py=max(out$chisq_ave)
+    
+      # plot
+      plot(out$bin_val, out$chisq_ave,
+               xlab="ave r2 bin", ylab="mean chisq",
+               main=paste0(trait, " ", j, " PC"), las=1,
+               cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+      abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+      if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                      adj=c(0,1), col="red", cex=2, font=2)
+      } else {text(px, py, paste0("p = ", p_sci), 
+              adj=c(0,1), cex=2, font=2)}
+    }
+    dev.off()
+
+}
+
+
+```
+
+
+
 ## chisq ~ aver2_j
 
 ### calc aver2_j
@@ -585,6 +897,35 @@ paste tmp/gwas.tmp \
                   print "snp;chisq;aver2"}
              {$1=$1}1' > $out
 done
+
+# updated 17 April ----------------------------------------------------------------
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=BOLT-LMM_v2.3.5/gwas-bad/$trait.out
+ldsc=snps-unrel-inds.ldscore
+aver2=summary/ave-r2-by-snp-badgwas
+out=gwas-bolt-lmm-out/$trait.out
+
+awk 'NR>1 {print $1, ($9/$10)^2 }' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
 ```
 
 ```{r eval=F}
@@ -603,18 +944,21 @@ for(i in 1:length(traits)){
     trait=traits[i]
     
     file=paste0("gwas-bolt-lmm-out/",trait,".out")
+    dat=vroom(file, col_names=T)
+    dat=dat[complete.cases(dat),]
     
-    dat=vroom(file, col_names=T, delim=";")
-    mod=lm(chisq ~ aver2,data=dat)
+    mod=lm(chisq ~ aver2 + ldsc, data=dat)
     
-    slope0=data.frame(trait=trait,
-                      slope_aver2=coef(mod)[2],
-                      p_aver2=summary(mod)$coefficients[,4][2],
+    out0=data.frame(trait=trait,
+                      p=summary(mod)$coefficients[,4][2],
                       stringsAsFactors = F)
     
-    if(i==1){slope=slope0} else {slope=rbind(slope,slope0)}
+    if(i==1){out=out0} else {out=rbind(out,out0)}
     
 }
+
+write.table(out,"summary/chisq-aver2-full-model-bolt-lmm.out", 
+            col.names=T, row.names=F, quote=F)
 
 #::::::::::::::::::::::::::::::::::::::::::::::
 # plot chisq ~ aver2_j  
@@ -636,7 +980,7 @@ for(i in 1:length(traits)){
   dat=dat[complete.cases(dat),]
 
   # linear model
-  mod=lm(chisq ~ aver2,data=dat)
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
   p=summary(mod)$coefficients[,4][2]
   p_sci=formatC(p, format="e", digit=2)
 
@@ -655,7 +999,7 @@ for(i in 1:length(traits)){
            xlab="ave r2 bin", ylab="mean chisq",
            main=trait, las=1,
            cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
-  abline(mod,col="orange", lwd=2)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
   if(p<0.01){text(px, py, paste0("p = ", p_sci),
                   adj=c(0,1), col="red", cex=2)
   } else {text(px, py, paste0("p = ", p_sci), 
@@ -695,6 +1039,7 @@ dev.off()
 
 ```{bash eval=F}
 
+# old --------------------------------------------------------------------------
 mkdir gwas-mix-pc-out
 
 for j in {1..10}; do
@@ -715,6 +1060,38 @@ paste tmp/gwas.tmp \
       tmp/aver2.tmp \
       | awk 'BEGIN{OFS=";" ; 
                   print "snp;chisq;aver2"}
+             {$1=$1}1' > $out
+done
+done
+
+# update 16/04 -----------------------------------------------------------------
+# here we put ldscore in as well.
+# note: ldscores for all SNPs of 'gen/snps-unrel-inds.use' are in snps-unrel-inds.ldscore
+
+for j in {1..10}; do
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=gwas-mix-$j'PC'/$trait-linear.summaries
+aver2=summary/ave-r2-by-snp-badgwas
+ldsc=snps-unrel-inds.ldscore
+out=gwas-mix-pc-out/$trait-$j'PC'.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
              {$1=$1}1' > $out
 done
 done
@@ -741,17 +1118,22 @@ for(i in 1:length(traits)){
     file=paste0("gwas-mix-pc-out/",trait,"-",j,"PC.out")
     
     dat=vroom(file, col_names=T, delim=";")
-    mod=lm(chisq ~ aver2,data=dat)
+    mod=lm(chisq ~ aver2 + ldsc,data=dat)
     
-    slope0=data.frame(trait=trait,
-                      pc_up_to=j,
-                      slope_aver2=coef(mod)[2],
-                      p_aver2=summary(mod)$coefficients[,4][2],
+    out0=data.frame(trait=trait,
+                      pc=j,
+                      p=summary(mod)$coefficients[,4][2],
                       stringsAsFactors = F)
     
-    if(i==1 & j==1){slope=slope0} else {slope=rbind(slope,slope0)}
+    if(i==1 & j==1){out=out0} else {out=rbind(out,out0)}
     }
 }
+
+sel=out[out$pc==4,]
+sel$sig=sel$p<0.01/14
+
+write.table(out,"summary/chisq-aver2-full-model-bad-gwas-pc.out", 
+            col.names=T, row.names=F, quote=F)
 
 #::::::::::::::::::::::::::::::::::::::::::::::
 # plot chisq ~ aver2_j  
@@ -764,7 +1146,7 @@ traits=c("awake","bmi","chron","ever",
         "neur","pulse","quals", "fvc", "height","imp", 
         "reaction","sbp","snoring","hyper")
 
-for(j in 1:10){
+for(j in 10:1){
   
   png(paste0("fig/chisq-by-aver2-bin-bad-gwas-",j,"PC.png"), 
       res=600, width=50, height=30, units="cm")
@@ -778,7 +1160,7 @@ for(j in 1:10){
       dat=dat[complete.cases(dat),]
     
       # linear model
-      mod=lm(chisq ~ aver2,data=dat)
+      mod=lm(chisq ~ aver2 + ldsc,data=dat)
       p=summary(mod)$coefficients[,4][2]
       p_sci=formatC(p, format="e", digit=2)
     
@@ -797,7 +1179,7 @@ for(j in 1:10){
                xlab="ave r2 bin", ylab="mean chisq",
                main=paste0(trait, " ", j, " PC"), las=1,
                cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
-      abline(mod,col="orange", lwd=2)
+      abline(lm(chisq ~ aver2 ,data=dat),col="orange", lwd=2)
       if(p<0.01){text(px, py, paste0("p = ", p_sci),
                       adj=c(0,1), col="red", cex=2, font=2)
       } else {text(px, py, paste0("p = ", p_sci), 
@@ -826,7 +1208,7 @@ for(j in 1:10){
       dat=dat[complete.cases(dat),]
     
       # linear model
-      mod=lm(chisq ~ aver2,data=dat)
+      mod=lm(chisq ~ aver2 + ldsc,data=dat)
       p=summary(mod)$coefficients[,4][2]
       p_sci=formatC(p, format="e", digit=2)
     
@@ -845,7 +1227,7 @@ for(j in 1:10){
                xlab="ave r2 bin", ylab="mean chisq",
                main=paste0(trait, " ", j, " PC"), las=1,
                cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
-      abline(mod,col="orange", lwd=2)
+      abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
       if(p<0.01){text(px, py, paste0("p = ", p_sci),
                       adj=c(0,1), col="red", cex=2, font=2)
       } else {text(px, py, paste0("p = ", p_sci), 
@@ -871,7 +1253,7 @@ for(j in 1:10){
       dat=dat[complete.cases(dat),]
     
       # linear model
-      mod=lm(chisq ~ aver2,data=dat)
+      mod=lm(chisq ~ aver2 + ldsc ,data=dat)
       p=summary(mod)$coefficients[,4][2]
       p_sci=formatC(p, format="e", digit=2)
     
@@ -890,7 +1272,7 @@ for(j in 1:10){
                xlab="ave r2 bin", ylab="mean chisq",
                main=paste0(trait, " ", j, " PC"), las=1,
                cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
-      abline(mod,col="orange", lwd=2)
+      abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
       if(p<0.01){text(px, py, paste0("p = ", p_sci),
                       adj=c(0,1), col="red", cex=2, font=2)
       } else {text(px, py, paste0("p = ", p_sci), 

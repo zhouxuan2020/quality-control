@@ -1,0 +1,52 @@
+
+---
+title: "Quality Control Project summary"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+# summary
+
+**Abstract**
+
+Population stratification can confound genome-wide association studies (GWAS), causing inflation in the test statistics. It has long been assumed the inflation is uniform across the genome. Here we argue for the alternative by showing that it varies from one SNP to another, largely depending on how strongly they tag distant SNPs. Exploiting this dependency, we propose a new method that can better detect and estimate inflation due to confounding than the current method.
+
+**Introduction**
+
+Population structures can confound GWAS with systematic genetic variation due to ancestry differences, inflating chi square test statistics [ref]. LD score regression has been widely used to detect and estimate the inflation, on the assumption that it is constant cross the genome [ref]. While there is some theoretical ground to argue the assumption is wrong [ref], empirical evidence is yet to be established.
+
+Here we show that inflation due to confounding from population stratification is proportional to how strongly SNPs correlate with distant variants. The reasoning is that population stratification imposes spurious SNP-SNP correlations across the genome, which enables tagging between SNPs that are not in the same linkage disequilibrium block. The stronger the distant tagging, the more the SNP tags genome-wide genetic variations due to ancestry differences, hence the greater the inflation of the test statistics.
+
+Formally, the expected inflation for SNP j can be written as $E( S_j'-S_j) \propto \rho_j$ [equation 1], where $S'_j$ and $S_j$ are the test statistics when the GWAS is confounded and when it is free from confounding, respectively, and $\rho_j$ measures how strongly SNP j tags distant SNPs. We used mean squared correlations of the SNP with a randomly selection of 10k SNPs from other chromosomes to approximate $\rho_j$. By LD score regression [ref], $E(S_j)= 1 + k_0  + k_1 l_j$, where $l_j$ is the LD score of SNP j, which is used to account for inflation due to polygenicity, and $k_0$ is part of the intercept that is assumed to be zero when there is no confounding. We choose to keep this term for $S_j$ because studies have shown that $k_0$ can be greater than zero in the absence of confounding when the sample size is large [ref]. Then equation 1 can be rewritten as $E(S'_j) = 1 + k_0 + k_2\rho_j +k_1 l_j$. Thus, by regressing test statistics on $\rho_j$ and LD scores, we have a new method to detect and estimate the inflation due to confounding. Under the null, i.e., no confounding, $k_2=0$. Under the alternative, $k_2 > 0$, and $\hat{k_2} \rho_j$ is the estimator of the inflation.
+
+**Results**
+
+*Inflation due to confounding varies with distant tagging*
+
+The proposed method is based on the premise that inflation due to confounding depends on distant tagging. To show this dependency, we first created a score that measures distant tagging. For a given SNP j on chromosome i, we computed the mean squared correlations of the SNP with a set of 10k SNPs randomly selected from chromosomes other than i (referred to as ave r2_j thereafter). This is a reliable measure of distant tagging that can be estimated using as little as 1k SNPs (slide 4); and importantly, it is independent of the choice of SNPs on which the ave r2_j is based on (slide 3). However, minor allele frequency does affect ave r2_j (slide 5). Scores based on SNPs with a MAF < 0.1 tend to be larger than scores based on SNPs a MAF > 0.1. Nonetheless, this does not affect the detection and estimation of the inflation due to confounding [note: on the to-do list].
+
+To obtain estimates of inflation due to confounding, we conducted two separate GWASs on 14 traits from the UK Biobank, one is confounded by population stratification (referred to as the 'bad GWAS'), and the other is free from the confounding (referred to as the 'good GWAS'). We used $S_j' - S_j$ as the estimator of inflation and plotted the estimates against ave r2_j (slide 11). Inflation increases with ave r2_j in a linear fashion. Among the 14 traits, ave r2_j can explains between and xx and xx variation in inflation [note: on the to-do list]. This lends strong support for the basis on which our method is proposed and shows that the assumption by LD score regression that inflation is constant across the genome is fundamentally wrong.
+
+*Proposed method can detect confounding when there is*  
+
+We used the proposed method to detect confounding in the bad GWAS, where the samples is a mixture of 93k unrelated white British and 7k unrelated non-Europeans (black and Asians). Out of the 14 traits, 13 have a $k_2$ greater than zero (slide 9), indicating confounding. Snoring is the only trait with a $k_2$ equals 0, and we confirmed that this trait is not affected by confounding (note: on the to-do list). We further examined how sensitive the proposed method to confounding. The method can detect confounding even when as few as 1k non-Europeans are included in the samples (slide 10). In addition, the method can detect confounding due to subtle population structures that distinguish white British and white Irish (slides 13, 14 & 15).
+
+Upon detection of confounding, we estimated the inflation caused by confounding using $\hat{k_0} + \hat{k_2} *ave r_j^2$ [some issue to discuss with Doug]. For traits affected by confounding (13 out of 14), there is a moderate to strong correlation between inflation predicted using our method and the actual inflation, ranging between 0.16 (pulse rate) and 0.91 (hypertension). This is in a great contrast to the inflation estimated by LD score regression (slide 12), which is a constant. Thus, by allowing inflation to vary with distant tagging, our method provides much better inflation estimates than the LD score regression does, which would have largely underestimated the inflation.     
+
+*Proposed method can declare no confounding when there is not*
+
+We tested if the proposed method can declare no confounding when there is not. The LD score regression often fails to declare no confounding under the null, especially when the sample size is large [ref]. This is an issue because when there is an indicate of confounding by LD score regression, the judgement of whether the GWAS is confounded or not seems to be subject to the discretion of the investigators [ref]. 
+
+For the good GWAS, by the proposed method, none of the 14 traits have a $k_2$ greater than zero, indicating on confounding. We further showed that even when the sample size is large (n=337k unrelated white British), the proposed method consistently indicated no evidence of confounding (slide 29). These 337k individuals were filtered for stringent quality control criteria and have been recommended previously for GWAS from the UK Biobank [ref.]. Our results confirmed that the GWAS test statistics based on these individuals are unlikely affected by confounding by population structure. In contrast, results from the LD score regression sugested the otherwise for seven traits (slide 28). Thus, the proposed method works when the LD score regression fails. 
+
+Typically, confounding effects of population stratification have been controlled statistically either by including PCs of genotype data as covariates in the GWAS model [ref] or by applying a linear mixed-effects GWAS model such as BOLT-LMM [ref]. For the bad GWAS, by including the the first two PCs as covariates in the GWAS model, all traits have a $k_2$ no longer significantly greater than zero (slides 19-21), confirming the effectiveness of the PCA method to control confounding effects. On the other hand, by applying BOLT-LMM, the $k_2$ of many traits is significantly less than zero, that is, test statistics deceases with increasing ave r2_j. This suggests over correction by BOLT-LMM. This may mean that GWAS using BOLT-LMM is under-powered.       
+
+*Approximate distant tagging using a reference panel*
+
+We showed in the above that ave r2_j computed using individual level genotype data can be used to detect and estimate inflation due to confounding. This is a limitation in situations where one wants to determine if a GWAS conducted previously suffers from confounding but the individual level data are unavailable. Can ave r2_j be approximated using a reference panel that contains a mixture of populations of difference ancestries? To this end, we used the 1000 genome project (n=679) [ref] as the reference panel for the computation of ave r2_j. We found a strong correlation between ave r2_j from individual level data and from the reference panel (r=0.68; slide 31), and that the strong correlation is evident even when there are only 1k non-Europeans (slide 32). However, ave r2_j based on individual level data are smaller than those based on the reference panel (slide 31), potentially due to more diverse ethnicity groups (7 in total) in the latter. When applying the proposed method using ave r2_j from the reference panel, the results are consistent with those using ave r2_j from the individual data (slides 34-37). In short, using ave r2_j from the reference panel, the proposed method detected confounding when there is and declared no confounding when there is not. [to do: what about estimated inflation?] 
+
+Extra: Advantages of the current method: 
+Similar to LDSC, the proposed method can detect confounding when there is. However, by exploiting the strong relationship between distant tagging and inflation, the proposed method produces better estimates of inflation. Further, the proposed method can declare no confounding when there is not. This is an advantage over LDSC which indicates confounding in the absence of confounding when the sample size is large..    
+

@@ -788,7 +788,7 @@ for(i in 1:length(traits)){
   dat=dat[complete.cases(dat),]
 
   # linear model
-  mod=lm(chisq ~ aver2,data=dat)
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
   p=summary(mod)$coefficients[,4][2]
   p_sci=formatC(p, format="e", digit=2)
 
@@ -807,10 +807,10 @@ for(i in 1:length(traits)){
            xlab="ave r2 bin", ylab="mean chisq",
            main=trait, las=1,
            cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
-  abline(mod,col="orange", lwd=2)
+  abline(lm(chisq ~ aver2, data=dat),col="orange", lwd=2)
   if(p<0.01){text(px, py, paste0("p = ", p_sci),
                   adj=c(0,1), col="red", cex=2, font=2)
-  } else {text(px, py, paste0("p = ", p_sci), 
+    } else {text(px, py, paste0("p = ", p_sci), 
           adj=c(0,1), cex=2, font=2)}
   
 }

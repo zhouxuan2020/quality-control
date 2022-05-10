@@ -704,9 +704,14 @@ mkdir gwas-mix-out
 for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
 gwas=gwas-mix/$trait-linear.summaries
 aver2=summary/ave-r2-by-snp-badgwas
+ldsc=snps-unrel-inds.ldscore
 out=gwas-mix-out/$trait.out
 
-awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
 
 awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
      {if ($1 in a) print b[$1]; 
@@ -715,8 +720,9 @@ awk 'NR==FNR {a[$1]; b[$1]=$2; next}
 # put info together
 paste tmp/gwas.tmp \
       tmp/aver2.tmp \
+      tmp/ldsc.tmp \
       | awk 'BEGIN{OFS=";" ; 
-                  print "snp;chisq;aver2"}
+                  print "snp;chisq;aver2;ldsc"}
              {$1=$1}1' > $out
 done
 
@@ -728,7 +734,11 @@ gwas=unrelated/gwas-good/$trait-linear.summaries
 aver2=summary/ave-r2-by-snp-goodgwas
 out=unrelated/gwas-good-out/$trait.out
 
-awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp    
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp 
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
 
 awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
      {if ($1 in a) print b[$1]; 
@@ -737,8 +747,9 @@ awk 'NR==FNR {a[$1]; b[$1]=$2; next}
 # put info together
 paste tmp/gwas.tmp \
       tmp/aver2.tmp \
+      tmp/ldsc.tmp \
       | awk 'BEGIN{OFS=";" ; 
-                  print "snp;chisq;aver2"}
+                  print "snp;chisq;aver2;ldsc"}
              {$1=$1}1' > $out
 done
 
@@ -836,7 +847,7 @@ for(i in 1:length(traits)){
   dat=dat[complete.cases(dat),]
 
   # linear model
-  mod=lm(chisq ~ aver2,data=dat)
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
   p=summary(mod)$coefficients[,4][2]
   p_sci=formatC(p, format="e", digit=2)
 
@@ -857,7 +868,7 @@ for(i in 1:length(traits)){
            xlab="ave r2 bin", ylab="mean chisq",
            main=trait, las=1,
            cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
-  abline(mod,col="orange", lwd=2)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
   if(p<0.01){text(px, py, paste0("p = ", p_sci),
                   adj=c(0,1), col="red", cex=2)
   } else {text(px, py, paste0("p = ", p_sci), 
@@ -866,7 +877,6 @@ for(i in 1:length(traits)){
   
 }
 dev.off()
-
 
 #:::::::::::::::::::::::::::
 # bad gwas
@@ -886,7 +896,7 @@ for(i in 1:length(traits)){
   dat=dat[complete.cases(dat),]
 
   # linear model
-  mod=lm(chisq ~ aver2,data=dat)
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
   p=summary(mod)$coefficients[,4][2]
   p_sci=formatC(p, format="e", digit=2)
 
@@ -905,7 +915,7 @@ for(i in 1:length(traits)){
            xlab="ave r2 bin", ylab="mean chisq",
            main=trait, las=1,
            cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
-  abline(mod,col="orange", lwd=2)
+  abline(lm(chisq ~ aver2 ,data=dat),col="orange", lwd=2)
   if(p<0.01){text(px, py, paste0("p = ", p_sci),
                   adj=c(0,1), col="red", cex=2)
   } else {text(px, py, paste0("p = ", p_sci), 
@@ -1307,6 +1317,7 @@ for(i in 1:length(traits)){
 
 dev.off()
 
+
 ```
 
 ### bad gwas: inf. vs. inf._hat: ave
@@ -1371,6 +1382,19 @@ dev.off()
 
 ### bad gwas: inf. from full model
 
+Here we estimate the inflation due to confounding from a full model. Basically, we added $\overline{r^2_j}$ as a predictor to the LD score regression to allow the inflation term to vary across SNPs by $\overline{r^2_j}$. Here is the model:
+
+$S_j = \beta_0 + \beta_1 \overline{r^2_j} + \beta_2 l_j + \epsilon_j$
+
+In this model, $\hat{\beta_2} l_j$ gives the estimated inflation due to polygenicity, and $\hat{\beta_0} + \hat{\beta_1} \overline{r^2_j} -1$ gives the estimated inflation due to confounding from population stratification. When a GWAS is free from confounding, $\hat{\beta_0} + \hat{\beta_1} \overline{r^2_j} -1$ should be very close to zero.
+
+Using $\hat{\beta_0} + \hat{\beta_1} \overline{r^2_j} -1$ as an estimate of inflation makes sense. Here is the reasoning: 
+$E(\delta_j) = E(S_j) - E(S'_j)$, where $S_j$ and $S'_j$ are chisq from bad and good gwas, respectively. Based on LDSC, $E(S'_j)= 1 + \beta'_1l$, and $E(S_j)$ is based on the proposed method. But in real situations, we do not have $S'_j$ to regress on $l$. However, we noted that $S'_j= \beta'_0+ \beta'_1 l + \epsilon'_j $ and $S_j= \beta_0+ \beta_1 l + \epsilon_j$ have similar intercept estimate (i.e., $\beta'_1$ and $\beta_1$ estimates are similar), and $\beta'_0$ is close to 1. So we can basically get $S'_j$ estimate by regressing $S_j$ on ldscore.
+
+For traits where confounding is detected (i.e., all but snoring), the correlations between predicted inflation (from the model) and estimated inflation (chisq from bad gwas - chisq from good gwas) are moderate to high, ranging between 0.16 (pulse) to 0.93 (reaction). This indicates that the model is doing a good job of predicting inflation due to confounding when there is confounding. The predicted inflation given aver2 for each trait is summarized in the figure below. 
+
+We also adjusted the chisq from bad gwas by taking out the estimated inflation. The cor(adjusted chisq, good chisq) is low in general. The correlation is essentially the correlation between residuals from the model $S_j = \beta_0 + \beta_1 \overline{r^2_j} + \beta_2 l_j + \epsilon_j$ and the residuals from the model $S'_j = \beta'_0 + \beta'_1 l_j + \epsilon'_j$ (where $S_j$ and $S'_j$ are chisq from bad and good GWASs, respectively). See table below.
+
 ```{r eval=F}
 
 require(vroom)
@@ -1378,7 +1402,7 @@ traits=c("awake","bmi","chron","ever",
         "neur","pulse","quals", "fvc", "height","imp", 
         "reaction","sbp","snoring","hyper")
 
-png(paste0("fig/inflation-vs-inflation-hat-ave-full-mod.png"),
+png(paste0("fig/inflation-vs-inflation-hat-full-mod.png"),
      width = 50, height = 30, units = "cm", res=600)
 par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
 
@@ -1396,11 +1420,212 @@ for(i in 1:length(traits)){
   
   # inflation
   use$inflation=use$bad_chisq-use$good_chisq
-  #mod1=lm(bad_chisq~ldsc_ref, data=use)
-  #new=resid(mod1)+mod1$coefficients[1]-1
-  #mod2=lm(new~use$r2_bad)
-  #use$inflation_hat=predict(mod2)
   mod=lm(bad_chisq~r2_bad + ldsc_ref, data=use)
+  use$inflation_hat = mod$coefficients[1]+mod$coefficients[2]*use$r2_bad-1
+  r=round(cor(use$inflation, use$inflation_hat),2)
+  
+  # plot inflation vs. inflation hat
+  start=min(c(use$inflation,use$inflation_hat))
+  end=max(c(use$inflation,use$inflation_hat))
+  
+  plot(use$inflation, use$inflation_hat,
+       xlab="inflation (= bad-good chisq)", 
+       ylab="inflation_hat (from the full model)",
+       main=trait, 
+       xlim=c(start, end), ylim=c(start, end),
+       cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1, col="orange", lwd=1.5, lty=1)
+  abline(h=lm(bad_chisq~ldsc_ref, data=use)$coefficients[1]-1, 
+         col="red", lwd=1.5, lty=1)
+  text(start, end, paste0("r = ", r), adj=c(0,1), cex=2, font=2)
+
+}
+
+dev.off()
+
+# ave inflation ~ aver2 --------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png(paste0("fig/inflation-hat-by-aver2-bin.png"),
+     width = 50, height = 30, units = "cm", res=600)
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+
+  # putting info together
+  trait=traits[i]
+  file=paste0("summary/", trait, "-gwas-test-stats-compare2.txt")
+  dat=vroom(file, col_names=T)
+  sel=c(1:2,5,6)
+  r2=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+  m=match(r2$snp, dat$SNP)
+  use=data.frame(dat[m,c(1,5,6,2)], r2[,c(6:8)])
+  use=use[complete.cases(use),]
+  
+  # inflation
+  use$inflation=use$bad_chisq-use$good_chisq
+  mod=lm(bad_chisq~r2_bad + ldsc_ref, data=use)
+  use$inflation_hat = mod$coefficients[1]+mod$coefficients[2]*use$r2_bad-1
+  
+  # bin a variable by quantile
+  cutoff=quantile(use$r2_bad, probs = seq(0, 1, 0.005), na.rm=T)
+  use$bin=cut(use$r2_bad, breaks=cutoff, labels=1:(length(cutoff)-1))
+    
+  # average chisq by bin values
+  out=data.frame(inflation_ave=tapply(use$inflation,INDEX=use$bin, mean),
+                 inflation_hat_ave=tapply(use$inflation_hat,INDEX=use$bin, mean))
+  out$bin_val=tapply(use$r2_bad,INDEX=use$bin, mean)
+
+  # plot
+  plot(out$bin_val, out$inflation_ave,
+       ylab="mean inflation", xlab=" aver2 bin",
+       main=trait, cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  lines(out$bin_val, out$inflation_hat_ave, 1, col="orange", lwd=1.5, type="l")
+}
+
+dev.off()
+
+# extract relevant output----------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+
+for(i in 1:length(traits)){
+
+  # putting info together
+  trait=traits[i]
+  file=paste0("summary/", trait, "-gwas-test-stats-compare2.txt")
+  dat=vroom(file, col_names=T)
+  sel=c(1:2,5,6)
+  r2=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+  m=match(r2$snp, dat$SNP)
+  use=data.frame(dat[m,c(1,5,6,2)], r2[,c(6:8)])
+  use=use[complete.cases(use),]
+  
+  # inflation
+  mod=lm(bad_chisq~r2_bad + ldsc_ref, data=use)
+  use$chisq_adj = use$bad_chisq-(mod$coefficients[1]+mod$coefficients[2]*use$r2_bad-1)
+  use$chisq_adj2= 1+(mod$coefficients[3]*use$ldsc_ref)
+  
+  r=round(cor(use$good_chisq, use$chisq_adj),3)
+  use$p_bad=pchisq(use$bad_chisq,1, lower.tail=F)
+  threshold=5*10^-8
+  sel=use[use$p_bad<=threshold,] # significant gwas chisq only
+  r2=round(cor(sel$good_chisq, sel$chisq_adj),3)
+  
+  # plot inflation vs. inflation hat
+  start=min(c(use$good_chisq,use$chisq_adj))
+  end=max(c(use$good_chisq,use$chisq_adj))
+  
+  plot(use$good_chisq,use$chisq_adj,
+       xlab="chisq from good gwas", 
+       ylab="adjusted chisq from bad gwas",
+       main=trait, 
+       xlim=c(start, end), ylim=c(start, end),
+       cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1, col="gray", lwd=1.5, lty=1)
+  text(start, end, paste0("r = ", r), adj=c(0,1), cex=2, font=2)
+  points(sel$good_chisq,sel$chisq_adj,
+         cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
+  
+  # collect output
+  out0=data.frame(trait=trait,r_all=r, r_sig=r2)
+  if(i==1){out=out0} else {out=rbind(out,out0)}
+}
+
+dev.off()
+
+```
+
+
+### To Explore: change??
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+#png(paste0("fig/inflation-vs-inflation-hat-ave-full-mod.png"),
+#     width = 50, height = 30, units = "cm", res=600)
+#par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+
+  # putting info together
+  trait=traits[i]
+  file=paste0("summary/", trait, "-gwas-test-stats-compare2.txt")
+  dat=vroom(file, col_names=T)
+  sel=c(1:2,5,6)
+  r2=vroom(paste0("inflation/summary/",trait,"-inflation-by-maf-r2"), col_names=T)
+  m=match(r2$snp, dat$SNP)
+  use=data.frame(dat[m,c(1,5,6,2)], r2[,c(6:8)])
+  use=use[complete.cases(use),]
+  
+  # inflation
+  use$inflation=use$bad_chisq-use$good_chisq
+  mod0=lm(good_chisq~ldsc_ref, data=use)
+  adj_chisq0=use$good_chisq-(mod0$coefficients[1]-1)
+ 
+  # adjustment by ldsc
+  mod1=lm(bad_chisq~ldsc_ref, data=use)
+  mod2=lm(good_chisq~ldsc_ref, data=use)
+  chisq1=1+mod1$coefficients[2]*use$ldsc
+  chisq2=mod2$coefficients[1]+mod2$coefficients[2]*use$ldsc
+  cor(chisq1,chisq2)
+    
+  adj_chisq1=1+mod1$coefficients[1]
+  
+  adj_chisq1=use$bad_chisq-(mod1$coefficients[1]-1)
+  cor(use$good_chisq, adj_chisq1)
+  
+  # adjustment by new method
+  mod2=lm(bad_chisq~r2_bad + ldsc_ref, data=use)
+  adj_chisq2=use$bad_chisq-(mod2$coefficients[1]+mod2$coefficients[2]*use$r2_bad-1)
+  cor(use$good_chisq, adj_chisq2)
+  
+  use$inflation=use$bad_chisq-use$good_chisq
+  mod1=lm(use$inflation ~ poly(use$ldsc_ref,2) )
+  mod2=lm(use$inflation ~ use$ldsc_ref + poly(use$r2_bad,2) + use$ldsc_ref * poly(use$r2_bad,2) + poly(use$maf,2)*use$r2_bad )
+  mod3=lm(use$inflation ~ use$ldsc_ref + use$r2_bad + use$maf)
+  
+  mod5=lm(use$good_chisq ~ use$r2_bad)
+  
+  # quantiles
+  out=data.frame(good=use$good_chisq,
+                 bad=use$bad_chisq,
+                 adj_ldsc=adj_chisq1,
+                 adj_aver2=adj_chisq2)
+  
+  # false positives
+  sel=use$bad_chisq>qchisq(1-5*10^-8,1,lower.tail=T) & use$good_chisq<qchisq(1-5*10^-8,1,lower.tail=T)
+  out=out[sel,]
+  cor(out$good, out$adj_aver2)
+  cor(out$good, out$adj_ldsc)
+  
+  
+  # bin a variable by quantile
+  qq=data.frame(good=quantile(out$good, probs = seq(0, 1, 0.01), na.rm=T),
+                bad=quantile(out$bad, probs = seq(0, 1, 0.01), na.rm=T),
+                adj_ldsc=quantile(out$adj_ldsc, probs = seq(0, 1, 0.01), na.rm=T),
+                adj_aver2=quantile(out$adj_aver2, probs = seq(0, 1, 0.01), na.rm=T))
+  
+  
+  
+  mod0_pred=mod0$coefficients[1]+mod0$coefficients[2]*use$ldsc_ref
+  mod1_pred=mod1$coefficients[1]+mod1$coefficients[2]*use$ldsc_ref
+  
+  mod=lm(bad_chisq~r2_bad + ldsc_ref, data=use)
+  new_chisq=mod$coefficients[1]+mod$coefficients[3]*use$ldsc_ref
+  out=cbind(use$good_chisq, new_chisq)
   use$inflation_hat = mod$coefficients[1]+mod$coefficients[2]*use$r2_bad-1
   
   # bin a variable by quantile
@@ -1427,7 +1652,7 @@ for(i in 1:length(traits)){
   points(out$inflation_ave, out$inflation_hat_ave,cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
 }
 
-dev.off()
+#dev.off()
 
 ```
 
@@ -1653,6 +1878,25 @@ for(i in 1:length(traits)){
 }
 
 dev.off()
+
+## Detection of inflation-------------------------------------------------------
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+
+  trait=traits[i]
+  dat=vroom(paste0("gwas-norm-337k-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  
+  mod=lm(chisq~aver2 + ldsc, data=dat)
+  p0=data.frame(trait=trait,p_aver2=summary(mod)$coefficients[2,4])
+  
+  if(i==1){p=p0} else {p=rbind(p,p0)}
+}
+
 
 ```
 

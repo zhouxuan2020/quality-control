@@ -209,7 +209,93 @@ cat british.rand.93368 relatedness/irish-cut.05.keep > british-irish-gwas.id
 
 ```
 
+### PC plot
+Here we want to check if there is any meaningful ancestry difference between british & irish.
+
+```{r eval=F}
+require(vroom)
+# id
+british=read.table("british.rand.93368", header=F)
+irish=read.table("relatedness/irish-cut.05.keep", header=F)
+# cov
+cov=vroom("phen/covariates.phen", col_names=T)
+m1=match(british$V1, cov$eid)
+m2=match(irish$V1, cov$eid)
+british=cov[m1,c("eid", "pc1", "pc2")]
+british$british=1
+irish=cov[m2,c("eid", "pc1", "pc2")]
+irish$british=0
+
+dat=rbind(british,irish)
+pc1_ave=tapply(dat$pc1,INDEX=dat$british, mean)
+pc2_ave=tapply(dat$pc2,INDEX=dat$british, mean)
+pc1_se=tapply(dat$pc1,INDEX=dat$british, sd)
+pc2_se=tapply(dat$pc2,INDEX=dat$british, sd)
+ave=cbind(pc1_ave,pc2_ave)
+se=cbind(pc1_se,pc2_se)
+
+# plot
+png("fig/british-irish-pc1-vs-pc2.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5)
+plot(dat$pc1[dat$british==1], dat$pc2[dat$british==1],
+         xlab="1st PC", ylab="2nd PC",
+         main="PC1 vs PC2", las=1,
+         cex = 0.8, pch=16, col="lightgray", lwd=0.5)
+
+points(dat$pc1[dat$british==0],dat$pc2[dat$british==0], 
+       cex = 0.8, pch=16,  col="orange", lwd=0.5)
+points(ave[1,1], ave[1,2], cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+points(ave[2,1], ave[2,2], cex = 1.5, pch=21,  bg="red", col="white", lwd=0.5)
+
+dev.off()
+
+```
+
+### phenotypic differences
+
+```{r eval=F}
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  phen=vroom(paste0("phen/continuous-traits/",trait,".raw.pheno"), col_names=F)
+  british=read.table("british.rand.93368", header=F)
+  irish=read.table("relatedness/irish-cut.05.keep", header=F)
+  
+  m1=match(british$V1, phen$X1)
+  m2=match(irish$V1, phen$X1)
+  british=phen[m1,c("X1", "X3")]
+  british$british=1
+  irish=phen[m2,c("X1", "X3")]
+  irish$british=0
+  
+  dat=rbind(british,irish)
+  names(dat)=c("id", "phen", "british")
+  
+  ave=tapply(dat$phen,INDEX=dat$british, mean)
+  sd=tapply(dat$phen,INDEX=dat$british, sd)
+  n=tapply(dat$phen,INDEX=dat$british, length)
+  compare=aov(phen~british, data=dat)
+  p=summary(compare)[[1]]$'Pr(>F)'[1]
+  
+  out0=data.frame(trait=trait, 
+                  ave_british=ave[2],
+                  ave_irisih=ave[1],
+                  sd_british=sd[2],
+                  sd_irish=sd[1],
+                  p=p)
+  
+  if(i==1){out=out0} else{out=rbind(out,out0)}
+}
+
+```
+
 ## GWAS-lm
+
+### basic covariates
 
 We use basic covariates only: age, sex and townsend.
 
@@ -242,6 +328,44 @@ for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snor
 sbatch -A snpher ../sh_script/$i-linear.sh
 done>../job-records/gwas-british-irish
 
+
+```
+
+### basic covariates + PCs
+
+Same as for the bad GWAS, here we add PCs as covariates in GWAS model, one at a time, and to check if inflation in GWAS persists. Why? Irish and British are genetically similar, but in the above we found that when mixing Irish and British, inflation is evident in some traits. We want to find out if the inflation is actually related to population stratification or false positive. If it is related to population stratification, the inflation would be gone after correcting phenotypes for population stratification. 
+
+```{bash eval=F}
+
+for j in {1..10}; do
+mkdir gwas-british-irish-$j'PC'
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+out=../gwas-british-irish-$j'PC'/$i-linear
+cov=../phen/covariates-basic-$j'PC'.use
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 6G
+#SBATCH -c 2
+#SBATCH -t 6:0:0
+
+./ldak5.1 --linear $out \
+          --pheno ../phen/continuous-traits/$i.raw.pheno \
+          --bfile ../gen/geno-british-irish \
+          --covar $cov \
+          --keep ../british-irish-gwas.id \
+          --extract ../gen/snps-unrel-inds.use \
+          --max-threads 2 \
+"> sh_script/$i-linear-$j'PC'.sh
+done
+done
+
+# submit files------------------------------------------------------------------
+for j in {1..10}; do
+for i in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+sbatch -A snpher ../sh_script/$i-linear-$j'PC'.sh
+done
+done>../job-records/gwas-british-irish-pc
 
 ```
 
@@ -306,8 +430,11 @@ echo "#"'!'"/bin/bash
 sbatch -A snpher ../sh_script/calc-aver2-listb >../job-records/calc-aver2-listb-british-irish
 
 # merge aver2 of the two lists--------------------------------------------------
-
-# UP TO HERE...........................................................................................
+dir=inflation/british-irish
+a=$dir/aver2-lista.rjk2.average
+b=$dir/aver2-listb.rjk2.average
+out=$dir/british-irish.aver2
+awk 'FNR > 1 {print $1, $2}'  $a $b > $out
 
 ```
 
@@ -345,14 +472,17 @@ done
 # putting information together
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-dir=gwas-british-irish
+mkdir gwas-british-irish-out
+
+outdir=gwas-british-irish-out
+indir=gwas-british-irish
 
 for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
 
-gwas=$dir/$trait-linear.summaries
-aver2=summary/ave-r2-10k-snps-ukbb-norm
-ldsc=snps-norm.ldscore
-out=gwas-norm-337k-out/$trait.out
+gwas=$indir/$trait-linear.summaries
+aver2=inflation/british-irish/british-irish.aver2
+ldsc=snps-unrel-inds.ldscore
+out=$outdir/$trait.out
 
 awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
 
@@ -373,6 +503,344 @@ paste tmp/gwas.tmp \
              {$1=$1}1' > $out
 done
 
+# varying # of PCs-------------------------------------------------------------
+
+mkdir gwas-british-irish-pc-out
+
+for j in {1..10}; do
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+
+gwas=gwas-british-irish-$j'PC'/$trait-linear.summaries
+aver2=inflation/british-irish/british-irish.aver2
+ldsc=snps-unrel-inds.ldscore
+out=gwas-british-irish-pc-out/$trait-$j'PC'.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+done
+
+```
+
+### detect confounding: w/t PCs 
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-aver2-bin-british-irish.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-british-irish-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+
+#-----slope estimate from the full model----------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-british-irish-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc ,data=dat)
+  out0=data.frame(trait=trait,
+                  p=summary(mod)$coefficients[,4][2])
+  if(i==1){out=out0} else {out=rbind(out,out0)}
+
+}
+
+```
+
+### detect confounding: with PCs
+
+Note: significant slope until the first four PCs are included as the covariates in the GWAS model. This indicates the significant slope found above genuinely relates to population stratification; not false positives. 
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(j in 1:10){
+  
+  for(i in 1:length(traits)){
+    
+    trait=traits[i]
+    dat=vroom(paste0("gwas-british-irish-pc-out/",trait,"-",j,"PC.out"), col_names=T)
+    dat=dat[complete.cases(dat),]
+  
+    # linear model
+    mod=lm(chisq ~ aver2 + ldsc ,data=dat)
+    out0=data.frame(trait=trait,
+                    pc=j,
+                    p=summary(mod)$coefficients[,4][2])
+    if(i==1 & j==1){out=out0} else {out=rbind(out,out0)}
+  
+  }
+}
+
+sel=out[out$pc==4,]
+sel$sig=sel$p<0.01/14
+
+write.table(out,"summary/chisq-aver2-full-model-british-irisih-pc.out", col.names=T, row.names=F, quote=F)
+
+```
+
+
+### inflation: good gwas vs. control vs. british-irish
+
+1. Is there any evidence of inflation? british-irish vs. good gwas; good vs. control gwas.
+Do this for all traits.
+Note: to be a STRICK control, the british part need to be the same as for the british-irish mix.
+
+Need to draw QQ plot
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-ave-good-control-british-irish.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  good=vroom(paste0("unrelated/gwas-good-out/",trait,".out"), col_names=T)
+  control=vroom(paste0("gwas-control/",trait,"-linear.summaries"), col_names=T)
+  irish=vroom(paste0("gwas-british-irish-out/",trait,".out"), col_names=T)
+  irish=irish[complete.cases(irish),] # only use SNPs with aver2 
+  m1=match(irish$snp, good$snp)
+  m2=match(irish$snp, control$Predictor)
+  dat=data.frame(snp=irish$snp,
+                 irish=irish$chisq,
+                 good=good$chisq[m1],
+                 control=control$Stat[m2],
+                 aver2=irish$aver2)
+  
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(good_ave=tapply(dat$good,INDEX=dat$bin, mean),
+                 control_ave=tapply(dat$irish,INDEX=dat$bin, mean),
+                 irish_ave=tapply(dat$control,INDEX=dat$bin, mean))
+  
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+
+  # plot
+  start=min(c(out$good_ave,out$control_ave,out$irish_ave), na.rm=T)
+  end=max(c(out$good_ave,out$control_ave,out$irish_ave), na.rm=T)
+  plot(out$good_ave, out$irish_ave,
+           xlab="chisq from good gwas", ylab="chisq",
+           xlim=c(start,end), ylim=c(start,end),
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
+  points(out$good_ave, out$control_ave,cex = 1.5, pch=21,  
+         bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1 ,col="orange", lwd=2)
+}
+
+dev.off()
+
+# qq plots ---------------------------------------------------------------------
+
+png("fig/chisq-qqplot-good-control-british-irish.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  good=vroom(paste0("unrelated/gwas-good-out/",trait,".out"), col_names=T)
+  control=vroom(paste0("gwas-control/",trait,"-linear.summaries"), col_names=T)
+  irish=vroom(paste0("gwas-british-irish-out/",trait,".out"), col_names=T)
+  #irish=irish[complete.cases(irish),] # only use SNPs with aver2 
+  m1=match(irish$snp, good$snp)
+  m2=match(irish$snp, control$Predictor)
+  dat=data.frame(snp=irish$snp,
+                 irish=irish$chisq,
+                 good=good$chisq[m1],
+                 control=control$Stat[m2],
+                 aver2=irish$aver2)
+  
+  # bin a variable by quantile
+  out=data.frame(good=quantile(dat$good, probs = seq(0, 1, 0.01), na.rm=T),
+                  control=quantile(dat$control, probs = seq(0, 1, 0.01), na.rm=T),
+                  irish=quantile(dat$irish, probs = seq(0, 1, 0.01), na.rm=T))
+  
+  # plot
+  #start=min(c(good_q,control_q,irish_q), na.rm=T)
+  #end=max(c(good_q,control_q,irish_q), na.rm=T)
+  remove=c(1,dim(out)[1])
+  plot(out$good[-remove], out$irish[-remove],
+           xlab="quantiles of chisq: good gwas", ylab="quantiles of chisq",
+           #xlim=c(start,end), ylim=c(start,end),
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
+  points(out$good[-remove], out$control[-remove],cex = 1.5, pch=21,  
+         bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1 ,col="orange", lwd=2)
+}
+
+dev.off()
+
+## Under the null, what chisq(1) is significant?
+qchisq(0.99, 1, lower.tail=T)
+
+```
+
+```{r eval=F}
+
+# using histograms to show inflation
+require(tidyr)
+require(ggplot2)
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+trait=traits[8]
+good=vroom(paste0("unrelated/gwas-good-out/",trait,".out"), col_names=T)
+control=vroom(paste0("gwas-control/",trait,"-linear.summaries"), col_names=T)
+irish=vroom(paste0("gwas-british-irish-out/",trait,".out"), col_names=T)
+irish=irish[complete.cases(irish),] # only use SNPs with aver2 
+m1=match(irish$snp, good$snp)
+m2=match(irish$snp, control$Predictor)
+dat=data.frame(snp=irish$snp,
+               irish=irish$chisq,
+               good=good$chisq[m1],
+               control=control$Stat[m2])
+
+dat=dat[complete.cases(dat),]
+
+# quantiles
+q=data.frame(good=quantile(dat$good, probs = seq(0, 1, 0.1), na.rm=T),
+             control=quantile(dat$control, probs = seq(0, 1, 0.1), na.rm=T),
+             irish=quantile(dat$irish, probs = seq(0, 1, 0.1), na.rm=T))
+
+dat$bin_good=cut(dat$good, breaks=q$good, labels=1:(length(q$good)-1))
+dat$bin_control=cut(dat$control, breaks=q$control, labels=1:(length(q$control)-1))
+dat$bin_irish=cut(dat$irish, breaks=q$irish, labels=1:(length(q$irish)-1))
+# average chisq by bin values
+out=data.frame(good=tapply(dat$good,INDEX=dat$bin_good, mean),
+               control=tapply(dat$control,INDEX=dat$bin_control, mean),
+               irish=tapply(dat$irish,INDEX=dat$bin_irish, mean))
+out$control_good=out$control-out$good
+out$irish_good=out$irish-out$good
+
+
+p=ggplot(dat_long[sel,], aes(chisq,fill=gwas)) + 
+  geom_density(alpha=0.2) +
+  #geom_histogram(alpha = 0.5, position = 'identity') +
+  xlim(c(0, 10))
+
+
+png(paste0("fig/hist-chisq-irish-good.png"),
+    width = 30, height = 10, units = "cm", res=600)
+p
+dev.off()
+```
+
+
+### inflation | aver2
+
+```{r eval=F}
+
+# extract p-values 
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-british-irish-out/",trait,".out"), col_names=T)
+  sel=dat[complete.cases(dat),]
+
+  # linear model
+  mod1=lm(chisq ~ ldsc,data=dat) # ldsc using all snps with a ldscore
+  mod1.2=lm(chisq ~ ldsc,data=sel) # ldsc using the 20k snps with aver2
+  #mod2=lm(chisq ~ aver2,data=dat)
+  mod3=lm(chisq ~ ldsc + aver2,data=sel)
+
+  # new method
+  p0=data.frame(trait=trait,t(summary(mod3)$coefficients[-1,4]))
+  names(p0)[2:3]=row.names(summary(mod3)$coefficients)[-1]
+  # ldsc 
+  ldsc0=data.frame(trait=trait, 
+                   intercept_all=summary(mod1)$coefficients[1, 1],
+                   se_all=summary(mod1)$coefficients[1, 2],
+                   intercept_20k=summary(mod1.2)$coefficients[1, 1],
+                   se_20k=summary(mod1.2)$coefficients[1, 2])
+  if(i==1){p=p0; ldsc=ldsc0} else {p=rbind(p,p0); ldsc=rbind(ldsc, ldsc0)}
+}
+
+threshold=0.01/14
+p$sig=p$aver2<=threshold
+
+ldsc$wald_p_all=pchisq(((ldsc$intercept_all-1)/ldsc$se_all)^2, df=1, lower.tail=F)
+ldsc$sig_all=ldsc$wald_p_all<=threshold
+ldsc$wald_p_20k=pchisq(((ldsc$intercept_20k-1)/ldsc$se_20k)^2, df=1, lower.tail=F)
+ldsc$sig_20k=ldsc$wald_p_20k<=threshold
 
 ```
 
@@ -386,5 +854,9 @@ done
 3. sketch the gwas QC steps and check with Doug if any steps need to be redone.
 
 4. lista vs. listb. Currently based on 10k snps from each side of the genome. Why right vs. left? Should we come up with a simpler way and redo the analyses?
+
+5. predicted inflation: maybe only need to check the snps with sig chisq: if the adjusted chisq align with the good chisq.  
+
+6. QQ plots. good vs. control vs. mix
 
 
