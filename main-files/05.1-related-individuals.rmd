@@ -1059,6 +1059,103 @@ dev.off()
 
 ```
 
+### chisq test statistics
+
+```{r eval=F}
+
+# QQ plot--------------------------------------------------------------------------
+require(vroom)
+cut="cut.125"
+traits=c("awake","bmi","chron","ever",
+       "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+        
+png("fig/chisq-related-vs-unrel-real-data.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  rel=vroom(paste0("gwas-related-all-out/",trait,"-",cut,"-rel.out"), col_names=T)
+  unrel=vroom(paste0("gwas-related-all-out/",trait,"-",cut,"-unrel.out"), col_names=T)
+  m=match(rel$snp, unrel$snp)
+  dat=data.frame(snp=rel$snp,
+                 rel=rel$chisq,
+                 unrel=unrel$chisq[m])
+
+  # bin a variable by quantile
+  cutoff1=quantile(dat$rel, probs = seq(0, 1, 0.01), na.rm=T)
+  dat$bin_rel=cut(dat$rel, breaks=cutoff1, labels=1:(length(cutoff1)-1))
+  cutoff2=quantile(dat$unrel, probs = seq(0, 1, 0.01), na.rm=T)
+  dat$bin_unrel=cut(dat$unrel, breaks=cutoff2, labels=1:(length(cutoff2)-1))
+  
+  # average chisq by bin values
+  ave=data.frame(rel=tapply(dat$rel,INDEX=dat$bin_rel, mean),
+                 unrel=tapply(dat$unrel,INDEX=dat$bin_unrel, mean))
+  sd=data.frame(rel=tapply(dat$rel,INDEX=dat$bin_rel, sd),
+                 unrel=tapply(dat$unrel,INDEX=dat$bin_unrel, sd))
+  # x ylim
+  minimum=min(c(ave$rel,ave$unrel))
+  maximum=max(c(ave$rel,ave$unrel))
+
+  # plot
+  plot(cutoff1, cutoff2,
+           xlab="rel", ylab="unrel",
+           main=trait, las=1,
+           xlim=c(minimum, maximum),
+           ylim=c(minimum, maximum),
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1, col="orange", lwd=2)
+  #points(ave$rel, ave$unrel, cex = 1.5, pch=21, 
+  #       bg="powderblue", col="white", lwd=0.5)
+  
+}
+dev.off()
+```
+
+```{r eval=F}
+
+# concordance between SNPs from related & unrelated individuals 
+
+require(vroom)
+cut="cut.125"
+traits=c("awake","bmi","chron","ever",
+       "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+        
+png("fig/chisq-related-vs-unrel-concordance.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  rel=vroom(paste0("gwas-related-all-out/",trait,"-",cut,"-rel.out"), col_names=T)
+  unrel=vroom(paste0("gwas-related-all-out/",trait,"-",cut,"-unrel.out"), col_names=T)
+  m=match(rel$snp, unrel$snp)
+  dat=data.frame(snp=rel$snp,
+                 rel=rel$chisq,
+                 unrel=unrel$chisq[m])
+
+  # x ylim
+  minimum=min(c(dat$rel,dat$unrel), na.rm=T)
+  maximum=max(c(dat$rel,dat$unrel), na.rm=T)
+
+  # plot
+  plot(dat$rel, dat$unrel,
+           xlab="rel", ylab="unrel",
+           main=trait, las=1,
+           xlim=c(minimum, maximum),
+           ylim=c(minimum, maximum),
+           cex = 0.4, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1, col="orange", lwd=1)
+  #points(ave$rel, ave$unrel, cex = 1.5, pch=21, 
+  #       bg="powderblue", col="white", lwd=0.5)
+  
+}
+dev.off()
+
+```
+
+
+
 ## mix unrel & rel
 
 ### genotype
@@ -1511,5 +1608,860 @@ dev.off()
 
 ```
 
+## fake quintuplets
 
+To introduce extremely high relatedness into the genotype data, we duplicate each of 20k unrelated white British five times. Note these 20k should be free from confounding by pop structure. So the 20k individuals are unrelated white British who are similar on PC1.
+
+### id lists
+
+```{bash eval=F}
+
+mkdir fake-quintuplets
+
+# id list with completed data--------------------------------------------------- 
+cp ukbb-recommend.id fake-quintuplets/ukbb-recommend-overlap.ind # unrelated white British
+
+dir=phen/continuous-traits/
+outdir=fake-quintuplets
+for tt in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+mv $outdir/ukbb-recommend-overlap.ind $outdir/temp
+awk '(NR==FNR){a[$1];next}($1 in a){print $1, $2}' $outdir/temp $dir/$tt.raw.pheno > $outdir/ukbb-recommend-overlap.ind
+wc -l $outdir/ukbb-recommend-overlap.ind
+echo $tt
+done
+rm $outdir/temp
+# overlapping + complete data for covariates + unrelated
+awk 'NR==FNR{a[$1]; next} ($1 in a) {print $1, $1}' $outdir/ukbb-recommend-overlap.ind white-complete-cov.id > $outdir/ukbb-recommend-overlap-complete-cov.id # N = 196,333
+
+# homogenous in PC1 ------------------------------------------------------------ 
+R
+options(scipen = 100)
+id=read.table("fake-quintuplets/ukbb-recommend-overlap-complete-cov.id", header=F)
+pc=read.table("gen/pca-337k-ukbb.eigenvec", header=F)
+names(pc)=c("eid", "eid", paste0("PC", 1:10))
+m=match(id$V1,pc[,1])
+pc=pc[m,]
+
+dat=pc[order(pc$PC1, decreasing=T),]
+out=rbind(dat[1:20000,1:2])
+
+# final list
+write.table(out, "fake-quintuplets/unrelated-white-homogenous-pc1-20k.id", 
+col.names=F, row.names=F, quote=F)
+
+```
+
+### make bfiles
+
+```{bash eval=F}
+mkdir fake-quintuplets/gen
+
+# make-bfiles of the 20k unrelated----------------------------------------------
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 1:0:0
+
+./plink2 --bfile ../gen/geno-norm \
+         --keep ../fake-quintuplets/unrelated-white-homogenous-pc1-20k.id \
+         --extract ../gen/snps-norm.use \
+         --make-bed \
+         --memory 20000 \
+         --out ../fake-quintuplets/gen/unrel-20k \
+         --threads 3 \
+"> sh_script/make-bed-unrel-20k.sh
+
+# submit script
+sbatch -A snpher ../sh_script/make-bed-unrel-20k.sh > ../job-records/make-bed-unrel-20k.sh
+
+# make 5 copies of bfile of the 20k unrelated----------------------------------------------
+dir=fake-quintuplets/gen
+for copy in {a,b,c,d,e}; do
+awk -v copy=$copy '{print copy$1, $2, $3, $4, $5, $6}' $dir/unrel-20k.fam > $dir/unrel-20k-$copy.fam
+done
+
+cd $dir
+for copy in {a,b,c,d,e}; do
+ln -s unrel-20k.bim unrel-20k-$copy.bim
+ln -s unrel-20k.bed unrel-20k-$copy.bed
+done
+
+# combine data----------------------------------------------------------------------
+echo "../fake-quintuplets/gen/unrel-20k-a
+../fake-quintuplets/gen/unrel-20k-b
+../fake-quintuplets/gen/unrel-20k-c
+../fake-quintuplets/gen/unrel-20k-d
+../fake-quintuplets/gen/unrel-20k-e
+"> fake-quintuplets/gen/bmerge-list
+
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 40G
+#SBATCH -c 3
+#SBATCH -t 1:0:0
+./plink1.9 --merge-list ../fake-quintuplets/gen/bmerge-list \
+         --make-bed \
+         --out ../fake-quintuplets/gen/20k-quintuplets \
+         --threads 3
+"> sh_script/merge.sh
+
+sbatch -A snpher ../sh_script/merge.sh > ../job-records/merge.sh
+
+```
+
+### simulate phenotypes
+
+```{bash eval=F}
+
+mkdir fake-quintuplets/sim-her-0.5
+
+bfile=../fake-quintuplets/gen/20k-quintuplets
+her=0.5
+out=../fake-quintuplets/sim-her-0.5/sim
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --make-phenos $out \
+          --bfile $bfile \
+          --ignore-weights YES \
+          --power -1 \
+          --her $her \
+          --num-phenos 100 \
+          --num-causals 10000
+"> sh_script/sim.sh
+done
+
+sbatch -A snpher ../sh_script/sim.sh > ../job-records/sim.sh
+
+# put simulated phenotypes into seperate files----------------------------------
+mkdir fake-quintuplets/sim-her-0.5/phen
+
+dir=fake-quintuplets/sim-her-0.5
+for i in {1..100}; do
+awk -v col=$i '{print $1, $2, $(col+2)}' $dir/sim.pheno > $dir/phen/sim-$i.pheno
+done
+
+```
+
+```{r eval=F}
+
+# check if the simulation is done correctly
+
+# we would expect breeding values are the same for the same individuals
+# Yes!
+require(vroom)
+
+dat=vroom("fake-quintuplets/sim-her-0.5/sim.breed", col_names=F)
+dat$group=c(rep("a", 20000),rep("b", 20000),rep("c", 20000),
+            rep("d", 20000), rep("e", 20000))
+sel=dat[,c("X1", "X3", "group")]
+cor(sel[sel$group=="a", "X3"],sel[sel$group=="b", "X3"])
+cor(sel[sel$group=="a", "X3"],sel[sel$group=="c", "X3"])
+
+# expect correlation between simulated phenotypes is 0.5
+dat=vroom("fake-quintuplets/sim-her-0.5/sim.pheno", col_names=F)
+dat$group=c(rep("a", 20000),rep("b", 20000),rep("c", 20000),
+            rep("d", 20000), rep("e", 20000))
+sel=dat[,c("X1", "X3", "group")]
+cor(sel[sel$group=="a", "X3"],sel[sel$group=="b", "X3"])
+cor(sel[sel$group=="a", "X3"],sel[sel$group=="c", "X3"])
+
+```
+
+### gwas
+
+```{bash eval=F}
+
+mkdir fake-quintuplets/sim-her-0.5/gwas
+
+dir=../fake-quintuplets/sim-her-0.5
+bfile=../fake-quintuplets/gen/20k-quintuplets
+for i in {1..10}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear $dir/gwas/sim-$i \
+          --pheno $dir/phen/sim-$i.pheno \
+          --bfile $bfile \
+          --max-threads 3 \
+"> sh_script/sim-$i-gwas.sh
+done
+
+# submit files
+for i in {1..10}; do
+sbatch -A snpher ../sh_script/sim-$i-gwas.sh
+done>../job-records/gwas-sim
+
+```
+
+### compute aver2
+
+```{bash eval=F}
+# new directory
+mkdir fake-quintuplets/sim-her-0.5/
+mkdir fake-quintuplets/sim-her-0.5/aver2
+
+# to calc aver2 for lista-------------------------------------------------------
+lista=../inflation/related/right-snps
+listb=../inflation/related/left-snps
+bfile=../fake-quintuplets/gen/20k-quintuplets
+out=../fake-quintuplets/sim-her-0.5/aver2/lista
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-lista
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-lista >../job-records/calc-aver2-sim
+
+# to calc aver2 for listb-------------------------------------------------------
+lista=../inflation/related/right-snps
+listb=../inflation/related/left-snps
+bfile=../fake-quintuplets/gen/20k-quintuplets
+out=../fake-quintuplets/sim-her-0.5/aver2/listb
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --lista $listb \
+          --listb $lista
+">sh_script/calc-aver2-listb
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-listb >../job-records/calc-aver2-sim
+
+# merge aver2 of the two lists--------------------------------------------------
+dir=fake-quintuplets/sim-her-0.5/aver2
+a=$dir/lista.rjk2.average
+b=$dir/listb.rjk2.average
+out=$dir/all.aver2
+awk 'FNR > 1 {print $1, $2}'  $a $b > $out
+```
+
+### chisq ~ aver2
+
+```{bash eval=F}
+
+# organize data ---------------------------------------------------------------
+
+mkdir fake-quintuplets/sim-her-0.5/gwas-out
+
+outdir=fake-quintuplets/sim-her-0.5/gwas-out
+indir=fake-quintuplets/sim-her-0.5
+
+for i in {1..10}; do
+
+gwas=$indir/gwas/sim-$i.summaries
+aver2=$indir/aver2/all.aver2
+ldsc=snps-norm.ldscore
+out=$outdir/sim-$i.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+### intercept & slope estimates
+
+We noted below that if we use only SNPs chosen to compute aver2, the intercept estimate does not differ from 1, because the standard error is large. However, when we use genome-wide SNPs, the intercepts deviate from 1. Should we use genome-wide SNPs for the new method?
+
+```{r eval=F}
+
+# chisq ~ aver2 bin
+
+require(vroom)
+
+png("fig/chisq-aver2-bin-rel-sim.png", res=600, width=50, height=20, units="cm")
+par(mfrow=c(2,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:10){
+
+  dat=vroom(paste0("fake-quintuplets/sim-her-0.5/gwas-out/sim-",i,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ ldsc, data= dat)
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=paste0("sim ",i), las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2, data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+    } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
+```{r eval=F}
+# estimate intercept & slope
+# chisq ~ aver2 + ldsc
+require(vroom)
+
+for(i in 1:10){
+
+  dat=vroom(paste0("fake-quintuplets/sim-her-0.5/gwas-out/sim-",i,".out"), col_names=T)
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  
+  
+  # collect output
+  out0=data.frame(sim=i,
+                  a0=summary(mod)$coefficients[1,1],
+                  a0_se=summary(mod)$coefficients[1,2],
+                  a1=summary(mod)$coefficients[2,1],
+                  a1_se=summary(mod)$coefficients[2,2],
+                  a1_p=summary(mod)$coefficients[2,4])
+  out0$a0_p=pchisq(((out0$a0-1)/out0$a0_se)^2, df=1, lower.tail=F)
+  
+  if(i==1){out=out0} else{out=rbind(out,out0)}
+  
+}
+
+# ldscore regression only------------------------------------------------------
+
+# chisq ~ ldsc
+require(vroom)
+
+for(i in 1:10){
+  
+  dat=vroom(paste0("fake-quintuplets/sim-her-0.5/gwas-out/sim-",i,"-gwaver2.out"), col_names=T)
+
+  
+  # linear model
+  mod=lm(chisq ~ ldsc,data=dat)
+  
+  # collect output
+  out0=data.frame(sim=i,
+                  a0=summary(mod)$coefficients[1,1],
+                  a0_se=summary(mod)$coefficients[1,2])
+  out0$a0_p=pchisq(((out0$a0-1)/out0$a0_se)^2, df=1, lower.tail=F)
+  
+  if(i==1){ldsc=out0} else{ldsc=rbind(ldsc,out0)}
+  
+}
+
+# mod comparison----------------------------------------------------------------
+
+# chisq ~ ldsc
+require(vroom)
+
+for(i in 1:10){
+  
+  dat=vroom(paste0("fake-quintuplets/sim-her-0.5/gwas-out/sim-",i,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  
+  # linear model
+  mod1=lm(chisq ~ ldsc, data=dat)
+  mod2=lm(chisq ~ aver2 + ldsc, data=dat)
+  
+  # collect output
+  compare0=data.frame(sim=i,
+                     p=anova(mod1,mod2)$Pr[2])
+  
+  if(i==1){compare=compare0} else{compare=rbind(compare,compare0)}
+  
+}
+
+```
+
+## unrelated controls
+
+### id lists
+```{r eval=F}
+options(scipen = 100)
+id=read.table("fake-quintuplets/ukbb-recommend-overlap-complete-cov.id", header=F)
+pc=read.table("gen/pca-337k-ukbb.eigenvec", header=F)
+names(pc)=c("eid", "eid", paste0("PC", 1:10))
+m=match(id$V1,pc[,1])
+pc=pc[m,]
+
+dat=pc[order(pc$PC1, decreasing=T),]
+out=rbind(dat[1:100000,1:2])
+
+# final list
+write.table(out, "fake-quintuplets/unrelated-white-homogenous-pc1-100k.id", 
+col.names=F, row.names=F, quote=F)
+
+```
+
+### make bfiles
+
+```{bash eval=F}
+
+# make-bfiles of the 100k unrelated----------------------------------------------
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 1:0:0
+
+./plink2 --bfile ../gen/geno-norm \
+         --keep ../fake-quintuplets/unrelated-white-homogenous-pc1-100k.id \
+         --extract ../gen/snps-norm.use \
+         --make-bed \
+         --memory 20000 \
+         --out ../fake-quintuplets/gen/unrel-100k \
+         --threads 3 \
+"> sh_script/make-bed-unrel-100k.sh
+
+# submit script
+sbatch -A snpher ../sh_script/make-bed-unrel-100k.sh > ../job-records/make-bed-unrel-100k.sh
+
+```
+
+### simulate phenotypes
+
+```{bash eval=F}
+
+mkdir fake-quintuplets/sim-her-0.5-unrel
+
+bfile=../fake-quintuplets/gen/unrel-100k
+out=../fake-quintuplets/sim-her-0.5-unrel/sim
+her=0.5
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --make-phenos $out \
+          --bfile $bfile \
+          --ignore-weights YES \
+          --power -1 \
+          --her $her \
+          --causals \
+          --effects  \
+          --num-phenos 100 \
+          --num-causals 10000
+"> sh_script/sim.sh
+
+sbatch -A snpher ../sh_script/sim.sh > ../job-records/sim.sh
+
+# put simulated phenotypes into separate files----------------------------------
+mkdir fake-quintuplets/sim-her-0.5-unrel/phen
+
+dir=fake-quintuplets/sim-her-0.5-unrel
+for i in {1..100}; do
+awk -v col=$i '{print $1, $2, $(col+2)}' $dir/sim.pheno > $dir/phen/sim-$i.pheno
+done
+
+```
+
+### gwas
+
+```{bash eval=F}
+
+mkdir fake-quintuplets/sim-her-0.5-unrel/gwas
+
+dir=../fake-quintuplets/sim-her-0.5-unrel
+bfile=../fake-quintuplets/gen/unrel-100k
+for i in {1..10}; do
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 8G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear $dir/gwas/sim-$i \
+          --pheno $dir/phen/sim-$i.pheno \
+          --bfile $bfile \
+          --max-threads 3 \
+"> sh_script/sim-$i-gwas.sh
+done
+
+# submit files
+for i in {1..10}; do
+sbatch -A snpher ../sh_script/sim-$i-gwas.sh
+done>../job-records/gwas-sim
+
+```
+
+### compute aver2
+
+```{bash eval=F}
+
+mkdir fake-quintuplets/sim-her-0.5-unrel/aver2
+
+# to calc aver2 for lista-------------------------------------------------------
+lista=../inflation/related/right-snps
+listb=../inflation/related/left-snps
+bfile=../fake-quintuplets/gen/unrel-100k
+out=../fake-quintuplets/sim-her-0.5-unrel/aver2/lista
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-lista
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-lista >../job-records/calc-aver2-sim
+
+# to calc aver2 for listb-------------------------------------------------------
+lista=../inflation/related/right-snps
+listb=../inflation/related/left-snps
+id=../british-irish-gwas.id 
+bfile=../fake-quintuplets/gen/unrel-100k
+out=../fake-quintuplets/sim-her-0.5-unrel/aver2/listb
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --lista $listb \
+          --listb $lista
+">sh_script/calc-aver2-listb
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-listb >../job-records/calc-aver2-sim
+
+# merge aver2 of the two lists--------------------------------------------------
+dir=fake-quintuplets/sim-her-0.5-unrel/aver2
+a=$dir/lista.rjk2.average
+b=$dir/listb.rjk2.average
+out=$dir/all.aver2
+awk 'FNR > 1 {print $1, $2}'  $a $b > $out
+
+```
+
+### chisq ~ aver2
+
+```{bash eval=F}
+
+# organize data ---------------------------------------------------------------
+
+mkdir fake-quintuplets/sim-her-0.5-unrel/gwas-out
+
+outdir=fake-quintuplets/sim-her-0.5-unrel/gwas-out
+indir=fake-quintuplets/sim-her-0.5-unrel
+
+for i in {1..10}; do
+
+gwas=$indir/gwas/sim-$i.summaries
+aver2=$indir/aver2/all.aver2
+ldsc=snps-norm.ldscore
+out=$outdir/sim-$i.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+```{r eval=F}
+
+# chisq ~ aver2 bin
+
+require(vroom)
+
+png("fig/chisq-aver2-bin-sim-unrel-control.png", res=600, width=50, height=20, units="cm")
+par(mfrow=c(2,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:10){
+
+  dat=vroom(paste0("fake-quintuplets/sim-her-0.5-unrel/gwas-out/sim-",i,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=paste0("sim ",i), las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2, data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+    } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
+## related vs. unrelated
+
+### chisq test statistics
+```{r eval=F}
+
+# QQ plot--------------------------------------------------------------------------
+require(vroom)
+
+png("fig/chisq-related-vs-unrel.png", res=600, width=50, height=20, units="cm")
+par(mfrow=c(2,5), cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+
+for(i in 1:10){
+
+  rel=vroom(paste0("fake-quintuplets/sim-her-0.5/gwas-out/sim-",i,".out"), col_names=T)
+  unrel=vroom(paste0("fake-quintuplets/sim-her-0.5-unrel/gwas-out/sim-",i,".out"), col_names=T)
+  m=match(rel$snp, unrel$snp)
+  dat=data.frame(snp=rel$snp,
+                 rel=rel$chisq,
+                 unrel=unrel$chisq[m])
+
+  # bin a variable by quantile
+  cutoff1=quantile(dat$rel, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin_rel=cut(dat$rel, breaks=cutoff1, labels=1:(length(cutoff1)-1))
+  cutoff2=quantile(dat$unrel, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin_unrel=cut(dat$unrel, breaks=cutoff2, labels=1:(length(cutoff2)-1))
+  
+  # average chisq by bin values
+  ave=data.frame(rel=tapply(dat$rel,INDEX=dat$bin_rel, mean),
+                 unrel=tapply(dat$unrel,INDEX=dat$bin_unrel, mean))
+  sd=data.frame(rel=tapply(dat$rel,INDEX=dat$bin_rel, sd),
+                 unrel=tapply(dat$unrel,INDEX=dat$bin_unrel, sd))
+  # x ylimminimum=min(c(ave$rel,ave$unrel))
+  
+  maximum=max(c(ave$rel,ave$unrel))
+
+  # plot
+  plot(cutoff1, cutoff2,
+           xlab="rel", ylab="unrel",
+           main=paste0("sim ",i), las=1,
+           xlim=c(minimum, maximum),
+           ylim=c(minimum, maximum),
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(0, 1, col="orange", lwd=2)
+  #points(ave$rel, ave$unrel, cex = 1.5, pch=21, 
+  #       bg="powderblue", col="white", lwd=0.5)
+  
+}
+dev.off()
+
+```
+
+### aver2
+
+```{r eval=F}
+require(vroom)
+rel=vroom("fake-quintuplets/sim-her-0.5/aver2/all.aver2", col_names=F)
+unrel=vroom("fake-quintuplets/sim-her-0.5-unrel/aver2/all.aver2", col_names=F)
+m=match(rel$X1, unrel$X1)
+dat=data.frame(snp=rel$X1, 
+               rel=rel$X2,
+               unrel=unrel$X2[m])
+apply(dat[,2:3], 2, mean)
+
+# quantiles
+q_rel=quantile(dat$rel, probs = seq(0, 1, 0.005), na.rm=T)
+q_unrel=quantile(dat$unrel, probs = seq(0, 1, 0.005), na.rm=T)
+
+minimum=min(c(q_rel,q_unrel))
+maximum=max(c(q_rel,q_unrel))
+
+png("fig/aver2-related-vs-unrel.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5, pty="s")
+  plot(q_rel, q_unrel,
+           xlab="rel", ylab="unrel",
+           main="", las=1,
+           xlim=c(minimum, maximum),
+           ylim=c(minimum, maximum),
+           cex = 1.5, pch=16,  col="darkgray", lwd=0.5)
+  abline(0, 1, col="orange", lwd=2)
+  
+dev.off()
+ 
+```
+
+### inflation ~ aver2
+
+```{r eval=F}
+
+require(vroom)
+
+png("fig/inflation-aver2-bin-rel-sim.png", res=600, width=50, height=20, units="cm")
+par(mfrow=c(2,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:10){
+
+  rel=vroom(paste0("fake-quintuplets/sim-her-0.5/gwas-out/sim-",i,".out"), col_names=T)
+  unrel=vroom(paste0("fake-quintuplets/sim-her-0.5-unrel/gwas-out/sim-",i,".out"), col_names=T)
+  m=match(rel$snp,unrel$snp)
+  dat=data.frame(rel$snp,
+                 inflation=rel$chisq-unrel$chisq[m],
+                 aver2=rel$aver2,
+                 ldsc=rel$ldsc)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(inflation ~ aver2 ,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(inflation_ave=tapply(dat$inflation,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$inflation_ave)
+
+  # plot
+  plot(out$bin_val, out$inflation_ave,
+           xlab="ave r2 bin", ylab="mean inflation",
+           main=paste0("sim ",i), las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(mod,col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+    } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
+### chisq ~ ldscore
+
+```{r eval=F}
+
+require(vroom)
+
+png("fig/chisq-ldsc-bin-rel-sim.png", res=600, width=50, height=20, units="cm")
+par(mfrow=c(2,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:10){
+
+  rel=vroom(paste0("fake-quintuplets/sim-her-0.5/gwas-out/sim-",i,".out"), col_names=T)
+  unrel=vroom(paste0("fake-quintuplets/sim-her-0.5-unrel/gwas-out/sim-",i,".out"), col_names=T)
+  m=match(rel$snp,unrel$snp)
+  dat=data.frame(snp=rel$snp,
+                 rel=rel$chisq,
+                 unrel=unrel$chisq[m],
+                 ldsc=rel$ldsc)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$ldsc, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$ldsc, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(rel_ave=tapply(dat$rel,INDEX=dat$bin, mean),
+                 unrel_ave=tapply(dat$unrel,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$ldsc,INDEX=dat$bin, mean)
+
+  # plot
+  plot(out$bin_val, out$rel_ave,
+           xlab="ldsc bin", ylab="mean chisq",
+           xlim=c(min(out$bin_val), max(out$bin_val)),
+           ylim=c(0, max(out$rel_ave,out$unrel_ave)),
+           main=paste0("sim ",i), las=1,
+           cex = 1.5, pch=21,  bg="orange", col="white", lwd=0.5)
+  points(out$bin_val, out$unrel_ave, cex = 1.5, pch=21, 
+         bg="darkgrey", col="white", lwd=0.5)
+  
+}
+dev.off()
+
+```
 

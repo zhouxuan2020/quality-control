@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>21 Previous GWAS | GWAS Quality Control</title>
+  <meta name="description" content="21 Previous GWAS | GWAS Quality Control" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="21 Previous GWAS | GWAS Quality Control" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="21 Previous GWAS | GWAS Quality Control" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="genome-wide-aver2.html"/>
+
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Quality Control Project</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> General Info</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#topic"><i class="fa fa-check"></i><b>1.1</b> Topic</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#frequently-used-commands"><i class="fa fa-check"></i><b>1.2</b> Frequently used commands</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="summary.html"><a href="summary.html"><i class="fa fa-check"></i><b>2</b> summary</a></li>
+<li class="chapter" data-level="3" data-path="summaries.html"><a href="summaries.html"><i class="fa fa-check"></i><b>3</b> Summaries</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="summaries.html"><a href="summaries.html#good-gwas"><i class="fa fa-check"></i><b>3.1</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher"><i class="fa fa-check"></i><b>3.1.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="3.1.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression"><i class="fa fa-check"></i><b>3.1.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="summaries.html"><a href="summaries.html#bad-gwas"><i class="fa fa-check"></i><b>3.2</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-1"><i class="fa fa-check"></i><b>3.2.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="3.2.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-1"><i class="fa fa-check"></i><b>3.2.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="summaries.html"><a href="summaries.html#ukbb-recommended"><i class="fa fa-check"></i><b>3.3</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-2"><i class="fa fa-check"></i><b>3.3.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="3.3.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-2"><i class="fa fa-check"></i><b>3.3.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="summaries.html"><a href="summaries.html#control-gwas"><i class="fa fa-check"></i><b>3.4</b> Control GWAS</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="summaries.html"><a href="summaries.html#ldsc-sumher-3"><i class="fa fa-check"></i><b>3.4.1</b> ldsc &amp; sumher</a></li>
+<li class="chapter" data-level="3.4.2" data-path="summaries.html"><a href="summaries.html#haseman-elston-regression-3"><i class="fa fa-check"></i><b>3.4.2</b> Haseman Elston Regression</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="summary-1.html"><a href="summary-1.html"><i class="fa fa-check"></i><b>4</b> summary</a></li>
+<li class="chapter" data-level="5" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html"><i class="fa fa-check"></i><b>5</b> Good VS Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-statistics-ld-score"><i class="fa fa-check"></i><b>5.1</b> test statistics ~ LD score</a></li>
+<li class="chapter" data-level="5.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#new-models"><i class="fa fa-check"></i><b>5.2</b> New models?</a></li>
+<li class="chapter" data-level="5.3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#ld-scores-based-on-individual-level-data"><i class="fa fa-check"></i><b>5.3</b> LD scores based on individual level data</a></li>
+<li class="chapter" data-level="5.4" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#test-the-new-model"><i class="fa fa-check"></i><b>5.4</b> Test the new model</a></li>
+<li class="chapter" data-level="5.5" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#predictors-of-inflation"><i class="fa fa-check"></i><b>5.5</b> predictors of inflation?</a></li>
+<li class="chapter" data-level="5.6" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#regress-chisq-mean-r2_j"><i class="fa fa-check"></i><b>5.6</b> regress chisq ~ mean r^2_j</a>
+<ul>
+<li class="chapter" data-level="5.6.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#plots"><i class="fa fa-check"></i><b>5.6.1</b> plots</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#predict-inflation-aver2_j"><i class="fa fa-check"></i><b>5.7</b> predict inflation | aver2_j ?</a>
+<ul>
+<li class="chapter" data-level="5.7.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#good_chisq-vs.-adj_chisq"><i class="fa fa-check"></i><b>5.7.1</b> good_chisq vs. adj_chisq</a></li>
+<li class="chapter" data-level="5.7.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#bad-gwas-inf.-vs.-inf._hat-raw"><i class="fa fa-check"></i><b>5.7.2</b> bad gwas: inf. vs. inf._hat: raw</a></li>
+<li class="chapter" data-level="5.7.3" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#bad-gwas-inf.-vs.-inf._hat-ave"><i class="fa fa-check"></i><b>5.7.3</b> bad gwas: inf. vs. inf._hat: ave</a></li>
+<li class="chapter" data-level="5.7.4" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#bad-gwas-inf.-from-full-model"><i class="fa fa-check"></i><b>5.7.4</b> bad gwas: inf. from full model</a></li>
+<li class="chapter" data-level="5.7.5" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#to-explore-change"><i class="fa fa-check"></i><b>5.7.5</b> To Explore: change??</a></li>
+<li class="chapter" data-level="5.7.6" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#good-gwas-inf.-vs.-inf._hat-raw"><i class="fa fa-check"></i><b>5.7.6</b> good gwas: inf. vs. inf._hat: raw</a></li>
+<li class="chapter" data-level="5.7.7" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#good-gwas-inf.-vs.-inf._hat-ave"><i class="fa fa-check"></i><b>5.7.7</b> good gwas: inf. vs. inf._hat: ave</a></li>
+</ul></li>
+<li class="chapter" data-level="5.8" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#ukbb_337k_inflation"><i class="fa fa-check"></i><b>5.8</b> UKBB N = 337k</a>
+<ul>
+<li class="chapter" data-level="5.8.1" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#organize-data"><i class="fa fa-check"></i><b>5.8.1</b> organize data</a></li>
+<li class="chapter" data-level="5.8.2" data-path="good-vs-bad-gwas.html"><a href="good-vs-bad-gwas.html#plot"><i class="fa fa-check"></i><b>5.8.2</b> plot</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="mathematical-details.html"><a href="mathematical-details.html"><i class="fa fa-check"></i><b>6</b> Mathematical Details</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="mathematical-details.html"><a href="mathematical-details.html#trk_rightk_left"><i class="fa fa-check"></i><b>6.1</b> <span class="math inline">\(tr(K_{right}K_{left})\)</span></a></li>
+<li class="chapter" data-level="6.2" data-path="mathematical-details.html"><a href="mathematical-details.html#verification"><i class="fa fa-check"></i><b>6.2</b> verification</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html"><i class="fa fa-check"></i><b>7</b> chi square ~ <span class="math inline">\(\overline{r^2_j}\)</span></a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#overliner2_j-choice-of-snps"><i class="fa fa-check"></i><b>7.1</b> <span class="math inline">\(\overline{r^2_j}\)</span> &amp; choice of SNPs</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#number-of-snps"><i class="fa fa-check"></i><b>7.1.1</b> number of SNPs</a></li>
+<li class="chapter" data-level="7.1.2" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#maf"><i class="fa fa-check"></i><b>7.1.2</b> maf</a></li>
+<li class="chapter" data-level="7.1.3" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#summary-2"><i class="fa fa-check"></i><b>7.1.3</b> summary</a></li>
+<li class="chapter" data-level="7.1.4" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#final-plots"><i class="fa fa-check"></i><b>7.1.4</b> Final plots</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#varying-levels-of-confouding"><i class="fa fa-check"></i><b>7.2</b> varying levels of confouding</a></li>
+<li class="chapter" data-level="7.3" data-path="chi-square-overliner2_j.html"><a href="chi-square-overliner2_j.html#results-summary"><i class="fa fa-check"></i><b>7.3</b> results summary</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="good.html"><a href="good.html"><i class="fa fa-check"></i><b>8</b> Good GWAS</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="good.html"><a href="good.html#goodid"><i class="fa fa-check"></i><b>8.1</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="8.2" data-path="good.html"><a href="good.html#extract-covariates"><i class="fa fa-check"></i><b>8.2</b> extract covariates</a></li>
+<li class="chapter" data-level="8.3" data-path="good.html"><a href="good.html#gwas"><i class="fa fa-check"></i><b>8.3</b> GWAS</a></li>
+<li class="chapter" data-level="8.4" data-path="good.html"><a href="good.html#chisq-aver2_j"><i class="fa fa-check"></i><b>8.4</b> chisq ~ aver2_j</a></li>
+<li class="chapter" data-level="8.5" data-path="good.html"><a href="good.html#correct-genotypes"><i class="fa fa-check"></i><b>8.5</b> correct genotypes</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="good.html"><a href="good.html#organize-covariate-files"><i class="fa fa-check"></i><b>8.5.1</b> organize covariate files</a></li>
+<li class="chapter" data-level="8.5.2" data-path="good.html"><a href="good.html#compute-aver2"><i class="fa fa-check"></i><b>8.5.2</b> compute aver2</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="good.html"><a href="good.html#ldsc-intercept"><i class="fa fa-check"></i><b>8.6</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="8.6.1" data-path="good.html"><a href="good.html#under-gcta"><i class="fa fa-check"></i><b>8.6.1</b> under gcta</a></li>
+<li class="chapter" data-level="8.6.2" data-path="good.html"><a href="good.html#under-ldak-thin"><i class="fa fa-check"></i><b>8.6.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="8.6.3" data-path="good.html"><a href="good.html#summary-3"><i class="fa fa-check"></i><b>8.6.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="8.7" data-path="good.html"><a href="good.html#reml"><i class="fa fa-check"></i><b>8.7</b> REML</a>
+<ul>
+<li class="chapter" data-level="8.7.1" data-path="good.html"><a href="good.html#making-grms"><i class="fa fa-check"></i><b>8.7.1</b> making grms</a></li>
+<li class="chapter" data-level="8.7.2" data-path="good.html"><a href="good.html#fast-reml"><i class="fa fa-check"></i><b>8.7.2</b> fast-reml</a></li>
+<li class="chapter" data-level="8.7.3" data-path="good.html"><a href="good.html#inflation-test"><i class="fa fa-check"></i><b>8.7.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="8.8" data-path="good.html"><a href="good.html#he"><i class="fa fa-check"></i><b>8.8</b> HE</a>
+<ul>
+<li class="chapter" data-level="8.8.1" data-path="good.html"><a href="good.html#estimation"><i class="fa fa-check"></i><b>8.8.1</b> estimation</a></li>
+<li class="chapter" data-level="8.8.2" data-path="good.html"><a href="good.html#summary-4"><i class="fa fa-check"></i><b>8.8.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="bad.html"><a href="bad.html"><i class="fa fa-check"></i><b>9</b> Bad GWAS</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="bad.html"><a href="bad.html#badid"><i class="fa fa-check"></i><b>9.1</b> ID list</a>
+<ul>
+<li class="chapter" data-level="9.1.1" data-path="bad.html"><a href="bad.html#initial-selection"><i class="fa fa-check"></i><b>9.1.1</b> initial selection</a></li>
+<li class="chapter" data-level="9.1.2" data-path="bad.html"><a href="bad.html#relatedness-filtering"><i class="fa fa-check"></i><b>9.1.2</b> relatedness filtering</a></li>
+<li class="chapter" data-level="9.1.3" data-path="bad.html"><a href="bad.html#final-list"><i class="fa fa-check"></i><b>9.1.3</b> final list</a></li>
+<li class="chapter" data-level="9.1.4" data-path="bad.html"><a href="bad.html#pc-plot"><i class="fa fa-check"></i><b>9.1.4</b> PC plot</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="bad.html"><a href="bad.html#gwas-lm"><i class="fa fa-check"></i><b>9.2</b> GWAS-lm</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="bad.html"><a href="bad.html#basic-cov"><i class="fa fa-check"></i><b>9.2.1</b> basic cov</a></li>
+<li class="chapter" data-level="9.2.2" data-path="bad.html"><a href="bad.html#basic-cov-pc"><i class="fa fa-check"></i><b>9.2.2</b> basic cov + PC</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="bad.html"><a href="bad.html#gwas-bolt-lmm"><i class="fa fa-check"></i><b>9.3</b> GWAS-bolt-lmm</a></li>
+<li class="chapter" data-level="9.4" data-path="bad.html"><a href="bad.html#correct-genotypes-1"><i class="fa fa-check"></i><b>9.4</b> correct genotypes</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="bad.html"><a href="bad.html#cal-aver2"><i class="fa fa-check"></i><b>9.4.1</b> cal-aver2</a></li>
+<li class="chapter" data-level="9.4.2" data-path="bad.html"><a href="bad.html#compare-changes-in-aver2"><i class="fa fa-check"></i><b>9.4.2</b> compare changes in aver2</a></li>
+<li class="chapter" data-level="9.4.3" data-path="bad.html"><a href="bad.html#chisq-aver2"><i class="fa fa-check"></i><b>9.4.3</b> chisq ~ aver2</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="bad.html"><a href="bad.html#chisq-aver2_j-1"><i class="fa fa-check"></i><b>9.5</b> chisq ~ aver2_j</a>
+<ul>
+<li class="chapter" data-level="9.5.1" data-path="bad.html"><a href="bad.html#calc-aver2_j"><i class="fa fa-check"></i><b>9.5.1</b> calc aver2_j</a></li>
+<li class="chapter" data-level="9.5.2" data-path="bad.html"><a href="bad.html#bolt-lmm"><i class="fa fa-check"></i><b>9.5.2</b> bolt-lmm</a></li>
+<li class="chapter" data-level="9.5.3" data-path="bad.html"><a href="bad.html#basic-cov-pc-1"><i class="fa fa-check"></i><b>9.5.3</b> basic cov + PC</a></li>
+</ul></li>
+<li class="chapter" data-level="9.6" data-path="bad.html"><a href="bad.html#ldsc-intercept-1"><i class="fa fa-check"></i><b>9.6</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="9.6.1" data-path="bad.html"><a href="bad.html#under-gcta-1"><i class="fa fa-check"></i><b>9.6.1</b> under gcta</a></li>
+<li class="chapter" data-level="9.6.2" data-path="bad.html"><a href="bad.html#under-ldak-thin-1"><i class="fa fa-check"></i><b>9.6.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="9.6.3" data-path="bad.html"><a href="bad.html#summary-5"><i class="fa fa-check"></i><b>9.6.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="9.7" data-path="bad.html"><a href="bad.html#reml-1"><i class="fa fa-check"></i><b>9.7</b> REML</a>
+<ul>
+<li class="chapter" data-level="9.7.1" data-path="bad.html"><a href="bad.html#making-grms-1"><i class="fa fa-check"></i><b>9.7.1</b> making grms</a></li>
+<li class="chapter" data-level="9.7.2" data-path="bad.html"><a href="bad.html#fast-reml-1"><i class="fa fa-check"></i><b>9.7.2</b> fast-reml</a></li>
+<li class="chapter" data-level="9.7.3" data-path="bad.html"><a href="bad.html#inflation-test-1"><i class="fa fa-check"></i><b>9.7.3</b> inflation test</a></li>
+</ul></li>
+<li class="chapter" data-level="9.8" data-path="bad.html"><a href="bad.html#he-1"><i class="fa fa-check"></i><b>9.8</b> HE</a>
+<ul>
+<li class="chapter" data-level="9.8.1" data-path="bad.html"><a href="bad.html#estimation-1"><i class="fa fa-check"></i><b>9.8.1</b> estimation</a></li>
+<li class="chapter" data-level="9.8.2" data-path="bad.html"><a href="bad.html#summary-6"><i class="fa fa-check"></i><b>9.8.2</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="ukbb.html"><a href="ukbb.html"><i class="fa fa-check"></i><b>10</b> UKBB recommended</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="ukbb.html"><a href="ukbb.html#total-n-337k"><i class="fa fa-check"></i><b>10.1</b> total N = 337k</a></li>
+<li class="chapter" data-level="10.2" data-path="ukbb.html"><a href="ukbb.html#qc-of-hp3-snps"><i class="fa fa-check"></i><b>10.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="10.3" data-path="ukbb.html"><a href="ukbb.html#gwas-100k"><i class="fa fa-check"></i><b>10.3</b> GWAS-100k</a></li>
+<li class="chapter" data-level="10.4" data-path="ukbb.html"><a href="ukbb.html#gwas-337k"><i class="fa fa-check"></i><b>10.4</b> GWAS-337k</a></li>
+<li class="chapter" data-level="10.5" data-path="ukbb.html"><a href="ukbb.html#ldsc-100k"><i class="fa fa-check"></i><b>10.5</b> ldsc-100k</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="ukbb.html"><a href="ukbb.html#under-gcta-2"><i class="fa fa-check"></i><b>10.5.1</b> under gcta</a></li>
+<li class="chapter" data-level="10.5.2" data-path="ukbb.html"><a href="ukbb.html#under-ldak-thin-2"><i class="fa fa-check"></i><b>10.5.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="10.5.3" data-path="ukbb.html"><a href="ukbb.html#summary-7"><i class="fa fa-check"></i><b>10.5.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="ukbb.html"><a href="ukbb.html#ldsc-337k"><i class="fa fa-check"></i><b>10.6</b> ldsc-337k</a></li>
+<li class="chapter" data-level="10.7" data-path="ukbb.html"><a href="ukbb.html#aver2_j-337k"><i class="fa fa-check"></i><b>10.7</b> aver2_j-337k</a>
+<ul>
+<li class="chapter" data-level="10.7.1" data-path="ukbb.html"><a href="ukbb.html#calc"><i class="fa fa-check"></i><b>10.7.1</b> calc</a></li>
+<li class="chapter" data-level="10.7.2" data-path="ukbb.html"><a href="ukbb.html#organize-data-1"><i class="fa fa-check"></i><b>10.7.2</b> organize data</a></li>
+<li class="chapter" data-level="10.7.3" data-path="ukbb.html"><a href="ukbb.html#chisq-aver2_j-2"><i class="fa fa-check"></i><b>10.7.3</b> chisq ~ aver2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="10.8" data-path="ukbb.html"><a href="ukbb.html#he-2"><i class="fa fa-check"></i><b>10.8</b> HE</a>
+<ul>
+<li class="chapter" data-level="10.8.1" data-path="ukbb.html"><a href="ukbb.html#making-grms-2"><i class="fa fa-check"></i><b>10.8.1</b> making grms</a></li>
+<li class="chapter" data-level="10.8.2" data-path="ukbb.html"><a href="ukbb.html#estimation-2"><i class="fa fa-check"></i><b>10.8.2</b> estimation</a></li>
+<li class="chapter" data-level="10.8.3" data-path="ukbb.html"><a href="ukbb.html#summary-8"><i class="fa fa-check"></i><b>10.8.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="control.html"><a href="control.html"><i class="fa fa-check"></i><b>11</b> control GWAS</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="control.html"><a href="control.html#id-list"><i class="fa fa-check"></i><b>11.1</b> ID list</a></li>
+<li class="chapter" data-level="11.2" data-path="control.html"><a href="control.html#qc-of-hp3-snps-1"><i class="fa fa-check"></i><b>11.2</b> QC of hp3 SNPs</a></li>
+<li class="chapter" data-level="11.3" data-path="control.html"><a href="control.html#gwas-1"><i class="fa fa-check"></i><b>11.3</b> GWAS</a></li>
+<li class="chapter" data-level="11.4" data-path="control.html"><a href="control.html#ldsc-intercept-2"><i class="fa fa-check"></i><b>11.4</b> ldsc intercept</a>
+<ul>
+<li class="chapter" data-level="11.4.1" data-path="control.html"><a href="control.html#under-gcta-3"><i class="fa fa-check"></i><b>11.4.1</b> under gcta</a></li>
+<li class="chapter" data-level="11.4.2" data-path="control.html"><a href="control.html#under-ldak-thin-3"><i class="fa fa-check"></i><b>11.4.2</b> under ldak-thin</a></li>
+<li class="chapter" data-level="11.4.3" data-path="control.html"><a href="control.html#summary-9"><i class="fa fa-check"></i><b>11.4.3</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="11.5" data-path="control.html"><a href="control.html#he-3"><i class="fa fa-check"></i><b>11.5</b> HE</a>
+<ul>
+<li class="chapter" data-level="11.5.1" data-path="control.html"><a href="control.html#making-grms-3"><i class="fa fa-check"></i><b>11.5.1</b> making grms</a></li>
+<li class="chapter" data-level="11.5.2" data-path="control.html"><a href="control.html#estimation-3"><i class="fa fa-check"></i><b>11.5.2</b> estimation</a></li>
+<li class="chapter" data-level="11.5.3" data-path="control.html"><a href="control.html#summary-10"><i class="fa fa-check"></i><b>11.5.3</b> summary</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="previous-gwas.html"><a href="previous-gwas.html"><i class="fa fa-check"></i><b>12</b> previous GWAS</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="previous-gwas.html"><a href="previous-gwas.html#qc"><i class="fa fa-check"></i><b>12.1</b> QC</a></li>
+<li class="chapter" data-level="12.2" data-path="previous-gwas.html"><a href="previous-gwas.html#gwas-telomere-length"><i class="fa fa-check"></i><b>12.2</b> gwas-telomere length</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="previous-gwas.html"><a href="previous-gwas.html#aver2_j"><i class="fa fa-check"></i><b>12.2.1</b> aver2_j</a></li>
+<li class="chapter" data-level="12.2.2" data-path="previous-gwas.html"><a href="previous-gwas.html#organize-data-2"><i class="fa fa-check"></i><b>12.2.2</b> organize data</a></li>
+<li class="chapter" data-level="12.2.3" data-path="previous-gwas.html"><a href="previous-gwas.html#chisq-aver2_j-3"><i class="fa fa-check"></i><b>12.2.3</b> chisq ~ aver2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="previous-gwas.html"><a href="previous-gwas.html#pr-interval-gwas"><i class="fa fa-check"></i><b>12.3</b> PR interval GWAS</a>
+<ul>
+<li class="chapter" data-level="12.3.1" data-path="previous-gwas.html"><a href="previous-gwas.html#aver2_j-1"><i class="fa fa-check"></i><b>12.3.1</b> aver2_j</a></li>
+<li class="chapter" data-level="12.3.2" data-path="previous-gwas.html"><a href="previous-gwas.html#organize-data-3"><i class="fa fa-check"></i><b>12.3.2</b> organize data</a></li>
+<li class="chapter" data-level="12.3.3" data-path="previous-gwas.html"><a href="previous-gwas.html#chisq-aver2_j-4"><i class="fa fa-check"></i><b>12.3.3</b> chisq ~ aver2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="12.4" data-path="previous-gwas.html"><a href="previous-gwas.html#ben-neale-pan-ukbb"><i class="fa fa-check"></i><b>12.4</b> Ben Neale Pan-UKBB</a></li>
+<li class="chapter" data-level="12.5" data-path="previous-gwas.html"><a href="previous-gwas.html#notesconcerns"><i class="fa fa-check"></i><b>12.5</b> notes/concerns</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html"><i class="fa fa-check"></i><b>13</b> GWAS: White British + Irish</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#id-list-1"><i class="fa fa-check"></i><b>13.1</b> ID list</a>
+<ul>
+<li class="chapter" data-level="13.1.1" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#ids-who-have-no-missing-data"><i class="fa fa-check"></i><b>13.1.1</b> Ids who have no missing data</a></li>
+<li class="chapter" data-level="13.1.2" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#relatedness-filtering-1"><i class="fa fa-check"></i><b>13.1.2</b> relatedness filtering</a></li>
+<li class="chapter" data-level="13.1.3" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#pc-plot-1"><i class="fa fa-check"></i><b>13.1.3</b> PC plot</a></li>
+<li class="chapter" data-level="13.1.4" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#phenotypic-differences"><i class="fa fa-check"></i><b>13.1.4</b> phenotypic differences</a></li>
+</ul></li>
+<li class="chapter" data-level="13.2" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#gwas-lm-1"><i class="fa fa-check"></i><b>13.2</b> GWAS-lm</a>
+<ul>
+<li class="chapter" data-level="13.2.1" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#basic-covariates"><i class="fa fa-check"></i><b>13.2.1</b> basic covariates</a></li>
+<li class="chapter" data-level="13.2.2" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#basic-covariates-pcs"><i class="fa fa-check"></i><b>13.2.2</b> basic covariates + PCs</a></li>
+</ul></li>
+<li class="chapter" data-level="13.3" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#chisq-aver2_j-5"><i class="fa fa-check"></i><b>13.3</b> chisq ~ aver2_j</a>
+<ul>
+<li class="chapter" data-level="13.3.1" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#calc-aver2_j-1"><i class="fa fa-check"></i><b>13.3.1</b> calc aver2_j</a></li>
+<li class="chapter" data-level="13.3.2" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#organize-data-4"><i class="fa fa-check"></i><b>13.3.2</b> organize data</a></li>
+<li class="chapter" data-level="13.3.3" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#detect-confounding-wt-pcs"><i class="fa fa-check"></i><b>13.3.3</b> detect confounding: w/t PCs</a></li>
+<li class="chapter" data-level="13.3.4" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#detect-confounding-with-pcs"><i class="fa fa-check"></i><b>13.3.4</b> detect confounding: with PCs</a></li>
+<li class="chapter" data-level="13.3.5" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#inflation-good-gwas-vs.-control-vs.-british-irish"><i class="fa fa-check"></i><b>13.3.5</b> inflation: good gwas vs. control vs. british-irish</a></li>
+<li class="chapter" data-level="13.3.6" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#inflation-aver2"><i class="fa fa-check"></i><b>13.3.6</b> inflation | aver2</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="gwas-white-british-irish.html"><a href="gwas-white-british-irish.html#ideas-to-explore-to-do-list"><i class="fa fa-check"></i><b>13.4</b> Ideas to explore/ to do list:</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="related-individuals.html"><a href="related-individuals.html"><i class="fa fa-check"></i><b>14</b> related individuals</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="related-individuals.html"><a href="related-individuals.html#genotyped-snps"><i class="fa fa-check"></i><b>14.1</b> genotyped SNPs</a>
+<ul>
+<li class="chapter" data-level="14.1.1" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-2"><i class="fa fa-check"></i><b>14.1.1</b> aver2_j</a></li>
+<li class="chapter" data-level="14.1.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-2"><i class="fa fa-check"></i><b>14.1.2</b> gwas</a></li>
+<li class="chapter" data-level="14.1.3" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-5"><i class="fa fa-check"></i><b>14.1.3</b> organize data</a></li>
+<li class="chapter" data-level="14.1.4" data-path="related-individuals.html"><a href="related-individuals.html#summary-11"><i class="fa fa-check"></i><b>14.1.4</b> summary</a></li>
+</ul></li>
+<li class="chapter" data-level="14.2" data-path="related-individuals.html"><a href="related-individuals.html#hapmap3-snps"><i class="fa fa-check"></i><b>14.2</b> hapmap3 SNPs</a>
+<ul>
+<li class="chapter" data-level="14.2.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype-data"><i class="fa fa-check"></i><b>14.2.1</b> genotype data</a></li>
+<li class="chapter" data-level="14.2.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-3"><i class="fa fa-check"></i><b>14.2.2</b> gwas</a></li>
+<li class="chapter" data-level="14.2.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-3"><i class="fa fa-check"></i><b>14.2.3</b> aver2_j</a></li>
+<li class="chapter" data-level="14.2.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-6"><i class="fa fa-check"></i><b>14.2.4</b> organize data</a></li>
+<li class="chapter" data-level="14.2.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-6"><i class="fa fa-check"></i><b>14.2.5</b> chisq ~ aver2_j</a></li>
+<li class="chapter" data-level="14.2.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j"><i class="fa fa-check"></i><b>14.2.6</b> inflation ~ aver2_j</a></li>
+<li class="chapter" data-level="14.2.7" data-path="related-individuals.html"><a href="related-individuals.html#chisq-test-statistics"><i class="fa fa-check"></i><b>14.2.7</b> chisq test statistics</a></li>
+</ul></li>
+<li class="chapter" data-level="14.3" data-path="related-individuals.html"><a href="related-individuals.html#mix-unrel-rel"><i class="fa fa-check"></i><b>14.3</b> mix unrel &amp; rel</a>
+<ul>
+<li class="chapter" data-level="14.3.1" data-path="related-individuals.html"><a href="related-individuals.html#genotype"><i class="fa fa-check"></i><b>14.3.1</b> genotype</a></li>
+<li class="chapter" data-level="14.3.2" data-path="related-individuals.html"><a href="related-individuals.html#gwas-4"><i class="fa fa-check"></i><b>14.3.2</b> gwas</a></li>
+<li class="chapter" data-level="14.3.3" data-path="related-individuals.html"><a href="related-individuals.html#aver2_j-4"><i class="fa fa-check"></i><b>14.3.3</b> aver2_j</a></li>
+<li class="chapter" data-level="14.3.4" data-path="related-individuals.html"><a href="related-individuals.html#organize-data-7"><i class="fa fa-check"></i><b>14.3.4</b> organize data</a></li>
+<li class="chapter" data-level="14.3.5" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2_j-7"><i class="fa fa-check"></i><b>14.3.5</b> chisq ~ aver2_j</a></li>
+<li class="chapter" data-level="14.3.6" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2_j-1"><i class="fa fa-check"></i><b>14.3.6</b> inflation ~ aver2_j</a></li>
+</ul></li>
+<li class="chapter" data-level="14.4" data-path="related-individuals.html"><a href="related-individuals.html#fake-quintuplets"><i class="fa fa-check"></i><b>14.4</b> fake quintuplets</a>
+<ul>
+<li class="chapter" data-level="14.4.1" data-path="related-individuals.html"><a href="related-individuals.html#id-lists"><i class="fa fa-check"></i><b>14.4.1</b> id lists</a></li>
+<li class="chapter" data-level="14.4.2" data-path="related-individuals.html"><a href="related-individuals.html#make-bfiles"><i class="fa fa-check"></i><b>14.4.2</b> make bfiles</a></li>
+<li class="chapter" data-level="14.4.3" data-path="related-individuals.html"><a href="related-individuals.html#simulate-phenotypes"><i class="fa fa-check"></i><b>14.4.3</b> simulate phenotypes</a></li>
+<li class="chapter" data-level="14.4.4" data-path="related-individuals.html"><a href="related-individuals.html#gwas-5"><i class="fa fa-check"></i><b>14.4.4</b> gwas</a></li>
+<li class="chapter" data-level="14.4.5" data-path="related-individuals.html"><a href="related-individuals.html#compute-aver2-1"><i class="fa fa-check"></i><b>14.4.5</b> compute aver2</a></li>
+<li class="chapter" data-level="14.4.6" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2-1"><i class="fa fa-check"></i><b>14.4.6</b> chisq ~ aver2</a></li>
+<li class="chapter" data-level="14.4.7" data-path="related-individuals.html"><a href="related-individuals.html#intercept-slope-estimates"><i class="fa fa-check"></i><b>14.4.7</b> intercept &amp; slope estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="14.5" data-path="related-individuals.html"><a href="related-individuals.html#unrelated-controls"><i class="fa fa-check"></i><b>14.5</b> unrelated controls</a>
+<ul>
+<li class="chapter" data-level="14.5.1" data-path="related-individuals.html"><a href="related-individuals.html#id-lists-1"><i class="fa fa-check"></i><b>14.5.1</b> id lists</a></li>
+<li class="chapter" data-level="14.5.2" data-path="related-individuals.html"><a href="related-individuals.html#make-bfiles-1"><i class="fa fa-check"></i><b>14.5.2</b> make bfiles</a></li>
+<li class="chapter" data-level="14.5.3" data-path="related-individuals.html"><a href="related-individuals.html#simulate-phenotypes-1"><i class="fa fa-check"></i><b>14.5.3</b> simulate phenotypes</a></li>
+<li class="chapter" data-level="14.5.4" data-path="related-individuals.html"><a href="related-individuals.html#gwas-6"><i class="fa fa-check"></i><b>14.5.4</b> gwas</a></li>
+<li class="chapter" data-level="14.5.5" data-path="related-individuals.html"><a href="related-individuals.html#compute-aver2-2"><i class="fa fa-check"></i><b>14.5.5</b> compute aver2</a></li>
+<li class="chapter" data-level="14.5.6" data-path="related-individuals.html"><a href="related-individuals.html#chisq-aver2-2"><i class="fa fa-check"></i><b>14.5.6</b> chisq ~ aver2</a></li>
+</ul></li>
+<li class="chapter" data-level="14.6" data-path="related-individuals.html"><a href="related-individuals.html#related-vs.-unrelated"><i class="fa fa-check"></i><b>14.6</b> related vs. unrelated</a>
+<ul>
+<li class="chapter" data-level="14.6.1" data-path="related-individuals.html"><a href="related-individuals.html#chisq-test-statistics-1"><i class="fa fa-check"></i><b>14.6.1</b> chisq test statistics</a></li>
+<li class="chapter" data-level="14.6.2" data-path="related-individuals.html"><a href="related-individuals.html#aver2"><i class="fa fa-check"></i><b>14.6.2</b> aver2</a></li>
+<li class="chapter" data-level="14.6.3" data-path="related-individuals.html"><a href="related-individuals.html#inflation-aver2-1"><i class="fa fa-check"></i><b>14.6.3</b> inflation ~ aver2</a></li>
+<li class="chapter" data-level="14.6.4" data-path="related-individuals.html"><a href="related-individuals.html#chisq-ldscore"><i class="fa fa-check"></i><b>14.6.4</b> chisq ~ ldscore</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html"><i class="fa fa-check"></i><b>15</b> compute <span class="math inline">\(\sum_{i,j}^{m_1, m_2}r^2_{i,j}\)</span></a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwas-all-qced-snps"><i class="fa fa-check"></i><b>15.1</b> good GWAS-all qced snps</a></li>
+<li class="chapter" data-level="15.2" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#good-gwass--ldak-thin-snps"><i class="fa fa-check"></i><b>15.2</b> good GWASs- ldak-thin snps</a></li>
+<li class="chapter" data-level="15.3" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#bad-gwass-all-qced-snps"><i class="fa fa-check"></i><b>15.3</b> bad GWASs-all qced snps</a></li>
+<li class="chapter" data-level="15.4" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#summary-12"><i class="fa fa-check"></i><b>15.4</b> summary</a></li>
+<li class="chapter" data-level="15.5" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#aver2j"><i class="fa fa-check"></i><b>15.5</b> compute aver2_j</a></li>
+<li class="chapter" data-level="15.6" data-path="compute-sum_ijm_1-m_2r2_ij.html"><a href="compute-sum_ijm_1-m_2r2_ij.html#mixed-pop-gwas-with-pc-as-covariates"><i class="fa fa-check"></i><b>15.6</b> mixed pop GWAS with PC as covariates</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="assortative-mating.html"><a href="assortative-mating.html"><i class="fa fa-check"></i><b>16</b> Assortative mating</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="assortative-mating.html"><a href="assortative-mating.html#test-the-idea"><i class="fa fa-check"></i><b>16.1</b> Test the idea</a>
+<ul>
+<li class="chapter" data-level="16.1.1" data-path="assortative-mating.html"><a href="assortative-mating.html#st-try"><i class="fa fa-check"></i><b>16.1.1</b> 1st try</a></li>
+<li class="chapter" data-level="16.1.2" data-path="assortative-mating.html"><a href="assortative-mating.html#nd-try"><i class="fa fa-check"></i><b>16.1.2</b> 2nd try</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html"><i class="fa fa-check"></i><b>17</b> Reference Panel: 1k Genome</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#common-snplist"><i class="fa fa-check"></i><b>17.1</b> common snplist</a></li>
+<li class="chapter" data-level="17.2" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#compute-aver2-3"><i class="fa fa-check"></i><b>17.2</b> compute aver2</a>
+<ul>
+<li class="chapter" data-level="17.2.1" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#bad-gwas-1"><i class="fa fa-check"></i><b>17.2.1</b> bad gwas</a></li>
+<li class="chapter" data-level="17.2.2" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#varying-levels-of-confounding"><i class="fa fa-check"></i><b>17.2.2</b> varying levels of confounding</a></li>
+<li class="chapter" data-level="17.2.3" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#good-gwas-1"><i class="fa fa-check"></i><b>17.2.3</b> good gwas</a></li>
+</ul></li>
+<li class="chapter" data-level="17.3" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#detect-confounding"><i class="fa fa-check"></i><b>17.3</b> detect confounding</a>
+<ul>
+<li class="chapter" data-level="17.3.1" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#bad-gwas-2"><i class="fa fa-check"></i><b>17.3.1</b> bad gwas</a></li>
+<li class="chapter" data-level="17.3.2" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#varying-levels-of-confounding-1"><i class="fa fa-check"></i><b>17.3.2</b> varying levels of confounding</a></li>
+<li class="chapter" data-level="17.3.3" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#good-gwas-2"><i class="fa fa-check"></i><b>17.3.3</b> good gwas</a></li>
+</ul></li>
+<li class="chapter" data-level="17.4" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#estimate-inflation"><i class="fa fa-check"></i><b>17.4</b> estimate inflation</a></li>
+<li class="chapter" data-level="17.5" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#stratified-aver2"><i class="fa fa-check"></i><b>17.5</b> stratified aver2</a>
+<ul>
+<li class="chapter" data-level="17.5.1" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#calc-aver2"><i class="fa fa-check"></i><b>17.5.1</b> calc aver2</a></li>
+<li class="chapter" data-level="17.5.2" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#organize-data-8"><i class="fa fa-check"></i><b>17.5.2</b> organize data</a></li>
+<li class="chapter" data-level="17.5.3" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#plot-aver2-of-pairwise-mixture-pops"><i class="fa fa-check"></i><b>17.5.3</b> plot aver2 of pairwise mixture pops</a></li>
+<li class="chapter" data-level="17.5.4" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#chisq-1-x-aver2"><i class="fa fa-check"></i><b>17.5.4</b> chisq ~ 1 x aver2</a></li>
+<li class="chapter" data-level="17.5.5" data-path="reference-panel-1k-genome.html"><a href="reference-panel-1k-genome.html#chisq-multi-aver2"><i class="fa fa-check"></i><b>17.5.5</b> chisq ~ multi-aver2</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html"><i class="fa fa-check"></i><b>18</b> Fine-scale population stratification</a>
+<ul>
+<li class="chapter" data-level="18.1" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#birth-location-data"><i class="fa fa-check"></i><b>18.1</b> birth location data</a></li>
+<li class="chapter" data-level="18.2" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#pca-of-337k"><i class="fa fa-check"></i><b>18.2</b> pca of 337k</a></li>
+<li class="chapter" data-level="18.3" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#birth-place-gwas"><i class="fa fa-check"></i><b>18.3</b> birth place gwas</a>
+<ul>
+<li class="chapter" data-level="18.3.1" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#gwas-7"><i class="fa fa-check"></i><b>18.3.1</b> gwas</a></li>
+<li class="chapter" data-level="18.3.2" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#chisq-aver2-3"><i class="fa fa-check"></i><b>18.3.2</b> chisq ~ aver2</a></li>
+<li class="chapter" data-level="18.3.3" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#detect-inflation-using-1kg"><i class="fa fa-check"></i><b>18.3.3</b> detect inflation using 1kg</a></li>
+<li class="chapter" data-level="18.3.4" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#gwas-results"><i class="fa fa-check"></i><b>18.3.4</b> gwas results</a></li>
+</ul></li>
+<li class="chapter" data-level="18.4" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#gwas-based-on-pc-clusters"><i class="fa fa-check"></i><b>18.4</b> GWAS based on PC clusters</a>
+<ul>
+<li class="chapter" data-level="18.4.1" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#id-lists-2"><i class="fa fa-check"></i><b>18.4.1</b> id lists</a></li>
+<li class="chapter" data-level="18.4.2" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#id-list-for-bad-gwas2"><i class="fa fa-check"></i><b>18.4.2</b> id list for bad gwas2</a></li>
+<li class="chapter" data-level="18.4.3" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#id-list-for-bad-gwas3"><i class="fa fa-check"></i><b>18.4.3</b> id list for bad gwas3</a></li>
+<li class="chapter" data-level="18.4.4" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#bad-gwas-3"><i class="fa fa-check"></i><b>18.4.4</b> bad gwas</a></li>
+<li class="chapter" data-level="18.4.5" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#bad-gwas2"><i class="fa fa-check"></i><b>18.4.5</b> bad gwas#2</a></li>
+<li class="chapter" data-level="18.4.6" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#bad-gwas3"><i class="fa fa-check"></i><b>18.4.6</b> bad gwas#3</a></li>
+<li class="chapter" data-level="18.4.7" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#good-gwas-3"><i class="fa fa-check"></i><b>18.4.7</b> good gwas</a></li>
+<li class="chapter" data-level="18.4.8" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#control-gwas-1"><i class="fa fa-check"></i><b>18.4.8</b> control gwas</a></li>
+</ul></li>
+<li class="chapter" data-level="18.5" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#compute-aver2-4"><i class="fa fa-check"></i><b>18.5</b> compute aver2</a>
+<ul>
+<li class="chapter" data-level="18.5.1" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#bad-gwas-4"><i class="fa fa-check"></i><b>18.5.1</b> bad-gwas</a></li>
+<li class="chapter" data-level="18.5.2" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#bad-gwas2-1"><i class="fa fa-check"></i><b>18.5.2</b> bad-gwas#2</a></li>
+<li class="chapter" data-level="18.5.3" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#bad-gwas3-1"><i class="fa fa-check"></i><b>18.5.3</b> bad-gwas#3</a></li>
+<li class="chapter" data-level="18.5.4" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#good-gwas-4"><i class="fa fa-check"></i><b>18.5.4</b> good-gwas</a></li>
+<li class="chapter" data-level="18.5.5" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#control-gwas-2"><i class="fa fa-check"></i><b>18.5.5</b> control-gwas</a></li>
+</ul></li>
+<li class="chapter" data-level="18.6" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#chisq-aver2-4"><i class="fa fa-check"></i><b>18.6</b> chisq ~ aver2</a>
+<ul>
+<li class="chapter" data-level="18.6.1" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#bad-gwas-5"><i class="fa fa-check"></i><b>18.6.1</b> bad gwas</a></li>
+<li class="chapter" data-level="18.6.2" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#bad-gwas2-2"><i class="fa fa-check"></i><b>18.6.2</b> bad gwas#2</a></li>
+<li class="chapter" data-level="18.6.3" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#bad-gwas3-2"><i class="fa fa-check"></i><b>18.6.3</b> bad gwas#3</a></li>
+<li class="chapter" data-level="18.6.4" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#good-gwas-5"><i class="fa fa-check"></i><b>18.6.4</b> good gwas</a></li>
+<li class="chapter" data-level="18.6.5" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#control-gwas-3"><i class="fa fa-check"></i><b>18.6.5</b> control gwas</a></li>
+</ul></li>
+<li class="chapter" data-level="18.7" data-path="fine-scale-population-stratification.html"><a href="fine-scale-population-stratification.html#inflation-aver2-2"><i class="fa fa-check"></i><b>18.7</b> inflation ~ aver2</a></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="genotyping-errors.html"><a href="genotyping-errors.html"><i class="fa fa-check"></i><b>19</b> genotyping errors</a>
+<ul>
+<li class="chapter" data-level="19.1" data-path="genotyping-errors.html"><a href="genotyping-errors.html#id-list-phenotypes"><i class="fa fa-check"></i><b>19.1</b> id list &amp; phenotypes</a></li>
+<li class="chapter" data-level="19.2" data-path="genotyping-errors.html"><a href="genotyping-errors.html#gwas-8"><i class="fa fa-check"></i><b>19.2</b> gwas</a></li>
+<li class="chapter" data-level="19.3" data-path="genotyping-errors.html"><a href="genotyping-errors.html#compute-aver2-5"><i class="fa fa-check"></i><b>19.3</b> compute aver2</a></li>
+<li class="chapter" data-level="19.4" data-path="genotyping-errors.html"><a href="genotyping-errors.html#chisq-aver2-5"><i class="fa fa-check"></i><b>19.4</b> chisq ~ aver2</a></li>
+</ul></li>
+<li class="chapter" data-level="20" data-path="genome-wide-aver2.html"><a href="genome-wide-aver2.html"><i class="fa fa-check"></i><b>20</b> genome-wide aver2</a>
+<ul>
+<li class="chapter" data-level="20.1" data-path="genome-wide-aver2.html"><a href="genome-wide-aver2.html#ukbb-1"><i class="fa fa-check"></i><b>20.1</b> UKBB</a>
+<ul>
+<li class="chapter" data-level="20.1.1" data-path="genome-wide-aver2.html"><a href="genome-wide-aver2.html#fake-quintuplets-1"><i class="fa fa-check"></i><b>20.1.1</b> fake quintuplets</a></li>
+<li class="chapter" data-level="20.1.2" data-path="genome-wide-aver2.html"><a href="genome-wide-aver2.html#bad-gwas-6"><i class="fa fa-check"></i><b>20.1.2</b> bad gwas</a></li>
+<li class="chapter" data-level="20.1.3" data-path="genome-wide-aver2.html"><a href="genome-wide-aver2.html#good-gwas-6"><i class="fa fa-check"></i><b>20.1.3</b> good gwas</a></li>
+</ul></li>
+<li class="chapter" data-level="20.2" data-path="genome-wide-aver2.html"><a href="genome-wide-aver2.html#k-genome"><i class="fa fa-check"></i><b>20.2</b> 1k genome</a></li>
+</ul></li>
+<li class="chapter" data-level="21" data-path="previous-gwas-1.html"><a href="previous-gwas-1.html"><i class="fa fa-check"></i><b>21</b> Previous GWAS</a>
+<ul>
+<li class="chapter" data-level="21.1" data-path="previous-gwas-1.html"><a href="previous-gwas-1.html#organize-data-9"><i class="fa fa-check"></i><b>21.1</b> organize data</a>
+<ul>
+<li class="chapter" data-level="21.1.1" data-path="previous-gwas-1.html"><a href="previous-gwas-1.html#beta"><i class="fa fa-check"></i><b>21.1.1</b> beta</a></li>
+<li class="chapter" data-level="21.1.2" data-path="previous-gwas-1.html"><a href="previous-gwas-1.html#odds-ratio"><i class="fa fa-check"></i><b>21.1.2</b> odds ratio</a></li>
+</ul></li>
+<li class="chapter" data-level="21.2" data-path="previous-gwas-1.html"><a href="previous-gwas-1.html#plot-1"><i class="fa fa-check"></i><b>21.2</b> plot</a></li>
+<li class="chapter" data-level="21.3" data-path="previous-gwas-1.html"><a href="previous-gwas-1.html#ldscore-regression"><i class="fa fa-check"></i><b>21.3</b> LDscore Regression</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">GWAS Quality Control</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="previous-gwas-1" class="section level1" number="21">
+<h1><span class="header-section-number">21</span> Previous GWAS</h1>
+<div id="organize-data-9" class="section level2" number="21.1">
+<h2><span class="header-section-number">21.1</span> organize data</h2>
+<div id="beta" class="section level3" number="21.1.1">
+<h3><span class="header-section-number">21.1.1</span> beta</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="previous-gwas-1.html#cb1-1" aria-hidden="true" tabindex="-1"></a>mkdir previous<span class="sc">-</span>gwas<span class="sc">-</span>sumstats<span class="sc">/</span>sumstats</span>
+<span id="cb1-2"><a href="previous-gwas-1.html#cb1-2" aria-hidden="true" tabindex="-1"></a>mkdir previous<span class="sc">-</span>gwas<span class="sc">-</span>sumstats<span class="sc">/</span>out</span>
+<span id="cb1-3"><a href="previous-gwas-1.html#cb1-3" aria-hidden="true" tabindex="-1"></a>mkdir previous<span class="sc">-</span>gwas<span class="sc">-</span>sumstats<span class="sc">/</span>summary</span>
+<span id="cb1-4"><a href="previous-gwas-1.html#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="previous-gwas-1.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::</span></span>
+<span id="cb1-6"><a href="previous-gwas-1.html#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># write a function to perform the inflation test</span></span>
+<span id="cb1-7"><a href="previous-gwas-1.html#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#:::::::::::::::::::::</span></span>
+<span id="cb1-8"><a href="previous-gwas-1.html#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="previous-gwas-1.html#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">stringsAsFactors=</span><span class="cn">FALSE</span>)</span>
+<span id="cb1-10"><a href="previous-gwas-1.html#cb1-10" aria-hidden="true" tabindex="-1"></a>ip<span class="ot">&lt;-</span><span class="fu">commandArgs</span>(<span class="at">trailingOnly=</span><span class="cn">TRUE</span>) <span class="co"># define command line arguments when an R function is invoked...</span></span>
+<span id="cb1-11"><a href="previous-gwas-1.html#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ...in Linux environment.</span></span>
+<span id="cb1-12"><a href="previous-gwas-1.html#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">warn=</span><span class="dv">1</span>)</span>
+<span id="cb1-13"><a href="previous-gwas-1.html#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="previous-gwas-1.html#cb1-14" aria-hidden="true" tabindex="-1"></a>inflation_test<span class="ot">&lt;-</span><span class="cf">function</span>(gwasnm, snp_col, rs_true, beta_col, se_col){</span>
+<span id="cb1-15"><a href="previous-gwas-1.html#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="previous-gwas-1.html#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">require</span>(vroom)</span>
+<span id="cb1-17"><a href="previous-gwas-1.html#cb1-17" aria-hidden="true" tabindex="-1"></a>  gwasnm<span class="ot">=</span>gwasnm <span class="co"># file name</span></span>
+<span id="cb1-18"><a href="previous-gwas-1.html#cb1-18" aria-hidden="true" tabindex="-1"></a>  snp_col<span class="ot">=</span><span class="fu">as.numeric</span>(snp_col) <span class="co"># which col contains snp name</span></span>
+<span id="cb1-19"><a href="previous-gwas-1.html#cb1-19" aria-hidden="true" tabindex="-1"></a>  rs_true<span class="ot">=</span><span class="fu">as.numeric</span>(rs_true) <span class="co"># is rs the naming system?</span></span>
+<span id="cb1-20"><a href="previous-gwas-1.html#cb1-20" aria-hidden="true" tabindex="-1"></a>  beta_col<span class="ot">=</span><span class="fu">as.numeric</span>(beta_col) <span class="co"># which col contains beta estimate?</span></span>
+<span id="cb1-21"><a href="previous-gwas-1.html#cb1-21" aria-hidden="true" tabindex="-1"></a>  se_col<span class="ot">=</span><span class="fu">as.numeric</span>(se_col) <span class="co"># which col contains SE of beta estimate?</span></span>
+<span id="cb1-22"><a href="previous-gwas-1.html#cb1-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-23"><a href="previous-gwas-1.html#cb1-23" aria-hidden="true" tabindex="-1"></a>  dir1<span class="ot">=</span><span class="st">&quot;/home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/previous-gwas-sumstats/&quot;</span></span>
+<span id="cb1-24"><a href="previous-gwas-1.html#cb1-24" aria-hidden="true" tabindex="-1"></a>  dir2<span class="ot">=</span><span class="st">&quot;/home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/genome-wide-aver2/1kg/&quot;</span></span>
+<span id="cb1-25"><a href="previous-gwas-1.html#cb1-25" aria-hidden="true" tabindex="-1"></a>  m<span class="ot">=</span><span class="dv">10000</span></span>
+<span id="cb1-26"><a href="previous-gwas-1.html#cb1-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-27"><a href="previous-gwas-1.html#cb1-27" aria-hidden="true" tabindex="-1"></a>  gwas<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(dir1,<span class="st">&quot;sumstats/&quot;</span>,gwasnm), <span class="at">col_names=</span>T)</span>
+<span id="cb1-28"><a href="previous-gwas-1.html#cb1-28" aria-hidden="true" tabindex="-1"></a>  aver2<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(dir2,<span class="st">&quot;1kg.aver2-ldscore&quot;</span>), <span class="at">col_names=</span>F)</span>
+<span id="cb1-29"><a href="previous-gwas-1.html#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(rs_true<span class="sc">==</span><span class="dv">1</span>){snps<span class="ot">=</span>aver2<span class="sc">$</span>X1} <span class="cf">else</span> {snps<span class="ot">=</span>aver2<span class="sc">$</span>X2}</span>
+<span id="cb1-30"><a href="previous-gwas-1.html#cb1-30" aria-hidden="true" tabindex="-1"></a>  common<span class="ot">=</span><span class="fu">intersect</span>(<span class="fu">t</span>(gwas[,snp_col]), snps)</span>
+<span id="cb1-31"><a href="previous-gwas-1.html#cb1-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-32"><a href="previous-gwas-1.html#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select snps</span></span>
+<span id="cb1-33"><a href="previous-gwas-1.html#cb1-33" aria-hidden="true" tabindex="-1"></a>  samp<span class="ot">=</span><span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(common), m, <span class="at">replace=</span>F)</span>
+<span id="cb1-34"><a href="previous-gwas-1.html#cb1-34" aria-hidden="true" tabindex="-1"></a>  sel<span class="ot">=</span>common[samp]</span>
+<span id="cb1-35"><a href="previous-gwas-1.html#cb1-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-36"><a href="previous-gwas-1.html#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># model fitting &amp; output data</span></span>
+<span id="cb1-37"><a href="previous-gwas-1.html#cb1-37" aria-hidden="true" tabindex="-1"></a>  m1<span class="ot">=</span><span class="fu">match</span>(sel, <span class="fu">t</span>(gwas[,snp_col]))</span>
+<span id="cb1-38"><a href="previous-gwas-1.html#cb1-38" aria-hidden="true" tabindex="-1"></a>  m2<span class="ot">=</span><span class="fu">match</span>(sel, snps)</span>
+<span id="cb1-39"><a href="previous-gwas-1.html#cb1-39" aria-hidden="true" tabindex="-1"></a>  out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">snp=</span><span class="fu">unlist</span>(gwas[m1, snp_col]),</span>
+<span id="cb1-40"><a href="previous-gwas-1.html#cb1-40" aria-hidden="true" tabindex="-1"></a>                 <span class="at">chisq=</span><span class="fu">unlist</span>((gwas[m1, beta_col]<span class="sc">/</span>gwas[m1, se_col])<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb1-41"><a href="previous-gwas-1.html#cb1-41" aria-hidden="true" tabindex="-1"></a>                 <span class="at">aver2=</span>aver2<span class="sc">$</span>X3[m2],</span>
+<span id="cb1-42"><a href="previous-gwas-1.html#cb1-42" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ldsc=</span>aver2<span class="sc">$</span>X5[m2], <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb1-43"><a href="previous-gwas-1.html#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="previous-gwas-1.html#cb1-44" aria-hidden="true" tabindex="-1"></a>  mod1<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> aver2 <span class="sc">+</span> ldsc, <span class="at">data=</span>out)</span>
+<span id="cb1-45"><a href="previous-gwas-1.html#cb1-45" aria-hidden="true" tabindex="-1"></a>  p1<span class="ot">=</span><span class="fu">summary</span>(mod1)<span class="sc">$</span>coefficients[<span class="dv">2</span>,<span class="dv">4</span>] <span class="co"># p-value for inflation test</span></span>
+<span id="cb1-46"><a href="previous-gwas-1.html#cb1-46" aria-hidden="true" tabindex="-1"></a>  mod2<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> aver2 , <span class="at">data=</span>out)</span>
+<span id="cb1-47"><a href="previous-gwas-1.html#cb1-47" aria-hidden="true" tabindex="-1"></a>  p2<span class="ot">=</span><span class="fu">summary</span>(mod2)<span class="sc">$</span>coefficients[<span class="dv">2</span>,<span class="dv">4</span>] </span>
+<span id="cb1-48"><a href="previous-gwas-1.html#cb1-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-49"><a href="previous-gwas-1.html#cb1-49" aria-hidden="true" tabindex="-1"></a>  outnm1<span class="ot">=</span><span class="fu">paste0</span>(dir1,<span class="st">&quot;out/&quot;</span>,gwasnm)</span>
+<span id="cb1-50"><a href="previous-gwas-1.html#cb1-50" aria-hidden="true" tabindex="-1"></a>  outnm2<span class="ot">=</span><span class="fu">paste0</span>(dir1,<span class="st">&quot;summary/&quot;</span>,gwasnm)</span>
+<span id="cb1-51"><a href="previous-gwas-1.html#cb1-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.table</span>(out, outnm1, <span class="at">row.names=</span>F, <span class="at">col.names=</span>T, <span class="at">quote=</span>F)</span>
+<span id="cb1-52"><a href="previous-gwas-1.html#cb1-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.table</span>(<span class="fu">cbind</span>(gwasnm, p1, p2, <span class="fu">length</span>(common)), outnm2, <span class="at">col.names=</span>F, <span class="at">row.names=</span>F, <span class="at">quote=</span>F)</span>
+<span id="cb1-53"><a href="previous-gwas-1.html#cb1-53" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-54"><a href="previous-gwas-1.html#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="previous-gwas-1.html#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="fu">inflation_test</span>(ip[<span class="dv">1</span>],ip[<span class="dv">2</span>],ip[<span class="dv">3</span>],ip[<span class="dv">4</span>],ip[<span class="dv">5</span>])</span></code></pre></div>
+</div>
+<div id="odds-ratio" class="section level3" number="21.1.2">
+<h3><span class="header-section-number">21.1.2</span> odds ratio</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="previous-gwas-1.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">stringsAsFactors=</span><span class="cn">FALSE</span>)</span>
+<span id="cb2-2"><a href="previous-gwas-1.html#cb2-2" aria-hidden="true" tabindex="-1"></a>ip<span class="ot">&lt;-</span><span class="fu">commandArgs</span>(<span class="at">trailingOnly=</span><span class="cn">TRUE</span>) <span class="co"># define command line arguments when an R function is invoked...</span></span>
+<span id="cb2-3"><a href="previous-gwas-1.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ...in Linux environment.</span></span>
+<span id="cb2-4"><a href="previous-gwas-1.html#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">warn=</span><span class="dv">1</span>)</span>
+<span id="cb2-5"><a href="previous-gwas-1.html#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="previous-gwas-1.html#cb2-6" aria-hidden="true" tabindex="-1"></a>inflation_test<span class="ot">&lt;-</span><span class="cf">function</span>(gwasnm, snp_col, rs_true, beta_col, se_col){</span>
+<span id="cb2-7"><a href="previous-gwas-1.html#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="previous-gwas-1.html#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">require</span>(vroom)</span>
+<span id="cb2-9"><a href="previous-gwas-1.html#cb2-9" aria-hidden="true" tabindex="-1"></a>  gwasnm<span class="ot">=</span>gwasnm <span class="co"># file name</span></span>
+<span id="cb2-10"><a href="previous-gwas-1.html#cb2-10" aria-hidden="true" tabindex="-1"></a>  snp_col<span class="ot">=</span><span class="fu">as.numeric</span>(snp_col) <span class="co"># which col contains snp name</span></span>
+<span id="cb2-11"><a href="previous-gwas-1.html#cb2-11" aria-hidden="true" tabindex="-1"></a>  rs_true<span class="ot">=</span><span class="fu">as.numeric</span>(rs_true) <span class="co"># is rs the naming system?</span></span>
+<span id="cb2-12"><a href="previous-gwas-1.html#cb2-12" aria-hidden="true" tabindex="-1"></a>  beta_col<span class="ot">=</span><span class="fu">as.numeric</span>(beta_col) <span class="co"># which col contains beta estimate?</span></span>
+<span id="cb2-13"><a href="previous-gwas-1.html#cb2-13" aria-hidden="true" tabindex="-1"></a>  se_col<span class="ot">=</span><span class="fu">as.numeric</span>(se_col) <span class="co"># which col contains SE of beta estimate?</span></span>
+<span id="cb2-14"><a href="previous-gwas-1.html#cb2-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-15"><a href="previous-gwas-1.html#cb2-15" aria-hidden="true" tabindex="-1"></a>  dir1<span class="ot">=</span><span class="st">&quot;/home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/previous-gwas-sumstats/&quot;</span></span>
+<span id="cb2-16"><a href="previous-gwas-1.html#cb2-16" aria-hidden="true" tabindex="-1"></a>  dir2<span class="ot">=</span><span class="st">&quot;/home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/genome-wide-aver2/1kg/&quot;</span></span>
+<span id="cb2-17"><a href="previous-gwas-1.html#cb2-17" aria-hidden="true" tabindex="-1"></a>  m<span class="ot">=</span><span class="dv">10000</span></span>
+<span id="cb2-18"><a href="previous-gwas-1.html#cb2-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-19"><a href="previous-gwas-1.html#cb2-19" aria-hidden="true" tabindex="-1"></a>  gwas<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(dir1,<span class="st">&quot;sumstats/&quot;</span>,gwasnm), <span class="at">col_names=</span>T)</span>
+<span id="cb2-20"><a href="previous-gwas-1.html#cb2-20" aria-hidden="true" tabindex="-1"></a>  aver2<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(dir2,<span class="st">&quot;1kg.aver2-ldscore&quot;</span>), <span class="at">col_names=</span>F)</span>
+<span id="cb2-21"><a href="previous-gwas-1.html#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(rs_true<span class="sc">==</span><span class="dv">1</span>){snps<span class="ot">=</span>aver2<span class="sc">$</span>X1} <span class="cf">else</span> {snps<span class="ot">=</span>aver2<span class="sc">$</span>X2}</span>
+<span id="cb2-22"><a href="previous-gwas-1.html#cb2-22" aria-hidden="true" tabindex="-1"></a>  common<span class="ot">=</span><span class="fu">intersect</span>(<span class="fu">t</span>(gwas[,snp_col]), snps)</span>
+<span id="cb2-23"><a href="previous-gwas-1.html#cb2-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-24"><a href="previous-gwas-1.html#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select snps</span></span>
+<span id="cb2-25"><a href="previous-gwas-1.html#cb2-25" aria-hidden="true" tabindex="-1"></a>  samp<span class="ot">=</span><span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(common), m, <span class="at">replace=</span>F)</span>
+<span id="cb2-26"><a href="previous-gwas-1.html#cb2-26" aria-hidden="true" tabindex="-1"></a>  sel<span class="ot">=</span>common[samp]</span>
+<span id="cb2-27"><a href="previous-gwas-1.html#cb2-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-28"><a href="previous-gwas-1.html#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># model fitting &amp; output data</span></span>
+<span id="cb2-29"><a href="previous-gwas-1.html#cb2-29" aria-hidden="true" tabindex="-1"></a>  m1<span class="ot">=</span><span class="fu">match</span>(sel, <span class="fu">t</span>(gwas[,snp_col]))</span>
+<span id="cb2-30"><a href="previous-gwas-1.html#cb2-30" aria-hidden="true" tabindex="-1"></a>  m2<span class="ot">=</span><span class="fu">match</span>(sel, snps)</span>
+<span id="cb2-31"><a href="previous-gwas-1.html#cb2-31" aria-hidden="true" tabindex="-1"></a>  out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">snp=</span><span class="fu">unlist</span>(gwas[m1, snp_col]),</span>
+<span id="cb2-32"><a href="previous-gwas-1.html#cb2-32" aria-hidden="true" tabindex="-1"></a>                 <span class="at">chisq=</span><span class="fu">unlist</span>((<span class="fu">log</span>(gwas[m1, beta_col])<span class="sc">/</span>gwas[m1, se_col])<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb2-33"><a href="previous-gwas-1.html#cb2-33" aria-hidden="true" tabindex="-1"></a>                 <span class="at">aver2=</span>aver2<span class="sc">$</span>X3[m2],</span>
+<span id="cb2-34"><a href="previous-gwas-1.html#cb2-34" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ldsc=</span>aver2<span class="sc">$</span>X5[m2], <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb2-35"><a href="previous-gwas-1.html#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="previous-gwas-1.html#cb2-36" aria-hidden="true" tabindex="-1"></a>  mod1<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> aver2 <span class="sc">+</span> ldsc, <span class="at">data=</span>out)</span>
+<span id="cb2-37"><a href="previous-gwas-1.html#cb2-37" aria-hidden="true" tabindex="-1"></a>  p1<span class="ot">=</span><span class="fu">summary</span>(mod1)<span class="sc">$</span>coefficients[<span class="dv">2</span>,<span class="dv">4</span>] <span class="co"># p-value for inflation test</span></span>
+<span id="cb2-38"><a href="previous-gwas-1.html#cb2-38" aria-hidden="true" tabindex="-1"></a>  mod2<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> aver2 , <span class="at">data=</span>out)</span>
+<span id="cb2-39"><a href="previous-gwas-1.html#cb2-39" aria-hidden="true" tabindex="-1"></a>  p2<span class="ot">=</span><span class="fu">summary</span>(mod2)<span class="sc">$</span>coefficients[<span class="dv">2</span>,<span class="dv">4</span>] </span>
+<span id="cb2-40"><a href="previous-gwas-1.html#cb2-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-41"><a href="previous-gwas-1.html#cb2-41" aria-hidden="true" tabindex="-1"></a>  outnm1<span class="ot">=</span><span class="fu">paste0</span>(dir1,<span class="st">&quot;out/&quot;</span>,gwasnm)</span>
+<span id="cb2-42"><a href="previous-gwas-1.html#cb2-42" aria-hidden="true" tabindex="-1"></a>  outnm2<span class="ot">=</span><span class="fu">paste0</span>(dir1,<span class="st">&quot;summary/&quot;</span>,gwasnm)</span>
+<span id="cb2-43"><a href="previous-gwas-1.html#cb2-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.table</span>(out, outnm1, <span class="at">row.names=</span>F, <span class="at">col.names=</span>T, <span class="at">quote=</span>F)</span>
+<span id="cb2-44"><a href="previous-gwas-1.html#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.table</span>(<span class="fu">cbind</span>(gwasnm, p1, p2, <span class="fu">length</span>(common)), outnm2, <span class="at">col.names=</span>F, <span class="at">row.names=</span>F, <span class="at">quote=</span>F)</span>
+<span id="cb2-45"><a href="previous-gwas-1.html#cb2-45" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-46"><a href="previous-gwas-1.html#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-47"><a href="previous-gwas-1.html#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="fu">inflation_test</span>(ip[<span class="dv">1</span>],ip[<span class="dv">2</span>],ip[<span class="dv">3</span>],ip[<span class="dv">4</span>],ip[<span class="dv">5</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="previous-gwas-1.html#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-2"><a href="previous-gwas-1.html#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># using one study as an example</span></span>
+<span id="cb3-3"><a href="previous-gwas-1.html#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">--vanilla</span> inflation-test.r MullinsN-2021 3 1 6 7</span>
+<span id="cb3-4"><a href="previous-gwas-1.html#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="previous-gwas-1.html#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># loop for all studies</span></span>
+<span id="cb3-6"><a href="previous-gwas-1.html#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="dt">{</span><span class="dv">2</span><span class="dt">..</span><span class="dv">41</span><span class="dt">}</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb3-7"><a href="previous-gwas-1.html#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="at">-v</span> i=<span class="va">$i</span> <span class="st">&#39;NR==i {print i, $1}&#39;</span> previous-gwas-info.csv</span>
+<span id="cb3-8"><a href="previous-gwas-1.html#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="va">info</span><span class="op">=</span><span class="kw">`</span><span class="fu">awk</span> <span class="at">-v</span> i=<span class="va">$i</span> <span class="st">&#39;NR==i {print $1, $2, $3, $4, $5}&#39;</span> previous-gwas-info.csv<span class="kw">`</span></span>
+<span id="cb3-9"><a href="previous-gwas-1.html#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">--vanilla</span> inflation-test.r <span class="va">$info</span></span>
+<span id="cb3-10"><a href="previous-gwas-1.html#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb3-11"><a href="previous-gwas-1.html#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="previous-gwas-1.html#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># odds ratio</span></span>
+<span id="cb3-13"><a href="previous-gwas-1.html#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> 22<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb3-14"><a href="previous-gwas-1.html#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="at">-v</span> i=<span class="va">$i</span> <span class="st">&#39;NR==i {print i, $2}&#39;</span> previous-gwas-info.csv</span>
+<span id="cb3-15"><a href="previous-gwas-1.html#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="va">info</span><span class="op">=</span><span class="kw">`</span><span class="fu">awk</span> <span class="at">-v</span> i=<span class="va">$i</span> <span class="st">&#39;NR==i {print $2, $3, $4, $5, $6}&#39;</span> previous-gwas-info.csv<span class="kw">`</span></span>
+<span id="cb3-16"><a href="previous-gwas-1.html#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">--vanilla</span> inflation-test-odds-ratio.r <span class="va">$info</span></span>
+<span id="cb3-17"><a href="previous-gwas-1.html#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb3-18"><a href="previous-gwas-1.html#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="previous-gwas-1.html#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># useful commond</span></span>
+<span id="cb3-20"><a href="previous-gwas-1.html#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="fu">zcat</span>  <span class="kw">|</span> <span class="fu">head</span> </span>
+<span id="cb3-21"><a href="previous-gwas-1.html#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="fu">zcat</span>  <span class="va">$filein</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;NR&lt;3{print $1, $6, $7}&#39;</span></span>
+<span id="cb3-22"><a href="previous-gwas-1.html#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="previous-gwas-1.html#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co"># organize sumstats</span></span>
+<span id="cb3-24"><a href="previous-gwas-1.html#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="fu">zcat</span> <span class="va">$filein</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-v</span> OFS=<span class="st">&#39;\t&#39;</span> <span class="st">&#39;{print $1&quot;:&quot;$2, $0}&#39;</span> <span class="op">&gt;</span> <span class="va">$fileout</span></span>
+<span id="cb3-25"><a href="previous-gwas-1.html#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="previous-gwas-1.html#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="fu">zcat</span> <span class="va">$filein</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="at">-v</span> OFS=<span class="st">&#39;\t&#39;</span> <span class="st">&#39;{print $0, 1}&#39;</span>  <span class="op">&gt;</span> <span class="va">$fileout</span></span>
+<span id="cb3-27"><a href="previous-gwas-1.html#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="previous-gwas-1.html#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co"># check for txt file</span></span>
+<span id="cb3-29"><a href="previous-gwas-1.html#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;NR&lt;3{print $1, $8, $9}&#39;</span> <span class="va">$filein</span></span>
+<span id="cb3-30"><a href="previous-gwas-1.html#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="previous-gwas-1.html#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co"># check for gz files</span></span>
+<span id="cb3-32"><a href="previous-gwas-1.html#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="fu">zcat</span>  <span class="va">$filein</span> <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;NR&lt;3{print $1, $6, $7}&#39;</span></span></code></pre></div>
+</div>
+</div>
+<div id="plot-1" class="section level2" number="21.2">
+<h2><span class="header-section-number">21.2</span> plot</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="previous-gwas-1.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(vroom)</span>
+<span id="cb4-2"><a href="previous-gwas-1.html#cb4-2" aria-hidden="true" tabindex="-1"></a>studies<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;PelosoG-2022a&quot;</span>,<span class="st">&quot;PelosoG-2022b&quot;</span>,<span class="st">&quot;PelosoG-2022c&quot;</span>, <span class="st">&quot;PelosoG-2022d&quot;</span>,</span>
+<span id="cb4-3"><a href="previous-gwas-1.html#cb4-3" aria-hidden="true" tabindex="-1"></a>          <span class="st">&quot;VanDerMeerD-2021-2&quot;</span>,<span class="st">&quot;VanDerMeerD-2021-3&quot;</span>, <span class="st">&quot;MahajanA-2022&quot;</span> )</span>
+<span id="cb4-4"><a href="previous-gwas-1.html#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="previous-gwas-1.html#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="st">&quot;fig/previous-gwas-chisq-aver2-bin.png&quot;</span>, <span class="at">res=</span><span class="dv">600</span>, <span class="at">width=</span><span class="dv">40</span>, <span class="at">height=</span><span class="dv">20</span>, <span class="at">units=</span><span class="st">&quot;cm&quot;</span>)</span>
+<span id="cb4-6"><a href="previous-gwas-1.html#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">4</span>), <span class="at">cex.lab=</span><span class="fl">1.2</span>, <span class="at">font.lab=</span><span class="dv">2</span>, <span class="at">cex.main=</span><span class="fl">1.5</span>)</span>
+<span id="cb4-7"><a href="previous-gwas-1.html#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="previous-gwas-1.html#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(studies)){</span>
+<span id="cb4-9"><a href="previous-gwas-1.html#cb4-9" aria-hidden="true" tabindex="-1"></a>  study<span class="ot">=</span>studies[i]</span>
+<span id="cb4-10"><a href="previous-gwas-1.html#cb4-10" aria-hidden="true" tabindex="-1"></a>  dat<span class="ot">=</span><span class="fu">vroom</span>(<span class="fu">paste0</span>(<span class="st">&quot;previous-gwas-sumstats/out/&quot;</span>,study), <span class="at">col_names=</span>T)</span>
+<span id="cb4-11"><a href="previous-gwas-1.html#cb4-11" aria-hidden="true" tabindex="-1"></a>  dat<span class="ot">=</span>dat[<span class="fu">complete.cases</span>(dat),]</span>
+<span id="cb4-12"><a href="previous-gwas-1.html#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="previous-gwas-1.html#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear model</span></span>
+<span id="cb4-14"><a href="previous-gwas-1.html#cb4-14" aria-hidden="true" tabindex="-1"></a>  mod<span class="ot">=</span><span class="fu">lm</span>(chisq <span class="sc">~</span> aver2,<span class="at">data=</span>dat)</span>
+<span id="cb4-15"><a href="previous-gwas-1.html#cb4-15" aria-hidden="true" tabindex="-1"></a>  p<span class="ot">=</span><span class="fu">summary</span>(mod)<span class="sc">$</span>coefficients[,<span class="dv">4</span>][<span class="dv">2</span>]</span>
+<span id="cb4-16"><a href="previous-gwas-1.html#cb4-16" aria-hidden="true" tabindex="-1"></a>  p_sci<span class="ot">=</span><span class="fu">formatC</span>(p, <span class="at">format=</span><span class="st">&quot;e&quot;</span>, <span class="at">digit=</span><span class="dv">2</span>)</span>
+<span id="cb4-17"><a href="previous-gwas-1.html#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="previous-gwas-1.html#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># bin a variable by quantile</span></span>
+<span id="cb4-19"><a href="previous-gwas-1.html#cb4-19" aria-hidden="true" tabindex="-1"></a>  cutoff<span class="ot">=</span><span class="fu">quantile</span>(dat<span class="sc">$</span>aver2, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.005</span>), <span class="at">na.rm=</span>T)</span>
+<span id="cb4-20"><a href="previous-gwas-1.html#cb4-20" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>bin<span class="ot">=</span><span class="fu">cut</span>(dat<span class="sc">$</span>aver2, <span class="at">breaks=</span>cutoff, <span class="at">labels=</span><span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(cutoff)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb4-21"><a href="previous-gwas-1.html#cb4-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-22"><a href="previous-gwas-1.html#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># average chisq by bin values</span></span>
+<span id="cb4-23"><a href="previous-gwas-1.html#cb4-23" aria-hidden="true" tabindex="-1"></a>  out<span class="ot">=</span><span class="fu">data.frame</span>(<span class="at">chisq_ave=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>chisq,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean))</span>
+<span id="cb4-24"><a href="previous-gwas-1.html#cb4-24" aria-hidden="true" tabindex="-1"></a>  out<span class="sc">$</span>bin_val<span class="ot">=</span><span class="fu">tapply</span>(dat<span class="sc">$</span>aver2,<span class="at">INDEX=</span>dat<span class="sc">$</span>bin, mean)</span>
+<span id="cb4-25"><a href="previous-gwas-1.html#cb4-25" aria-hidden="true" tabindex="-1"></a>  px<span class="ot">=</span><span class="fu">min</span>(out<span class="sc">$</span>bin_val)</span>
+<span id="cb4-26"><a href="previous-gwas-1.html#cb4-26" aria-hidden="true" tabindex="-1"></a>  py<span class="ot">=</span><span class="fu">max</span>(out<span class="sc">$</span>chisq_ave)</span>
+<span id="cb4-27"><a href="previous-gwas-1.html#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="previous-gwas-1.html#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot</span></span>
+<span id="cb4-29"><a href="previous-gwas-1.html#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(out<span class="sc">$</span>bin_val, out<span class="sc">$</span>chisq_ave,</span>
+<span id="cb4-30"><a href="previous-gwas-1.html#cb4-30" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlab=</span><span class="st">&quot;ave r2 bin&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;mean chisq&quot;</span>,</span>
+<span id="cb4-31"><a href="previous-gwas-1.html#cb4-31" aria-hidden="true" tabindex="-1"></a>           <span class="at">main=</span>study, <span class="at">las=</span><span class="dv">1</span>,</span>
+<span id="cb4-32"><a href="previous-gwas-1.html#cb4-32" aria-hidden="true" tabindex="-1"></a>           <span class="at">cex =</span> <span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>,  <span class="at">bg=</span><span class="st">&quot;darkgray&quot;</span>, <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb4-33"><a href="previous-gwas-1.html#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="fu">lm</span>(chisq <span class="sc">~</span> aver2,<span class="at">data=</span>dat),<span class="at">col=</span><span class="st">&quot;orange&quot;</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span>
+<span id="cb4-34"><a href="previous-gwas-1.html#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(p<span class="sc">&lt;</span><span class="fl">0.01</span>){<span class="fu">text</span>(px, py, <span class="fu">paste0</span>(<span class="st">&quot;p = &quot;</span>, p_sci),</span>
+<span id="cb4-35"><a href="previous-gwas-1.html#cb4-35" aria-hidden="true" tabindex="-1"></a>                  <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">cex=</span><span class="dv">2</span>, <span class="at">font=</span><span class="dv">2</span>)</span>
+<span id="cb4-36"><a href="previous-gwas-1.html#cb4-36" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {<span class="fu">text</span>(px, py, <span class="fu">paste0</span>(<span class="st">&quot;p = &quot;</span>, p_sci), </span>
+<span id="cb4-37"><a href="previous-gwas-1.html#cb4-37" aria-hidden="true" tabindex="-1"></a>          <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">cex=</span><span class="dv">2</span>, <span class="at">font=</span><span class="dv">2</span>)}</span>
+<span id="cb4-38"><a href="previous-gwas-1.html#cb4-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-39"><a href="previous-gwas-1.html#cb4-39" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-40"><a href="previous-gwas-1.html#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+</div>
+<div id="ldscore-regression" class="section level2" number="21.3">
+<h2><span class="header-section-number">21.3</span> LDscore Regression</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="previous-gwas-1.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> header</span>
+<span id="cb5-2"><a href="previous-gwas-1.html#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="previous-gwas-1.html#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># get headers of the files</span></span>
+<span id="cb5-4"><a href="previous-gwas-1.html#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="va">dat</span><span class="op">=</span>read.table<span class="kw">(</span><span class="st">&quot;previous-gwas-info.csv&quot;</span><span class="ex">,</span> header=T, sep=<span class="st">&quot;\t&quot;</span>, stringsAsFactors = F<span class="kw">)</span></span>
+<span id="cb5-5"><a href="previous-gwas-1.html#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="va">gwasnm</span><span class="op">=</span>dat<span class="va">$gwasnm</span></span>
+<span id="cb5-6"><a href="previous-gwas-1.html#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="previous-gwas-1.html#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="ex">require</span><span class="er">(</span><span class="ex">vroom</span><span class="kw">)</span></span>
+<span id="cb5-8"><a href="previous-gwas-1.html#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span><span class="kw">(</span><span class="ex">i</span> in 1:length<span class="er">(</span><span class="ex">gwasnm</span><span class="kw">)){</span></span>
+<span id="cb5-9"><a href="previous-gwas-1.html#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="va">nm</span><span class="op">=</span>paste0<span class="kw">(</span><span class="st">&quot;sumstats/&quot;</span><span class="ex">,gwasnm[i]</span><span class="kw">)</span></span>
+<span id="cb5-10"><a href="previous-gwas-1.html#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span><span class="kw">(</span><span class="ex">file.exists</span><span class="er">(</span><span class="fu">nm</span><span class="kw">)</span><span class="ex">==F</span><span class="kw">)</span> <span class="ex">next</span></span>
+<span id="cb5-11"><a href="previous-gwas-1.html#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="va">gwas</span><span class="op">=</span>vroom<span class="kw">(</span><span class="fu">nm</span>, col_names=T, n_max=1<span class="kw">)</span></span>
+<span id="cb5-12"><a href="previous-gwas-1.html#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="va">header</span><span class="op">=</span>names<span class="kw">(</span><span class="ex">gwas</span><span class="kw">)</span></span>
+<span id="cb5-13"><a href="previous-gwas-1.html#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="va">out</span><span class="op">=</span>cbind<span class="kw">(</span><span class="ex">1:length</span><span class="er">(</span><span class="ex">header</span><span class="kw">)</span><span class="ex">,</span> header<span class="kw">)</span></span>
+<span id="cb5-14"><a href="previous-gwas-1.html#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="ex">write.table</span><span class="er">(</span><span class="ex">out,</span> paste0<span class="er">(</span><span class="st">&quot;header/&quot;</span><span class="ex">,gwasnm[i]</span><span class="kw">)</span><span class="ex">,</span> col.names=F, row.names=F, quote=F<span class="kw">)</span></span>
+<span id="cb5-15"><a href="previous-gwas-1.html#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb5-16"><a href="previous-gwas-1.html#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="previous-gwas-1.html#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># perform ldsc</span></span>
+<span id="cb5-18"><a href="previous-gwas-1.html#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="previous-gwas-1.html#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="ex">./ldsc.py</span> <span class="dt">\</span></span>
+<span id="cb5-20"><a href="previous-gwas-1.html#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">--h2</span> ieu-b-35.vcf.gz <span class="dt">\</span></span>
+<span id="cb5-21"><a href="previous-gwas-1.html#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ref-ld-chr</span> eur_w_ld_chr/ <span class="dt">\</span></span>
+<span id="cb5-22"><a href="previous-gwas-1.html#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">--out</span> ieu-b-35.txt<span class="dt">\</span></span>
+<span id="cb5-23"><a href="previous-gwas-1.html#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">--w-ld-chr</span> eur_w_ld_chr/</span>
+<span id="cb5-24"><a href="previous-gwas-1.html#cb5-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-25"><a href="previous-gwas-1.html#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">###</span></span>
+<span id="cb5-26"><a href="previous-gwas-1.html#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="ex">./ldsc.py</span> <span class="dt">\</span></span>
+<span id="cb5-27"><a href="previous-gwas-1.html#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">--h2</span> PelosoG-2022a <span class="dt">\</span></span>
+<span id="cb5-28"><a href="previous-gwas-1.html#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">--ref-ld-chr</span> eur_w_ld_chr/ <span class="dt">\</span></span>
+<span id="cb5-29"><a href="previous-gwas-1.html#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">--out</span> test<span class="dt">\</span></span>
+<span id="cb5-30"><a href="previous-gwas-1.html#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">--w-ld-chr</span> eur_w_ld_chr/</span></code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="genome-wide-aver2.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/11.0-previous-gwas.rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["bookdown-demo.pdf", "bookdown-demo.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

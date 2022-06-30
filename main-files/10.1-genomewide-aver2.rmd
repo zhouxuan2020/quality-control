@@ -1,0 +1,1020 @@
+# genome-wide aver2
+
+## UKBB
+Here we compute genome-wide aver2.
+We selected 22k snps from the genome, 1k from each chromosome. Then compute aver2 based on these selected SNPs for the whole genome. Note ldak will leave out SNPs from the same chromosome when computing aver2.
+
+```{bash eval=F}
+mkdir genome-wide-aver2
+mkdir genome-wide-aver2/snplist
+
+# select 22k SNPs  ----------------------------------------
+for i in {1..22}; do
+awk -v i=$i '{split($1, a, ":")
+              if(a[1]==i)
+              print $0}' gen/snps-unrel-inds.use > temp
+shuf temp | head -n 1000 > genome-wide-aver2/snplist/rand-1k-chrom$i
+done
+
+# append lists
+dir=genome-wide-aver2/snplist
+rm $dir/rand-22k
+for i in {1..22}; do
+cat $dir/rand-1k-chrom$i >> $dir/rand-22k
+done
+
+# compute aver2 ----------------------------------------------------------------
+
+# bad gwas------------------------------
+mkdir genome-wide-aver2/badgwas
+lista=../gen/snps-unrel-inds.use
+listb=../genome-wide-aver2/snplist/rand-22k
+bfile=../gen/geno-mix
+out=../genome-wide-aver2/badgwas/badgwas
+id=../mix-pop-gwas.id
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 10:00:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --keep $id \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-badgwas
+
+# submit the job
+sbatch -A snpher ../sh_script/calc-aver2-badgwas >../job-records/calc-aver2-badgwas
+
+mkdir genome-wide-aver2/badgwas
+lista=../gen/snps-unrel-inds.use
+listb=../genome-wide-aver2/snplist/rand-22k
+bfile=../gen/geno-mix
+out=../genome-wide-aver2/badgwas/badgwas
+id=../mix-pop-gwas.id
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 10:00:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --keep $id \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-badgwas
+
+# submit the job
+sbatch -A snpher ../sh_script/calc-aver2-badgwas >../job-records/calc-aver2-badgwas
+
+# good gwas------------------------------
+mkdir genome-wide-aver2/goodgwas
+lista=../gen/snps-unrel-inds.use
+listb=../genome-wide-aver2/snplist/rand-22k
+bfile=../gen/geno-unrel
+out=../genome-wide-aver2/goodgwas/goodgwas
+id=../unrelated/rand.100000
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 25G
+#SBATCH -c 7
+#SBATCH -t 10:00:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --keep $id \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-goodgwas
+
+# submit the job
+sbatch -A snpher ../sh_script/calc-aver2-goodgwas >../job-records/calc-aver2-goodgwas
+
+# related individuals simulation only ------------------------------
+mkdir genome-wide-aver2/rel-sim
+
+lista=../gen/snps-norm.use
+listb=../genome-wide-aver2/snplist/rand-22k
+bfile=../fake-quintuplets/gen/20k-quintuplets
+out=../genome-wide-aver2/rel-sim/rel-sim
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 25G
+#SBATCH -c 7
+#SBATCH -t 10:00:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-rel-sim
+
+# submit the job
+sbatch -A snpher ../sh_script/calc-aver2-rel-sim >../job-records/calc-aver2-rel-sim
+
+```
+
+### prune SNPs
+
+Here we want to prune SNPs based their correlation with neighbouring SNPs. Basically we want a set of independent SNPs to fit the model chisq ~ aver2, so that the assumption of independent residuals is met.
+
+```{bash eval=F}
+
+mkdir genome-wide-aver2/pruned-snps
+
+for j in {1..22}; do
+echo "#"'!'"/bin/bash
+#SBATCH --partition normal
+#SBATCH --mem 2G
+#SBATCH -c 4
+#SBATCH -t 00:30:0
+#SBATCH --constraint \"s04|s05\"
+./ldak5.1 --max-threads 4 \
+          --window-prune 0.05 \
+          --window-cm 1 \
+          --extract ../gen/snps-unrel-inds.use \
+          --keep ../unrelated/rand.100000 \
+          --bfile ../gen/geno-unrel \
+          --chr $j \
+          --thin ../genome-wide-aver2/pruned-snps/thin-chr$j
+"  > sh_script/thin$j
+done
+
+# submit jobs
+for j in {1..22}; do
+sbatch -A snpher ../sh_script/thin$j
+done > ../job-records/prune-snps-for-gwaver2
+
+# combine snp
+dir=genome-wide-aver2/pruned-snps
+cat $dir/thin-chr{1..22}.in > $dir/pruned.snps # 41085
+
+```
+
+
+### fake quintuplets
+
+```{bash eval=F}
+# organize data ---------------------------------------------------------------
+outdir=fake-quintuplets/sim-her-0.5/gwas-out
+indir=genome-wide-aver2/rel-sim
+
+for i in {1..10}; do
+
+gwas=fake-quintuplets/sim-her-0.5/gwas/sim-$i.summaries
+aver2=$indir/rel-sim.rjk2.average
+ldsc=snps-norm.ldscore
+out=$outdir/sim-$i-gwaver2.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+```{r eval=F}
+
+# chisq ~ aver2 bin
+
+require(vroom)
+
+png("fig/chisq-aver2-bin-rel-sim-gwaver2.png", res=600, width=50, height=20, units="cm")
+par(mfrow=c(2,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:10){
+
+  dat=vroom(paste0("fake-quintuplets/sim-her-0.5/gwas-out/sim-",i,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=paste0("sim ",i), las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2, data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+    } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
+```{r eval=F}
+
+# estimate intercept & slope
+# chisq ~ aver2 + ldsc
+require(vroom)
+
+for(i in 1:10){
+
+  dat=vroom(paste0("fake-quintuplets/sim-her-0.5/gwas-out/sim-",i,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  
+  
+  # collect output
+  out0=data.frame(sim=i,
+                  a0=summary(mod)$coefficients[1,1],
+                  a0_se=summary(mod)$coefficients[1,2],
+                  a1=summary(mod)$coefficients[2,1],
+                  a1_se=summary(mod)$coefficients[2,2],
+                  a1_p=summary(mod)$coefficients[2,4])
+  out0$a0_p=pchisq(((out0$a0-1)/out0$a0_se)^2, df=1, lower.tail=F)
+  
+  if(i==1){out=out0} else{out=rbind(out,out0)}
+  
+}
+
+```
+
+### bad gwas
+
+```{bash eval=F}
+
+# organize data
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+gwas=gwas-mix/$trait-linear.summaries
+aver2=genome-wide-aver2/badgwas/badgwas.rjk2.average
+ldsc=snps-unrel-inds.ldscore
+out=gwas-mix-out/$trait-gwaver2.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+#### chisq ~ aver2
+
+```{r eval=F}
+
+# chisq ~ aver2
+# use all SNPs-------------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-gwaver2-bin-bad-gwas.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-mix-out/",trait,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2 ,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+  
+}
+dev.off()
+
+# select 40k SNPs---------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-gwaver2-40ksnps-bin-bad-gwas.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-mix-out/",trait,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  set.seed(140)
+  sel=sample(1:dim(dat)[1],40000,replace = F)
+  dat=dat[sel,]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2 ,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+  
+}
+dev.off()
+
+# use pruned snps ---------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+snp=read.table("genome-wide-aver2/pruned-snps/pruned.snps", stringsAsFactors = F, header=F)
+
+png("fig/chisq-gwaver2-pruned-snps-bin-bad-gwas.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-mix-out/",trait,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  m=match(snp$V1,dat$snp)
+  dat=dat[m,]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2 ,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+  
+}
+dev.off()
+
+```
+
+#### inflation estimate
+
+```{r eval=F}
+
+# slope estimate based on pruned SNPs
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+snp=read.table("genome-wide-aver2/pruned-snps/pruned.snps", stringsAsFactors = F, header=F)
+
+png("fig/hist-inflation-est-slope-based-on-pruned-snps.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-mix-out/",trait,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+   m=match(snp$V1,dat$snp)
+  dat1=dat[m,]
+
+  # chisq ~ aver2 + ldsc
+  mod1=lm(chisq ~ aver2 + ldsc,data=dat1)
+  coef1=coefficients(mod1)[1:2]
+  coef1[1]=coef1[1]-1 # deduce 1
+  x=cbind(1,dat$aver2)
+  est=x%*%coef1
+  aver2=data.frame(inf_aver2=mean(est),
+                 her_aver2=coefficients(mod1)[3]*dim(dat)[1]/100000,
+                 her_aver2_se=summary(mod1)$coefficients[3,2]*dim(dat)[1]/100000)
+  
+  # chisq ~ ldsc 
+  mod2=lm(chisq ~ ldsc,data=dat1)
+  ldsc=data.frame(inf_ldsc=coefficients(mod2)[1]-1,
+                  her_ldsc=coefficients(mod2)[2]*dim(dat)[1]/100000,
+                  her_ldsc_se=summary(mod2)$coefficients[2,2]*dim(dat)[1]/100000)
+
+  # output
+  out0=data.frame(trait=trait,
+                  aver2,
+                  ldsc)
+  if(i==1){out=out0}else{out=rbind(out,out0)}
+
+  # histogram of inflation estimates
+  hist(est,
+       xlab="",
+       border=F,
+       main=trait, las=1,
+       col="lightgray", lwd=0.5)
+  abline(v=mean(est),col="orange", lty=3)
+  abline(v=coefficients(mod2)[1]-1,col="steelblue", lty=3)
+}
+dev.off()
+
+write.table(out, "summary/inflation-heritability-aver2-vs-ldsc-based-on-pruned-snps.txt", row.names=F, col.names=T, quote=F)
+
+```
+
+### evaluate corrected estimate
+
+for all snps.
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+snp=read.table("genome-wide-aver2/pruned-snps/pruned.snps", stringsAsFactors = F, header=F)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  # bad gwas
+  dat=vroom(paste0("gwas-mix-out/",trait,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  m=match(snp$V1,dat$snp)
+  dat1=dat[m,]
+  
+  # good gwas
+  good=vroom(paste0("unrelated/gwas-good-out/",trait,"-gwaver2.out"), col_names=T)
+
+  # chisq ~ aver2 + ldsc
+  mod1=lm(chisq ~ aver2 + ldsc,data=dat1)
+  coef1=coefficients(mod1)[1:2]
+  coef1[1]=coef1[1]-1 # deduce 1
+  x=cbind(1,dat$aver2)
+  est1=x%*%coef1
+  dat$correct1=dat$chisq-est1
+  m=match(dat$snp, good$snp)
+  cor1=cor(good$chisq[m], dat$correct1)
+  
+  # chisq ~ ldsc 
+  mod2=lm(chisq ~ ldsc,data=dat1)
+  est2=coefficients(mod2)[1]-1
+  dat$correct2=dat$chisq-est2
+  m=match(dat$snp, good$snp)
+  cor2=cor(good$chisq[m], dat$correct2)
+  
+  # chisq ~ aver2
+  mod3=lm(chisq ~ aver2 ,data=dat1)
+  coef3=coefficients(mod3)[1:2]
+  coef3[1]=coef3[1]-1 # deduce 1
+  x=cbind(1,dat$aver2)
+  est3=x%*%coef3
+  dat$correct3=dat$chisq-est3
+  m=match(dat$snp, good$snp)
+  cor3=cor(good$chisq[m], dat$correct3)
+
+  # output
+  out0=data.frame(trait=trait,
+                  aver2_ldsc=cor1,
+                  aver2=cor3,
+                  ldsc=cor2)
+  if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+
+write.table(out, "summary/corrected-vs-good-chisq-all-snps.txt", row.names=F, col.names=T, quote=F)
+
+```
+
+only for corrected > 0
+
+```{r eval=F}
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+snp=read.table("genome-wide-aver2/pruned-snps/pruned.snps", stringsAsFactors = F, header=F)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  # bad gwas
+  dat=vroom(paste0("gwas-mix-out/",trait,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  m=match(snp$V1,dat$snp)
+  dat1=dat[m,]
+  
+  # good gwas
+  good=vroom(paste0("unrelated/gwas-good-out/",trait,"-gwaver2.out"), col_names=T)
+
+  # chisq ~ aver2 + ldsc
+  mod1=lm(chisq ~ aver2 + ldsc,data=dat1)
+  coef1=coefficients(mod1)[1:2]
+  coef1[1]=coef1[1]-1 # deduce 1
+  x=cbind(1,dat$aver2)
+  est1=x%*%coef1
+  dat$correct1=dat$chisq-est1
+  sel=dat$snp[dat$correct1>0]
+  m1=match(sel, dat$snp)
+  m2=match(sel, good$snp)
+  cor1=cor(good$chisq[m2], dat$correct1[m1])
+  
+  # chisq ~ ldsc 
+  mod2=lm(chisq ~ ldsc,data=dat1)
+  est2=coefficients(mod2)[1]-1
+  dat$correct2=dat$chisq-est2
+  sel=dat$snp[dat$correct2>0]
+  m1=match(sel, dat$snp)
+  m2=match(sel, good$snp)
+  cor2=cor(good$chisq[m2], dat$correct2[m1])
+  
+  # chisq ~ aver2
+  mod3=lm(chisq ~ aver2 ,data=dat1)
+  coef3=coefficients(mod3)[1:2]
+  coef3[1]=coef3[1]-1 # deduce 1
+  x=cbind(1,dat$aver2)
+  est3=x%*%coef3
+  dat$correct3=dat$chisq-est3
+  sel=dat$snp[dat$correct3>0]
+  m1=match(sel, dat$snp)
+  m2=match(sel, good$snp)
+  cor3=cor(good$chisq[m2], dat$correct3[m1])
+
+  # output
+  out0=data.frame(trait=trait,
+                  aver2_ldsc=cor1,
+                  aver2=cor3,
+                  ldsc=cor2)
+  if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+
+write.table(out, "summary/corrected-vs-good-chisq-snps-with-pos-correct.txt", row.names=F, col.names=T, quote=F)
+
+```
+
+Inflation estimation is based on a random selection of 40k SNPs
+Correlation is based on all snps.
+conclusion: Correlation is almost identical to the estimation based on pruned SNPs.
+```{r eval=F}
+
+# slope estimate based on 40k SNPs
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-mix-out/",trait,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  set.seed(140)
+  sel=sample(1:dim(dat)[1],40000,replace = F)
+  dat1=dat[sel,]
+
+  # good gwas
+  good=vroom(paste0("unrelated/gwas-good-out/",trait,"-gwaver2.out"), col_names=T)
+
+  # chisq ~ aver2 + ldsc
+  mod1=lm(chisq ~ aver2 + ldsc,data=dat1)
+  coef1=coefficients(mod1)[1:2]
+  coef1[1]=coef1[1]-1 # deduce 1
+  x=cbind(1,dat$aver2)
+  est1=x%*%coef1
+  dat$correct1=dat$chisq-est1
+  m=match(dat$snp, good$snp)
+  cor1=cor(good$chisq[m], dat$correct1)
+  
+  # chisq ~ ldsc 
+  mod2=lm(chisq ~ ldsc,data=dat1)
+  est2=coefficients(mod2)[1]-1
+  dat$correct2=dat$chisq-est2
+  m=match(dat$snp, good$snp)
+  cor2=cor(good$chisq[m], dat$correct2)
+  
+  # chisq ~ aver2
+  mod3=lm(chisq ~ aver2 ,data=dat1)
+  coef3=coefficients(mod3)[1:2]
+  coef3[1]=coef3[1]-1 # deduce 1
+  x=cbind(1,dat$aver2)
+  est3=x%*%coef3
+  dat$correct3=dat$chisq-est3
+  m=match(dat$snp, good$snp)
+  cor3=cor(good$chisq[m], dat$correct3)
+
+  # output
+  out0=data.frame(trait=trait,
+                  aver2_ldsc=cor1,
+                  aver2=cor3,
+                  ldsc=cor2)
+  if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+
+write.table(out, "summary/corrected-vs-good-chisq-all-snps-est-based-on-40k.txt", row.names=F, col.names=T, quote=F)
+
+```
+
+Inflation estimation is based on a random selection of 40k SNPs
+Correlation is based on snps with positive corrected chisq.
+Correlation is almost identical to the estimation based on pruned SNPs.
+```{r eval=F}
+
+# slope estimate based on 40k SNPs
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("gwas-mix-out/",trait,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  set.seed(140)
+  sel=sample(1:dim(dat)[1],40000,replace = F)
+  dat1=dat[sel,]
+
+  # good gwas
+  good=vroom(paste0("unrelated/gwas-good-out/",trait,"-gwaver2.out"), col_names=T)
+
+  # chisq ~ aver2 + ldsc
+  mod1=lm(chisq ~ aver2 + ldsc,data=dat1)
+  coef1=coefficients(mod1)[1:2]
+  coef1[1]=coef1[1]-1 # deduce 1
+  x=cbind(1,dat$aver2)
+  est1=x%*%coef1
+  dat$correct1=dat$chisq-est1
+  sel=dat$snp[dat$correct1>0]
+  m1=match(sel, dat$snp)
+  m2=match(sel, good$snp)
+  cor1=cor(good$chisq[m2], dat$correct1[m1])
+  
+  # chisq ~ ldsc 
+  mod2=lm(chisq ~ ldsc,data=dat1)
+  est2=coefficients(mod2)[1]-1
+  dat$correct2=dat$chisq-est2
+  sel=dat$snp[dat$correct2>0]
+  m1=match(sel, dat$snp)
+  m2=match(sel, good$snp)
+  cor2=cor(good$chisq[m2], dat$correct2[m1])
+  
+  # chisq ~ aver2
+  mod3=lm(chisq ~ aver2 ,data=dat1)
+  coef3=coefficients(mod3)[1:2]
+  coef3[1]=coef3[1]-1 # deduce 1
+  x=cbind(1,dat$aver2)
+  est3=x%*%coef3
+  dat$correct3=dat$chisq-est3
+  sel=dat$snp[dat$correct3>0]
+  m1=match(sel, dat$snp)
+  m2=match(sel, good$snp)
+  cor3=cor(good$chisq[m2], dat$correct3[m1])
+
+  # output
+  out0=data.frame(trait=trait,
+                  aver2_ldsc=cor1,
+                  aver2=cor3,
+                  ldsc=cor2)
+  
+  if(i==1){out=out0}else{out=rbind(out,out0)}
+}
+
+write.table(out, "summary/corrected-vs-good-chisq-all-snps-est-based-on-40k.txt", row.names=F, col.names=T, quote=F)
+
+```
+
+
+### good gwas
+
+```{bash eval=F}
+# good gwas-----------------------------------------------------------------------
+
+for trait in {awake,bmi,chron,ever,fvc,height,imp,neur,pulse,quals,reaction,sbp,snoring,hyper}; do
+gwas=unrelated/gwas-good/$trait-linear.summaries
+ldsc=snps-unrel-inds.ldscore
+aver2=genome-wide-aver2/goodgwas/goodgwas.rjk2.average
+out=unrelated/gwas-good-out/$trait-gwaver2.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp 
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+done
+
+```
+
+#### chisq ~ aver2
+```{r eval=F}
+
+# chisq ~ aver2
+# using all SNPs---------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-gwaver2-bin-good-gwas.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("unrelated/gwas-good-out/",trait,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2 ,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+  
+}
+dev.off()
+
+# select 40k SNPs---------------------------------------------------------------
+
+require(vroom)
+traits=c("awake","bmi","chron","ever",
+        "neur","pulse","quals", "fvc", "height","imp", 
+        "reaction","sbp","snoring","hyper")
+
+png("fig/chisq-gwaver2-40ksnps-bin-good-gwas.png", res=600, width=50, height=30, units="cm")
+par(mfrow=c(3,5), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("unrelated/gwas-good-out/",trait,"-gwaver2.out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+  set.seed(140)
+  sel=sample(1:dim(dat)[1],40000,replace = F)
+  dat=dat[sel,]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2 ,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=1.2, font=2)}
+  
+}
+dev.off()
+
+```
+
+### ukbb recommended
+
+```{bash, eval=F}
+
+```
+
+
+#### inflation estiamte
+
+## 1k genome
+
+Here we do the same for 1k genome.
+
+```{bash eval=F}
+
+mkdir genome-wide-aver2/snplist-1kg
+
+# make a snp list based on call rate & MAF & hapmap3 SNPs-----------------------
+stats=ref-1kg/1kg/gen/1000g.stats
+hp3snps=doug/ldsc.snps
+out=genome-wide-aver2/snplist-1kg/1kg-hp3.snps
+awk < $stats '($5>.01 && $6>=0.95 && NR>1){print $1}' > tmp.snps
+awk 'NR==FNR{a[$1]; next};
+     {if ($1 in a);
+     print $2 }' tmp.snps $hp3snps > $out #  m = 1,184,461
+     
+# some SNPs are not in the bim file. Need to remove them...
+snp_in=genome-wide-aver2/snplist-1kg/1kg-hp3.snps
+bim=ref-1kg/1kg/gen/1000b.bim
+snp_out=genome-wide-aver2/snplist-1kg/1kg-hp3.snps-use
+
+awk 'NR==FNR {a[$1]; next}
+     {if($2 in a) print $2}' $snp_in $bim > $snp_out # m 1,177,422
+
+# SNPs for listb----------------------------------------------------------------
+# divide snps by chr & select 1k from each
+dir=genome-wide-aver2/snplist-1kg
+for i in {1..22};do
+awk -v i=$i '{split($1,a,":");
+             if(a[1]==i) 
+             print $0}' $dir/1kg-hp3.snps-use > $dir/1kg-hp3-chr$i.snps
+shuf $dir/1kg-hp3-chr$i.snps | head -n 1000 > $dir/rand-1k-chr$i
+done
+
+# append lists: total snps = 22k 
+dir=genome-wide-aver2/snplist-1kg
+rm $dir/rand-22k
+for i in {1..22}; do
+cat $dir/rand-1k-chr$i >> $dir/rand-22k
+done
+
+# compute aver2 ----------------------------------------------------------------
+
+mkdir genome-wide-aver2/1kg
+
+for i in {1..22}; do
+lista=../genome-wide-aver2/snplist-1kg/1kg-hp3-chr$i.snps
+listb=../genome-wide-aver2/snplist-1kg/rand-22k
+bfile=../ref-1kg/1kg/gen/1000b
+out=../genome-wide-aver2/1kg/1kg-chr$i
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 10G
+#SBATCH -c 7
+#SBATCH -t 01:00:00
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-1kg-chr$i
+done
+
+# submit the job
+for i in {1..22}; do
+sbatch -A snpher ../sh_script/calc-aver2-1kg-chr$i
+done >../job-records/calc-gwaver2-1kg
+
+# append aver2: aver2 for 1,177,422 snps, each based on 21k distant snps. 
+dir=genome-wide-aver2/1kg
+rm $dir/1kg.aver2
+for i in {1..22}; do
+awk 'NR>1 {print $0}' $dir/1kg-chr$i.rjk2.average >> $dir/1kg.aver2
+done
+
+# add rs ID
+id=doug/ldsc.snps
+snp=genome-wide-aver2/1kg/1kg.aver2
+out=genome-wide-aver2/1kg/1kg.aver2-use
+
+awk 'NR==FNR{a[$2]; b[$2]=$1 ;next}
+     {if($1 in a) print b[$1], $1, $2, $3 }' $id $snp > $out
+     
+# add ldsc score
+ref=genome-wide-aver2/1kg/1kg.aver2-use
+dir=ldsc/eur_w_ld_chr
+out=genome-wide-aver2/1kg/1kg.aver2-ldscore
+for chrom in {1..22}; do
+zcat $dir/$chrom.l2.ldscore.gz | awk 'NR>1 {print $2, $6}' > ldscore
+awk '(NR==FNR){a[$1]; b[$1]=$2; next}
+      ($1 in a){print $1, $2, $3, $4, b[$1]}' ldscore $ref > temp
+if [ $chrom -eq 1 ]
+then 
+ mv temp $out
+else
+ cat $out temp > temp2
+ mv temp2 $out
+fi
+echo $chrom
+done
+
+```
+
+

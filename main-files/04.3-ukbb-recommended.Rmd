@@ -610,6 +610,13 @@ write.table(ldsc,"summary/ldsc-norm-337k.ratio", col.names=T, row.names=F, quote
 
 ```
 
+
+## ldsc-337k: skipping 1st step
+
+```{bash eval=F}
+
+```
+
 ## aver2_j-337k
 
 ### calc

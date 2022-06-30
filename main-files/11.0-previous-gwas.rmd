@@ -1,0 +1,244 @@
+# Previous GWAS
+
+## organize data
+
+### beta
+
+```{r eval=F}
+
+mkdir previous-gwas-sumstats/sumstats
+mkdir previous-gwas-sumstats/out
+mkdir previous-gwas-sumstats/summary
+
+#:::::::::::::::::::::
+# write a function to perform the inflation test
+#:::::::::::::::::::::
+
+options(stringsAsFactors=FALSE)
+ip<-commandArgs(trailingOnly=TRUE) # define command line arguments when an R function is invoked...
+# ...in Linux environment.
+options(warn=1)
+
+inflation_test<-function(gwasnm, snp_col, rs_true, beta_col, se_col){
+
+  require(vroom)
+  gwasnm=gwasnm # file name
+  snp_col=as.numeric(snp_col) # which col contains snp name
+  rs_true=as.numeric(rs_true) # is rs the naming system?
+  beta_col=as.numeric(beta_col) # which col contains beta estimate?
+  se_col=as.numeric(se_col) # which col contains SE of beta estimate?
+  
+  dir1="/home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/previous-gwas-sumstats/"
+  dir2="/home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/genome-wide-aver2/1kg/"
+  m=10000
+  
+  gwas=vroom(paste0(dir1,"sumstats/",gwasnm), col_names=T)
+  aver2=vroom(paste0(dir2,"1kg.aver2-ldscore"), col_names=F)
+  if(rs_true==1){snps=aver2$X1} else {snps=aver2$X2}
+  common=intersect(t(gwas[,snp_col]), snps)
+  
+  # select snps
+  samp=sample(1:length(common), m, replace=F)
+  sel=common[samp]
+  
+  # model fitting & output data
+  m1=match(sel, t(gwas[,snp_col]))
+  m2=match(sel, snps)
+  out=data.frame(snp=unlist(gwas[m1, snp_col]),
+                 chisq=unlist((gwas[m1, beta_col]/gwas[m1, se_col])^2),
+                 aver2=aver2$X3[m2],
+                 ldsc=aver2$X5[m2], stringsAsFactors = F)
+
+  mod1=lm(chisq ~ aver2 + ldsc, data=out)
+  p1=summary(mod1)$coefficients[2,4] # p-value for inflation test
+  mod2=lm(chisq ~ aver2 , data=out)
+  p2=summary(mod2)$coefficients[2,4] 
+  
+  outnm1=paste0(dir1,"out/",gwasnm)
+  outnm2=paste0(dir1,"summary/",gwasnm)
+  write.table(out, outnm1, row.names=F, col.names=T, quote=F)
+  write.table(cbind(gwasnm, p1, p2, length(common)), outnm2, col.names=F, row.names=F, quote=F)
+}
+
+inflation_test(ip[1],ip[2],ip[3],ip[4],ip[5])
+               
+```
+
+### odds ratio
+
+```{r eval=F}
+
+options(stringsAsFactors=FALSE)
+ip<-commandArgs(trailingOnly=TRUE) # define command line arguments when an R function is invoked...
+# ...in Linux environment.
+options(warn=1)
+
+inflation_test<-function(gwasnm, snp_col, rs_true, beta_col, se_col){
+
+  require(vroom)
+  gwasnm=gwasnm # file name
+  snp_col=as.numeric(snp_col) # which col contains snp name
+  rs_true=as.numeric(rs_true) # is rs the naming system?
+  beta_col=as.numeric(beta_col) # which col contains beta estimate?
+  se_col=as.numeric(se_col) # which col contains SE of beta estimate?
+  
+  dir1="/home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/previous-gwas-sumstats/"
+  dir2="/home/zhoux/dsmwpred/xuan/quality-control/qc-10oct/genome-wide-aver2/1kg/"
+  m=10000
+  
+  gwas=vroom(paste0(dir1,"sumstats/",gwasnm), col_names=T)
+  aver2=vroom(paste0(dir2,"1kg.aver2-ldscore"), col_names=F)
+  if(rs_true==1){snps=aver2$X1} else {snps=aver2$X2}
+  common=intersect(t(gwas[,snp_col]), snps)
+  
+  # select snps
+  samp=sample(1:length(common), m, replace=F)
+  sel=common[samp]
+  
+  # model fitting & output data
+  m1=match(sel, t(gwas[,snp_col]))
+  m2=match(sel, snps)
+  out=data.frame(snp=unlist(gwas[m1, snp_col]),
+                 chisq=unlist((log(gwas[m1, beta_col])/gwas[m1, se_col])^2),
+                 aver2=aver2$X3[m2],
+                 ldsc=aver2$X5[m2], stringsAsFactors = F)
+
+  mod1=lm(chisq ~ aver2 + ldsc, data=out)
+  p1=summary(mod1)$coefficients[2,4] # p-value for inflation test
+  mod2=lm(chisq ~ aver2 , data=out)
+  p2=summary(mod2)$coefficients[2,4] 
+  
+  outnm1=paste0(dir1,"out/",gwasnm)
+  outnm2=paste0(dir1,"summary/",gwasnm)
+  write.table(out, outnm1, row.names=F, col.names=T, quote=F)
+  write.table(cbind(gwasnm, p1, p2, length(common)), outnm2, col.names=F, row.names=F, quote=F)
+}
+
+inflation_test(ip[1],ip[2],ip[3],ip[4],ip[5])
+               
+```
+
+
+
+```{bash eval=F}
+
+# using one study as an example
+Rscript --vanilla inflation-test.r MullinsN-2021 3 1 6 7
+
+# loop for all studies
+for i in {2..41}; do
+awk -v i=$i 'NR==i {print i, $1}' previous-gwas-info.csv
+info=`awk -v i=$i 'NR==i {print $1, $2, $3, $4, $5}' previous-gwas-info.csv`
+Rscript --vanilla inflation-test.r $info
+done
+
+# odds ratio
+for i in 22; do
+awk -v i=$i 'NR==i {print i, $2}' previous-gwas-info.csv
+info=`awk -v i=$i 'NR==i {print $2, $3, $4, $5, $6}' previous-gwas-info.csv`
+Rscript --vanilla inflation-test-odds-ratio.r $info
+done
+
+# useful commond
+zcat  | head 
+zcat  $filein | awk 'NR<3{print $1, $6, $7}'
+
+# organize sumstats
+zcat $filein | awk -v OFS='\t' '{print $1":"$2, $0}' > $fileout
+
+zcat $filein | awk -v OFS='\t' '{print $0, 1}'  > $fileout
+
+# check for txt file
+awk 'NR<3{print $1, $8, $9}' $filein
+
+# check for gz files
+zcat  $filein | awk 'NR<3{print $1, $6, $7}'
+
+```
+
+## plot
+
+```{r eval=F}
+
+require(vroom)
+studies=c("PelosoG-2022a","PelosoG-2022b","PelosoG-2022c", "PelosoG-2022d",
+          "VanDerMeerD-2021-2","VanDerMeerD-2021-3", "MahajanA-2022" )
+
+png("fig/previous-gwas-chisq-aver2-bin.png", res=600, width=40, height=20, units="cm")
+par(mfrow=c(2,4), cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(studies)){
+  study=studies[i]
+  dat=vroom(paste0("previous-gwas-sumstats/out/",study), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=study, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
+## LDscore Regression
+
+```{bash eval=F}
+mkdir header
+
+# get headers of the files
+dat=read.table("previous-gwas-info.csv", header=T, sep="\t", stringsAsFactors = F)
+gwasnm=dat$gwasnm
+
+require(vroom)
+for(i in 1:length(gwasnm)){
+  nm=paste0("sumstats/",gwasnm[i])
+  if(file.exists(nm)==F) next
+  gwas=vroom(nm, col_names=T, n_max=1)
+  header=names(gwas)
+  out=cbind(1:length(header), header)
+  write.table(out, paste0("header/",gwasnm[i]), col.names=F, row.names=F, quote=F)
+}
+
+# perform ldsc
+
+./ldsc.py \
+  --h2 ieu-b-35.vcf.gz \
+  --ref-ld-chr eur_w_ld_chr/ \
+  --out ieu-b-35.txt\
+  --w-ld-chr eur_w_ld_chr/
+  
+###
+  ./ldsc.py \
+  --h2 PelosoG-2022a \
+  --ref-ld-chr eur_w_ld_chr/ \
+  --out test\
+  --w-ld-chr eur_w_ld_chr/
+
+
+```
+
+
+

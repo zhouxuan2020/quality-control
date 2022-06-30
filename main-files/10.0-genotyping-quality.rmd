@@ -1,0 +1,206 @@
+
+# genotyping errors
+
+Here we check if our method can detect inflation due to poor genotyping quality or errors. The idea is that genotyping errors affect MAF. Mixing genotypes data with systematic errors can therefore create spurious correlations between SNPs. Hence aver2 would be high.
+
+We perform a GWAS on genotype measurement batch (BILIEVE vs. Axiom) and check if chisq test statistics is driven by aver2. To ensure the GWAS is free from confounding due to pop structure and relatedness, we use 10 unrelated white British who score similarly on PC1.
+
+## id list & phenotypes
+
+```{r eval=F}
+# unrelated white British with a similar score on PC1
+options(scipen = 100)
+pc=read.table("gen/pca-337k-ukbb.eigenvec", header=F)
+names(pc)=c("eid", "eid", paste0("PC", 1:10))
+pc=pc[order(pc$PC1, decreasing=T),]
+
+# check if phenotype data of these individuals
+require(vroom)
+phen=vroom("phen/covariates.phen", col_names=T)
+m=match(pc$eid, phen$eid)
+dat=data.frame(pc[,c("eid", "PC1")],
+               phen[m,c("age", "sex_gen", "townsend", "geno_batch", paste0("pc",1:40))])
+dat=dat[complete.cases(dat),]
+dat$geno_bin=1 # geno_bin=1: believe
+dat$geno_bin[dat$geno_batch>0 & !is.na(dat$geno_batch)]=0 #  geno_bin=0: axiom
+
+out=dat[1:100000,c("eid", "geno_bin", "PC1")]
+tapply(out$PC1,out$geno_bin,mean) # the two bins score similarly on PC1
+
+# output id & phenotypes
+write.table(cbind(out$eid, out$eid), "geno-batch-gwas-100k.id", 
+            col.names=F, row.names=F, quote=F)
+write.table(cbind(out$eid, out$eid, out$geno_bin),
+            "phen/other-traits/geno-batch.raw.pheno", 
+            col.names=F, row.names=F, quote=F)
+```
+
+## gwas
+
+```{bash eval=F}
+
+mkdir geno-batch-gwas
+
+trait=geno-batch
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 20G
+#SBATCH -c 3
+#SBATCH -t 10:0:0
+
+./ldak5.1 --linear ../geno-batch-gwas/$trait-linear \
+          --pheno ../phen/other-traits/$trait.raw.pheno \
+          --bfile ../gen/geno-norm \
+          --keep ../geno-batch-gwas-100k.id \
+          --extract ../gen/snps-norm.use \
+          --covar ../phen/covariates.use \
+          --max-threads 3 \
+"> sh_script/$trait-linear.sh
+
+sbatch -A snpher ../sh_script/$trait-linear.sh
+
+```
+
+## compute aver2
+
+```{bash eval=F}
+
+# new directory
+mkdir inflation/geno-batch-gwas
+
+# to calc aver2 for lista-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../geno-batch-gwas-100k.id 
+bfile=../gen/geno-norm
+out=../inflation/geno-batch-gwas/aver2-lista
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $lista \
+          --listb $listb
+">sh_script/calc-aver2-lista
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-lista >../job-records/calc-aver2-geno-batch
+
+# to calc aver2 for listb-------------------------------------------------------
+lista=../inflation/left-snps-unrel-inds-10k
+listb=../inflation/right-snps-unrel-inds-10k
+id=../geno-batch-gwas-100k.id 
+bfile=../gen/geno-norm
+out=../inflation/geno-batch-gwas/aver2-listb
+
+echo "#"'!'"/bin/bash
+#SBATCH --constraint \"s04|s05\"
+#SBATCH --partition normal
+#SBATCH --mem 30G
+#SBATCH -c 7
+#SBATCH -t 00:40:0
+./ldak5.2 --max-threads 7 \
+          --calc-inflation $out \
+          --keep $id \
+          --bfile $bfile \
+          --lista $listb \
+          --listb $lista
+">sh_script/calc-aver2-listb
+
+# job submission
+sbatch -A snpher ../sh_script/calc-aver2-listb >../job-records/calc-aver2-listb-geno-batch
+
+# merge aver2 of the two lists--------------------------------------------------
+dir=inflation/geno-batch-gwas
+a=$dir/aver2-lista.rjk2.average
+b=$dir/aver2-listb.rjk2.average
+out=$dir/all.aver2
+awk 'FNR > 1 {print $1, $2}'  $a $b > $out
+
+```
+
+## chisq ~ aver2
+
+```{bash eval=F}
+
+# organize data
+mkdir geno-batch-gwas-out
+
+trait=geno-batch
+gwas=geno-batch-gwas/$trait-linear.summaries
+aver2=inflation/geno-batch-gwas/all.aver2
+ldsc=snps-norm.ldscore
+out=geno-batch-gwas-out/$trait.out
+
+awk 'NR>1 {print $1, $5}' $gwas > tmp/gwas.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $ldsc tmp/gwas.tmp > tmp/ldsc.tmp
+
+awk 'NR==FNR {a[$1]; b[$1]=$2; next} 
+     {if ($1 in a) print b[$1]; 
+     else print "NA" }' $aver2 tmp/gwas.tmp > tmp/aver2.tmp
+
+# put info together
+paste tmp/gwas.tmp \
+      tmp/aver2.tmp \
+      tmp/ldsc.tmp \
+      | awk 'BEGIN{OFS=";" ; 
+                  print "snp;chisq;aver2;ldsc"}
+             {$1=$1}1' > $out
+
+```
+
+```{r eval=F}
+# plot
+
+require(vroom)
+traits="geno-batch"
+
+png("fig/chisq-aver2-bin-geno-batch-gwas.png", res=600, width=30, height=20, units="cm")
+par(cex.lab=1.2, font.lab=2, cex.main=1.5)
+
+for(i in 1:length(traits)){
+  trait=traits[i]
+  dat=vroom(paste0("geno-batch-gwas-out/",trait,".out"), col_names=T)
+  dat=dat[complete.cases(dat),]
+
+  # linear model
+  mod=lm(chisq ~ aver2 + ldsc,data=dat)
+  p=summary(mod)$coefficients[,4][2]
+  p_sci=formatC(p, format="e", digit=2)
+
+  # bin a variable by quantile
+  cutoff=quantile(dat$aver2, probs = seq(0, 1, 0.005), na.rm=T)
+  dat$bin=cut(dat$aver2, breaks=cutoff, labels=1:(length(cutoff)-1))
+  
+  # average chisq by bin values
+  out=data.frame(chisq_ave=tapply(dat$chisq,INDEX=dat$bin, mean))
+  out$bin_val=tapply(dat$aver2,INDEX=dat$bin, mean)
+  px=min(out$bin_val)
+  py=max(out$chisq_ave)
+
+  # plot
+  plot(out$bin_val, out$chisq_ave,
+           xlab="ave r2 bin", ylab="mean chisq",
+           main=trait, las=1,
+           cex = 1.5, pch=21,  bg="darkgray", col="white", lwd=0.5)
+  abline(lm(chisq ~ aver2,data=dat),col="orange", lwd=2)
+  if(p<0.01){text(px, py, paste0("p = ", p_sci),
+                  adj=c(0,1), col="red", cex=2, font=2)
+  } else {text(px, py, paste0("p = ", p_sci), 
+          adj=c(0,1), cex=2, font=2)}
+  
+}
+dev.off()
+
+```
+
